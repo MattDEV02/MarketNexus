@@ -2,14 +2,14 @@ package com.lambert.lambertecommerce.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Nations")
-public class Nation {
-
+@Table(name = "ProductCategories")
+public class ProductCategory {
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
    @Column(name = "id", nullable = false)
@@ -19,11 +19,11 @@ public class Nation {
    @Column(name = "name")
    private String name;
 
-   @OneToMany(mappedBy = "nation")
-   private Set<User> users;
+   @OneToMany(mappedBy="category")
+   private List<Product> products;
 
-   public Nation() {
-      this.users = new HashSet<User>();
+   public ProductCategory() {
+      this.products = new LinkedList<Product>();
    }
 
    public Long getId() {
@@ -42,16 +42,24 @@ public class Nation {
       this.name = name;
    }
 
+   public List<Product> getProducts() {
+      return this.products;
+   }
+
+   public void setProducts(List<Product> products) {
+      this.products = products;
+   }
+
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId(), this.getName());
+      return Objects.hash(this.id);
    }
 
    @Override
    public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || this.getClass() != o.getClass()) return false;
-      Nation nation = (Nation) o;
-      return Objects.equals(this.getId(), nation.getId()) || Objects.equals(this.getName(), nation.getName());
+      ProductCategory productCategory = (ProductCategory) o;
+      return Objects.equals(this.getId(), productCategory.getId()) || Objects.equals(this.getName(), productCategory.getName());
    }
 }
