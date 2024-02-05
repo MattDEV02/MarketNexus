@@ -2,6 +2,8 @@ SELECT VERSION();
 
 --CONNECT LambertEcommerce;
 
+--ALTER DATABASE LambertEcommerce SET TIMEZONE TO 'Europe/Rome';
+
 DROP SCHEMA IF EXISTS LambertEcommerce CASCADE;
 
 CREATE SCHEMA IF NOT EXISTS LambertEcommerce;
@@ -14,6 +16,15 @@ SELECT CURRENT_SCHEMA();
 
 SELECT NOW();
 
+DROP TYPE IF EXISTS ROLES;
+
+CREATE TYPE ROLES AS ENUM(
+    'DEFAULT',
+    'ADMIN'
+);
+
+COMMENT ON TYPE ROLES IS 'LambertEcommerce Credentials Roles.';
+
 CREATE
 OR REPLACE FUNCTION updatedat_set_timestamp_function () RETURNS TRIGGER AS $$
 BEGIN
@@ -21,6 +32,8 @@ BEGIN
 RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+COMMENT ON FUNCTION updatedat_set_timestamp_function IS 'Function that allows to update the updated_at TIMESTAMP fields.';
 
 CREATE TABLE IF NOT EXISTS LambertEcommerce.Nations (
                                                         id SERIAL NOT NULL PRIMARY KEY,
@@ -30,7 +43,20 @@ CREATE TABLE IF NOT EXISTS LambertEcommerce.Nations (
     CONSTRAINT nations_name_min_length_check CHECK (LENGTH(LambertEcommerce.Nations.name) >= 3)
     );
 
-ALTER TABLE lambertecommerce.Nations OWNER TO postgres;
+ALTER TABLE LambertEcommerce.Nations OWNER TO postgres;
+
+COMMENT ON TABLE LambertEcommerce.Nations IS 'LambertEcommerce Users Nation origin.';
+
+INSERT INTO LambertEcommerce.Nations (name) VALUES
+                                                ('Italy'),
+                                                ('France'),
+                                                ('Germany'),
+                                                ('United States'),
+                                                ('Spain'),
+                                                ('United Kingdom'),
+                                                ('Japan'),
+                                                ('China'),
+                                                ('India');
 
 
 CREATE TABLE IF NOT EXISTS LambertEcommerce.ProductCategories (
@@ -42,6 +68,19 @@ CREATE TABLE IF NOT EXISTS LambertEcommerce.ProductCategories (
     );
 
 ALTER TABLE LamberteCommerce.ProductCategories OWNER TO postgres;
+
+COMMENT ON TABLE LambertEcommerce.ProductCategories IS 'LambertEcommerce Product Categories.';
+
+INSERT INTO LambertEcommerce.ProductCategories (name) VALUES
+                                                          ('Electronics'),
+                                                          ('Clothing'),
+                                                          ('Books'),
+                                                          ('Home Appliances'),
+                                                          ('Footwear'),
+                                                          ('Sports and Outdoors'),
+                                                          ('Beauty and Personal Care'),
+                                                          ('Toys and Games'),
+                                                          ('Food and Grocery');
 
 
 CREATE TABLE IF NOT EXISTS lambertecommerce.Products (
@@ -61,7 +100,24 @@ CREATE TABLE IF NOT EXISTS lambertecommerce.Products (
     CONSTRAINT products_imagepath_min_valid_check CHECK (POSITION('/' IN LambertEcommerce.Products.image_path) > 0)
     );
 
-ALTER TABLE lambertecommerce.Products OWNER TO postgres;
+ALTER TABLE LambertEcommerce.Products OWNER TO postgres;
+
+COMMENT ON TABLE LambertEcommerce.Products IS 'LambertEcommerce Products.';
+
+INSERT INTO LambertEcommerce.Products (name, price, description, image_path, category)
+VALUES
+    ('Smartphone', 599.99, 'High-end smartphone', '/images/smartphone.jpg', 1),
+    ('T-shirt', 29.99, 'Cotton T-shirt', '/images/tshirt.jpg', 2),
+    ('Java Programming Book', 49.99, 'Learn Java programming', '/images/javabook.jpg', 3),
+    ('Laptop', 1299.99, 'Powerful laptop', '/images/laptop.jpg', 1),
+    ('Running Shoes', 79.99, 'Lightweight running shoes', '/images/runningshoes.jpg', 2),
+    ('Python Programming Book', 39.99, 'Master Python programming', '/images/pythonbook.jpg', 3),
+    ('Coffee Maker', 89.99, 'Automatic coffee maker', '/images/coffeemaker.jpg', 4),
+    ('Denim Jeans', 49.99, 'Classic denim jeans', '/images/jeans.jpg', 2),
+    ('Fishing Rod', 39.99, 'Professional fishing rod', '/images/fishingrod.jpg', 6),
+    ('Hair Dryer', 29.99, 'Ionic hair dryer', '/images/hairdryer.jpg', 7),
+    ('Board Game', 19.99, 'Family board game', '/images/boardgame.jpg', 8),
+    ('Rice', 2.99, 'Long-grain white rice', '/images/rice.jpg', 9);
 
 
 CREATE TABLE IF NOT EXISTS LambertEcommerce.Users (
@@ -96,24 +152,28 @@ UPDATE
     EXECUTE
     FUNCTION updatedat_set_timestamp_function ();
 
+COMMENT ON TABLE LambertEcommerce.Users IS 'LambertEcommerce Users.';
+
 ALTER TABLE LambertEcommerce.Users OWNER TO postgres;
 
 
 CREATE TABLE IF NOT EXISTS LambertEcommerce.Credentials (
                                                             id SERIAL NOT NULL PRIMARY KEY,
-                                                            role VARCHAR(10) NOT NULL,
-    password VARCHAR(72) NOT NULL,
+                                                            role ROLES NOT NULL,
+                                                            password VARCHAR(72) NOT NULL,
     username VARCHAR(10) NOT NULL,
     _user INTEGER NOT NULL,
     CONSTRAINT credentials_users_fk FOREIGN KEY (_user) REFERENCES LamberteCommerce.Users (id) ON DELETE CASCADE,
-    CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(LambertEcommerce.Credentials.role) >= 3),
+    CONSTRAINT credentials_role_valid_check CHECK (LambertEcommerce.Credentials.role = 'DEFAULT' OR LambertEcommerce.Credentials.role = 'ADMIN'),
     CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(LambertEcommerce.Credentials.username) >= 3),
     CONSTRAINT credentials_id_min_value_check CHECK (LambertEcommerce.Credentials.id >= 1),
     CONSTRAINT credentials_user_min_value_check CHECK (LambertEcommerce.Credentials._user >= 1)
     );
 
+COMMENT ON TABLE LambertEcommerce.Credentials IS 'LambertEcommerce Users Credentials.';
 
 ALTER TABLE LambertEcommerce.Credentials OWNER TO postgres;
+
 
 CREATE TABLE LambertEcommerce.Selling (
                                           id SERIAL NOT NULL PRIMARY KEY,
@@ -140,7 +200,10 @@ UPDATE
     EXECUTE
     FUNCTION updatedat_set_timestamp_function ();
 
+COMMENT ON TABLE LambertEcommerce.Selling IS 'Publication of a Selling by the LambertEcommerce Users.';
+
 ALTER TABLE Lambertecommerce.Selling OWNER TO postgres;
+
 
 CREATE TABLE LambertEcommerce.Carts (
                                         id SERIAL NOT NULL PRIMARY KEY,
@@ -166,6 +229,8 @@ UPDATE
     ON LambertEcommerce.Carts FOR EACH ROW
     EXECUTE
     FUNCTION updatedat_set_timestamp_function ();
+
+COMMENT ON TABLE LambertEcommerce.Carts IS 'User who puts a selling product in his cart.';
 
 ALTER TABLE Lambertecommerce.Carts OWNER TO postgres;
 
@@ -194,5 +259,7 @@ UPDATE
     ON LambertEcommerce.Orders FOR EACH ROW
     EXECUTE
     FUNCTION updatedat_set_timestamp_function ();
+
+COMMENT ON TABLE LambertEcommerce.Orders IS 'User who buys a selling product.';
 
 ALTER TABLE Lambertecommerce.Orders OWNER TO postgres;

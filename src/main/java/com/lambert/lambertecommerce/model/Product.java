@@ -1,7 +1,6 @@
 package com.lambert.lambertecommerce.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,8 +25,8 @@ public class Product {
 
    @Column(name = "price")
    @NotNull
-   @Min(0)
-   private float price;
+   @Min((long) (0.1))
+   private Float price;
 
    @Column(name = "image_path")
    @NotNull
@@ -70,11 +69,11 @@ public class Product {
       this.category = category;
    }
 
-   public float getPrice() {
+   public Float getPrice() {
       return price;
    }
 
-   public void setPrice(float price) {
+   public void setPrice(Float price) {
       this.price = price;
    }
 

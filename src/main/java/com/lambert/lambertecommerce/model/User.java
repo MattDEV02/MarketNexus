@@ -1,7 +1,10 @@
 package com.lambert.lambertecommerce.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -29,23 +32,23 @@ public class User {
 
    @NotBlank
    @Email
-   @Column(name = "email")
+   @Column(name = "email", unique = true)
    private String email;
 
    @NotNull
    @Min(0)
    @Column(name = "balance")
-   private float balance;
+   private Float balance;
 
    @ManyToOne
    @JoinColumn(name = "nation", nullable = false)
    @Column(name = "nation")
    private Nation nation;
 
-   @Column(name="inserted_at")
+   @Column(name = "inserted_at")
    private LocalDateTime insertedAt;
 
-   @Column(name="updated_at")
+   @Column(name = "updated_at")
    private LocalDateTime updatedAt;
 
 
@@ -81,11 +84,11 @@ public class User {
       this.birthDate = birthDate;
    }
 
-   public float getBalance() {
+   public Float getBalance() {
       return this.balance;
    }
 
-   public void setBalance(float balance) {
+   public void setBalance(Float balance) {
       this.balance = balance;
    }
 

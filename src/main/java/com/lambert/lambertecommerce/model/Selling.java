@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Credentials")
+@Table(name = "Credentials", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "product", "inserted_at"}))
 public class Selling {
 
    @Id
@@ -47,6 +47,10 @@ public class Selling {
       return this.quantity;
    }
 
+   public void setQuantity(Integer quantity) {
+      this.quantity = quantity;
+   }
+
    public User getUser() {
       return this.user;
    }
@@ -77,10 +81,6 @@ public class Selling {
 
    public void setUpdatedAt(LocalDateTime updatedAt) {
       this.updatedAt = updatedAt;
-   }
-
-   public void setQuantity(Integer quantity) {
-      this.quantity = quantity;
    }
 
    @PrePersist

@@ -17,7 +17,7 @@ public class Credentials {
    private Long id;
 
    @NotBlank
-   @Column(name = "username")
+   @Column(name = "username", unique = true)
    private String username;
 
    @NotBlank
@@ -29,12 +29,16 @@ public class Credentials {
    private String role;
 
    @OneToOne
-   @JoinColumn(name = "_user", nullable = false)
+   @JoinColumn(name = "_user", nullable = false, unique = true)
    @Column(name = "_user")
    private User user;
 
    public String getUsername() {
       return this.username;
+   }
+
+   public void setUsername(String username) {
+      this.username = username;
    }
 
    public Long getId() {
@@ -51,10 +55,6 @@ public class Credentials {
 
    public void setUser(User user) {
       this.user = user;
-   }
-
-   public void setUsername(String username) {
-      this.username = username;
    }
 
    public String getPassword() {
