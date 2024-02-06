@@ -1,0 +1,33 @@
+body { 
+    font-family: "Geneva";
+    color:dimgrey;
+}
+
+a { 
+	text-decoration: none; 
+    color: darkgrey;
+}
+
+a:hover { 
+	text-decoration: underline; 
+}
+
+label {
+	width: 8em;
+	display: inline-block;
+}
+
+header {
+  background-color: rgb(98, 192, 144);
+  color: white;
+  height: 1.5em;
+  margin-bottom: 0.5em;
+  padding: 0.2em;
+  text-align: right; 
+}
+
+header a { 
+	text-decoration: none; 
+    color: white;
+    font-size: 0.6em;
+}

@@ -42,7 +42,6 @@ public class User {
 
    @ManyToOne
    @JoinColumn(name = "nation", nullable = false)
-   @Column(name = "nation")
    private Nation nation;
 
    @Column(name = "inserted_at")

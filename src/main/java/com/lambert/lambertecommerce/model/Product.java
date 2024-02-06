@@ -33,7 +33,6 @@ public class Product {
    private String image_path;
 
    @ManyToOne
-   @Column(name = "category")
    @JoinColumn(name = "category", nullable = false)
    private ProductCategory category;
 

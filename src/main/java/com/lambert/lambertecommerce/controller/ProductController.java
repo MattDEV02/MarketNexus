@@ -14,39 +14,40 @@ public class ProductController {
 
    private ProductRepository productRepository;
 
-   @GetMapping(value = "/admin/newProductForm")
+   @GetMapping(value = "/admin/newProduct")
    public ModelAndView formNewProduct() {
-      ModelAndView modelAndView = new ModelAndView("admin/newProductForm.html");
+      ModelAndView modelAndView = new ModelAndView("admin/newProduct.html");
       modelAndView.addObject("product", new Product());
       return modelAndView;
    }
 
-   @PostMapping("/admin/product")
+   @PostMapping("/admin/publishNewProduct")
    public ModelAndView newProduct(@ModelAttribute("artist") Product product) {
-      final String registrationSuccessful = "product.html";
-      final String registrationError = "admin/newProductForm.html";
+      final String registrationSuccessful = "admin/product/index.html";
+      final String registrationError = "admin/newProduct.html";
       ModelAndView modelAndView = new ModelAndView();
       if (!productRepository.existsById(product.getId())) {
          this.productRepository.save(product);
+         // TODO: successful message
          modelAndView.addObject("product", product);
          modelAndView.setViewName(registrationSuccessful);
       } else {
          modelAndView.addObject("errorMessage", "Product already exists.");
-         modelAndView.setViewName(registrationSuccessful);
+         modelAndView.setViewName(registrationError);
       }
       return modelAndView;
    }
 
    @GetMapping("/product/{id}")
    public ModelAndView getProductById(@PathVariable("id") Long id) {
-      ModelAndView modelAndView = new ModelAndView("product.html");
+      ModelAndView modelAndView = new ModelAndView("admin/product/index.html");
       modelAndView.addObject("product", this.productRepository.findById(id));
       return modelAndView;
    }
 
    @GetMapping("/artist")
    public ModelAndView getArtists() {
-      ModelAndView modelAndView = new ModelAndView("products.html");
+      ModelAndView modelAndView = new ModelAndView("admin/index.html");
       modelAndView.addObject("products", this.productRepository.findAll());
       return modelAndView;
    }

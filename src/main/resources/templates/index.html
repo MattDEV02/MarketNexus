@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        SiwMovie - Homepage
+    </title>
+    <link href="/css/stile.css" rel="stylesheet"/>
+</head>
+
+<body>
+<header>
+    <div th:if="${userDetails}">
+        <span th:text="${userDetails.username}"></span>
+        <a href="/logout">Logout</a>
+    </div>
+    <div th:unless="${user}">
+        <a href="/login">Login</a>
+    </div>
+</header>
+</body>
+
+</html>

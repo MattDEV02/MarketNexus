@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        LambertEcommerce - Login
+    </title>
+    <link href="/css/stile.css" rel="stylesheet"/>
+</head>
+
+<body>
+<header>
+    <div th:if="${userDetails}">
+        <span th:text="${userDetails.username}"></span>
+        <a href="/logout">Logout</a>
+    </div>
+    <div th:unless="${user}">
+        <a href="/login">Login</a>
+    </div>
+</header>
+
+<div>
+    <a href="/"><img src="/images/logo-siw.png" width="50%"/></a>
+</div>
+<h1>Login</h1>
+<form method="POST" th:action="@{/login}">
+    <div>
+        <span>Email:</span>
+        <span><input name="email" required type="email"/></span>
+    </div>
+    <div>
+        <span>Password:</span>
+        <span><input name="password" required type="password"/></span>
+    </div>
+    <div>
+        <span th:if="${param.error != null}">Username o password errati</span>
+    </div>
+    <div>
+        <span><button type="submit">Login</button></span>
+    </div>
+</form>
+<div>
+    <a th:href="@{/register}" th:text="Registrati">Registrati</a>
+</div>
+</body>
+
+</html>

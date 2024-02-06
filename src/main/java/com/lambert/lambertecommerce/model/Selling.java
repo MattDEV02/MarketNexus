@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Credentials", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "product", "inserted_at"}))
+@Table(name = "Selling", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "product", "inserted_at"}))
 public class Selling {
 
    @Id
@@ -20,12 +20,10 @@ public class Selling {
    private Integer quantity;
 
    @ManyToOne
-   @Column(name = "_user")
    @JoinColumn(name = "_user", nullable = false)
    private User user;
 
    @ManyToOne
-   @Column(name = "product")
    @JoinColumn(name = "product", nullable = false)
    private Product product;
 

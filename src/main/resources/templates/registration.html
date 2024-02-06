@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>
+		SiwMovie - Registrazione
+	</title>
+	<link rel="stylesheet" href="/css/stile.css" />
+</head>
+
+<body>
+	<header>
+		<div th:if="${userDetails}">
+			<span th:text="${userDetails.username}"></span>
+			<a href="/logout">Logout</a>
+		</div>
+		<div th:unless="${user}">
+			<a href="/login">Login</a>
+		</div>
+	</header>
+
+	<div>
+		<a href="/"><img src="/images/logo-siw.png" width="50%" /></a>
+	</div>
+	<h1>Registrazione nuovo utente</h1>
+	<form th:action="@{/register}" method="POST">
+		<div>
+			<label>Nome</label>
+			<span><input type="text" placeholder="name" required th:field="${user.name}" /></span>
+			<span th:if="${#fields.hasErrors('user.name')}" th:errors="${user.name}" th:style="'color:red'">
+			</span>
+		</div>
+		<div>
+			<label>Cognome</label>
+			<span><input type="text" placeholder="surname" required th:field="${user.surname}" /></span>
+			<span th:if="${#fields.hasErrors('user.surname')}" th:errors="${user.surname}" th:style="'color:red'">
+			</span>
+		</div>
+		<div>
+			<label>Email</label>
+			<span><input type="text" placeholder="email" required th:field="${user.email}" /></span>
+			<span th:if="${#fields.hasErrors('user.email')}" th:errors="${user.email}" th:style="'color:red'">
+			</span>
+		</div>
+		<div>
+			<label>Username</label>
+			<span>
+				<input type="text" placeholder="username" required th:field="${credentials.username}" />
+			</span>
+			<span th:if="${#fields.hasErrors('credentials.username')}" th:errors="${credentials.username}"
+				th:style="'color:red'">
+			</span>
+		</div>
+		<div>
+			<label>Password</label>
+			<span><input type="password" placeholder="password" required th:field="${credentials.password}" />
+			</span>
+			<span th:if="${#fields.hasErrors('credentials.password')}" th:errors="${credentials.password}"
+				th:style="'color:red'">
+			</span>
+		</div>
+		<div>
+			<button type="submit">Registra</button>
+		</div>
+	</form>
+</body>
+
+</html>

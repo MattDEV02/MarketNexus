@@ -1,6 +1,5 @@
 package com.lambert.lambertecommerce.authentication;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +20,6 @@ public class AuthConfiguration {
 
    private DataSource dataSource;
 
-   @Autowired
    public void configureGlobal(AuthenticationManagerBuilder auth)
            throws Exception {
       auth.jdbcAuthentication()
@@ -43,13 +41,13 @@ public class AuthConfiguration {
    @Bean
    protected SecurityFilterChain configure(final HttpSecurity httpSecurity) throws Exception {
       httpSecurity.authorizeHttpRequests(
-                      auth -> auth.requestMatchers("/signin", "/signup").permitAll()
+                      auth -> auth.requestMatchers("/login", "/registration").permitAll()
                               .requestMatchers("/users/**", "/apps/**").hasAuthority("ADMIN")
                               .requestMatchers("/myapps/**").hasAuthority("CLIENT")
                               .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin
-                      .loginPage("/signin")
+                      .loginPage("/login")
                       .usernameParameter("username")
                       .defaultSuccessUrl("/", true)
                       .permitAll()

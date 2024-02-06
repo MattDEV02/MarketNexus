@@ -30,7 +30,6 @@ public class Credentials {
 
    @OneToOne
    @JoinColumn(name = "_user", nullable = false, unique = true)
-   @Column(name = "_user")
    private User user;
 
    public String getUsername() {

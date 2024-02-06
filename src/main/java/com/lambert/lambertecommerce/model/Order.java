@@ -19,12 +19,10 @@ public class Order {
    private Integer quantity;
 
    @ManyToOne
-   @Column(name = "_user")
    @JoinColumn(name = "_user", nullable = false)
    private User user;
 
    @ManyToOne
-   @Column(name = "selling")
    @JoinColumn(name = "selling", nullable = false)
    private Selling selling;
 

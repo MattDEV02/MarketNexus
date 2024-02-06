@@ -40,9 +40,9 @@ public class AuthenticationController {
       return modelAndView;
    }
 
-   @GetMapping(value = "/register")
+   @GetMapping(value = "/registration")
    public ModelAndView showRegisterForm() {
-      ModelAndView modelAndView = new ModelAndView("formRegisterUser");
+      ModelAndView modelAndView = new ModelAndView("registration.html");
       modelAndView.addObject("user", new User());
       modelAndView.addObject("credentials", new Credentials());
       return modelAndView;
@@ -50,7 +50,7 @@ public class AuthenticationController {
 
    @GetMapping(value = "/login")
    public ModelAndView showLoginForm() {
-      return new ModelAndView("formLogin");
+      return new ModelAndView("login");
    }
 
    @GetMapping(value = "/success")
@@ -68,13 +68,13 @@ public class AuthenticationController {
       return modelAndView;
    }
 
-   @PostMapping(value = {"/register"})
+   @PostMapping(value = {"/registrerNewUser"})
    public ModelAndView registerUser(@Valid @ModelAttribute("user") User user,
                                     BindingResult userBindingResult,
                                     @Valid @ModelAttribute("credentials") Credentials credentials,
                                     BindingResult credentialsBindingResult) {
-      final String registrationSuccessful = "registrationSuccessful";
-      final String registrationUser = "registerUser";
+      final String registrationSuccessful = "admin/index.html";
+      final String registrationError = "registration.html";
       ModelAndView modelAndView = new ModelAndView();
       // se user e credential hanno entrambi contenuti validi, memorizza User e the Credentials nel DB
       if (!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
@@ -84,7 +84,7 @@ public class AuthenticationController {
          modelAndView.addObject("user", user);
          modelAndView.setViewName(registrationSuccessful);
       } else {
-         modelAndView.setViewName(registrationUser);
+         modelAndView.setViewName(registrationError);
       }
       return modelAndView;
    }
