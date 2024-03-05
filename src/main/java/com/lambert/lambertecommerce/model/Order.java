@@ -10,7 +10,7 @@ import java.util.Objects;
 @Table(name = "Orders", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "selling", "inserted_at"}))
 public class Order {
    @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id")
    private Long id;
 

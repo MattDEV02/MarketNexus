@@ -14,10 +14,12 @@ public class UserValidator implements Validator {
 
    @Override
    public void validate(@NonNull Object o, @NonNull Errors errors) {
+      /*
       User user = (User) o;
       if (this.userRepepository.existsByEmail(user.getEmail())) {
          errors.reject("Email " + user.getEmail() + " already used.");
       }
+      */
    }
 
    @Override

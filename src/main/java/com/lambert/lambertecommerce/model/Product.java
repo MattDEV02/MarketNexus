@@ -11,7 +11,7 @@ import java.util.Objects;
 @Table(name = "Products")
 public class Product {
    @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    private Long id;
 
@@ -74,6 +74,14 @@ public class Product {
 
    public void setPrice(Float price) {
       this.price = price;
+   }
+
+   public String getImage_path() {
+      return this.image_path;
+   }
+
+   public void setImage_path(String image_path) {
+      this.image_path = image_path;
    }
 
    @Override

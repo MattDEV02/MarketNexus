@@ -1,5 +1,4 @@
-package com.lambert.lambertecommerce.controller;
-
+package com.lambert.lambertecommerce.controller.validator;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

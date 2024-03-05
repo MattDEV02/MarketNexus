@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -15,7 +16,7 @@ import java.util.Objects;
 public class User {
 
    @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id")
    private Long id;
 
@@ -27,6 +28,7 @@ public class User {
    @Column(name = "surname")
    private String surname;
 
+   @DateTimeFormat(pattern = "yyyy-MM-dd")
    @Column(name = "birthdate", nullable = true)
    private Date birthDate;
 

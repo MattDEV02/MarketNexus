@@ -2,6 +2,7 @@ package com.lambert.lambertecommerce.service;
 
 import com.lambert.lambertecommerce.model.User;
 import com.lambert.lambertecommerce.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Service
 public class UserService {
+   @Autowired
    protected UserRepository userRepository;
 
    /**
@@ -52,5 +54,10 @@ public class UserService {
          result.add(user);
       }
       return result;
+   }
+
+   @Transactional
+   public User findByUsername(String email) {
+      return this.userRepository.findByEmail(email);
    }
 }

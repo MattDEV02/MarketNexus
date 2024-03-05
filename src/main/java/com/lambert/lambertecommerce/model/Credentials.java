@@ -2,32 +2,29 @@ package com.lambert.lambertecommerce.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 
 @Entity
 @Table(name = "Credentials")
 public class Credentials {
-
-   public static final String DEFAULT_ROLE = "DEFAULT";
-   public static final String ADMIN_ROLE = "ADMIN";
-
+   public static String[] Roles = {"DEFAULT", "ADMIN"};
+   public static final String DEFAULT_ROLE = Roles[0];
+   public static final String ADMIN_ROLE = Roles[1];
    @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id")
    private Long id;
-
    @NotBlank
    @Column(name = "username", unique = true)
    private String username;
-
    @NotBlank
    @Column(name = "password")
    private String password;
-
-   @NotBlank
+   @NotNull
    @Column(name = "role")
+   @NotBlank
    private String role;
-
    @OneToOne
    @JoinColumn(name = "_user", nullable = false, unique = true)
    private User user;
@@ -65,10 +62,11 @@ public class Credentials {
    }
 
    public String getRole() {
-      return role;
+      return this.role;
    }
 
    public void setRole(String role) {
       this.role = role;
    }
+
 }

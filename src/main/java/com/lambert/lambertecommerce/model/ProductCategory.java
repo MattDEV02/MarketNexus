@@ -11,7 +11,7 @@ import java.util.Objects;
 @Table(name = "ProductCategories")
 public class ProductCategory {
    @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    private Long id;
 
@@ -19,7 +19,11 @@ public class ProductCategory {
    @Column(name = "name")
    private String name;
 
-   @OneToMany(mappedBy="category")
+   @NotBlank
+   @Column(name = "description")
+   private String description;
+
+   @OneToMany(mappedBy = "category")
    private List<Product> products;
 
    public ProductCategory() {
@@ -40,6 +44,14 @@ public class ProductCategory {
 
    public void setName(String name) {
       this.name = name;
+   }
+
+   public String getDescription() {
+      return this.name;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
    }
 
    public List<Product> getProducts() {

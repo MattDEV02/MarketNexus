@@ -1,5 +1,6 @@
 package com.lambert.lambertecommerce.authentication;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,14 +19,16 @@ import javax.sql.DataSource;
 //public  class WebSecurityConfig {
 public class AuthConfiguration {
 
+   @Autowired
    private DataSource dataSource;
 
+   @Autowired
    public void configureGlobal(AuthenticationManagerBuilder auth)
            throws Exception {
       auth.jdbcAuthentication()
               .dataSource(dataSource)
-              .authoritiesByUsernameQuery("SELECT username, role FROM Credentials WHERE username = ?")
-              .usersByUsernameQuery("SELECT username, password, 1 as enabled FROM Credentials WHERE username = ?");
+              .authoritiesByUsernameQuery("SELECT username, role from credentials WHERE username=?")
+              .usersByUsernameQuery("SELECT username, password, 1 as enabled FROM credentials WHERE username=?");
    }
 
    @Bean
@@ -40,21 +43,22 @@ public class AuthConfiguration {
 
    @Bean
    protected SecurityFilterChain configure(final HttpSecurity httpSecurity) throws Exception {
-      httpSecurity.authorizeHttpRequests(
-                      auth -> auth.requestMatchers("/login", "/registration").permitAll()
-                              .requestMatchers("/users/**", "/apps/**").hasAuthority("ADMIN")
-                              .requestMatchers("/myapps/**").hasAuthority("CLIENT")
+      httpSecurity
+              .authorizeHttpRequests(
+                      auth -> auth.requestMatchers("/", "/registration", "/login", "/registerNewUser", "/afterLogin").permitAll()
+                              .requestMatchers("/admin/**").hasAuthority("ADMIN")
                               .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin
                       .loginPage("/login")
                       .usernameParameter("username")
-                      .defaultSuccessUrl("/", true)
+                      .passwordParameter("password")
+                      .defaultSuccessUrl("/admin", true)
                       .permitAll()
               )
-              // .rememberMe(rememberMe -> rememberMe.key("AbcdEfghIjkl..."))
-              .logout(logout -> logout.logoutUrl("/signout").permitAll());
 
+              .logout(logout -> logout.logoutUrl("/logout").permitAll());
       return httpSecurity.build();
    }
+
 }

@@ -1,68 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<title>
-		SiwMovie - Registrazione
-	</title>
-	<link rel="stylesheet" href="/css/stile.css" />
+   <meta charset="UTF-8">
+   <meta content="width=device-width, initial-scale=1" name="viewport">
+   <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+   <!-- <base href="" target="_blank"/> -->
+   <meta content="Matteo Lambertucci, matteolambertucci3@gmail.com, mat.lambertucci@stud.uniroma3.it" name="author"/>
+   <meta content="LambertEcommerce" name="application-name"/>
+   <meta content="LambertEcommerce" name="apple-mobile-web-app-title"/>
+   <meta content="SpringBoot" name="generator"/>
+   <meta content="#FFFFFF" name="theme-color"/>
+   <meta content="#FFFFFF" name="msapplication-TileColor"/>
+   <meta content="LambertEcommerce site" name="description"/>
+   <meta content="yes" name="mobile-web-app-capable"/>
+   <meta content="yes" name="apple-mobile-web-app-capable">
+   <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
+   <meta content="Ecommerce, HTML, CSS, BOOTSTRAP, Java" name="keywords"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="no-cache" http-equiv="cache-control"/>
+   <meta content="Owner of this Web-App" name="copyright"/>
+   <meta content="NOINDEX, NOFOLLOW" name="robots"/>
+   <title>${title}</title>
+   <link href="/css/shared/style.css" rel="stylesheet"/>
 </head>
 
 <body>
-	<header>
-		<div th:if="${userDetails}">
-			<span th:text="${userDetails.username}"></span>
-			<a href="/logout">Logout</a>
-		</div>
-		<div th:unless="${user}">
-			<a href="/login">Login</a>
-		</div>
-	</header>
 
-	<div>
-		<a href="/"><img src="/images/logo-siw.png" width="50%" /></a>
-	</div>
-	<h1>Registrazione nuovo utente</h1>
-	<form th:action="@{/register}" method="POST">
-		<div>
-			<label>Nome</label>
-			<span><input type="text" placeholder="name" required th:field="${user.name}" /></span>
-			<span th:if="${#fields.hasErrors('user.name')}" th:errors="${user.name}" th:style="'color:red'">
-			</span>
-		</div>
-		<div>
-			<label>Cognome</label>
-			<span><input type="text" placeholder="surname" required th:field="${user.surname}" /></span>
-			<span th:if="${#fields.hasErrors('user.surname')}" th:errors="${user.surname}" th:style="'color:red'">
-			</span>
-		</div>
-		<div>
-			<label>Email</label>
-			<span><input type="text" placeholder="email" required th:field="${user.email}" /></span>
-			<span th:if="${#fields.hasErrors('user.email')}" th:errors="${user.email}" th:style="'color:red'">
-			</span>
-		</div>
-		<div>
-			<label>Username</label>
-			<span>
-				<input type="text" placeholder="username" required th:field="${credentials.username}" />
-			</span>
-			<span th:if="${#fields.hasErrors('credentials.username')}" th:errors="${credentials.username}"
-				th:style="'color:red'">
-			</span>
-		</div>
-		<div>
-			<label>Password</label>
-			<span><input type="password" placeholder="password" required th:field="${credentials.password}" />
-			</span>
-			<span th:if="${#fields.hasErrors('credentials.password')}" th:errors="${credentials.password}"
-				th:style="'color:red'">
-			</span>
-		</div>
-		<div>
-			<button type="submit">Registra</button>
-		</div>
-	</form>
+<div>
+   <a href="/">index</a>
+</div>
+<h1>Registrazione nuovo utente</h1>
+<form method="POST" th:action="@{/registerNewUser}">
+   <div>
+      <label for="name">Nome:</label>
+      <input id="name" name="name" required th:field="${user.name}" type="text"/>
+      <span th:errors="${user.name}" th:if="${#fields.hasErrors('user.name')}" th:style="'color:red'">
+   </span>
+      <br><br>
+   </div>
+   
+   <div>
+      <label for="surname">Surname:</label>
+      <input id="surname" name="surname" required th:field="${user.surname}" type="text"/>
+      <span th:errors="${user.surname}" th:if="${#fields.hasErrors('user.surname')}" th:style="'color:red'"></span>
+      <br><br>
+   </div>
+   
+   <div>
+      <label for="birth-date">Date of birth:</label>
+      <input id="birth-date" name="birth-date" th:field="${user.birthDate}" th:fieldformat="'yyyy-MM-dd'" type="date"/>
+      <span th:errors="${user.birthDate}" th:if="${#fields.hasErrors('user.birthDate')}" th:style="'color:red'"></span>
+      <br><br>
+   </div>
+   
+   <div>
+      <label for="balance">Balance (euros):</label>
+      <input id="balance" name="balance" required step="0.01" th:field="${user.balance}" type="number"/>
+      <span th:errors="${user.balance}" th:if="${#fields.hasErrors('user.balance')}" th:style="'color:red'"></span>
+      <br><br>
+   </div>
+   
+   <div>
+      <label for="email">Email:</label>
+      <input id="email" name="email" required th:field="${user.email}" type="email"/>
+      <span th:errors="${user.email}" th:if="${#fields.hasErrors('user.email')}" th:style="'color:red'"></span>
+      <br><br>
+   </div>
+   
+   <div>
+      <label for="username">Username:</label>
+      <input id="username" name="username" required th:field="${credentials.username}" type="text">
+      <span th:errors="${credentials.username}" th:if="${#fields.hasErrors('credentials.username')}"
+            th:style="'color:red'"></span>
+      <br><br>
+   </div>
+   
+   <div>
+      <label for="password">Password:</label>
+      <input id="password" name="password" required th:field="${credentials.password}" type="password">
+      <span th:errors="${credentials.password}" th:if="${#fields.hasErrors('credentials.password')}"
+            th:style="'color:red'"></span>
+      <br><br>
+   </div>
+   
+   <div>
+      <label for="confirm-password">Confirm Password:</label>
+      <input id="confirm-password" name="confirm-password" required type="password">
+      <span th:errors="${credentials.password}" th:if="${#fields.hasErrors('credentials.password')}"
+            th:style="'color:red'"></span>
+      <br><br>
+   </div>
+   
+   <div>
+      <label for="nation">Nation:</label>
+      <select id="nation" name="nation" th:field="${user.nation}">
+         <option th:each="nation : ${nations}" th:text="${nation.name}" th:value="${nation.id}"></option>
+      </select>
+      <span th:errors="${user.nation}" th:if="${#fields.hasErrors('user.nation')}"
+            th:style="'color:red'"></span>
+      <br><br>
+   </div>
+   
+   <div>
+      <input type="submit" value="Invia">
+   </div>
+</form>
+<script>
+   // Ottieni la data corrente nel formato richiesto (YYYY-MM-DD)
+   const today = new Date().toISOString().split('T')[0];
+   // Assegna la data corrente come valore predefinito al campo di input
+   document.getElementById('birth-date').value = today;
+</script>
 </body>
 
 </html>
