@@ -108,4 +108,16 @@ public class Selling {
    public int hashCode() {
       return Objects.hash(this.getId());
    }
+
+   @Override
+   public String toString() {
+      return "Selling{" +
+              "id=" + id +
+              ", quantity=" + quantity +
+              ", user=" + user +
+              ", product=" + product +
+              ", insertedAt=" + insertedAt +
+              ", updatedAt=" + updatedAt +
+              '}';
+   }
 }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head.html :: head(title = 'Registration successful')}">
+</head>
+
+<body>
+<h1>Congratulazioni ti sei registrato!</h1>
+<div>
+   <span>Nome: </span>
+   <span th:text="${user.name}"></span>
+</div>
+<div>
+   <span>Cognome: </span>
+   <span th:text="${user.surname}"></span>
+</div>
+<div>
+   <span>Email: </span>
+   <span th:text="${user.email}"></span>
+</div>
+<div>
+   <span>
+      <a href="/login">Login</a>
+   </span>
+</div>
+</body>
+</html>

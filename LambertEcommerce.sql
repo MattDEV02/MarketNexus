@@ -21,9 +21,12 @@ SELECT NOW();
 DROP TYPE IF EXISTS ROLES;
 
 CREATE TYPE ROLES AS ENUM (
-    'DEFAULT',
-    'ADMIN'
+    'SELLER',
+    'BOUGHTER',
+    'ALL'
     );
+
+
 
 COMMENT ON TYPE ROLES IS 'LambertEcommerce Credentials Roles.';
 
@@ -64,22 +67,22 @@ VALUES ('Italy'),
        ('India');
 
 
-CREATE TABLE IF NOT EXISTS LambertEcommerce.ProductCategories
+CREATE TABLE IF NOT EXISTS LambertEcommerce.product_categories
 (
-    id          SERIAL      NOT NULL PRIMARY KEY,
-    name        VARCHAR(30) NOT NULL,
-    description TEXT        NOT NULL,
+    id          SERIAL       NOT NULL PRIMARY KEY,
+    name        VARCHAR(30)  NOT NULL,
+    description VARCHAR(100) NOT NULL,
     CONSTRAINT productcategories_name_unique UNIQUE (name),
-    CONSTRAINT productcategories_id_min_value_check CHECK (LambertEcommerce.ProductCategories.id >= 1),
-    CONSTRAINT productcategories_name_min_length_check CHECK (LENGTH(LambertEcommerce.ProductCategories.name) >= 3)
+    CONSTRAINT productcategories_id_min_value_check CHECK (LambertEcommerce.product_categories.id >= 1),
+    CONSTRAINT productcategories_name_min_length_check CHECK (LENGTH(LambertEcommerce.product_categories.name) >= 3)
 );
 
-ALTER TABLE LamberteCommerce.ProductCategories
+ALTER TABLE LamberteCommerce.product_categories
     OWNER TO postgres;
 
-COMMENT ON TABLE LambertEcommerce.ProductCategories IS 'LambertEcommerce Product Categories.';
+COMMENT ON TABLE LambertEcommerce.product_categories IS 'LambertEcommerce Product Categories.';
 
-INSERT INTO LambertEcommerce.ProductCategories (name, description)
+INSERT INTO LambertEcommerce.product_categories (name, description)
 VALUES ('Electronics', 'Electronics products'),
        ('Clothing', 'Clothing products'),
        ('Books', 'Books products'),
@@ -93,20 +96,17 @@ VALUES ('Electronics', 'Electronics products'),
 
 CREATE TABLE IF NOT EXISTS lambertecommerce.Products
 (
-    id          SERIAL       NOT NULL PRIMARY KEY,
-    name        VARCHAR(30)  NOT NULL,
-    price       FLOAT        NOT NULL,
-    description TEXT         NOT NULL,
-    image_path  VARCHAR(255) NOT NULL,
-    category    INTEGER      NOT NULL,
-    CONSTRAINT products_productcategories_fk FOREIGN KEY (category) REFERENCES LamberteCommerce.ProductCategories (id) ON DELETE CASCADE,
+    id          SERIAL      NOT NULL PRIMARY KEY,
+    name        VARCHAR(30) NOT NULL,
+    price       FLOAT       NOT NULL,
+    description TEXT        NOT NULL,
+    category    INTEGER     NOT NULL,
+    CONSTRAINT products_productcategories_fk FOREIGN KEY (category) REFERENCES LamberteCommerce.product_categories (id) ON DELETE CASCADE,
     CONSTRAINT products_id_min_value_check CHECK (LambertEcommerce.Products.id >= 1),
     CONSTRAINT products_name_min_length_check CHECK (LENGTH(LambertEcommerce.Products.name) >= 3),
     CONSTRAINT products_price_min_value_check CHECK (LambertEcommerce.Products.price > 0),
     CONSTRAINT products_description_min_length_check CHECK (LENGTH(LambertEcommerce.Products.description) >= 3),
-    CONSTRAINT products_category_min_value_check CHECK (LambertEcommerce.Products.category >= 1),
-    CONSTRAINT products_imagepath_min_length_check CHECK (LENGTH(LambertEcommerce.Products.image_path) >= 3),
-    CONSTRAINT products_imagepath_min_valid_check CHECK (POSITION('/' IN LambertEcommerce.Products.image_path) > 0)
+    CONSTRAINT products_category_min_value_check CHECK (LambertEcommerce.Products.category >= 1)
 );
 
 ALTER TABLE LambertEcommerce.Products
@@ -114,19 +114,19 @@ ALTER TABLE LambertEcommerce.Products
 
 COMMENT ON TABLE LambertEcommerce.Products IS 'LambertEcommerce Products.';
 
-INSERT INTO LambertEcommerce.Products (name, price, description, image_path, category)
-VALUES ('Smartphone', 599.99, 'High-end smartphone', '/images/smartphone.jpg', 1),
-       ('T-shirt', 29.99, 'Cotton T-shirt', '/images/tshirt.jpg', 2),
-       ('Java Programming Book', 49.99, 'Learn Java programming', '/images/javabook.jpg', 3),
-       ('Laptop', 1299.99, 'Powerful laptop', '/images/laptop.jpg', 1),
-       ('Running Shoes', 79.99, 'Lightweight running shoes', '/images/runningshoes.jpg', 2),
-       ('Python Programming Book', 39.99, 'Master Python programming', '/images/pythonbook.jpg', 3),
-       ('Coffee Maker', 89.99, 'Automatic coffee maker', '/images/coffeemaker.jpg', 4),
-       ('Denim Jeans', 49.99, 'Classic denim jeans', '/images/jeans.jpg', 2),
-       ('Fishing Rod', 39.99, 'Professional fishing rod', '/images/fishingrod.jpg', 6),
-       ('Hair Dryer', 29.99, 'Ionic hair dryer', '/images/hairdryer.jpg', 7),
-       ('Board Game', 19.99, 'Family board game', '/images/boardgame.jpg', 8),
-       ('Rice', 2.99, 'Long-grain white rice', '/images/rice.jpg', 9);
+INSERT INTO LambertEcommerce.Products (name, price, description, category)
+VALUES ('Smartphone', 599.99, 'High-end smartphone', 1),
+       ('T-shirt', 29.99, 'Cotton T-shirt', 2),
+       ('Java Programming Book', 49.99, 'Learn Java programming', 3),
+       ('Laptop', 1299.99, 'Powerful laptop', 1),
+       ('Running Shoes', 79.99, 'Lightweight running shoes', 2),
+       ('Python Programming Book', 39.99, 'Master Python programming', 3),
+       ('Coffee Maker', 89.99, 'Automatic coffee maker', 4),
+       ('Denim Jeans', 49.99, 'Classic denim jeans', 2),
+       ('Fishing Rod', 39.99, 'Professional fishing rod', 6),
+       ('Hair Dryer', 29.99, 'Ionic hair dryer', 7),
+       ('Board Game', 19.99, 'Family board game', 8),
+       ('Rice', 2.99, 'Long-grain white rice', 9);
 
 
 CREATE TABLE IF NOT EXISTS LambertEcommerce.Users
@@ -151,6 +151,7 @@ CREATE TABLE IF NOT EXISTS LambertEcommerce.Users
     CONSTRAINT users_email_valid_check CHECK (LambertEcommerce.Users.email ~
                                               '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'::TEXT),
     CONSTRAINT users_balance_min_value_check CHECK (LambertEcommerce.Users.balance >= 0),
+    CONSTRAINT users_balance_max_value_check CHECK (LambertEcommerce.Users.balance <= 10000),
     CONSTRAINT users_nation_min_value_check CHECK (LambertEcommerce.Users.nation >= 1),
     CONSTRAINT users_insertedat_min_value_check CHECK (True), -- LambertEcommerce.Users.inserted_at <= NOW() - INTERVAL '1 minutes'
     CONSTRAINT users_insertedat_updatedat_value_check CHECK (LambertEcommerce.Users.inserted_at <=
@@ -171,17 +172,24 @@ COMMENT ON TABLE LambertEcommerce.Users IS 'LambertEcommerce Users.';
 ALTER TABLE LambertEcommerce.Users
     OWNER TO postgres;
 
+CREATE OR REPLACE FUNCTION CHECK_ROLE_ROLES_ENUM(role TEXT) RETURNS BOOLEAN AS
+$$
+BEGIN
+    RETURN role IN (SELECT TEXT_ROLE::text
+                    FROM (SELECT unnest(enum_range(NULL::ROLES)) AS TEXT_ROLE) as SubQuery);
+END;
+$$ LANGUAGE plpgsql;
+
 
 CREATE TABLE IF NOT EXISTS LambertEcommerce.Credentials
 (
     id       SERIAL      NOT NULL PRIMARY KEY,
-    role     VARCHAR(10) NOT NULL,
     password VARCHAR(72) NOT NULL,
     username VARCHAR(10) NOT NULL,
+    role     VARCHAR(10) NOT NULL,
     _user    INTEGER     NOT NULL,
     CONSTRAINT credentials_users_fk FOREIGN KEY (_user) REFERENCES LamberteCommerce.Users (id) ON DELETE CASCADE,
-    CONSTRAINT credentials_role_valid_check CHECK (LambertEcommerce.Credentials.role = 'DEFAULT' OR
-                                                   LambertEcommerce.Credentials.role = 'ADMIN'),
+    CONSTRAINT credentials_role_valid_check CHECK (CHECK_ROLE_ROLES_ENUM(role)),
     CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(LambertEcommerce.Credentials.username) >= 3),
     CONSTRAINT credentials_id_min_value_check CHECK (LambertEcommerce.Credentials.id >= 1),
     CONSTRAINT credentials_user_min_value_check CHECK (LambertEcommerce.Credentials._user >= 1)
@@ -296,3 +304,6 @@ COMMENT ON TABLE LambertEcommerce.Orders IS 'User who buys a selling product.';
 
 ALTER TABLE Lambertecommerce.Orders
     OWNER TO postgres;
+
+select *
+from lambertecommerce.Nations;

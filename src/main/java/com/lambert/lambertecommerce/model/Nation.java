@@ -2,6 +2,7 @@ package com.lambert.lambertecommerce.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,6 +19,7 @@ public class Nation {
 
    @NotBlank
    @Column(name = "name")
+   @Size(min = 3, max = 30)
    private String name;
 
    @OneToMany(mappedBy = "nation")
@@ -54,5 +56,10 @@ public class Nation {
       if (o == null || this.getClass() != o.getClass()) return false;
       Nation nation = (Nation) o;
       return Objects.equals(this.getId(), nation.getId()) || Objects.equals(this.getName(), nation.getName());
+   }
+
+   @Override
+   public String toString() {
+      return "Nation = { " + "id = " + id + ", name = '" + name + " }";
    }
 }

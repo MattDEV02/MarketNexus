@@ -1,40 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-   <meta charset="UTF-8">
-   <meta content="width=device-width, initial-scale=1" name="viewport">
-   <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-   <!-- <base href="" target="_blank"/> -->
-   <meta content="Matteo Lambertucci, matteolambertucci3@gmail.com, mat.lambertucci@stud.uniroma3.it" name="author"/>
-   <meta content="LambertEcommerce" name="application-name"/>
-   <meta content="LambertEcommerce" name="apple-mobile-web-app-title"/>
-   <meta content="SpringBoot" name="generator"/>
-   <meta content="#FFFFFF" name="theme-color"/>
-   <meta content="#FFFFFF" name="msapplication-TileColor"/>
-   <meta content="LambertEcommerce site" name="description"/>
-   <meta content="yes" name="mobile-web-app-capable"/>
-   <meta content="yes" name="apple-mobile-web-app-capable">
-   <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
-   <meta content="Ecommerce, HTML, CSS, BOOTSTRAP, Java" name="keywords"/>
-   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-   <meta content="no-cache" http-equiv="cache-control"/>
-   <meta content="Owner of this Web-App" name="copyright"/>
-   <meta content="NOINDEX, NOFOLLOW" name="robots"/>
-   <title>${title}</title>
-   <link href="/css/shared/style.css" rel="stylesheet"/>
+<head th:replace="~{fragments/head.html :: head(title = 'Registration')}">
 </head>
 
 <body>
 
 <div>
-   <a href="/">index</a>
+   <a href="@{/}">index</a>
+   <a href="@{/login}">login</a>
 </div>
 <h1>Registrazione nuovo utente</h1>
-<form method="POST" th:action="@{/registerNewUser}">
+<form id="registration-form" method="POST" name="registration-form" onsubmit="onSubmit(event)"
+      th:action="@{/registerNewUser}">
    <div>
       <label for="name">Nome:</label>
-      <input id="name" name="name" required th:field="${user.name}" type="text"/>
+      <input id="name" name="name" placeholder="Insert your name" required th:field="${user.name}"
+             th:maxlength="${NAME_MAX_LENGTH}"
+             th:minlength="${NAME_MIN_LENGTH}" type="text"/>
       <span th:errors="${user.name}" th:if="${#fields.hasErrors('user.name')}" th:style="'color:red'">
    </span>
       <br><br>
@@ -42,60 +25,83 @@
    
    <div>
       <label for="surname">Surname:</label>
-      <input id="surname" name="surname" required th:field="${user.surname}" type="text"/>
+      <input id="surname" name="surname"
+             placeholder="Insert your surname" required th:field="${user.surname}"
+             th:maxlength="${SURNAME_MAX_LENGTH}" th:minlength="${SURNAME_MIN_LENGTH}" type="text"/>
       <span th:errors="${user.surname}" th:if="${#fields.hasErrors('user.surname')}" th:style="'color:red'"></span>
       <br><br>
    </div>
    
    <div>
       <label for="birth-date">Date of birth:</label>
-      <input id="birth-date" name="birth-date" th:field="${user.birthDate}" th:fieldformat="'yyyy-MM-dd'" type="date"/>
+      <input id="birth-date" min="1900-01-01" name="birth-date" required
+             th:field="${user.birthDate}" th:fieldformat="'yyyy-MM-dd'" type="date"/>
       <span th:errors="${user.birthDate}" th:if="${#fields.hasErrors('user.birthDate')}" th:style="'color:red'"></span>
       <br><br>
    </div>
    
    <div>
       <label for="balance">Balance (euros):</label>
-      <input id="balance" name="balance" required step="0.01" th:field="${user.balance}" type="number"/>
+      <input id="balance" max="10000" min="0" name="balance" placeholder="euros" required step="0.1"
+             th:field="${user.balance}" type="number"/>
       <span th:errors="${user.balance}" th:if="${#fields.hasErrors('user.balance')}" th:style="'color:red'"></span>
       <br><br>
    </div>
    
    <div>
       <label for="email">Email:</label>
-      <input id="email" name="email" required th:field="${user.email}" type="email"/>
+      <input id="email" name="email"
+             placeholder="Insert your email" required th:field="${user.email}" th:maxlength="${EMAIL_MAX_LENGTH}"
+             th:minlength="${EMAIL_MIN_LENGTH}" type="email"/>
       <span th:errors="${user.email}" th:if="${#fields.hasErrors('user.email')}" th:style="'color:red'"></span>
+      <span th:style="'color:red'" th:text="${emailUniqueError}"></span>
+      <span th:style="'color:red'" th:text="${emailFormatError}"></span>
       <br><br>
    </div>
    
    <div>
       <label for="username">Username:</label>
-      <input id="username" name="username" required th:field="${credentials.username}" type="text">
+      <input id="username" name="username"
+             placeholder="Insert your username" required th:field="${credentials.username}"
+             th:maxlength="${USERNAME_MAX_LENGTH}"
+             th:minlength="${USERNAME_MIN_LENGTH}"
+             type="text">
       <span th:errors="${credentials.username}" th:if="${#fields.hasErrors('credentials.username')}"
             th:style="'color:red'"></span>
+      <span th:style="'color:red'" th:text="${usernameUniqueError}"></span>
       <br><br>
    </div>
    
    <div>
       <label for="password">Password:</label>
-      <input id="password" name="password" required th:field="${credentials.password}" type="password">
+      <input id="password" name="password"
+             placeholder="Insert your password" required th:field="${credentials.password}"
+             th:maxlength="${PASSWORD_MAX_LENGTH}"
+             th:minlength="${PASSWORD_MIN_LENGTH}" type="password"/>
       <span th:errors="${credentials.password}" th:if="${#fields.hasErrors('credentials.password')}"
             th:style="'color:red'"></span>
+      <span th:style="'color:red'" th:text="${passwordFormatError}"></span>
       <br><br>
    </div>
    
    <div>
       <label for="confirm-password">Confirm Password:</label>
-      <input id="confirm-password" name="confirm-password" required type="password">
+      <input id="confirm-password" name="confirm-password"
+             placeholder="Confirm your password" required
+             th:maxlength="${PASSWORD_MAX_LENGTH}"
+             th:minlength="${PASSWORD_MIN_LENGTH}" type="password">
       <span th:errors="${credentials.password}" th:if="${#fields.hasErrors('credentials.password')}"
             th:style="'color:red'"></span>
+      <span th:style="'color:red'" th:text="${passwordDifferentFromConfirmPassword}"></span>
       <br><br>
    </div>
    
    <div>
       <label for="nation">Nation:</label>
-      <select id="nation" name="nation" th:field="${user.nation}">
-         <option th:each="nation : ${nations}" th:text="${nation.name}" th:value="${nation.id}"></option>
+      <select id="nation" name="nation" required th:field="${user.nation}">
+         <option th:each="nation : ${nations}" th:field="${user.nation}" th:id="${nation.name + '#' + nation.id}"
+                 th:name="${nation.name + '#' + nation.id}"
+                 th:text="${nation.name}" th:value="${nation.id}"></option>
       </select>
       <span th:errors="${user.nation}" th:if="${#fields.hasErrors('user.nation')}"
             th:style="'color:red'"></span>
@@ -103,15 +109,10 @@
    </div>
    
    <div>
-      <input type="submit" value="Invia">
+      <input form="registration-form" formmethod="POST" id="submit" name="submit" type="submit" value="Register"/>
    </div>
 </form>
-<script>
-   // Ottieni la data corrente nel formato richiesto (YYYY-MM-DD)
-   const today = new Date().toISOString().split('T')[0];
-   // Assegna la data corrente come valore predefinito al campo di input
-   document.getElementById('birth-date').value = today;
-</script>
+<script src="/js/registration/index.js"></script>
 </body>
 
 </html>

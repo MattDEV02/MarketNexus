@@ -1,29 +1,36 @@
 package com.lambert.lambertecommerce.model;
 
+import com.lambert.lambertecommerce.helpers.credentials.Roles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.util.Objects;
+
+import static com.lambert.lambertecommerce.helpers.constants.FieldSizes.USERNAME_MAX_LENGTH;
+import static com.lambert.lambertecommerce.helpers.constants.FieldSizes.USERNAME_MIN_LENGTH;
 
 
 @Entity
 @Table(name = "Credentials")
 public class Credentials {
-   public static String[] Roles = {"DEFAULT", "ADMIN"};
-   public static final String DEFAULT_ROLE = Roles[0];
-   public static final String ADMIN_ROLE = Roles[1];
+
+   public static String DEFAULT_ROLE = Roles.ALL.toString();
+
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id")
    private Long id;
    @NotBlank
+   @Size(min = USERNAME_MIN_LENGTH, max = USERNAME_MAX_LENGTH)
    @Column(name = "username", unique = true)
+   @NotBlank
    private String username;
    @NotBlank
    @Column(name = "password")
    private String password;
-   @NotNull
+
    @Column(name = "role")
-   @NotBlank
    private String role;
    @OneToOne
    @JoinColumn(name = "_user", nullable = false, unique = true)
@@ -69,4 +76,26 @@ public class Credentials {
       this.role = role;
    }
 
+   @Override
+   public String toString() {
+      return "Credentials = {" +
+              "id = " + this.id +
+              ", username = '" + this.username + '\'' +
+              ", password = '" + this.password + '\'' +
+              ", user = " + this.user +
+              '}';
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || this.getClass() != o.getClass()) return false;
+      Credentials that = (Credentials) o;
+      return Objects.equals(this.getId(), that.getId());
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(this.getId());
+   }
 }

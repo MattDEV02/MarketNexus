@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Cart", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "selling", "inserted_at"}))
+@Table(name = "Carts", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "selling", "inserted_at"}))
 public class Cart {
 
    @Id
@@ -107,5 +107,17 @@ public class Cart {
    @Override
    public int hashCode() {
       return Objects.hash(this.getId());
+   }
+
+   @Override
+   public String toString() {
+      return "Cart{" +
+              "id=" + this.id +
+              ", quantity=" + this.quantity +
+              ", user=" + this.user +
+              ", selling=" + this.selling +
+              ", insertedAt=" + this.insertedAt +
+              ", updatedAt=" + this.updatedAt +
+              '}';
    }
 }

@@ -56,8 +56,4 @@ public class UserService {
       return result;
    }
 
-   @Transactional
-   public User findByUsername(String email) {
-      return this.userRepository.findByEmail(email);
-   }
 }

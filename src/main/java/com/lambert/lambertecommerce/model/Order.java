@@ -107,4 +107,16 @@ public class Order {
    public int hashCode() {
       return Objects.hash(this.getId());
    }
+
+   @Override
+   public String toString() {
+      return "Order{" +
+              "id=" + this.id +
+              ", quantity=" + this.quantity +
+              ", user=" + this.user +
+              ", selling=" + this.selling +
+              ", insertedAt=" + this.insertedAt +
+              ", updatedAt=" + this.updatedAt +
+              '}';
+   }
 }

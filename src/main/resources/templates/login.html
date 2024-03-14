@@ -1,56 +1,43 @@
 <!DOCTYPE html>
 <html lang="en-US" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-   <meta charset="UTF-8">
-   <meta content="width=device-width, initial-scale=1" name="viewport">
-   <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-   <!-- <base href="" target="_blank"/> -->
-   <meta content="Matteo Lambertucci, matteolambertucci3@gmail.com, mat.lambertucci@stud.uniroma3.it" name="author"/>
-   <meta content="LambertEcommerce" name="application-name"/>
-   <meta content="LambertEcommerce" name="apple-mobile-web-app-title"/>
-   <meta content="SpringBoot" name="generator"/>
-   <meta content="#FFFFFF" name="theme-color"/>
-   <meta content="#FFFFFF" name="msapplication-TileColor"/>
-   <meta content="LambertEcommerce site" name="description"/>
-   <meta content="yes" name="mobile-web-app-capable"/>
-   <meta content="yes" name="apple-mobile-web-app-capable">
-   <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
-   <meta content="Ecommerce, HTML, CSS, BOOTSTRAP, Java" name="keywords"/>
-   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-   <meta content="no-cache" http-equiv="cache-control"/>
-   <meta content="Owner of this Web-App" name="copyright"/>
-   <meta content="NOINDEX, NOFOLLOW" name="robots"/>
-   <title>${title}</title>
-   <link href="/css/stile.css" rel="stylesheet"/>
+<head th:replace="~{fragments/head.html :: head(title = 'Login')}">
 </head>
 
 <body>
 <h1>Login</h1>
-<form method="POST" th:action="@{/afterLogin}">
+<form id="login-form" method="POST" name="login-form" th:action="@{/login}">
    <div>
       <label for="username">Username:</label>
-      <input id="username" name="username" required th:field="${credentials.username}" type="text"/>
+      <input id="username" name="username"
+             placeholder="Insert your username" required th:field="${credentials.username}"
+             th:maxlength="${USERNAME_MAX_LENGTH}"
+             th:minlength="${USERNAME_MIN_LENGTH}"
+             type="text"/>
       <span th:errors="${credentials.username}" th:if="${#fields.hasErrors('credentials.username')}"
             th:style="'color:red'"></span>
       <br><br>
    </div>
    <div>
       <label for="password">Password:</label>
-      <input id="password" name="password" required th:field="${credentials.password}" type="password"/>
+      <input id="password" name="password"
+             placeholder="Insert your password" required th:field="${credentials.password}"
+             th:maxlength="${PASSWORD_MAX_LENGTH}"
+             th:minlength="${PASSWORD_MIN_LENGTH}" type="password"/>
       <span th:errors="${credentials.password}" th:if="${#fields.hasErrors('credentials.password')}"
             th:style="'color:red'"></span>
       <br><br>
    </div>
    <div>
-      <span th:if="${param.error != null}">Username o password errati</span>
+      <span th:if="${param.invalidCredentials != null}" th:style="'color:red'">Username o password errati</span>
    </div>
    <div>
-      <input type="submit" value="Invia">
+      <input form="login-form" formmethod="POST" id="submit" name="submit" type="submit" value="Login"/>
    </div>
 </form>
 <div>
-   <a th:href="@{/registration}" th:text="Registrati">Registrati</a>
+   <a href="@{/}">index</a>
+   <a th:href="@{/registration}" th:text="Registrati"></a>
 </div>
 </body>
 

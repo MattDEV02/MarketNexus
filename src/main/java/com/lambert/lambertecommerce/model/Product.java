@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
@@ -15,10 +16,11 @@ public class Product {
    @Column(name = "id", nullable = false)
    private Long id;
 
+   @Size(min = 3, max = 30)
    @Column(name = "name")
    @NotBlank
    private String name;
-
+   @Size(min = 3, max = 100)
    @Column(name = "description")
    @NotBlank
    private String description;
@@ -27,10 +29,6 @@ public class Product {
    @NotNull
    @Min((long) (0.1))
    private Float price;
-
-   @Column(name = "image_path")
-   @NotNull
-   private String image_path;
 
    @ManyToOne
    @JoinColumn(name = "category", nullable = false)
@@ -76,14 +74,6 @@ public class Product {
       this.price = price;
    }
 
-   public String getImage_path() {
-      return this.image_path;
-   }
-
-   public void setImage_path(String image_path) {
-      this.image_path = image_path;
-   }
-
    @Override
    public boolean equals(Object o) {
       if (this == o) return true;
@@ -95,5 +85,16 @@ public class Product {
    @Override
    public int hashCode() {
       return Objects.hash(this.getId());
+   }
+
+   @Override
+   public String toString() {
+      return "Product{" +
+              "id=" + this.id +
+              ", name='" + this.name + '\'' +
+              ", description='" + this.description + '\'' +
+              ", price=" + this.price +
+              ", category=" + this.category.toString() +
+              '}';
    }
 }

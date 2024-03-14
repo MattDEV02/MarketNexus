@@ -1,15 +1,14 @@
 package com.lambert.lambertecommerce.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
+
+import static com.lambert.lambertecommerce.helpers.constants.FieldSizes.*;
 
 @Entity
 @Table(name = "Users")
@@ -21,23 +20,29 @@ public class User {
    private Long id;
 
    @NotBlank
+   @Size(min = NAME_MIN_LENGTH, max = NAME_MAX_LENGTH)
    @Column(name = "name")
    private String name;
 
    @NotBlank
+   @Size(min = SURNAME_MIN_LENGTH, max = SURNAME_MAX_LENGTH)
    @Column(name = "surname")
    private String surname;
 
    @DateTimeFormat(pattern = "yyyy-MM-dd")
+   @Past(message = "La data deve essere nel passato")
    @Column(name = "birthdate", nullable = true)
+
    private Date birthDate;
 
    @NotBlank
    @Email
+   @Size(min = EMAIL_MIN_LENGTH, max = EMAIL_MAX_LENGTH)
    @Column(name = "email", unique = true)
    private String email;
 
    @NotNull
+   @Max(10000)
    @Min(0)
    @Column(name = "balance")
    private Float balance;
@@ -47,9 +52,11 @@ public class User {
    private Nation nation;
 
    @Column(name = "inserted_at")
+   // @Past(message = "La data deve essere nel passato")
    private LocalDateTime insertedAt;
 
    @Column(name = "updated_at")
+   //@Past(message = "La data deve essere nel passato")
    private LocalDateTime updatedAt;
 
 
@@ -152,4 +159,21 @@ public class User {
    public int hashCode() {
       return Objects.hash(this.getId());
    }
+
+
+   @Override
+   public String toString() {
+      return "User = {" +
+              "id = " + id +
+              ", name = '" + name + '\'' +
+              ", surname = '" + surname + '\'' +
+              ", birthDate = " + birthDate +
+              ", email = '" + email + '\'' +
+              ", balance = " + balance +
+              ", nation = " + nation +
+              ", insertedAt = " + insertedAt +
+              ", updatedAt = " + updatedAt +
+              '}';
+   }
+
 }

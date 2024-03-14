@@ -8,5 +8,7 @@ import java.util.Set;
 public interface ProductRepository extends CrudRepository<Product, Long> {
    public Set<Product> findAllByName(String name);
 
+   //public Optional<Product> findById(Long id);
+
    public boolean existsByName(String name);
 }

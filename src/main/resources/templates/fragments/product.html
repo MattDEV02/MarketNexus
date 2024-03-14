@@ -1,0 +1,18 @@
+<div class="card mt-4" style="width: 18rem;" th:fragment="product(product)">
+   <a th:href="@{'/dashboard/product/' + ${product.id}}">
+      <!-- .jpeg -->
+      <!-- Salvare le immagini senza spazi bianchi, punteggiatura e slash. -->
+      <img class="card-img-top" th:alt="${product.name}"
+           th:src="@{'/images/products/' + ${product.id} + '/' + ${product.name.toLowerCase()} + '.jpeg'}"
+           th:title="${product.name}">
+      <div class="card-body">
+         <h5 th:text="${product.name}"></h5>
+         <p th:text="${product.description}"></p>
+         <span th:text="${product.price}"></span>
+         <span>&euro;</span>
+         <a class="btn btn-primary" th:href="@{'/dashboard/order/' + ${product.id}}">
+            <i class="fas fa-cart-plus"></i>
+         </a>
+      </div>
+   </a>
+</div>

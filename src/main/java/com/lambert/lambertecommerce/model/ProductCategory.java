@@ -2,13 +2,14 @@ package com.lambert.lambertecommerce.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ProductCategories")
+@Table(name = "product_categories")
 public class ProductCategory {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,10 +18,12 @@ public class ProductCategory {
 
    @NotBlank
    @Column(name = "name")
+   @Size(min = 3, max = 30)
    private String name;
 
    @NotBlank
    @Column(name = "description")
+   @Size(min = 3, max = 100)
    private String description;
 
    @OneToMany(mappedBy = "category")
@@ -73,5 +76,14 @@ public class ProductCategory {
       if (o == null || this.getClass() != o.getClass()) return false;
       ProductCategory productCategory = (ProductCategory) o;
       return Objects.equals(this.getId(), productCategory.getId()) || Objects.equals(this.getName(), productCategory.getName());
+   }
+
+   @Override
+   public String toString() {
+      return "ProductCategory{" +
+              "id=" + this.id +
+              ", name='" + this.name + '\'' +
+              ", description='" + this.description + '\'' +
+              '}';
    }
 }
