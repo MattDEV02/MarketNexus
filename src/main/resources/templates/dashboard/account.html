@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<title>
-			SiwMovie - Gestione Artisti
-		</title>
-		<link rel="stylesheet" href="/css/stile.css" />
-	</head>
-<body>
-	<header>
-		<div th:if="${userDetails}">
-			<span th:text="${userDetails.username}"></span>
-			<a href="/logout">Logout</a>
-		</div>
-		<div th:unless="${user}">
-			<a href="/login">Login</a>
-		</div>
-	</header>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
 
-		<div><a href="/"><img src="/images/logo-siw.png" width="50%"/></a></div>
-		<h1>Gestione Artisti</h1>
-		<div>
-			<a href="/admin/formNewArtist">Inserisci i dati di un artista</a>
-		</div>
-		<div>
-			<a href="/artist">Artisti</a>
-		</div>
-	</body>
+<head th:replace="~{fragments/head.html :: head(title = 'Account')}">
+
+</head>
+<link href="/css/dashboard/style.css" rel="stylesheet"/>
+<body>
+<div th:replace="fragments/header.html :: header()">
+</div>
+<main>
+   <div class="container">
+      <div class="row">
+         <div class="col-12 text-center">
+            <p th:text="${loggedUser}"></p>
+            <p th:text="${loggedCredentials}"></p>
+            <h3>Account</h3>
+         </div>
+      </div>
+      <div class="row">
+      
+      </div>
+   </div>
+</main>
+<div th:replace="fragments/footer.html :: footer()">
+</div>
+</body>
+
 </html>

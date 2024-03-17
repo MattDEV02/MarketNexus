@@ -4,7 +4,10 @@ import com.lambert.lambertecommerce.controller.validator.ProductValidator;
 import com.lambert.lambertecommerce.model.Credentials;
 import com.lambert.lambertecommerce.model.Product;
 import com.lambert.lambertecommerce.model.User;
-import com.lambert.lambertecommerce.service.*;
+import com.lambert.lambertecommerce.service.CredentialsService;
+import com.lambert.lambertecommerce.service.NationService;
+import com.lambert.lambertecommerce.service.ProductService;
+import com.lambert.lambertecommerce.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +40,8 @@ public class ProductController {
    private ProductValidator productValidator;
    @Autowired
    private ProductService productService;
-   @Autowired
-   private ProductCategoryService productCategoryService;
 
-  
+
    @GetMapping(value = "/dashboard")
    public ModelAndView showAdminIndex() {
       ModelAndView modelAndView = new ModelAndView("dashboard/index.html");
@@ -51,12 +52,11 @@ public class ProductController {
          UserDetails userDetails = (UserDetails) authentication.getPrincipal();
          Credentials credentials = this.credentialsService.getCredentials(userDetails.getUsername());
          User user = this.userService.getUser(credentials.getUser().getId());
-         modelAndView.addObject("user", user);
-         modelAndView.addObject("credentials", credentials);
+         //  modelAndView.addObject("user", user);
+         //modelAndView.addObject("credentials", credentials);
          modelAndView.addObject("products", this.productService.getAllProducts());
          modelAndView.addObject("PRODUCT_NAME_MIN_LENGTH", PRODUCT_NAME_MIN_LENGTH);
          modelAndView.addObject("PRODUCT_NAME_MAX_LENGTH", PRODUCT_NAME_MAX_LENGTH);
-         modelAndView.addObject("categories", this.productCategoryService.getAllProductCategories());
       } else {
          System.out.println("Non va bene");
       }
@@ -71,13 +71,21 @@ public class ProductController {
       return modelAndView;
    }
 
+   @GetMapping(value = "/dashboard/account")
    public ModelAndView showAccount() {
       ModelAndView modelAndView = new ModelAndView("dashboard/account.html");
       return modelAndView;
    }
 
+   @GetMapping(value = "/dashboard/cart")
    public ModelAndView showCart() {
       ModelAndView modelAndView = new ModelAndView("dashboard/cart.html");
+      return modelAndView;
+   }
+
+   @GetMapping(value = "/dashboard/stats")
+   public ModelAndView showStats() {
+      ModelAndView modelAndView = new ModelAndView("dashboard/stats.html");
       return modelAndView;
    }
 

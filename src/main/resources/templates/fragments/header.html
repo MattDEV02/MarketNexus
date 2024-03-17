@@ -1,49 +1,65 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="header()">
-   <div class="container-fluid">
+   <div class="container-fluid py-1">
       <button aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation"
               class="navbar-toggler"
               data-bs-target="#navbarTogglerDemo03" data-bs-toggle="collapse" type="button">
          <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" th:href="@{/dashboard}">
-         <div th:replace="fragments/logo.html :: logo()"></div>
+      <a class="navbar-brand mx-2" th:href="@{/dashboard}">
+         <img th:replace="fragments/logo.html :: logo()"/>
       </a>
       <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item ml-3">
-               <a aria-current="page" class="nav-link active" th:href="@{/dashboard}">Dashboard</a>
+         <ul class="navbar-nav me-5 mb-2 mb-lg-0">
+            <li class="nav-item">
+               <a aria-current="page" class="nav-link active" th:href="@{/dashboard}">
+                  Home
+                  <i class="fas fa-home mx-2"></i>
+               </a>
             </li>
-            <li class="nav-item ml-3">
-               <a class="nav-link link-primary" th:href="@{/dashboard/account}">Account</a>
+            <li class="nav-item">
+               <a class="nav-link link-primary" th:href="@{/dashboard/account}">
+                  Account
+                  <i class="fas fa-user-alt mx-2"></i>
+               </a>
             </li>
-            <li class="nav-item ml-3">
-               <a class="nav-link link-success" th:href="@{/dashboard/cart}">Cart</a>
+            <li class="nav-item">
+               <a class="nav-link link-success" th:href="@{/dashboard/cart}">
+                  Cart
+                  <i class="fas fa-cart-plus mx-2"></i>
+               </a>
             </li>
-            <li class="nav-item ml-3">
-               <a class="nav-link link-secondary" th:href="@{/dashboard/stats}">Stats</a>
+            <li class="nav-item">
+               <a class="nav-link link-secondary" th:href="@{/dashboard/stats}">
+                  Stats
+                  <i class="fas fa-calculator mx-2"></i>
+               </a>
             </li>
-            <li class="nav-item ml-3">
-               <a class="nav-link link-danger fw-bold" th:href="@{/logout}">Logout</a>
+            <li class="nav-item">
+               <a class="nav-link link-danger fw-bold" th:href="@{/logout}">
+                  Logout
+                  <i class="fas fa-sign-out-alt mx-2"></i>
+               </a>
             </li>
          </ul>
-         <form class="d-flex" id="search-product-form" method="GET"
+         <form class="d-flex mx-5" id="search-product-form" method="GET"
                name="search-product-form" th:action="@{/dashboard/searchProduct}">
             <label class="form-label visually-hidden" for="product-name"></label>
-            <input class="form-control" id="product-name"
+            <input class="form-control p-2 mx-3" id="product-name"
                    name="product-name" placeholder="Search a Product"
                    required
                    th:maxlength="${PRODUCT_NAME_MAX_LENGTH}"
                    th:minlength="${PRODUCT_NAME_MIN_LENGTH}" type="text"/>
             <label class="form-label visually-hidden" for="category">Product Category:</label>
-            <select class="form-control" id="category" name="category" required>
-               <option th:each="category : ${categories}"
-                       th:id="${category.name + '#' + category.id}"
-                       th:name="${category.name + '#' + category.id}"
-                       th:text="${category.name}" th:value="${category.id}"></option>
+            <select class="form-select p-2" id="category" name="category" required>
+               <option th:each="productCategory : ${productCategories}"
+                       th:id="${productCategory.name + '#' + productCategory.id}"
+                       th:name="${productCategory.name + '#' + productCategory.id}"
+                       th:text="${productCategory.name}" th:value="${productCategory.id}"></option>
             </select>
-            <button class="form-control" id="submit" name="submit" type="submit">
+            <button class="form-control btn btn-outline-success" id="submit" name="submit"
+                    type="submit">
                Search
-               <i class="fas fa-search ml-3"></i>
+               <i class="fas fa-search mx-1"></i>
             </button>
          </form>
       </div>

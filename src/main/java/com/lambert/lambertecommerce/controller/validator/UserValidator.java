@@ -19,7 +19,6 @@ public class UserValidator implements Validator {
    @Override
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       User user = (User) object;
-
       if (!emailValidator(user.getEmail())) {
          errors.reject("emailFormatError", "Invalid email format." + user.getEmail());
       }

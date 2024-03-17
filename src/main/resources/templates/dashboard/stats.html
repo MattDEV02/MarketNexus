@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/head.html :: head(title = 'DashBoard')}">
+<head th:replace="~{fragments/head.html :: head(title = 'Stats')}">
 
 </head>
 <link href="/css/dashboard/style.css" rel="stylesheet"/>
@@ -14,13 +14,11 @@
          <div class="col-12 text-center">
             <p th:text="${loggedUser}"></p>
             <p th:text="${loggedCredentials}"></p>
-            <h3>Lista di Prodotti:</h3>
+            <h3>Stats</h3>
          </div>
       </div>
       <div class="row">
-         <div class="col-4" th:each="product : ${products}">
-            <div th:replace="fragments/product.html :: product(${product})"></div>
-         </div>
+      
       </div>
    </div>
 </main>

@@ -6,12 +6,12 @@ import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
 import com.lambert.lambertecommerce.model.Credentials;
 import com.lambert.lambertecommerce.model.User;
 import com.lambert.lambertecommerce.service.CredentialsService;
-import com.lambert.lambertecommerce.service.NationService;
 import com.lambert.lambertecommerce.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -36,8 +36,6 @@ public class AuthenticationController {
    @Autowired
    private UserService userService;
    @Autowired
-   private NationService nationService;
-   @Autowired
    private UserValidator userValidator;
    @Autowired
    private CredentialsValidator credentialsValidator;
@@ -55,7 +53,7 @@ public class AuthenticationController {
       ModelAndView modelAndView = new ModelAndView("registration.html");
       modelAndView.addObject("user", new User());
       modelAndView.addObject("credentials", new Credentials());
-      modelAndView.addObject("nations", this.nationService.getAllNations());
+      System.out.println(SecurityContextHolder.getContext().getAuthentication());
       for (Field field : AuthenticationController.fieldSizesFields) {
          modelAndView.addObject(field.getName(), field.get(null));
       }
@@ -87,7 +85,6 @@ public class AuthenticationController {
          for (ObjectError error : credentialsBindingResult.getGlobalErrors()) {
             modelAndView.addObject(error.getCode(), error.getDefaultMessage());
          }
-         modelAndView.addObject("nations", this.nationService.getAllNations());
          for (Field field : AuthenticationController.fieldSizesFields) {
             modelAndView.addObject(field.getName(), field.get(null));
          }
