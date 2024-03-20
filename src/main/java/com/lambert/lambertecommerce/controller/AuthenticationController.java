@@ -2,7 +2,6 @@ package com.lambert.lambertecommerce.controller;
 
 import com.lambert.lambertecommerce.controller.validator.CredentialsValidator;
 import com.lambert.lambertecommerce.controller.validator.UserValidator;
-import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
 import com.lambert.lambertecommerce.model.Credentials;
 import com.lambert.lambertecommerce.model.User;
 import com.lambert.lambertecommerce.service.CredentialsService;
@@ -21,15 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.lang.reflect.Field;
-
-import static com.lambert.lambertecommerce.helpers.constants.FieldSizes.*;
-
 @Controller
 
 public class AuthenticationController {
 
-   private static final Field[] fieldSizesFields = FieldSizes.class.getFields();
    Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
    @Autowired
    private CredentialsService credentialsService;
@@ -40,8 +34,6 @@ public class AuthenticationController {
    @Autowired
    private CredentialsValidator credentialsValidator;
 
-   // @Autowired
-//   private Set<Nation> nations = this.nationService.getAllNations();
 
    @GetMapping(value = "/")
    public ModelAndView showIndex() {
@@ -54,9 +46,6 @@ public class AuthenticationController {
       modelAndView.addObject("user", new User());
       modelAndView.addObject("credentials", new Credentials());
       System.out.println(SecurityContextHolder.getContext().getAuthentication());
-      for (Field field : AuthenticationController.fieldSizesFields) {
-         modelAndView.addObject(field.getName(), field.get(null));
-      }
       return modelAndView;
    }
 
@@ -85,9 +74,6 @@ public class AuthenticationController {
          for (ObjectError error : credentialsBindingResult.getGlobalErrors()) {
             modelAndView.addObject(error.getCode(), error.getDefaultMessage());
          }
-         for (Field field : AuthenticationController.fieldSizesFields) {
-            modelAndView.addObject(field.getName(), field.get(null));
-         }
          modelAndView.setViewName(registrationError);
       }
       return modelAndView;
@@ -108,12 +94,9 @@ public class AuthenticationController {
    @GetMapping(value = "/login")
    public ModelAndView showLoginForm() {
       ModelAndView modelAndView = new ModelAndView("login");
+      // TODO: Vedere se si possono rimuovere.
       modelAndView.addObject("user", new User());
       modelAndView.addObject("credentials", new Credentials());
-      modelAndView.addObject("USERNAME_MIN_LENGTH", USERNAME_MIN_LENGTH);
-      modelAndView.addObject("USERNAME_MAX_LENGTH", USERNAME_MAX_LENGTH);
-      modelAndView.addObject("PASSWORD_MIN_LENGTH", PASSWORD_MIN_LENGTH);
-      modelAndView.addObject("PASSWORD_MAX_LENGTH", PASSWORD_MAX_LENGTH);
       return modelAndView;
    }
 }

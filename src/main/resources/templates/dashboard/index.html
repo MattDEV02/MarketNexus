@@ -1,30 +1,38 @@
 <!DOCTYPE html>
 <html lang="en-US" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/head.html :: head(title = 'DashBoard')}">
+<head th:replace="~{fragments/shared/head.html :: head(title = 'DashBoard')}">
 
 </head>
 <link href="/css/dashboard/style.css" rel="stylesheet"/>
 <body>
-<div th:replace="fragments/header.html :: header()">
+<div th:replace="fragments/shared/header.html :: header">
 </div>
 <main>
    <div class="container">
-      <div class="row">
-         <div class="col-12 text-center">
-            <p th:text="${loggedUser}"></p>
-            <p th:text="${loggedCredentials}"></p>
-            <h3>Lista di Prodotti:</h3>
+      <!--
+       <div class="row">
+          <div class="col-12 text-center mt-3">
+             <h1>DashBoard</h1>
+             <p th:text="${fieldSizes}"></p>
+             <p th:text="${loggedUser}"></p>
+             <p th:text="${loggedCredentials}"></p>
+          </div>
+       </div>
+      -->
+      <div class="row text-center mt-5">
+         <div class="col-12">
+            <h1>DashBoard</h1>
          </div>
       </div>
-      <div class="row">
+      <div class="row justify-content-center text-center mt-4 mb-5">
          <div class="col-4" th:each="product : ${products}">
-            <div th:replace="fragments/product.html :: product(${product})"></div>
+            <div th:replace="fragments/shared/product.html :: product(${product})"></div>
          </div>
       </div>
    </div>
 </main>
-<div th:replace="fragments/footer.html :: footer()">
+<div th:replace="fragments/shared/footer.html :: footer">
 </div>
 </body>
 

@@ -1,5 +1,6 @@
 package com.lambert.lambertecommerce.authentication;
 
+import com.lambert.lambertecommerce.helpers.constants.ControllerSuffixes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,7 +63,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
                       auth -> auth
                               .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/webjars/**", "/css/**", "/js/**", "/images/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/login").permitAll()
-                              .requestMatchers(HttpMethod.GET, "/dashboard/**").authenticated()
+                              .requestMatchers(HttpMethod.GET, "/" + ControllerSuffixes.DASHBOARD + "/**").authenticated()
                               .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin

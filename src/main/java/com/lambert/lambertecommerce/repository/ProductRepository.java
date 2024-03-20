@@ -11,4 +11,5 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
    //public Optional<Product> findById(Long id);
 
    public boolean existsByName(String name);
+
 }

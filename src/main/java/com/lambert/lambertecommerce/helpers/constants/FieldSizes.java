@@ -8,6 +8,9 @@ public class FieldSizes {
    public static final int SURNAME_MIN_LENGTH = 3;
    public static final int SURNAME_MAX_LENGTH = 30;
 
+   public static final int BALANCE_MIN_VALUE = 0;
+   public static final int BALANCE_MAX_VALUE = 10000;
+
    public static final int EMAIL_MIN_LENGTH = 6;
    public static final int EMAIL_MAX_LENGTH = 50;
 
@@ -19,6 +22,5 @@ public class FieldSizes {
 
    public static final int PRODUCT_NAME_MIN_LENGTH = 3;
    public static final int PRODUCT_NAME_MAX_LENGTH = 30;
-
 
 }

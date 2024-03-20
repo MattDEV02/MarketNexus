@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en-US" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/head.html :: head(title = 'Registration')}">
+<head th:replace="~{fragments/shared/head.html :: head(title = 'Registration')}">
 </head>
 
 <body>
 
 <div>
-   <a href="@{/}">index</a>
-   <a href="@{/login}">login</a>
+   <a th:href="@{/}">index</a>
+   <a th:href="@{/login}">login</a>
 </div>
 <h1>Registrazione nuovo utente</h1>
-<form id="registration-form" method="POST" name="registration-form" onsubmit="onSubmit(event)"
+<form id="registration-form" method="POST" name="registration-form"
       th:action="@{/registerNewUser}">
    <div>
       <label for="name">Nome:</label>
       <input id="name" name="name" placeholder="Insert your name" required th:field="${user.name}"
-             th:maxlength="${NAME_MAX_LENGTH}"
-             th:minlength="${NAME_MIN_LENGTH}" type="text"/>
+             th:maxlength="${fieldSizes.get('NAME_MAX_LENGTH')}"
+             th:minlength="${fieldSizes.get('NAME_MIN_LENGTH')}" type="text"/>
       <span th:errors="${user.name}" th:if="${#fields.hasErrors('user.name')}" th:style="'color:red'">
    </span>
       <br><br>
@@ -27,7 +27,8 @@
       <label for="surname">Surname:</label>
       <input id="surname" name="surname"
              placeholder="Insert your surname" required th:field="${user.surname}"
-             th:maxlength="${SURNAME_MAX_LENGTH}" th:minlength="${SURNAME_MIN_LENGTH}" type="text"/>
+             th:maxlength="${fieldSizes.get('SURNAME_MAX_LENGTH')}"
+             th:minlength="${fieldSizes.get('SURNAME_MIN_LENGTH')}" type="text"/>
       <span th:errors="${user.surname}" th:if="${#fields.hasErrors('user.surname')}" th:style="'color:red'"></span>
       <br><br>
    </div>
@@ -42,8 +43,9 @@
    
    <div>
       <label for="balance">Balance (euros):</label>
-      <input id="balance" max="10000" min="0" name="balance" placeholder="euros" required step="0.1"
-             th:field="${user.balance}" type="number"/>
+      <input id="balance" name="balance" placeholder="euros" required step="0.1"
+             th:field="${user.balance}" th:max="${fieldSizes.get('BALANCE_MAX_VALUE')}"
+             th:min="${fieldSizes.get('BALANCE_MIN_VALUE')}" type="number"/>
       <span th:errors="${user.balance}" th:if="${#fields.hasErrors('user.balance')}" th:style="'color:red'"></span>
       <br><br>
    </div>
@@ -51,8 +53,9 @@
    <div>
       <label for="email">Email:</label>
       <input id="email" name="email"
-             placeholder="Insert your email" required th:field="${user.email}" th:maxlength="${EMAIL_MAX_LENGTH}"
-             th:minlength="${EMAIL_MIN_LENGTH}" type="email"/>
+             placeholder="Insert your email" required th:field="${user.email}"
+             th:maxlength="${fieldSizes.get('EMAIL_MAX_LENGTH')}"
+             th:minlength="${fieldSizes.get('EMAIL_MIN_LENGTH')}" type="email"/>
       <span th:errors="${user.email}" th:if="${#fields.hasErrors('user.email')}" th:style="'color:red'"></span>
       <span th:style="'color:red'" th:text="${emailUniqueError}"></span>
       <span th:style="'color:red'" th:text="${emailFormatError}"></span>
@@ -63,8 +66,8 @@
       <label for="username">Username:</label>
       <input id="username" name="username"
              placeholder="Insert your username" required th:field="${credentials.username}"
-             th:maxlength="${USERNAME_MAX_LENGTH}"
-             th:minlength="${USERNAME_MIN_LENGTH}"
+             th:maxlength="${fieldSizes.get('USERNAME_MAX_LENGTH')}"
+             th:minlength="${fieldSizes.get('USERNAME_MIN_LENGTH')}"
              type="text">
       <span th:errors="${credentials.username}" th:if="${#fields.hasErrors('credentials.username')}"
             th:style="'color:red'"></span>
@@ -72,12 +75,16 @@
       <br><br>
    </div>
    
-   <div>
+   <div class="input-group">
       <label for="password">Password:</label>
       <input id="password" name="password"
              placeholder="Insert your password" required th:field="${credentials.password}"
-             th:maxlength="${PASSWORD_MAX_LENGTH}"
-             th:minlength="${PASSWORD_MIN_LENGTH}" type="password"/>
+             th:maxlength="${fieldSizes.get('PASSWORD_MAX_LENGTH')}"
+             th:minlength="${fieldSizes.get('PASSWORD_MIN_LENGTH')}" type="password"/>
+      <button class="btn btn-outline-secondary" id="toggle-password" type="button">
+         <!-- Icona dell'occhio per mostrare/nascondere la password -->
+         <i class="fas fa-eye" id="eye-icon"></i>
+      </button>
       <span th:errors="${credentials.password}" th:if="${#fields.hasErrors('credentials.password')}"
             th:style="'color:red'"></span>
       <span th:style="'color:red'" th:text="${passwordFormatError}"></span>
@@ -88,8 +95,8 @@
       <label for="confirm-password">Confirm Password:</label>
       <input id="confirm-password" name="confirm-password"
              placeholder="Confirm your password" required
-             th:maxlength="${PASSWORD_MAX_LENGTH}"
-             th:minlength="${PASSWORD_MIN_LENGTH}" type="password">
+             th:maxlength="${fieldSizes.get('PASSWORD_MAX_LENGTH')}"
+             th:minlength="${fieldSizes.get('PASSWORD_MIN_LENGTH')}" type="password">
       <span th:errors="${credentials.password}" th:if="${#fields.hasErrors('credentials.password')}"
             th:style="'color:red'"></span>
       <span th:style="'color:red'" th:text="${passwordDifferentFromConfirmPassword}"></span>
@@ -112,7 +119,8 @@
       <input form="registration-form" formmethod="POST" id="submit" name="submit" type="submit" value="Register"/>
    </div>
 </form>
-<script src="/js/registration/index.js"></script>
+<script charset="UTF-8" th:src="@{/js/shared/index.js}" type="text/javascript"></script>
+<script charset="UTF-8" th:src="@{/js/registration/index.js}" type="text/javascript"></script>
 </body>
 
 </html>

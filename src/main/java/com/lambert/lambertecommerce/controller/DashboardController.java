@@ -1,102 +1,90 @@
 package com.lambert.lambertecommerce.controller;
 
 import com.lambert.lambertecommerce.controller.validator.ProductValidator;
+import com.lambert.lambertecommerce.helpers.constants.ControllerSuffixes;
 import com.lambert.lambertecommerce.model.Credentials;
 import com.lambert.lambertecommerce.model.Product;
+import com.lambert.lambertecommerce.model.Sale;
 import com.lambert.lambertecommerce.model.User;
-import com.lambert.lambertecommerce.service.CredentialsService;
-import com.lambert.lambertecommerce.service.NationService;
 import com.lambert.lambertecommerce.service.ProductService;
-import com.lambert.lambertecommerce.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import static com.lambert.lambertecommerce.helpers.constants.FieldSizes.PRODUCT_NAME_MAX_LENGTH;
-import static com.lambert.lambertecommerce.helpers.constants.FieldSizes.PRODUCT_NAME_MIN_LENGTH;
+import java.util.Map;
+import java.util.Set;
 
 @Controller
-public class ProductController {
+@RequestMapping("/" + ControllerSuffixes.DASHBOARD)
+public class DashboardController {
 
    Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
-   @Autowired
-   private CredentialsService credentialsService;
-   @Autowired
-   private UserService userService;
-   @Autowired
-   private NationService nationService;
    @Autowired
    private ProductValidator productValidator;
    @Autowired
    private ProductService productService;
 
 
-   @GetMapping(value = "/dashboard")
-   public ModelAndView showAdminIndex() {
-      ModelAndView modelAndView = new ModelAndView("dashboard/index.html");
+   @GetMapping
+   public ModelAndView showAdminIndex(@ModelAttribute("fieldSizes") Map<String, Integer> fieldSizes) {
+      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/index.html");
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
       System.out.println(authentication.toString());
-      if (authentication.isAuthenticated()) {
-         System.out.println("Va bene");
-         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-         Credentials credentials = this.credentialsService.getCredentials(userDetails.getUsername());
-         User user = this.userService.getUser(credentials.getUser().getId());
-         //  modelAndView.addObject("user", user);
-         //modelAndView.addObject("credentials", credentials);
-         modelAndView.addObject("products", this.productService.getAllProducts());
-         modelAndView.addObject("PRODUCT_NAME_MIN_LENGTH", PRODUCT_NAME_MIN_LENGTH);
-         modelAndView.addObject("PRODUCT_NAME_MAX_LENGTH", PRODUCT_NAME_MAX_LENGTH);
-      } else {
-         System.out.println("Non va bene");
-      }
+      modelAndView.addObject("products", this.productService.getAllProducts());
+      modelAndView.addObject("fieldSizes", fieldSizes);
       return modelAndView;
    }
 
-   @GetMapping(value = "/dashboard/searchProduct")
+   @GetMapping(value = "/searchProduct")
    public ModelAndView searchProduct(@Valid @ModelAttribute("product") Product product,
                                      BindingResult productBindingResult) {
-      ModelAndView modelAndView = new ModelAndView("dashboard/product.html");
+      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/product.html");
 
       return modelAndView;
    }
 
-   @GetMapping(value = "/dashboard/account")
-   public ModelAndView showAccount() {
-      ModelAndView modelAndView = new ModelAndView("dashboard/account.html");
+   @GetMapping(value = "/account")
+   public ModelAndView showAccount(@ModelAttribute("loggedUser") User loggedUser) {
+      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/account.html");
+      Set<Product> sellingProducts = this.productService.findAllProductSellingByUser(loggedUser);
+      Set<Product> orderedProducts = this.productService.findAllProductOrderByUser(loggedUser);
+      modelAndView.addObject("salesProducts", sellingProducts);
+      modelAndView.addObject("orderedProducts", orderedProducts);
       return modelAndView;
    }
 
-   @GetMapping(value = "/dashboard/cart")
-   public ModelAndView showCart() {
-      ModelAndView modelAndView = new ModelAndView("dashboard/cart.html");
+   @GetMapping(value = "/cart")
+   public ModelAndView showCart(@ModelAttribute("loggedUser") User loggedUser, @ModelAttribute("loggedCredentials") Credentials loggedCredentials) {
+      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/cart.html");
+      Set<Product> cartProducts = this.productService.findAllProductCartByUser(loggedUser);
+      modelAndView.addObject("cartProducts", cartProducts);
       return modelAndView;
    }
 
-   @GetMapping(value = "/dashboard/stats")
+   @GetMapping(value = "/stats")
    public ModelAndView showStats() {
-      ModelAndView modelAndView = new ModelAndView("dashboard/stats.html");
+      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/stats.html");
       return modelAndView;
    }
 
-   @GetMapping(value = "/dashboard/newProduct")
+   @GetMapping(value = "/newSale")
    public ModelAndView formNewProduct() {
-      ModelAndView modelAndView = new ModelAndView("dashboard/newProduct.html");
+      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/newSale.html");
+      modelAndView.addObject("sale", new Sale());
       modelAndView.addObject("product", new Product());
       return modelAndView;
    }
-
-   @PostMapping("/dashboard/publishNewProduct")
+/*
+   @PostMapping("/publishNewSale")
    public ModelAndView newProduct(@ModelAttribute("artist") Product product) {
       final String registrationSuccessful = "dashboard/product/index.html";
       final String registrationError = "dashboard/newProduct.html";
@@ -113,13 +101,13 @@ public class ProductController {
       return modelAndView;
    }
 
-   @GetMapping("/dashboard/product/{id}")
+   @GetMapping("/product/{id}")
    public ModelAndView getProductById(@PathVariable("id") Long id) {
       ModelAndView modelAndView = new ModelAndView("dashboard/product/index.html");
       modelAndView.addObject("product", this.productService.findById(id));
       return modelAndView;
    }
-/*
+
    @GetMapping("/artist")
    public ModelAndView getArtists() {
       ModelAndView modelAndView = new ModelAndView("dashboard/index.html");

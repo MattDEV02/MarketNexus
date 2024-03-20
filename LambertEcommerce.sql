@@ -26,9 +26,7 @@ CREATE TYPE ROLES AS ENUM (
     'ALL'
     );
 
-
-
-COMMENT ON TYPE ROLES IS 'LambertEcommerce Credentials Roles.';
+COMMENT ON TYPE ROLES IS 'LambertEcommerce Users Credentials Roles.';
 
 CREATE
     OR REPLACE FUNCTION updatedat_set_timestamp_function() RETURNS TRIGGER AS
@@ -94,7 +92,7 @@ VALUES ('Electronics', 'Electronics products'),
        ('Food and Grocery', 'Food and Grocery products');
 
 
-CREATE TABLE IF NOT EXISTS lambertecommerce.Products
+CREATE TABLE IF NOT EXISTS LambertEcommerce.Products
 (
     id          SERIAL      NOT NULL PRIMARY KEY,
     name        VARCHAR(30) NOT NULL,
@@ -134,8 +132,8 @@ CREATE TABLE IF NOT EXISTS LambertEcommerce.Users
     id          SERIAL                                                        NOT NULL PRIMARY KEY,
     name        VARCHAR(30)                                                   NOT NULL,
     surname     VARCHAR(30)                                                   NOT NULL,
-    birthdate   DATE,
     email       VARCHAR(50)                                                   NOT NULL,
+    birthdate   DATE,
     balance     FLOAT                                                         NOT NULL,
     nation      INTEGER                                                       NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
@@ -180,6 +178,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+INSERT INTO LambertEcommerce.Users (name, surname, email, birthdate, balance, nation)
+VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2024-03-14', 22, 1),
+       ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2);
+
 
 CREATE TABLE IF NOT EXISTS LambertEcommerce.Credentials
 (
@@ -191,6 +193,7 @@ CREATE TABLE IF NOT EXISTS LambertEcommerce.Credentials
     CONSTRAINT credentials_users_fk FOREIGN KEY (_user) REFERENCES LamberteCommerce.Users (id) ON DELETE CASCADE,
     CONSTRAINT credentials_role_valid_check CHECK (CHECK_ROLE_ROLES_ENUM(role)),
     CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(LambertEcommerce.Credentials.username) >= 3),
+    --CONSTRAINT credentials_username_valid__check CHECK (LambertEcommerce.Credentials.username ~ ''::TEXT),
     CONSTRAINT credentials_id_min_value_check CHECK (LambertEcommerce.Credentials.id >= 1),
     CONSTRAINT credentials_user_min_value_check CHECK (LambertEcommerce.Credentials._user >= 1)
 );
@@ -200,8 +203,12 @@ COMMENT ON TABLE LambertEcommerce.Credentials IS 'LambertEcommerce Users Credent
 ALTER TABLE LambertEcommerce.Credentials
     OWNER TO postgres;
 
+INSERT INTO LambertEcommerce.Credentials (username, password, role, _user)
+VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'ALL', 1),
+       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'ALL', 2);
 
-CREATE TABLE LambertEcommerce.Selling
+
+CREATE TABLE LambertEcommerce.Sales
 (
     id          SERIAL                                                        NOT NULL PRIMARY KEY,
     quantity    INTEGER                                                       NOT NULL,
@@ -210,30 +217,39 @@ CREATE TABLE LambertEcommerce.Selling
     _user       INTEGER                                                       NOT NULL,
     product     INTEGER                                                       NOT NULL,
     CONSTRAINT user_product_insertedat_unique UNIQUE (_user, product, inserted_at),
-    CONSTRAINT selling_users_fk FOREIGN KEY (_user) REFERENCES LamberteCommerce.Users (id) ON DELETE CASCADE,
-    CONSTRAINT selling_products_fk FOREIGN KEY (product) REFERENCES LamberteCommerce.Products (id) ON DELETE CASCADE,
-    CONSTRAINT selling_id_min_value_check CHECK (LambertEcommerce.Selling.id >= 1),
-    CONSTRAINT selling_user_min_value_check CHECK (LambertEcommerce.Selling._user >= 1),
-    CONSTRAINT selling_product_min_value_check CHECK (LambertEcommerce.Selling.product >= 1),
-    CONSTRAINT selling_quantity_min_value_check CHECK (LambertEcommerce.Selling.quantity >= 0),
-    CONSTRAINT selling_insertedat_min_value_check CHECK (LambertEcommerce.Selling.inserted_at >= NOW()),
-    CONSTRAINT selling_insertedat_updatedat_value_check CHECK (LambertEcommerce.Selling.inserted_at <=
-                                                               LambertEcommerce.Selling.updated_at)
+    CONSTRAINT sale_users_fk FOREIGN KEY (_user) REFERENCES LamberteCommerce.Users (id) ON DELETE CASCADE,
+    CONSTRAINT sale_products_fk FOREIGN KEY (product) REFERENCES LamberteCommerce.Products (id) ON DELETE CASCADE,
+    CONSTRAINT sale_id_min_value_check CHECK (LambertEcommerce.Sales.id >= 1),
+    CONSTRAINT sale_user_min_value_check CHECK (LambertEcommerce.Sales._user >= 1),
+    CONSTRAINT sale_product_min_value_check CHECK (LambertEcommerce.Sales.product >= 1),
+    CONSTRAINT sale_quantity_min_value_check CHECK (LambertEcommerce.Sales.quantity >= 0),
+    CONSTRAINT sale_insertedat_min_value_check CHECK (LambertEcommerce.Sales.inserted_at >= NOW()),
+    CONSTRAINT sale_insertedat_updatedat_value_check CHECK (LambertEcommerce.Sales.inserted_at <=
+                                                            LambertEcommerce.Sales.updated_at)
 );
 
 CREATE
-    OR REPLACE TRIGGER selling_updatedat_trigger
+    OR REPLACE TRIGGER sale_updatedat_trigger
     BEFORE
         UPDATE
-    ON LambertEcommerce.Selling
+    ON LambertEcommerce.Sales
     FOR EACH ROW
 EXECUTE
     FUNCTION updatedat_set_timestamp_function();
 
-COMMENT ON TABLE LambertEcommerce.Selling IS 'Publication of a Selling by the LambertEcommerce Users.';
+COMMENT ON TABLE LambertEcommerce.Sales IS 'Publication of a Sales by the LambertEcommerce Users.';
 
-ALTER TABLE Lambertecommerce.Selling
+ALTER TABLE Lambertecommerce.Sales
     OWNER TO postgres;
+
+INSERT INTO LambertEcommerce.Sales(quantity, _user, product)
+VALUES (1, 1, 1),
+       (2, 1, 2),
+       (3, 2, 3),
+       (2, 2, 4),
+       (2, 2, 5),
+       (2, 2, 6),
+       (2, 2, 7);
 
 
 CREATE TABLE LambertEcommerce.Carts
@@ -243,13 +259,13 @@ CREATE TABLE LambertEcommerce.Carts
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     _user       INTEGER                                                       NOT NULL,
-    selling     INTEGER                                                       NOT NULL,
-    CONSTRAINT carts_user_selling_insertedat_unique UNIQUE (_user, selling, inserted_at),
+    sale        INTEGER                                                       NOT NULL,
+    CONSTRAINT carts_user_sale_insertedat_unique UNIQUE (_user, sale, inserted_at),
     CONSTRAINT carts_users_fk FOREIGN KEY (_user) REFERENCES LambertEcommerce.Users (id) ON DELETE CASCADE,
-    CONSTRAINT carts_selling_fk FOREIGN KEY (selling) REFERENCES LambertEcommerce.Selling (id) ON DELETE CASCADE,
+    CONSTRAINT carts_sale_fk FOREIGN KEY (sale) REFERENCES LambertEcommerce.Sales (id) ON DELETE CASCADE,
     CONSTRAINT carts_id_min_value_check CHECK (LambertEcommerce.Carts.id >= 1),
     CONSTRAINT carts_user_min_value_check CHECK (LambertEcommerce.Carts._user >= 1),
-    CONSTRAINT carts_selling_min_value_check CHECK (LambertEcommerce.Carts.selling >= 1),
+    CONSTRAINT carts_sale_min_value_check CHECK (LambertEcommerce.Carts.sale >= 1),
     CONSTRAINT carts_quantity_min_value_check CHECK (LambertEcommerce.Carts.quantity >= 0),
     CONSTRAINT carts_insertedat_min_value_check CHECK (LambertEcommerce.Carts.inserted_at >= NOW()),
     CONSTRAINT carts_insertedat_updatedat_value_check CHECK (LambertEcommerce.Carts.inserted_at <=
@@ -265,10 +281,15 @@ CREATE
 EXECUTE
     FUNCTION updatedat_set_timestamp_function();
 
-COMMENT ON TABLE LambertEcommerce.Carts IS 'User who puts a selling product in his cart.';
+COMMENT ON TABLE LambertEcommerce.Carts IS 'User who puts a sale product in his cart.';
 
 ALTER TABLE Lambertecommerce.Carts
     OWNER TO postgres;
+
+INSERT INTO LambertEcommerce.Carts(quantity, _user, sale)
+VALUES (1, 1, 3),
+       (1, 1, 4),
+       (1, 2, 5);
 
 
 CREATE TABLE LambertEcommerce.Orders
@@ -278,13 +299,13 @@ CREATE TABLE LambertEcommerce.Orders
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     _user       INTEGER                                                       NOT NULL,
-    selling     INTEGER                                                       NOT NULL,
-    CONSTRAINT orders_user_selling_insertedat_unique UNIQUE (_user, selling, inserted_at),
+    sale        INTEGER                                                       NOT NULL,
+    CONSTRAINT orders_user_sale_insertedat_unique UNIQUE (_user, sale, inserted_at),
     CONSTRAINT orders_users_fk FOREIGN KEY (_user) REFERENCES LambertEcommerce.Users (id) ON DELETE CASCADE,
-    CONSTRAINT orders_selling_fk FOREIGN KEY (selling) REFERENCES LambertEcommerce.Selling (id) ON DELETE CASCADE,
+    CONSTRAINT orders_sale_fk FOREIGN KEY (sale) REFERENCES LambertEcommerce.Sales (id) ON DELETE CASCADE,
     CONSTRAINT orders_id_min_value_check CHECK (LambertEcommerce.Orders.id >= 1),
     CONSTRAINT orders_user_min_value_check CHECK (LambertEcommerce.Orders._user >= 1),
-    CONSTRAINT orders_selling_min_value_check CHECK (LambertEcommerce.Orders.selling >= 1),
+    CONSTRAINT orders_sale_min_value_check CHECK (LambertEcommerce.Orders.sale >= 1),
     CONSTRAINT orders_quantity_min_value_check CHECK (LambertEcommerce.Orders.quantity >= 0),
     CONSTRAINT orders_insertedat_min_value_check CHECK (LambertEcommerce.Orders.inserted_at >= NOW()),
     CONSTRAINT orders_insertedat_updatedat_value_check CHECK (LambertEcommerce.Orders.inserted_at <=
@@ -300,10 +321,20 @@ CREATE
 EXECUTE
     FUNCTION updatedat_set_timestamp_function();
 
-COMMENT ON TABLE LambertEcommerce.Orders IS 'User who buys a selling product.';
+COMMENT ON TABLE LambertEcommerce.Orders IS 'User who buys a sale product.';
 
 ALTER TABLE Lambertecommerce.Orders
     OWNER TO postgres;
 
-select *
-from lambertecommerce.Nations;
+INSERT INTO LambertEcommerce.Orders(quantity, _user, sale)
+VALUES (1, 1, 6),
+       (1, 1, 7);
+
+/*
+
+TODO:
+    Vincoli da mettere:
+        Un Utente non può mettere nel carrello e ordinare i suoi stessi prodotti (messi in vendita).
+        Occhio alle quantità.
+
+*/

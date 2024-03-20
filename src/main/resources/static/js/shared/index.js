@@ -1,4 +1,4 @@
-document.getElementById('toggle-password').addEventListener('click', function () {
+document.getElementById('toggle-password').addEventListener('click', () => {
    const passwordInput = document.getElementById('password'),
       eyeIcon = document.getElementById('eye-icon');
    // Cambia il tipo di input da password a text o viceversa

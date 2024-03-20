@@ -51,10 +51,13 @@ public class User {
    @JoinColumn(name = "nation", nullable = false)
    private Nation nation;
 
+
+   @DateTimeFormat(pattern = "YYYY-MM-DD HH:MI:SS")
    @Column(name = "inserted_at")
    // @Past(message = "La data deve essere nel passato")
    private LocalDateTime insertedAt;
 
+   @DateTimeFormat(pattern = "YYYY-MM-DD HH:MI:SS")
    @Column(name = "updated_at")
    //@Past(message = "La data deve essere nel passato")
    private LocalDateTime updatedAt;

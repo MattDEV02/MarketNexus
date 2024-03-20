@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/head.html :: head(title = 'Login')}">
+<head th:replace="~{fragments/shared/head.html :: head(title = 'Login')}">
 </head>
 
 <body>
@@ -13,8 +13,8 @@
          <input class="form-control" id="username"
                 name="username"
                 placeholder="Insert your username" required th:field="${credentials.username}"
-                th:maxlength="${USERNAME_MAX_LENGTH}"
-                th:minlength="${USERNAME_MIN_LENGTH}"
+                th:maxlength="${fieldSizes.get('USERNAME_MAX_LENGTH')}"
+                th:minlength="${fieldSizes.get('USERNAME_MIN_LENGTH')}"
                 type="text"/>
          <span th:errors="${credentials.username}" th:if="${#fields.hasErrors('credentials.username')}"
                th:style="'color:red'"></span>
@@ -26,8 +26,8 @@
                 class="form-control"
                 id="password" name="password" placeholder="Insert your password"
                 required
-                th:field="${credentials.password}" th:maxlength="${PASSWORD_MAX_LENGTH}"
-                th:minlength="${PASSWORD_MIN_LENGTH}"
+                th:field="${credentials.password}" th:maxlength="${fieldSizes.get('PASSWORD_MAX_LENGTH')}"
+                th:minlength="${fieldSizes.get('PASSWORD_MIN_LENGTH')}"
                 type="password"/>
          <button class="btn btn-outline-secondary" id="toggle-password" type="button">
             <!-- Icona dell'occhio per mostrare/nascondere la password -->
@@ -43,11 +43,11 @@
       <input form="login-form" formmethod="POST" id="submit" name="submit" type="submit" value="Login"/>
    </form>
    <div>
-      <a href="@{/}">index</a>
+      <a th:href="@{/}">index</a>
       <a th:href="@{/registration}" th:text="Registrati"></a>
    </div>
 </div>
-<script th:src="@{/js/shared/index.js}"></script>
+<script charset="UTF-8" th:src="@{/js/shared/index.js}" type="text/javascript"></script>
 </body>
 
 </html>

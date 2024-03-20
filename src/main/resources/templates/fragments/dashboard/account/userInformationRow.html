@@ -1,0 +1,30 @@
+<div class="row border rounded p-2 align-items-center"
+     th:fragment="userInformationRow(property, type, value)"
+     th:with="isReadOnly=(${isReadOnly} ?: false), isSelect=(${isSelect} ?: false)">
+   <div class="col-md-3">
+      <h6 class="mt-1" th:text="${#strings.capitalize(property) + ': '}"></h6>
+   </div>
+   <div class="col-md-7">
+      <h6 th:if="${isReadOnly}" th:text="${value}"></h6>
+      <label class="form-label visually-hidden" th:for="${property}" th:unless="${isReadOnly}">
+      </label>
+      <select class="form-control form-select" th:id="${property}" th:if="${isSelect}" th:name="${property}">
+         <option th:each="nation : ${nations}" th:id="${nation.name + '#' + nation.id}"
+                 th:name="${nation.name + '#' + nation.id}"
+                 th:text="${nation.name}" th:value="${nation.id}"></option>
+      </select>
+      <input class="form-control" step="0.01" th:id="${property}" th:if="${!isSelect}"
+             th:max="${fieldSizes.get('BALANCE_MAX_VALUE')}" th:maxlength="${fieldSizes.get('EMAIL_MAX_LENGTH')}"
+             th:min="${fieldSizes.get('BALANCE_MIN_VALUE')}"
+             th:minlength="${fieldSizes.get('NAME_MIN_LENGTH')}"
+             th:name="${property}"
+             th:placeholder="'Insert your ' + ${property}" th:type="${type}" th:unless="${isReadOnly}"
+             th:value="${value}"/>
+   </div>
+   
+   <div class="col-md-2">
+      <button class="btn btn-primary" th:disabled="${isReadOnly}">
+         <i class="fas fa-edit"></i>
+      </button>
+   </div>
+</div>

@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Selling", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "product", "inserted_at"}))
-public class Selling {
+@Table(name = "Sales", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "product", "inserted_at"}))
+public class Sale {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,8 +100,8 @@ public class Selling {
    public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || this.getClass() != o.getClass()) return false;
-      Selling selling = (Selling) o;
-      return Objects.equals(this.getId(), selling.getId()) || (Objects.equals(this.getUser(), selling.getUser()) && Objects.equals(this.getProduct(), selling.getProduct()) && Objects.equals(this.getInsertedAt(), selling.getInsertedAt()));
+      Sale sale = (Sale) o;
+      return Objects.equals(this.getId(), sale.getId()) || (Objects.equals(this.getUser(), sale.getUser()) && Objects.equals(this.getProduct(), sale.getProduct()) && Objects.equals(this.getInsertedAt(), sale.getInsertedAt()));
    }
 
    @Override
@@ -111,7 +111,7 @@ public class Selling {
 
    @Override
    public String toString() {
-      return "Selling{" +
+      return "Sale{" +
               "id=" + id +
               ", quantity=" + quantity +
               ", user=" + user +

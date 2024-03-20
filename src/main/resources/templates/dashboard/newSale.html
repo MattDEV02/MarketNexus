@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en-US" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/shared/head.html :: head(title = 'Stats')}">
+<head th:replace="~{fragments/shared/head.html :: head(title = 'DashBoard')}">
 
 </head>
-<link href="/css/dashboard/style.css" rel="stylesheet"/>
+
 <body>
 <div th:replace="fragments/shared/header.html :: header">
 </div>
@@ -12,13 +12,15 @@
    <div class="container">
       <div class="row">
          <div class="col-12 text-center mt-3">
-            <h1>Stats</h1>
+            <h1>New Sale</h1>
             <p th:text="${loggedUser}"></p>
             <p th:text="${loggedCredentials}"></p>
          </div>
       </div>
       <div class="row">
-      
+         <div class="col-4" th:each="product : ${products}">
+            <div th:replace="fragments/shared/product.html :: product(${product})"></div>
+         </div>
       </div>
    </div>
 </main>

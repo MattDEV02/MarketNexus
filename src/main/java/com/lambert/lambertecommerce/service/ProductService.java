@@ -1,6 +1,6 @@
 package com.lambert.lambertecommerce.service;
 
-import com.lambert.lambertecommerce.model.Product;
+import com.lambert.lambertecommerce.model.*;
 import com.lambert.lambertecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,6 +15,12 @@ import java.util.Set;
 public class ProductService {
    @Autowired
    protected ProductRepository productRepository;
+   @Autowired
+   protected CartService cartService;
+   @Autowired
+   private SaleService saleService;
+   @Autowired
+   private OrderService orderService;
 
    /**
     * This method retrieves a Product from the DB based on its ID.
@@ -50,8 +56,47 @@ public class ProductService {
    public Set<Product> getAllProducts() {
       Set<Product> result = new HashSet<Product>();
       Iterable<Product> iterable = this.productRepository.findAll();
-      for (Product Product : iterable) {
-         result.add(Product);
+      for (Product product : iterable) {
+         result.add(product);
+      }
+      return result;
+   }
+
+   @Transactional
+   public Set<Product> findAllProductSellingByUser(User user) {
+      Long userId = user.getId();
+      Set<Product> result = new HashSet<Product>();
+      Set<Sale> saleByUser = this.saleService.findAllByUser(user);
+      for (Sale sale : saleByUser) {
+         if (sale.getUser().getId().equals(userId)) {
+            result.add(sale.getProduct());
+         }
+      }
+      return result;
+   }
+
+   @Transactional
+   public Set<Product> findAllProductOrderByUser(User user) {
+      Long userId = user.getId();
+      Set<Product> result = new HashSet<Product>();
+      Set<Order> ordersByUser = this.orderService.findAllByUser(user);
+      for (Order order : ordersByUser) {
+         if (order.getUser().getId().equals(userId)) {
+            result.add(order.getSelling().getProduct());
+         }
+      }
+      return result;
+   }
+
+   @Transactional
+   public Set<Product> findAllProductCartByUser(User user) {
+      Long userId = user.getId();
+      Set<Product> result = new HashSet<Product>();
+      Set<Cart> cartsByUser = this.cartService.findAllByUser(user);
+      for (Cart cart : cartsByUser) {
+         if (cart.getUser().getId().equals(userId)) {
+            result.add(cart.getSelling().getProduct());
+         }
       }
       return result;
    }
@@ -63,4 +108,5 @@ public class ProductService {
    public boolean existsById(Long id) {
       return this.productRepository.existsById(id);
    }
+
 }

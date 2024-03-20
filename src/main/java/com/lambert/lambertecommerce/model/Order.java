@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Orders", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "selling", "inserted_at"}))
+@Table(name = "Orders", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "sale", "inserted_at"}))
 public class Order {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +23,8 @@ public class Order {
    private User user;
 
    @ManyToOne
-   @JoinColumn(name = "selling", nullable = false)
-   private Selling selling;
+   @JoinColumn(name = "sale", nullable = false)
+   private Sale sale;
 
    @Column(name = "inserted_at")
    private LocalDateTime insertedAt;
@@ -56,12 +56,12 @@ public class Order {
       this.user = user;
    }
 
-   public Selling getSelling() {
-      return this.selling;
+   public Sale getSelling() {
+      return this.sale;
    }
 
-   public void setSelling(Selling selling) {
-      this.selling = selling;
+   public void setSelling(Sale sale) {
+      this.sale = sale;
    }
 
    public LocalDateTime getInsertedAt() {
@@ -114,7 +114,7 @@ public class Order {
               "id=" + this.id +
               ", quantity=" + this.quantity +
               ", user=" + this.user +
-              ", selling=" + this.selling +
+              ", sale=" + this.sale +
               ", insertedAt=" + this.insertedAt +
               ", updatedAt=" + this.updatedAt +
               '}';

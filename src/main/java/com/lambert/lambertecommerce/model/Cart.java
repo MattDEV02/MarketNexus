@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Carts", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "selling", "inserted_at"}))
+@Table(name = "Carts", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "sale", "inserted_at"}))
 public class Cart {
 
    @Id
@@ -24,8 +24,8 @@ public class Cart {
    private User user;
 
    @ManyToOne
-   @JoinColumn(name = "selling", nullable = false)
-   private Selling selling;
+   @JoinColumn(name = "sale", nullable = false)
+   private Sale sale;
 
    @Column(name = "inserted_at")
    private LocalDateTime insertedAt;
@@ -57,12 +57,12 @@ public class Cart {
       this.user = user;
    }
 
-   public Selling getSelling() {
-      return this.selling;
+   public Sale getSelling() {
+      return this.sale;
    }
 
-   public void setSelling(Selling selling) {
-      this.selling = selling;
+   public void setSelling(Sale sale) {
+      this.sale = sale;
    }
 
    public LocalDateTime getInsertedAt() {
@@ -115,7 +115,7 @@ public class Cart {
               "id=" + this.id +
               ", quantity=" + this.quantity +
               ", user=" + this.user +
-              ", selling=" + this.selling +
+              ", sale=" + this.sale +
               ", insertedAt=" + this.insertedAt +
               ", updatedAt=" + this.updatedAt +
               '}';
