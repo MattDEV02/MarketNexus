@@ -1,5 +1,6 @@
 package com.lambert.lambertecommerce.model;
 
+import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -18,12 +19,12 @@ public class ProductCategory {
 
    @NotBlank
    @Column(name = "name")
-   @Size(min = 3, max = 30)
+   @Size(min = FieldSizes.PRODUCT_CATEGORY_NAME_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_NAME_MIN_LENGTH)
    private String name;
 
    @NotBlank
    @Column(name = "description")
-   @Size(min = 3, max = 100)
+   @Size(min = FieldSizes.PRODUCT_CATEGORY_DESCRIPTION_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_DESCRIPTION_MAX_LENGTH)
    private String description;
 
    @OneToMany(mappedBy = "category")

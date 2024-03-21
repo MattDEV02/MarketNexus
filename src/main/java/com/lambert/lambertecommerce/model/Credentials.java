@@ -1,14 +1,13 @@
 package com.lambert.lambertecommerce.model;
 
+import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
 import com.lambert.lambertecommerce.helpers.credentials.Roles;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
-
-import static com.lambert.lambertecommerce.helpers.constants.FieldSizes.USERNAME_MAX_LENGTH;
-import static com.lambert.lambertecommerce.helpers.constants.FieldSizes.USERNAME_MIN_LENGTH;
 
 
 @Entity
@@ -20,9 +19,10 @@ public class Credentials {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id")
+   @Min(1)
    private Long id;
    @NotBlank
-   @Size(min = USERNAME_MIN_LENGTH, max = USERNAME_MAX_LENGTH)
+   @Size(min = FieldSizes.USERNAME_MIN_LENGTH, max = FieldSizes.USERNAME_MAX_LENGTH)
    @Column(name = "username", unique = true)
    @NotBlank
    private String username;
@@ -31,6 +31,7 @@ public class Credentials {
    private String password;
 
    @Column(name = "role")
+   @Size(min = FieldSizes.ROLE_MIN_LENGTH, max = FieldSizes.ROLE_MAX_LENGTH)
    private String role;
    @OneToOne
    @JoinColumn(name = "_user", nullable = false, unique = true)

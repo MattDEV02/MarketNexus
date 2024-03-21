@@ -1,5 +1,6 @@
 package com.lambert.lambertecommerce.controller.validator;
 
+import com.lambert.lambertecommerce.helpers.validators.FieldValidators;
 import com.lambert.lambertecommerce.model.Credentials;
 import com.lambert.lambertecommerce.model.User;
 import com.lambert.lambertecommerce.repository.CredentialsRepository;
@@ -8,8 +9,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
-import static com.lambert.lambertecommerce.helpers.validators.FieldValidators.passwordValidator;
 
 @Component
 public class CredentialsValidator implements Validator {
@@ -32,7 +31,7 @@ public class CredentialsValidator implements Validator {
          //String[] errorArgs = {""};
          errors.reject("usernameUniqueError", "Username " + credentials.getUsername() + " already used.");
       }
-      if (!passwordValidator(credentials.getPassword())) {
+      if (!FieldValidators.passwordValidator(credentials.getPassword())) {
          errors.reject("passwordFormatError", "La password deve essere lunga 8 caratteri e..." + credentials.getPassword());
       }
       if (this.getConfirmPassword() != null && !this.getConfirmPassword().isEmpty() && !credentials.getPassword().equals(this.getConfirmPassword())) {

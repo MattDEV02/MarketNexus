@@ -1,10 +1,8 @@
 package com.lambert.lambertecommerce.model;
 
+import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.util.Objects;
 
@@ -16,18 +14,19 @@ public class Product {
    @Column(name = "id", nullable = false)
    private Long id;
 
-   @Size(min = 3, max = 30)
+   @Size(min = (FieldSizes.PRODUCT_NAME_MIN_LENGTH), max = (FieldSizes.PRODUCT_NAME_MAX_LENGTH))
    @Column(name = "name")
    @NotBlank
    private String name;
-   @Size(min = 3, max = 100)
+   @Size(min = (FieldSizes.PRODUCT_DESCRIPTION_MIN_LENGTH), max = (FieldSizes.PRODUCT_DESCRIPTION_MAX_LENGTH))
    @Column(name = "description")
    @NotBlank
    private String description;
 
    @Column(name = "price")
    @NotNull
-   @Min((long) (0.1))
+   @Min((long) (FieldSizes.PRODUCT_PRICE_MIN_VALUE))
+   @Max((long) (FieldSizes.PRODUCT_PRICE_MAX_VALUE))
    private Float price;
 
    @ManyToOne
@@ -51,7 +50,7 @@ public class Product {
    }
 
    public String getDescription() {
-      return description;
+      return this.description;
    }
 
    public void setDescription(String description) {
@@ -59,7 +58,7 @@ public class Product {
    }
 
    public ProductCategory getCategory() {
-      return category;
+      return this.category;
    }
 
    public void setCategory(ProductCategory category) {
@@ -67,7 +66,7 @@ public class Product {
    }
 
    public Float getPrice() {
-      return price;
+      return this.price;
    }
 
    public void setPrice(Float price) {

@@ -20,7 +20,27 @@ public class FieldSizes {
    public static final int PASSWORD_MIN_LENGTH = 8;
    public static final int PASSWORD_MAX_LENGTH = 8;
 
+   public static final int ROLE_MIN_LENGTH = 3;
+   public static final int ROLE_MAX_LENGTH = 8;
+
    public static final int PRODUCT_NAME_MIN_LENGTH = 3;
    public static final int PRODUCT_NAME_MAX_LENGTH = 30;
 
+   public static final int PRODUCT_DESCRIPTION_MIN_LENGTH = 3;
+   public static final int PRODUCT_DESCRIPTION_MAX_LENGTH = 60;
+
+   public static final float PRODUCT_PRICE_MIN_VALUE = 1;
+   public static final float PRODUCT_PRICE_MAX_VALUE = 10000;
+
+   public static final int SALE_QUANTITY_MIN_VALUE = 1;
+   public static final int SALE_QUANTITY_MAX_VALUE = 10;
+
+   public static final int NATION_NAME_MIN_LENGTH = 3;
+   public static final int NATION_NAME_MAX_LENGTH = 10;
+
+   public static final int PRODUCT_CATEGORY_NAME_MIN_LENGTH = 3;
+   public static final int PRODUCT_CATEGORY_NAME_MAX_LENGTH = 10;
+
+   public static final int PRODUCT_CATEGORY_DESCRIPTION_MIN_LENGTH = 3;
+   public static final int PRODUCT_CATEGORY_DESCRIPTION_MAX_LENGTH = 10;
 }

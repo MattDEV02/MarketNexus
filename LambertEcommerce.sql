@@ -67,9 +67,9 @@ VALUES ('Italy'),
 
 CREATE TABLE IF NOT EXISTS LambertEcommerce.product_categories
 (
-    id          SERIAL       NOT NULL PRIMARY KEY,
-    name        VARCHAR(30)  NOT NULL,
-    description VARCHAR(100) NOT NULL,
+    id          SERIAL      NOT NULL PRIMARY KEY,
+    name        VARCHAR(30) NOT NULL,
+    description VARCHAR(60) NOT NULL,
     CONSTRAINT productcategories_name_unique UNIQUE (name),
     CONSTRAINT productcategories_id_min_value_check CHECK (LambertEcommerce.product_categories.id >= 1),
     CONSTRAINT productcategories_name_min_length_check CHECK (LENGTH(LambertEcommerce.product_categories.name) >= 3)
@@ -96,12 +96,13 @@ CREATE TABLE IF NOT EXISTS LambertEcommerce.Products
 (
     id          SERIAL      NOT NULL PRIMARY KEY,
     name        VARCHAR(30) NOT NULL,
+    description VARCHAR(60) NOT NULL,
     price       FLOAT       NOT NULL,
-    description TEXT        NOT NULL,
     category    INTEGER     NOT NULL,
     CONSTRAINT products_productcategories_fk FOREIGN KEY (category) REFERENCES LamberteCommerce.product_categories (id) ON DELETE CASCADE,
     CONSTRAINT products_id_min_value_check CHECK (LambertEcommerce.Products.id >= 1),
     CONSTRAINT products_name_min_length_check CHECK (LENGTH(LambertEcommerce.Products.name) >= 3),
+    CONSTRAINT products_name_valid_check CHECK (LambertEcommerce.Products.name ~ '^[^\\\\/:*?"<>|]+$'::TEXT),
     CONSTRAINT products_price_min_value_check CHECK (LambertEcommerce.Products.price > 0),
     CONSTRAINT products_description_min_length_check CHECK (LENGTH(LambertEcommerce.Products.description) >= 3),
     CONSTRAINT products_category_min_value_check CHECK (LambertEcommerce.Products.category >= 1)
@@ -191,7 +192,8 @@ CREATE TABLE IF NOT EXISTS LambertEcommerce.Credentials
     role     VARCHAR(10) NOT NULL,
     _user    INTEGER     NOT NULL,
     CONSTRAINT credentials_users_fk FOREIGN KEY (_user) REFERENCES LamberteCommerce.Users (id) ON DELETE CASCADE,
-    CONSTRAINT credentials_role_valid_check CHECK (CHECK_ROLE_ROLES_ENUM(role)),
+    CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(LambertEcommerce.Credentials.role) >= 3),
+    CONSTRAINT credentials_role_valid_check CHECK (LambertEcommerce.CHECK_ROLE_ROLES_ENUM(role)),
     CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(LambertEcommerce.Credentials.username) >= 3),
     --CONSTRAINT credentials_username_valid__check CHECK (LambertEcommerce.Credentials.username ~ ''::TEXT),
     CONSTRAINT credentials_id_min_value_check CHECK (LambertEcommerce.Credentials.id >= 1),
@@ -206,6 +208,8 @@ ALTER TABLE LambertEcommerce.Credentials
 INSERT INTO LambertEcommerce.Credentials (username, password, role, _user)
 VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'ALL', 1),
        ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'ALL', 2);
+
+-- N.B. = La password è criptata da spring boot e arriva a 60 caratteri.
 
 
 CREATE TABLE LambertEcommerce.Sales

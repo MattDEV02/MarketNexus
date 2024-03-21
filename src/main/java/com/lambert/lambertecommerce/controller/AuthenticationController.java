@@ -24,7 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 public class AuthenticationController {
 
-   Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
    @Autowired
    private CredentialsService credentialsService;
    @Autowired

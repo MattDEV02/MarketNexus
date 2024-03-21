@@ -1,6 +1,7 @@
 package com.lambert.lambertecommerce.controller;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.credentials.Utils;
 import com.lambert.lambertecommerce.model.Credentials;
 import com.lambert.lambertecommerce.model.Nation;
 import com.lambert.lambertecommerce.model.ProductCategory;
@@ -10,6 +11,9 @@ import com.lambert.lambertecommerce.service.NationService;
 import com.lambert.lambertecommerce.service.ProductCategoryService;
 import com.lambert.lambertecommerce.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,17 +26,13 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static com.lambert.lambertecommerce.helpers.credentials.Utils.userIsLoggedIn;
 
 
 @ControllerAdvice
 public class GlobalController {
 
-   private static final Logger LOGGER = Logger.getLogger(GlobalController.class.getName());
-   private static final Map<String, Integer> fieldSizesMap = new HashMap<String, Integer>();
+   private static final Logger LOGGER = LoggerFactory.getLogger(GlobalController.class);
+   private static final Map<String, Object> fieldSizesMap = new HashMap<String, Object>();
 
    static {
       // Inizializza la mappa dei valori dei campi alla creazione dell'istanza della classe
@@ -41,13 +41,14 @@ public class GlobalController {
          try {
             // Ottieni il nome del campo
             String name = field.getName();
+
             // Ottieni il valore del campo
-            Integer value = (Integer) field.get(null);
+            Object value = field.get(null);
             // Aggiungi il nome del campo e il suo valore alla mappa
             GlobalController.fieldSizesMap.put(name, value);
          } catch (IllegalAccessException e) {
             // Gestione dell'eccezione
-            LOGGER.log(Level.WARNING, "Impossible to access at this field: " + field.getName(), e);
+            LOGGER.warn("Impossible to access at this field: " + field.getName(), e);
          }
       }
    }
@@ -62,15 +63,15 @@ public class GlobalController {
    private ProductCategoryService productCategoryService;
 
    @ModelAttribute("fieldSizes")
-   public Map<String, Integer> getFieldSizesFields() {
+   public Map<String, Object> getFieldSizesFields() {
       return GlobalController.fieldSizesMap;
    }
 
    @ModelAttribute("nations")
-   public Set<Nation> getNations(HttpServletRequest request) {
+   public Set<Nation> getNations(@NotNull HttpServletRequest request) {
       Set<Nation> nations = null;
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      if (!userIsLoggedIn(authentication) || request.getRequestURI().equals("/dashboard/account")) {
+      final String URI = request.getRequestURI();
+      if (URI.equals("/dashboard/account") || URI.equals("/registration")) {
          nations = this.nationService.getAllNations();
       }
       return nations;
@@ -82,7 +83,7 @@ public class GlobalController {
       Credentials credentials = null;
       User loggedUser = null;
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      if (userIsLoggedIn(authentication)) {
+      if (Utils.userIsLoggedIn(authentication)) {
          userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
          credentials = this.credentialsService.getCredentials(userDetails.getUsername());
          loggedUser = this.userService.getUser(credentials.getUser().getId());
@@ -96,7 +97,7 @@ public class GlobalController {
       UserDetails userDetails = null;
       Credentials loggedCredentials = null;
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      if (userIsLoggedIn(authentication)) {
+      if (Utils.userIsLoggedIn(authentication)) {
          userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
          loggedCredentials = this.credentialsService.getCredentials(userDetails.getUsername());
          model.addAttribute("loggedCredentials", loggedCredentials);
@@ -108,7 +109,7 @@ public class GlobalController {
    public Set<ProductCategory> getProductCategories() {
       Set<ProductCategory> productCategories = null;
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      if (userIsLoggedIn(authentication)) {
+      if (Utils.userIsLoggedIn(authentication)) {
          productCategories = this.productCategoryService.getAllProductCategories();
       }
       return productCategories;

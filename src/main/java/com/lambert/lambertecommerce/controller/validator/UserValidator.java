@@ -1,5 +1,6 @@
 package com.lambert.lambertecommerce.controller.validator;
 
+import com.lambert.lambertecommerce.helpers.validators.FieldValidators;
 import com.lambert.lambertecommerce.model.User;
 import com.lambert.lambertecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
-import static com.lambert.lambertecommerce.helpers.validators.FieldValidators.emailValidator;
 
 @Component
 public class UserValidator implements Validator {
@@ -19,7 +18,7 @@ public class UserValidator implements Validator {
    @Override
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       User user = (User) object;
-      if (!emailValidator(user.getEmail())) {
+      if (!FieldValidators.emailValidator(user.getEmail())) {
          errors.reject("emailFormatError", "Invalid email format." + user.getEmail());
       }
       if (this.userRepepository.existsByEmail(user.getEmail())) {

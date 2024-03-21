@@ -10,16 +10,74 @@
 </div>
 <main>
    <div class="container">
-      <div class="row">
-         <div class="col-12 text-center mt-3">
-            <h1>New Sale</h1>
-            <p th:text="${loggedUser}"></p>
-            <p th:text="${loggedCredentials}"></p>
-         </div>
-      </div>
-      <div class="row">
-         <div class="col-4" th:each="product : ${products}">
-            <div th:replace="fragments/shared/product.html :: product(${product})"></div>
+      <div class="row justify-content-center my-5">
+         <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6 col-xl-6 border rounded p-4">
+            <form id="new-sale-form" method="POST" name="new-sale-form"
+                  th:action="@{/dashboard/publishNewSale}">
+               <div class="text-center mb-4">
+                  <h1>
+                     New Sale
+                     <i class="fab fa-product-hunt mx-1"></i>
+                  </h1>
+               </div>
+               <!-- Campo Nome -->
+               <div class="my-3">
+                  <label class="form-label" for="name">Name</label>
+                  <input class="form-control" id="name" name="name" placeholder="Insert product name"
+                         required th:field="${product.name}" th:maxlength="${fieldSizes.get('PRODUCT_NAME_MAX_LENGTH')}"
+                         th:minlength="${fieldSizes.get('PRODUCT_NAME_MIN_LENGTH')}"
+                         type="text"/>
+                  <span th:errors="${product.name}" th:if="${#fields.hasErrors('product.name')}"
+                        th:style="'color:red'"></span>
+               </div>
+               <!-- Campo Descrizione -->
+               <div class="mb-3">
+                  <label class="form-label" for="description">Description</label>
+                  <textarea class="form-control" id="description" name="description"
+                            placeholder="Insert product description"
+                            required th:field="${product.description}"
+                            th:maxlength="${fieldSizes.get('PRODUCT_DESCRIPTION_MAX_LENGTH')}"
+                            th:minlength="${fieldSizes.get('PRODUCT_DESCRIPTION_MIN_LENGTH')}"
+                            type="text"></textarea>
+               </div>
+               <!-- Campo Prezzo -->
+               <div class="mb-3">
+                  <label class="form-label" for="price">Price ($)</label>
+                  <input class="form-control" id="price" max="10000" min="0" name="price"
+                         placeholder="Insert product price ($)" required step="0.01"
+                         th:field="${product.price}" th:max="${fieldSizes.get('PRODUCT_PRICE_MAX_VALUE')}"
+                         th:min="${fieldSizes.get('PRODUCT_PRICE_MIN_VALUE')}"
+                         type="number"/>
+               </div>
+               <!-- Campo Quantità -->
+               <div class="mb-3">
+                  <label class="form-label" for="quantity">Quantity</label>
+                  <input class="form-control" id="quantity" name="quantity"
+                         placeholder="Insert product quantity"
+                         required th:field="${sale.quantity}" th:max="${fieldSizes.get('SALE_QUANTITY_MAX_VALUE')}"
+                         th:min="${fieldSizes.get('SALE_QUANTITY_MIN_VALUE')}"
+                         type="number"/>
+                  <span th:errors="${sale.quantity}" th:if="${#fields.hasErrors('sale.quantity')}"
+                        th:style="'color:red'"></span>
+               </div>
+               <!-- Campo Categoria (Select) -->
+               <div class="mb-3">
+                  <label class="form-label" for="category">Category</label>
+                  <select class="form-select" id="category" name="category" required th:field="${product.category}">
+                     <option th:each="productCategory : ${productCategories}" th:field="${product.category}"
+                             th:id="${productCategory.name + '#' + productCategory.id}"
+                             th:name="${productCategory.name + '#' + productCategory.id}"
+                             th:text="${productCategory.name}" th:value="${productCategory.id}"></option>
+                  </select>
+               </div>
+               <!-- Pulsante di invio -->
+               <div class="mt-4">
+                  <button class="btn btn-primary form-control py-2" type="submit">
+                     Publish new Sale
+                     <i class="fas fa-plus-square mx-1"></i>
+                  </button>
+               </div>
+            </form>
          </div>
       </div>
    </div>

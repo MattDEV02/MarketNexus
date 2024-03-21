@@ -4,7 +4,7 @@
 <head th:replace="~{fragments/shared/head.html :: head(title = 'DashBoard')}">
 
 </head>
-<link href="/css/dashboard/style.css" rel="stylesheet"/>
+<link href="/css/dashboard/shared/style.css" rel="stylesheet"/>
 <body>
 <div th:replace="fragments/shared/header.html :: header">
 </div>
@@ -25,7 +25,7 @@
             <h1>DashBoard</h1>
          </div>
       </div>
-      <div class="row justify-content-center text-center mt-4 mb-5">
+      <div class="row justify-content-center text-center my-5">
          <div class="col-4" th:each="product : ${products}">
             <div th:replace="fragments/shared/product.html :: product(${product})"></div>
          </div>

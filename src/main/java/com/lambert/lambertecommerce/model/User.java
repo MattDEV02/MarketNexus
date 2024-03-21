@@ -1,5 +1,6 @@
 package com.lambert.lambertecommerce.model;
 
+import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
-import static com.lambert.lambertecommerce.helpers.constants.FieldSizes.*;
 
 @Entity
 @Table(name = "Users")
@@ -20,30 +20,29 @@ public class User {
    private Long id;
 
    @NotBlank
-   @Size(min = NAME_MIN_LENGTH, max = NAME_MAX_LENGTH)
+   @Size(min = FieldSizes.NAME_MIN_LENGTH, max = FieldSizes.NAME_MAX_LENGTH)
    @Column(name = "name")
    private String name;
 
    @NotBlank
-   @Size(min = SURNAME_MIN_LENGTH, max = SURNAME_MAX_LENGTH)
+   @Size(min = FieldSizes.SURNAME_MIN_LENGTH, max = FieldSizes.SURNAME_MAX_LENGTH)
    @Column(name = "surname")
    private String surname;
 
    @DateTimeFormat(pattern = "yyyy-MM-dd")
-   @Past(message = "La data deve essere nel passato")
+   @Past(message = "The birth date must be in the past.")
    @Column(name = "birthdate", nullable = true)
-
    private Date birthDate;
 
    @NotBlank
    @Email
-   @Size(min = EMAIL_MIN_LENGTH, max = EMAIL_MAX_LENGTH)
+   @Size(min = FieldSizes.EMAIL_MIN_LENGTH, max = FieldSizes.EMAIL_MAX_LENGTH)
    @Column(name = "email", unique = true)
    private String email;
 
    @NotNull
-   @Max(10000)
-   @Min(0)
+   @Min(FieldSizes.BALANCE_MIN_VALUE)
+   @Max(FieldSizes.BALANCE_MAX_VALUE)
    @Column(name = "balance")
    private Float balance;
 
@@ -64,7 +63,7 @@ public class User {
 
 
    public Long getId() {
-      return id;
+      return this.id;
    }
 
    public void setId(Long id) {
@@ -72,7 +71,7 @@ public class User {
    }
 
    public String getName() {
-      return name;
+      return this.name;
    }
 
    public void setName(String name) {
@@ -80,7 +79,7 @@ public class User {
    }
 
    public String getSurname() {
-      return surname;
+      return this.surname;
    }
 
    public void setSurname(String surname) {
@@ -167,15 +166,15 @@ public class User {
    @Override
    public String toString() {
       return "User = {" +
-              "id = " + id +
-              ", name = '" + name + '\'' +
-              ", surname = '" + surname + '\'' +
-              ", birthDate = " + birthDate +
-              ", email = '" + email + '\'' +
-              ", balance = " + balance +
-              ", nation = " + nation +
-              ", insertedAt = " + insertedAt +
-              ", updatedAt = " + updatedAt +
+              "id = " + this.id +
+              ", name = '" + this.name + '\'' +
+              ", surname = '" + this.surname + '\'' +
+              ", birthDate = " + this.birthDate +
+              ", email = '" + this.email + '\'' +
+              ", balance = " + this.balance +
+              ", nation = " + this.nation +
+              ", insertedAt = " + this.insertedAt +
+              ", updatedAt = " + this.updatedAt +
               '}';
    }
 

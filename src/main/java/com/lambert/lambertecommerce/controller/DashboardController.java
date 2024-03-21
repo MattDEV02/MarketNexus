@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,7 +28,7 @@ import java.util.Set;
 @RequestMapping("/" + ControllerSuffixes.DASHBOARD)
 public class DashboardController {
 
-   Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(DashboardController.class);
    @Autowired
    private ProductValidator productValidator;
    @Autowired
@@ -83,24 +84,26 @@ public class DashboardController {
       modelAndView.addObject("product", new Product());
       return modelAndView;
    }
-/*
+
    @PostMapping("/publishNewSale")
-   public ModelAndView newProduct(@ModelAttribute("artist") Product product) {
-      final String registrationSuccessful = "dashboard/product/index.html";
-      final String registrationError = "dashboard/newProduct.html";
+   public ModelAndView newProduct(@Valid @ModelAttribute("product") Product product,
+                                  BindingResult productBindingResult) {
+      final String publishSuccessful = "dashboard/product/index.html";
+      final String publishError = "dashboard/newProduct.html";
       ModelAndView modelAndView = new ModelAndView();
-      if (!productService.existsById(product.getId())) {
+      this.productValidator.validate(product, productBindingResult);
+      if (!productBindingResult.hasErrors()) {
          this.productService.saveProduct(product);
-         // TODO: successful message
          modelAndView.addObject("product", product);
-         modelAndView.setViewName(registrationSuccessful);
+         modelAndView.setViewName(publishSuccessful);
       } else {
-         modelAndView.addObject("errorMessage", "Product already exists.");
-         modelAndView.setViewName(registrationError);
+         modelAndView.addObject("errorMessage", "Product not valid, retry.");
+         modelAndView.setViewName(publishError);
       }
       return modelAndView;
    }
 
+   /*
    @GetMapping("/product/{id}")
    public ModelAndView getProductById(@PathVariable("id") Long id) {
       ModelAndView modelAndView = new ModelAndView("dashboard/product/index.html");

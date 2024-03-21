@@ -1,6 +1,8 @@
 package com.lambert.lambertecommerce.model;
 
+import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 import java.time.LocalDateTime;
@@ -15,12 +17,14 @@ public class Cart {
    @Column(name = "id")
    private Long id;
 
-   @Min(1)
+   @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
+   @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
    @Column(name = "quantity")
    private Integer quantity;
 
    @ManyToOne
    @JoinColumn(name = "_user", nullable = false)
+   @Min(1)
    private User user;
 
    @ManyToOne

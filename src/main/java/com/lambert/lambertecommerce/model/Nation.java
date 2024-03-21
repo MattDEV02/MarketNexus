@@ -1,5 +1,6 @@
 package com.lambert.lambertecommerce.model;
 
+import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,7 +20,7 @@ public class Nation {
 
    @NotBlank
    @Column(name = "name")
-   @Size(min = 3, max = 30)
+   @Size(min = (FieldSizes.NATION_NAME_MIN_LENGTH), max = (FieldSizes.NATION_NAME_MAX_LENGTH))
    private String name;
 
    @OneToMany(mappedBy = "nation")

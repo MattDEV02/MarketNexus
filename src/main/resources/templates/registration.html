@@ -42,8 +42,8 @@
    </div>
    
    <div>
-      <label for="balance">Balance (euros):</label>
-      <input id="balance" name="balance" placeholder="euros" required step="0.1"
+      <label for="balance">Balance ($):</label>
+      <input id="balance" name="balance" placeholder="Insert your balance ($)" required step="0.1"
              th:field="${user.balance}" th:max="${fieldSizes.get('BALANCE_MAX_VALUE')}"
              th:min="${fieldSizes.get('BALANCE_MIN_VALUE')}" type="number"/>
       <span th:errors="${user.balance}" th:if="${#fields.hasErrors('user.balance')}" th:style="'color:red'"></span>
