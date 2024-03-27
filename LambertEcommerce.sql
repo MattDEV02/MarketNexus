@@ -12,7 +12,7 @@ COMMENT ON SCHEMA LambertEcommerce IS 'LambertEcommerce SQL DataBase.';
 
 SELECT CURRENT_DATABASE();
 
-SET search_path TO LambertEcommerce;
+SET SEARCH_PATH TO LambertEcommerce;
 
 SELECT CURRENT_SCHEMA();
 
@@ -94,17 +94,20 @@ VALUES ('Electronics', 'Electronics products'),
 
 CREATE TABLE IF NOT EXISTS LambertEcommerce.Products
 (
-    id          SERIAL      NOT NULL PRIMARY KEY,
-    name        VARCHAR(30) NOT NULL,
-    description VARCHAR(60) NOT NULL,
-    price       FLOAT       NOT NULL,
-    category    INTEGER     NOT NULL,
+    id                  SERIAL      NOT NULL PRIMARY KEY,
+    name                VARCHAR(30) NOT NULL,
+    description         VARCHAR(60) NOT NULL,
+    price               FLOAT       NOT NULL,
+    image_relative_path TEXT        NOT NULL,
+    category            INTEGER     NOT NULL,
     CONSTRAINT products_productcategories_fk FOREIGN KEY (category) REFERENCES LamberteCommerce.product_categories (id) ON DELETE CASCADE,
     CONSTRAINT products_id_min_value_check CHECK (LambertEcommerce.Products.id >= 1),
     CONSTRAINT products_name_min_length_check CHECK (LENGTH(LambertEcommerce.Products.name) >= 3),
-    CONSTRAINT products_name_valid_check CHECK (LambertEcommerce.Products.name ~ '^[^\\\\/:*?"<>|]+$'::TEXT),
+    CONSTRAINT products_name_valid_check CHECK (LambertEcommerce.Products.name ~ '^[^\\\\/:*?"<>|]*$'::TEXT),
     CONSTRAINT products_price_min_value_check CHECK (LambertEcommerce.Products.price > 0),
     CONSTRAINT products_description_min_length_check CHECK (LENGTH(LambertEcommerce.Products.description) >= 3),
+    CONSTRAINT products_imagerelativepath_min_length_check CHECK (LENGTH(LambertEcommerce.Products.image_relative_path) >= 3),
+    CONSTRAINT products_imagerelativepath_min_valid_check CHECK (POSITION('/' IN LambertEcommerce.Products.image_relative_path) > 0),
     CONSTRAINT products_category_min_value_check CHECK (LambertEcommerce.Products.category >= 1)
 );
 
@@ -112,6 +115,35 @@ ALTER TABLE LambertEcommerce.Products
     OWNER TO postgres;
 
 COMMENT ON TABLE LambertEcommerce.Products IS 'LambertEcommerce Products.';
+
+CREATE OR REPLACE FUNCTION LambertEcommerce.GENERATE_PRODUCT_RELATIVEIMAGEPATH_FUNCTION(product_id INT, product_name TEXT)
+    RETURNS TEXT AS
+$$
+DECLARE
+    base_path CONSTANT TEXT := '/images/products/';
+    extension CONSTANT TEXT := '.jpeg';
+BEGIN
+    RETURN base_path || product_id || '/' || LOWER(product_name) || extension;
+END;
+$$
+    LANGUAGE plpgsql;
+
+CREATE
+    OR REPLACE FUNCTION LambertEcommerce.INSERT_PRODUCT_RELATIVEIMAGEPATH_FUNCTION()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    NEW.image_relative_path = LambertEcommerce.GENERATE_PRODUCT_RELATIVEIMAGEPATH_FUNCTION(NEW.ID, NEW.name);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER product_imagerelativepath_trigger
+    BEFORE INSERT
+    ON LambertEcommerce.Products
+    FOR EACH ROW
+EXECUTE FUNCTION LambertEcommerce.INSERT_PRODUCT_RELATIVEIMAGEPATH_FUNCTION();
+
 
 INSERT INTO LambertEcommerce.Products (name, price, description, category)
 VALUES ('Smartphone', 599.99, 'High-end smartphone', 1),
@@ -148,11 +180,11 @@ CREATE TABLE IF NOT EXISTS LambertEcommerce.Users
     CONSTRAINT users_birthdate_max_value_check CHECK (LambertEcommerce.Users.birthdate <= NOW()),
     CONSTRAINT users_email_min_length_check CHECK (LENGTH(LambertEcommerce.Users.email) >= 3),
     CONSTRAINT users_email_valid_check CHECK (LambertEcommerce.Users.email ~
-                                              '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$'::TEXT),
+                                              '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'::TEXT),
     CONSTRAINT users_balance_min_value_check CHECK (LambertEcommerce.Users.balance >= 0),
     CONSTRAINT users_balance_max_value_check CHECK (LambertEcommerce.Users.balance <= 10000),
     CONSTRAINT users_nation_min_value_check CHECK (LambertEcommerce.Users.nation >= 1),
-    CONSTRAINT users_insertedat_min_value_check CHECK (True), -- LambertEcommerce.Users.inserted_at <= NOW() - INTERVAL '1 minutes'
+    CONSTRAINT users_insertedat_min_value_check CHECK (LambertEcommerce.Users.inserted_at >= NOW() - INTERVAL '1 minutes'),
     CONSTRAINT users_insertedat_updatedat_value_check CHECK (LambertEcommerce.Users.inserted_at <=
                                                              LambertEcommerce.Users.updated_at)
 );
@@ -181,7 +213,8 @@ $$ LANGUAGE plpgsql;
 
 INSERT INTO LambertEcommerce.Users (name, surname, email, birthdate, balance, nation)
 VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2024-03-14', 22, 1),
-       ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2);
+       ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2),
+       ('Gabriel', 'Muscedere', 'gabrielmuscedere@gmail.com', '2002-03-27', 0.1, 6);
 
 
 CREATE TABLE IF NOT EXISTS LambertEcommerce.Credentials
@@ -207,7 +240,8 @@ ALTER TABLE LambertEcommerce.Credentials
 
 INSERT INTO LambertEcommerce.Credentials (username, password, role, _user)
 VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'ALL', 1),
-       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'ALL', 2);
+       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'ALL', 2),
+       ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'ALL', 3);
 
 -- N.B. = La password è criptata da spring boot e arriva a 60 caratteri.
 
@@ -227,7 +261,7 @@ CREATE TABLE LambertEcommerce.Sales
     CONSTRAINT sale_user_min_value_check CHECK (LambertEcommerce.Sales._user >= 1),
     CONSTRAINT sale_product_min_value_check CHECK (LambertEcommerce.Sales.product >= 1),
     CONSTRAINT sale_quantity_min_value_check CHECK (LambertEcommerce.Sales.quantity >= 0),
-    CONSTRAINT sale_insertedat_min_value_check CHECK (LambertEcommerce.Sales.inserted_at >= NOW()),
+    -- CONSTRAINT sale_insertedat_min_value_check CHECK (LambertEcommerce.Sales.inserted_at >= NOW()),
     CONSTRAINT sale_insertedat_updatedat_value_check CHECK (LambertEcommerce.Sales.inserted_at <=
                                                             LambertEcommerce.Sales.updated_at)
 );
@@ -333,6 +367,7 @@ ALTER TABLE Lambertecommerce.Orders
 INSERT INTO LambertEcommerce.Orders(quantity, _user, sale)
 VALUES (1, 1, 6),
        (1, 1, 7);
+
 
 /*
 

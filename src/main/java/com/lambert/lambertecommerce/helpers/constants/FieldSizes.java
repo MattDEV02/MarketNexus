@@ -29,8 +29,13 @@ public class FieldSizes {
    public static final int PRODUCT_DESCRIPTION_MIN_LENGTH = 3;
    public static final int PRODUCT_DESCRIPTION_MAX_LENGTH = 60;
 
+   public static final int PRODUCT_IMAGERELATIVEPATH_MIN_LENGTH = 3;
+   //public static final int PRODUCT_IMAGERELATIVEPATH_MAX_LENGTH = 60;
+   public static final int PRODUCT_IMAGE_MAX_BYTE_SIZE = 5000000; // 5 MB
+
    public static final float PRODUCT_PRICE_MIN_VALUE = 1;
    public static final float PRODUCT_PRICE_MAX_VALUE = 10000;
+
 
    public static final int SALE_QUANTITY_MIN_VALUE = 1;
    public static final int SALE_QUANTITY_MAX_VALUE = 10;
@@ -43,4 +48,5 @@ public class FieldSizes {
 
    public static final int PRODUCT_CATEGORY_DESCRIPTION_MIN_LENGTH = 3;
    public static final int PRODUCT_CATEGORY_DESCRIPTION_MAX_LENGTH = 10;
+
 }

@@ -9,7 +9,7 @@
          <img th:replace="fragments/shared/logo.html :: logo()"/>
       </a>
       <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-         <ul class="navbar-nav me-5 mb-2 mb-lg-0 mx-3">
+         <ul class="navbar-nav me-5 mb-2 mb-lg-0 mx-2">
             <li class="nav-item">
                <a aria-current="page" class="nav-link active" th:href="@{/dashboard}">
                   Home
@@ -41,8 +41,8 @@
                </a>
             </li>
          </ul>
-         <form class="d-flex mx-5" id="search-product-form" method="GET"
-               name="search-product-form" th:action="@{/dashboard/searchProduct}">
+         <form class="d-flex mx-4" id="search-product-form" method="GET"
+               name="search-product-form" th:action="@{/dashboard/searchProducts}">
             <label class="form-label visually-hidden" for="product-name"></label>
             <input class="form-control p-2 mx-3" id="product-name"
                    name="product-name" placeholder="Search a Product"
@@ -55,8 +55,8 @@
                        th:name="${productCategory.name + '#' + productCategory.id}"
                        th:text="${productCategory.name}" th:value="${productCategory.id}"></option>
             </select>
-            <button class="form-control btn btn-outline-success" id="submit" name="submit"
-                    type="submit">
+            <button class="form-control btn btn-outline-success form-control mx-3" id="submit" name="submit"
+                    type="submit" value="submit">
                Search
                <i class="fas fa-search mx-1"></i>
             </button>

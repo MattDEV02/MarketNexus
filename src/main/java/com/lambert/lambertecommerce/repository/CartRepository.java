@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Set;
 
 public interface CartRepository extends CrudRepository<Cart, Long> {
-   // Cart findByUserSellingInsertedat(User user, Sale selling, LocalDateTime insertedAt);
+   // Cart findByUserSaleInsertedat(User user, Sale sale, LocalDateTime insertedAt);
 
    Set<Cart> findAllByUser(User user);
 }

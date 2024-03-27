@@ -1,6 +1,7 @@
 package com.lambert.lambertecommerce.authentication;
 
 import com.lambert.lambertecommerce.helpers.constants.ControllerSuffixes;
+import com.lambert.lambertecommerce.helpers.constants.ProjectPaths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,7 @@ import javax.sql.DataSource;
 //@EnableWebMvc
 public class AuthConfiguration implements WebMvcConfigurer {
 
-   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:/static/"};
+   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + ProjectPaths._static + '/'};
    @Autowired
    private DataSource dataSource;
 

@@ -1,9 +1,11 @@
 package com.lambert.lambertecommerce.model;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.constants.TemporalFormats;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -13,12 +15,12 @@ import java.util.Objects;
 public class Order {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "id")
+   @Column(name = "id", nullable = false)
    private Long id;
 
    @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
    @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
-   @Column(name = "quantity")
+   @Column(name = "quantity", nullable = false)
    private Integer quantity;
 
    @ManyToOne
@@ -29,10 +31,12 @@ public class Order {
    @JoinColumn(name = "sale", nullable = false)
    private Sale sale;
 
-   @Column(name = "inserted_at")
+   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @Column(name = "inserted_at", nullable = false)
    private LocalDateTime insertedAt;
 
-   @Column(name = "updated_at")
+   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @Column(name = "updated_at", nullable = false)
    private LocalDateTime updatedAt;
 
    public Long getId() {
@@ -59,11 +63,11 @@ public class Order {
       this.user = user;
    }
 
-   public Sale getSelling() {
+   public Sale getSale() {
       return this.sale;
    }
 
-   public void setSelling(Sale sale) {
+   public void setSale(Sale sale) {
       this.sale = sale;
    }
 
@@ -99,27 +103,27 @@ public class Order {
    }
 
    @Override
-   public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || this.getClass() != o.getClass()) return false;
-      Order selling = (Order) o;
-      return Objects.equals(this.getId(), selling.getId()) || (Objects.equals(this.getUser(), selling.getUser()) && Objects.equals(this.getSelling(), selling.getSelling()) && Objects.equals(this.getInsertedAt(), selling.getInsertedAt()));
+   public boolean equals(Object object) {
+      if (this == object) return true;
+      if (object == null || this.getClass() != object.getClass()) return false;
+      Order order = (Order) object;
+      return Objects.equals(this.getId(), order.getId()) || (Objects.equals(this.getUser(), order.getUser()) && Objects.equals(this.getSale(), order.getSale()) && Objects.equals(this.getInsertedAt(), order.getInsertedAt()));
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId());
+      return Objects.hash(this.getId(), this.getUser(), this.getSale(), this.getInsertedAt());
    }
 
    @Override
    public String toString() {
-      return "Order{" +
-              "id=" + this.id +
-              ", quantity=" + this.quantity +
-              ", user=" + this.user +
-              ", sale=" + this.sale +
-              ", insertedAt=" + this.insertedAt +
-              ", updatedAt=" + this.updatedAt +
-              '}';
+      return "Order: {" +
+              " id = " + this.getId().toString() +
+              ", quantity = " + this.getQuantity().toString() +
+              ", user = " + this.getUser().toString() +
+              ", sale = " + this.getSale().toString() +
+              ", insertedAt = " + this.getInsertedAt().toString() +
+              ", updatedAt = " + this.getUpdatedAt().toString() +
+              " }";
    }
 }

@@ -1,6 +1,7 @@
 package com.lambert.lambertecommerce.service;
 
 import com.lambert.lambertecommerce.model.*;
+import com.lambert.lambertecommerce.repository.ProductCategoryRepository;
 import com.lambert.lambertecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,6 +16,8 @@ import java.util.Set;
 public class ProductService {
    @Autowired
    protected ProductRepository productRepository;
+   @Autowired
+   protected ProductCategoryRepository productCategoryRepository;
    @Autowired
    protected CartService cartService;
    @Autowired
@@ -37,14 +40,14 @@ public class ProductService {
    /**
     * This method saves a Product in the DB.
     *
-    * @param Product the Product to save into the DB
+    * @param product the Product to save into the DB
     * @return the saved Product
     * @throws DataIntegrityViolationException if a Product with the same Productname
     *                                         as the passed Product already exists in the DB
     */
    @Transactional
-   public Product saveProduct(Product Product) {
-      return this.productRepository.save(Product);
+   public Product saveProduct(Product product) {
+      return this.productRepository.save(product);
    }
 
    /**
@@ -63,7 +66,7 @@ public class ProductService {
    }
 
    @Transactional
-   public Set<Product> findAllProductSellingByUser(User user) {
+   public Set<Product> findAllProductSaleByUser(User user) {
       Long userId = user.getId();
       Set<Product> result = new HashSet<Product>();
       Set<Sale> saleByUser = this.saleService.findAllByUser(user);
@@ -82,7 +85,7 @@ public class ProductService {
       Set<Order> ordersByUser = this.orderService.findAllByUser(user);
       for (Order order : ordersByUser) {
          if (order.getUser().getId().equals(userId)) {
-            result.add(order.getSelling().getProduct());
+            result.add(order.getSale().getProduct());
          }
       }
       return result;
@@ -95,14 +98,41 @@ public class ProductService {
       Set<Cart> cartsByUser = this.cartService.findAllByUser(user);
       for (Cart cart : cartsByUser) {
          if (cart.getUser().getId().equals(userId)) {
-            result.add(cart.getSelling().getProduct());
+            result.add(cart.getSale().getProduct());
          }
       }
       return result;
    }
 
-   public Object findById(Long id) {
-      return this.productRepository.findById(id);
+
+   @Transactional
+   public Set<Product> findAllByName(String productName) {
+      return this.productRepository.findAllByName(productName);
+   }
+
+   @Transactional
+   public Set<Product> findAllByCategory(Long productCategoryId) {
+      Set<Product> result = null;
+      Optional<ProductCategory> productCategory = this.productCategoryRepository.findById(productCategoryId);
+      if (productCategory.isPresent()) {
+         result = this.productRepository.findAllByCategory(productCategory.get());
+      }
+      return result;
+   }
+
+   @Transactional
+   public Set<Product> findAllByNameAndCategory(String productName, Long productCategoryId) {
+      Set<Product> result = null;
+      Optional<ProductCategory> productCategory = this.productCategoryRepository.findById(productCategoryId);
+      if (productCategory.isPresent()) {
+         result = this.productRepository.findAllByNameAndCategory(productName, productCategory.get());
+      }
+      return result;
+   }
+
+   public Product findById(Long id) {
+      Optional<Product> product = this.productRepository.findById(id);
+      return product.orElse(null);
    }
 
    public boolean existsById(Long id) {

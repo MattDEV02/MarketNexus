@@ -10,7 +10,8 @@ public class FieldValidators {
 
    private static final Pattern EMAIL_PATTERN = Pattern.compile(FieldValidators.EMAIL_REGEX);
 
-   private static final String PRODUCT_NAME_REGEX = "[\\\\/:*?\"<>|]";
+   private static final String PRODUCT_NAME_REGEX = "[^\\\\/:*?\"<>|]*"; // [^\\\\/:*?\"<>|]*
+
 
    private static final Pattern PRODUCT_NAME_PATTERN = Pattern.compile(FieldValidators.PRODUCT_NAME_REGEX);
 

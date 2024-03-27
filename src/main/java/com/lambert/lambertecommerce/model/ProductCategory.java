@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,21 +16,14 @@ public class ProductCategory {
    private Long id;
 
    @NotBlank
-   @Column(name = "name")
-   @Size(min = FieldSizes.PRODUCT_CATEGORY_NAME_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_NAME_MIN_LENGTH)
+   @Column(name = "name", nullable = false)
+   @Size(min = FieldSizes.PRODUCT_CATEGORY_NAME_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_NAME_MAX_LENGTH)
    private String name;
 
    @NotBlank
-   @Column(name = "description")
+   @Column(name = "description", nullable = false)
    @Size(min = FieldSizes.PRODUCT_CATEGORY_DESCRIPTION_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_DESCRIPTION_MAX_LENGTH)
    private String description;
-
-   @OneToMany(mappedBy = "category")
-   private List<Product> products;
-
-   public ProductCategory() {
-      this.products = new LinkedList<Product>();
-   }
 
    public Long getId() {
       return this.id;
@@ -58,33 +49,25 @@ public class ProductCategory {
       this.description = description;
    }
 
-   public List<Product> getProducts() {
-      return this.products;
-   }
-
-   public void setProducts(List<Product> products) {
-      this.products = products;
-   }
-
    @Override
    public int hashCode() {
-      return Objects.hash(this.id);
+      return Objects.hash(this.getId(), this.getName());
    }
 
    @Override
-   public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || this.getClass() != o.getClass()) return false;
-      ProductCategory productCategory = (ProductCategory) o;
+   public boolean equals(Object object) {
+      if (this == object) return true;
+      if (object == null || this.getClass() != object.getClass()) return false;
+      ProductCategory productCategory = (ProductCategory) object;
       return Objects.equals(this.getId(), productCategory.getId()) || Objects.equals(this.getName(), productCategory.getName());
    }
 
    @Override
    public String toString() {
-      return "ProductCategory{" +
-              "id=" + this.id +
-              ", name='" + this.name + '\'' +
-              ", description='" + this.description + '\'' +
-              '}';
+      return "ProductCategory: {" +
+              " id = " + this.getId().toString() +
+              ", name = '" + this.getName() + '\'' +
+              ", description = '" + this.getDescription() + '\'' +
+              " }";
    }
 }

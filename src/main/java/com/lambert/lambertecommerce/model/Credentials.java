@@ -18,19 +18,19 @@ public class Credentials {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "id")
+   @Column(name = "id", nullable = false)
    @Min(1)
    private Long id;
    @NotBlank
    @Size(min = FieldSizes.USERNAME_MIN_LENGTH, max = FieldSizes.USERNAME_MAX_LENGTH)
-   @Column(name = "username", unique = true)
+   @Column(name = "username", unique = true, nullable = false)
    @NotBlank
    private String username;
    @NotBlank
-   @Column(name = "password")
+   @Column(name = "password", nullable = false)
    private String password;
 
-   @Column(name = "role")
+   @Column(name = "role", nullable = false)
    @Size(min = FieldSizes.ROLE_MIN_LENGTH, max = FieldSizes.ROLE_MAX_LENGTH)
    private String role;
    @OneToOne
@@ -79,24 +79,24 @@ public class Credentials {
 
    @Override
    public String toString() {
-      return "Credentials = {" +
-              "id = " + this.id +
-              ", username = '" + this.username + '\'' +
-              ", password = '" + this.password + '\'' +
-              ", user = " + this.user +
-              '}';
+      return "Credentials: {" +
+              " id = " + this.getId().toString() +
+              ", username = '" + this.getUsername() + '\'' +
+              ", password = '" + this.getPassword() + '\'' +
+              ", user = " + this.getUser().toString() +
+              " }";
    }
 
    @Override
-   public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || this.getClass() != o.getClass()) return false;
-      Credentials that = (Credentials) o;
-      return Objects.equals(this.getId(), that.getId());
+   public boolean equals(Object object) {
+      if (this == object) return true;
+      if (object == null || this.getClass() != object.getClass()) return false;
+      Credentials credentials = (Credentials) object;
+      return Objects.equals(this.getId(), credentials.getId()) || Objects.equals(this.getUser(), credentials.getUser()) || Objects.equals(this.getUsername(), credentials.getUsername());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId());
+      return Objects.hash(this.getId(), this.getUser(), this.getUsername());
    }
 }

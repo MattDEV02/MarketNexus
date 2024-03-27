@@ -4,7 +4,8 @@
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Account')}">
 
 </head>
-<link href="/css/dashboard/shared/style.css" rel="stylesheet"/>
+<link rel="stylesheet" th:href="@{/css/dashboard/shared/style.css}"/>
+<link rel="stylesheet" th:href="@{/css/dashboard/account/style.css}"/>
 <body>
 <div th:replace="fragments/shared/header.html :: header">
 </div>
@@ -15,30 +16,44 @@
             <h1>Account</h1>
          </div>
       </div>
-      <div class="row justify-content-center mt-4">
-         <div class="col-md-5 text-center mx-3">
-            <h3 class="mb-5">User informations</h3>
-            <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'name', type = 'text', value =  ${loggedUser.name})"></div>
-            <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'surname', type = 'text', value =  ${loggedUser.surname})"></div>
-            <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property ='birth date', type = 'date', value = ${#dates.format(loggedUser.birthDate, 'yyyy-MM-dd')})"></div>
-            <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'balance', type = 'number', value = ${loggedUser.balance})"></div>
-            <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'nation', type = 'text', value = ${loggedUser.nation.name}, isSelect = true)"></div>
+      <form class="form-group" id="update-account-form" method="POST" name="update-account-form" th:action="@{/}">
+         <div class="row justify-content-center p-4 border mt-4">
+            <div class="col-md-5 text-center mx-3">
+               <h3 class="mb-5">User informations</h3>
+               <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'name', type = 'text', value =  ${loggedUser.name})"></div>
+               <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'surname', type = 'text', value =  ${loggedUser.surname})"></div>
+               <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property ='birth date', type = 'date', value = ${#dates.format(loggedUser.birthDate, 'yyyy-MM-dd')})"></div>
+               <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'balance', type = 'number', value = ${loggedUser.balance})"></div>
+               <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'nation', type = 'text', value = ${loggedUser.nation}, isSelect = true)"></div>
+            </div>
+            <div class="col-md-5 text-center mx-3">
+               <h3 class="mb-5">Account informations</h3>
+               <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'username', type = 'text', value = ${loggedCredentials.username})"></div>
+               <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'email', type = 'email', value = ${loggedUser.email}, isReadOnly = true)"></div>
+               <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'registered', type = 'date', value = ${#temporals.format(loggedUser.insertedAt, 'dd/MM/YYYY HH:mm')}, isReadOnly = true)"></div>
+               <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'updated', type = 'date', value = ${#temporals.format(loggedUser.updatedAt, 'dd/MM/YYYY HH:mm')}, isReadOnly = true)"></div>
+               <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'password', type = 'text', value = '', isReadOnly = true)"></div>
+            </div>
+            <div class="row justify-content-center mt-5 mb-2">
+               <div class="col-3">
+                  <button class="btn btn-lg btn-outline-success form-control py-2" id="submit" type="submit">
+                     Confirm
+                  </button>
+               </div>
+               <div class="col-3">
+                  <button class="btn btn-lg btn-outline-danger form-control py-2">
+                     Cancel
+                  </button>
+               </div>
+            </div>
          </div>
-         <div class="col-md-5 text-center mx-3">
-            <h3 class="mb-5">Account informations</h3>
-            <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'username', type = 'text', value = ${loggedCredentials.username})"></div>
-            <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'email', type = 'email', value = ${loggedUser.email}, isReadOnly = true)"></div>
-            <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'registered', type = 'date', value = ${#temporals.format(loggedUser.insertedAt, 'dd/MM/YYYY HH:mm')}, isReadOnly = true)"></div>
-            <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'updated', type = 'date', value = ${#temporals.format(loggedUser.updatedAt, 'dd/MM/YYYY HH:mm')}, isReadOnly = true)"></div>
-            <div th:replace="fragments/dashboard/account/userInformationRow.html :: userInformationRow(property = 'password', type = 'text', value = '', isReadOnly = true)"></div>
-         </div>
-      </div>
+      </form>
       <div class="row text-center mt-5">
          <div class="col-12">
             <h3>Your Sale products</h3>
          </div>
       </div>
-      <div class="row justify-content-center text-center my-5">
+      <div class="row justify-content-center text-center mb-5">
          <div class="col-4" th:each="saleProducts : ${salesProducts}">
             <div th:replace="fragments/shared/product.html :: product(${saleProducts})"></div>
          </div>

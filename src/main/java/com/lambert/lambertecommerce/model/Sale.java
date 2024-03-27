@@ -1,9 +1,11 @@
 package com.lambert.lambertecommerce.model;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.constants.TemporalFormats;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -30,10 +32,12 @@ public class Sale {
    @JoinColumn(name = "product", nullable = false)
    private Product product;
 
-   @Column(name = "inserted_at")
+   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @Column(name = "inserted_at", nullable = false)
    private LocalDateTime insertedAt;
 
-   @Column(name = "updated_at")
+   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @Column(name = "updated_at", nullable = false)
    private LocalDateTime updatedAt;
 
    public Long getId() {
@@ -100,27 +104,27 @@ public class Sale {
    }
 
    @Override
-   public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || this.getClass() != o.getClass()) return false;
-      Sale sale = (Sale) o;
+   public boolean equals(Object object) {
+      if (this == object) return true;
+      if (object == null || this.getClass() != object.getClass()) return false;
+      Sale sale = (Sale) object;
       return Objects.equals(this.getId(), sale.getId()) || (Objects.equals(this.getUser(), sale.getUser()) && Objects.equals(this.getProduct(), sale.getProduct()) && Objects.equals(this.getInsertedAt(), sale.getInsertedAt()));
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId());
+      return Objects.hash(this.getId(), this.getUser(), this.getProduct(), this.getInsertedAt());
    }
 
    @Override
    public String toString() {
-      return "Sale{" +
-              "id=" + id +
-              ", quantity=" + quantity +
-              ", user=" + user +
-              ", product=" + product +
-              ", insertedAt=" + insertedAt +
-              ", updatedAt=" + updatedAt +
-              '}';
+      return "Sale: {" +
+              " id = " + this.getId().toString() +
+              ", quantity = " + this.getQuantity().toString() +
+              ", user = " + this.getUser().toString() +
+              ", product = " + this.getProduct().toString() +
+              ", insertedAt = " + this.getInsertedAt().toString() +
+              ", updatedAt = " + this.getUpdatedAt().toString() +
+              " }";
    }
 }

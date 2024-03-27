@@ -17,7 +17,7 @@
       <label for="name">Nome:</label>
       <input id="name" name="name" placeholder="Insert your name" required th:field="${user.name}"
              th:maxlength="${fieldSizes.get('NAME_MAX_LENGTH')}"
-             th:minlength="${fieldSizes.get('NAME_MIN_LENGTH')}" type="text"/>
+             th:minlength="${fieldSizes.get('NAME_MIN_LENGTH')}" th:object="${user}" type="text"/>
       <span th:errors="${user.name}" th:if="${#fields.hasErrors('user.name')}" th:style="'color:red'">
    </span>
       <br><br>
@@ -28,7 +28,7 @@
       <input id="surname" name="surname"
              placeholder="Insert your surname" required th:field="${user.surname}"
              th:maxlength="${fieldSizes.get('SURNAME_MAX_LENGTH')}"
-             th:minlength="${fieldSizes.get('SURNAME_MIN_LENGTH')}" type="text"/>
+             th:minlength="${fieldSizes.get('SURNAME_MIN_LENGTH')}" th:object="${user}" type="text"/>
       <span th:errors="${user.surname}" th:if="${#fields.hasErrors('user.surname')}" th:style="'color:red'"></span>
       <br><br>
    </div>
@@ -36,7 +36,7 @@
    <div>
       <label for="birth-date">Date of birth:</label>
       <input id="birth-date" min="1900-01-01" name="birth-date" required
-             th:field="${user.birthDate}" th:fieldformat="'yyyy-MM-dd'" type="date"/>
+             th:field="${user.birthDate}" th:fieldformat="'yyyy-MM-dd'" th:object="${user}" type="date"/>
       <span th:errors="${user.birthDate}" th:if="${#fields.hasErrors('user.birthDate')}" th:style="'color:red'"></span>
       <br><br>
    </div>
@@ -45,7 +45,7 @@
       <label for="balance">Balance ($):</label>
       <input id="balance" name="balance" placeholder="Insert your balance ($)" required step="0.1"
              th:field="${user.balance}" th:max="${fieldSizes.get('BALANCE_MAX_VALUE')}"
-             th:min="${fieldSizes.get('BALANCE_MIN_VALUE')}" type="number"/>
+             th:min="${fieldSizes.get('BALANCE_MIN_VALUE')}" th:object="${user}" type="number"/>
       <span th:errors="${user.balance}" th:if="${#fields.hasErrors('user.balance')}" th:style="'color:red'"></span>
       <br><br>
    </div>
@@ -55,7 +55,7 @@
       <input id="email" name="email"
              placeholder="Insert your email" required th:field="${user.email}"
              th:maxlength="${fieldSizes.get('EMAIL_MAX_LENGTH')}"
-             th:minlength="${fieldSizes.get('EMAIL_MIN_LENGTH')}" type="email"/>
+             th:minlength="${fieldSizes.get('EMAIL_MIN_LENGTH')}" th:object="${user}" type="email"/>
       <span th:errors="${user.email}" th:if="${#fields.hasErrors('user.email')}" th:style="'color:red'"></span>
       <span th:style="'color:red'" th:text="${emailUniqueError}"></span>
       <span th:style="'color:red'" th:text="${emailFormatError}"></span>
@@ -68,7 +68,7 @@
              placeholder="Insert your username" required th:field="${credentials.username}"
              th:maxlength="${fieldSizes.get('USERNAME_MAX_LENGTH')}"
              th:minlength="${fieldSizes.get('USERNAME_MIN_LENGTH')}"
-             type="text">
+             th:object="${credentials}" type="text">
       <span th:errors="${credentials.username}" th:if="${#fields.hasErrors('credentials.username')}"
             th:style="'color:red'"></span>
       <span th:style="'color:red'" th:text="${usernameUniqueError}"></span>
@@ -80,7 +80,7 @@
       <input id="password" name="password"
              placeholder="Insert your password" required th:field="${credentials.password}"
              th:maxlength="${fieldSizes.get('PASSWORD_MAX_LENGTH')}"
-             th:minlength="${fieldSizes.get('PASSWORD_MIN_LENGTH')}" type="password"/>
+             th:minlength="${fieldSizes.get('PASSWORD_MIN_LENGTH')}" th:object="${credentials}" type="password"/>
       <button class="btn btn-outline-secondary" id="toggle-password" type="button">
          <!-- Icona dell'occhio per mostrare/nascondere la password -->
          <i class="fas fa-eye" id="eye-icon"></i>
@@ -105,7 +105,7 @@
    
    <div>
       <label for="nation">Nation:</label>
-      <select id="nation" name="nation" required th:field="${user.nation}">
+      <select id="nation" name="nation" required th:field="${user.nation}" th:object="${user}">
          <option th:each="nation : ${nations}" th:field="${user.nation}" th:id="${nation.name + '#' + nation.id}"
                  th:name="${nation.name + '#' + nation.id}"
                  th:text="${nation.name}" th:value="${nation.id}"></option>

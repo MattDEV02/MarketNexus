@@ -54,10 +54,10 @@ public class AuthenticationController {
                                     BindingResult userBindingResult,
                                     @Valid @ModelAttribute("credentials") Credentials credentials,
                                     BindingResult credentialsBindingResult,
-                                    @RequestParam("confirm-password") String confirmPassword) throws IllegalAccessException {
-      final String registrationSuccessful = "registrationSuccessful.html";
+                                    @RequestParam("confirm-password") String confirmPassword) {
+      final String registrationSuccessful = "redirect:/login?registrationSuccessful=true";
       final String registrationError = "registration.html";
-      ModelAndView modelAndView = new ModelAndView();
+      ModelAndView modelAndView = new ModelAndView(registrationError);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
       this.credentialsValidator.validate(credentials, credentialsBindingResult);
@@ -74,7 +74,6 @@ public class AuthenticationController {
          for (ObjectError error : credentialsBindingResult.getGlobalErrors()) {
             modelAndView.addObject(error.getCode(), error.getDefaultMessage());
          }
-         modelAndView.setViewName(registrationError);
       }
       return modelAndView;
    }
@@ -93,7 +92,7 @@ public class AuthenticationController {
 
    @GetMapping(value = "/login")
    public ModelAndView showLoginForm() {
-      ModelAndView modelAndView = new ModelAndView("login");
+      ModelAndView modelAndView = new ModelAndView("login.html");
       // TODO: Vedere se si possono rimuovere.
       modelAndView.addObject("user", new User());
       modelAndView.addObject("credentials", new Credentials());

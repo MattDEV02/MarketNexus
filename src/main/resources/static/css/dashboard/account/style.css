@@ -1,0 +1,11 @@
+.btn:disabled {
+   opacity: 1;
+!important;
+}
+
+[type="submit"] {
+   border: 1px solid #28a745;
+!important;
+   box-shadow: none;
+!important
+}

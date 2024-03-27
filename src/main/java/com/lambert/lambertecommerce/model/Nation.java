@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "Nations")
@@ -19,16 +17,9 @@ public class Nation {
    private Long id;
 
    @NotBlank
-   @Column(name = "name")
+   @Column(name = "name", nullable = false)
    @Size(min = (FieldSizes.NATION_NAME_MIN_LENGTH), max = (FieldSizes.NATION_NAME_MAX_LENGTH))
    private String name;
-
-   @OneToMany(mappedBy = "nation")
-   private Set<User> users;
-
-   public Nation() {
-      this.users = new HashSet<User>();
-   }
 
    public Long getId() {
       return this.id;
@@ -61,6 +52,6 @@ public class Nation {
 
    @Override
    public String toString() {
-      return "Nation = { " + "id = " + id + ", name = '" + name + " }";
+      return "Nation: { " + "id = " + this.getId().toString() + ", name = '" + this.getName() + " }";
    }
 }

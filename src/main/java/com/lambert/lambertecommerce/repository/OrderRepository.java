@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Set;
 
 public interface OrderRepository extends CrudRepository<Order, Long> {
-   //Order findByUserSellingInsertedat(User user, Sale selling, LocalDateTime insertedAt);
+   //Order findByUserSaleInsertedat(User user, Sale selling, LocalDateTime insertedAt);
 
    public Set<Order> findAllByUser(User user);
 }

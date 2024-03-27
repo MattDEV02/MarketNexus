@@ -15,19 +15,23 @@ public class Product {
    private Long id;
 
    @Size(min = (FieldSizes.PRODUCT_NAME_MIN_LENGTH), max = (FieldSizes.PRODUCT_NAME_MAX_LENGTH))
-   @Column(name = "name")
+   @Column(name = "name", nullable = false)
    @NotBlank
    private String name;
    @Size(min = (FieldSizes.PRODUCT_DESCRIPTION_MIN_LENGTH), max = (FieldSizes.PRODUCT_DESCRIPTION_MAX_LENGTH))
-   @Column(name = "description")
+   @Column(name = "description", nullable = false)
    @NotBlank
    private String description;
 
-   @Column(name = "price")
+   @Column(name = "price", nullable = false)
    @NotNull
    @Min((long) (FieldSizes.PRODUCT_PRICE_MIN_VALUE))
    @Max((long) (FieldSizes.PRODUCT_PRICE_MAX_VALUE))
    private Float price;
+
+   @Column(name = "image_relative_path", nullable = false)
+   @Size(min = (FieldSizes.PRODUCT_IMAGERELATIVEPATH_MIN_LENGTH))
+   private String imageRelativePath;
 
    @ManyToOne
    @JoinColumn(name = "category", nullable = false)
@@ -65,6 +69,14 @@ public class Product {
       this.category = category;
    }
 
+   public String getImageRelativePath() {
+      return this.imageRelativePath;
+   }
+
+   public void setImageRelativePath(String imageRelativePath) {
+      this.imageRelativePath = imageRelativePath;
+   }
+
    public Float getPrice() {
       return this.price;
    }
@@ -74,10 +86,10 @@ public class Product {
    }
 
    @Override
-   public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || this.getClass() != o.getClass()) return false;
-      Product product = (Product) o;
+   public boolean equals(Object object) {
+      if (this == object) return true;
+      if (object == null || this.getClass() != object.getClass()) return false;
+      Product product = (Product) object;
       return Objects.equals(this.getId(), product.getId());
    }
 
@@ -88,12 +100,14 @@ public class Product {
 
    @Override
    public String toString() {
-      return "Product{" +
-              "id=" + this.id +
-              ", name='" + this.name + '\'' +
-              ", description='" + this.description + '\'' +
-              ", price=" + this.price +
-              ", category=" + this.category.toString() +
-              '}';
+      return "Product: {" +
+              "id = " + this.getId().toString() +
+              ", name = '" + this.getName() + '\'' +
+              ", description = '" + this.getDescription() + '\'' +
+              ", price = " + this.getPrice().toString() +
+              ", imageRelativePath = " + this.getImageRelativePath() +
+              ", category = " + this.getCategory().toString() +
+              " }";
    }
+
 }

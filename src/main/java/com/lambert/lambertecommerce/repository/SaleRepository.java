@@ -10,7 +10,7 @@ import java.util.Set;
 public interface SaleRepository extends CrudRepository<Sale, Long> {
    //Sale findByUserProductInsertedat(User user, Product product, LocalDateTime insertedAt);
    Set<Sale> findAllByUser(User user);
-
+   
    Set<Sale> findAllByProduct(Product product);
 
    Set<Sale> findAllByUserAndProduct(User user, Product product);

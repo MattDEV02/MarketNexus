@@ -4,7 +4,7 @@
 <head th:insert="~{fragments/shared/head.html :: head(title = 'Cart')}">
 
 </head>
-<link href="/css/dashboard/shared/style.css" rel="stylesheet"/>
+<link rel="stylesheet" th:href="@{/css/dashboard/shared/style.css}"/>
 <body>
 <div th:replace="fragments/shared/header.html :: header">
 </div>
@@ -15,7 +15,7 @@
             <h1>Your Cart products</h1>
          </div>
       </div>
-      <div class="row justify-content-center text-center my-5">
+      <div class="row justify-content-center text-center mb-5">
          <div class="col-4" th:each="cartProduct : ${cartProducts}">
             <div th:replace="fragments/shared/product.html :: product(${cartProduct})"></div>
          </div>

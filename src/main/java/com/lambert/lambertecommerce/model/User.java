@@ -1,6 +1,7 @@
 package com.lambert.lambertecommerce.model;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.constants.TemporalFormats;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,20 +17,20 @@ public class User {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "id")
+   @Column(name = "id", nullable = false)
    private Long id;
 
    @NotBlank
    @Size(min = FieldSizes.NAME_MIN_LENGTH, max = FieldSizes.NAME_MAX_LENGTH)
-   @Column(name = "name")
+   @Column(name = "name", nullable = false)
    private String name;
 
    @NotBlank
    @Size(min = FieldSizes.SURNAME_MIN_LENGTH, max = FieldSizes.SURNAME_MAX_LENGTH)
-   @Column(name = "surname")
+   @Column(name = "surname", nullable = false)
    private String surname;
 
-   @DateTimeFormat(pattern = "yyyy-MM-dd")
+   @DateTimeFormat(pattern = TemporalFormats.DATE_FORMAT)
    @Past(message = "The birth date must be in the past.")
    @Column(name = "birthdate", nullable = true)
    private Date birthDate;
@@ -37,27 +38,26 @@ public class User {
    @NotBlank
    @Email
    @Size(min = FieldSizes.EMAIL_MIN_LENGTH, max = FieldSizes.EMAIL_MAX_LENGTH)
-   @Column(name = "email", unique = true)
+   @Column(name = "email", unique = true, nullable = false)
    private String email;
 
    @NotNull
    @Min(FieldSizes.BALANCE_MIN_VALUE)
    @Max(FieldSizes.BALANCE_MAX_VALUE)
-   @Column(name = "balance")
+   @Column(name = "balance", nullable = false)
    private Float balance;
 
    @ManyToOne
    @JoinColumn(name = "nation", nullable = false)
    private Nation nation;
 
-
-   @DateTimeFormat(pattern = "YYYY-MM-DD HH:MI:SS")
-   @Column(name = "inserted_at")
+   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @Column(name = "inserted_at", nullable = false)
    // @Past(message = "La data deve essere nel passato")
    private LocalDateTime insertedAt;
 
-   @DateTimeFormat(pattern = "YYYY-MM-DD HH:MI:SS")
-   @Column(name = "updated_at")
+   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @Column(name = "updated_at", nullable = false)
    //@Past(message = "La data deve essere nel passato")
    private LocalDateTime updatedAt;
 
@@ -150,32 +150,32 @@ public class User {
    }
 
    @Override
-   public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || this.getClass() != o.getClass()) return false;
-      User user = (User) o;
+   public boolean equals(Object object) {
+      if (this == object) return true;
+      if (object == null || this.getClass() != object.getClass()) return false;
+      User user = (User) object;
       return Objects.equals(this.getId(), user.getId()) || Objects.equals(this.getEmail(), user.getEmail());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId());
+      return Objects.hash(this.getId(), this.getEmail());
    }
 
 
    @Override
    public String toString() {
-      return "User = {" +
-              "id = " + this.id +
-              ", name = '" + this.name + '\'' +
-              ", surname = '" + this.surname + '\'' +
-              ", birthDate = " + this.birthDate +
-              ", email = '" + this.email + '\'' +
-              ", balance = " + this.balance +
-              ", nation = " + this.nation +
-              ", insertedAt = " + this.insertedAt +
-              ", updatedAt = " + this.updatedAt +
-              '}';
+      return "User: {" +
+              "id = " + this.getId().toString() +
+              ", name = '" + this.getName() + '\'' +
+              ", surname = '" + this.getSurname() + '\'' +
+              ", birthDate = " + this.getBirthDate().toString() +
+              ", email = '" + this.getEmail() + '\'' +
+              ", balance = " + this.getBalance().toString() +
+              ", nation = " + this.getNation().toString() +
+              ", insertedAt = " + this.getInsertedAt().toString() +
+              ", updatedAt = " + this.getUpdatedAt().toString() +
+              " }";
    }
 
 }

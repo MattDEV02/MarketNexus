@@ -71,7 +71,7 @@ public class GlobalController {
    public Set<Nation> getNations(@NotNull HttpServletRequest request) {
       Set<Nation> nations = null;
       final String URI = request.getRequestURI();
-      if (URI.equals("/dashboard/account") || URI.equals("/registration")) {
+      if (URI.equals("/dashboard/account") || URI.equals("/registration") || URI.equals("/registerNewUser")) {
          nations = this.nationService.getAllNations();
       }
       return nations;
