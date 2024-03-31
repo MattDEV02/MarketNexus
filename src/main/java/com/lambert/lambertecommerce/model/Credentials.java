@@ -1,6 +1,7 @@
 package com.lambert.lambertecommerce.model;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.constants.Global;
 import com.lambert.lambertecommerce.helpers.credentials.Roles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -11,10 +12,10 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "Credentials")
+@Table(name = "Credentials", schema = Global.SQL_SCHEMA_NAME)
 public class Credentials {
 
-   public static String DEFAULT_ROLE = Roles.ALL.toString();
+   public static String DEFAULT_ROLE = Roles.SELLER_AND_BOUGHTER.toString();
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,12 +31,26 @@ public class Credentials {
    @Column(name = "password", nullable = false)
    private String password;
 
-   @Column(name = "role", nullable = false)
+   @Column(name = "role", nullable = true)
+   @NotBlank
    @Size(min = FieldSizes.ROLE_MIN_LENGTH, max = FieldSizes.ROLE_MAX_LENGTH)
    private String role;
-   @OneToOne
-   @JoinColumn(name = "_user", nullable = false, unique = true)
-   private User user;
+
+   public Credentials() {
+      this.role = Credentials.DEFAULT_ROLE;
+   }
+
+   public Credentials(String username, String password, Roles role) {
+      this.username = username;
+      this.password = password;
+      this.role = role.toString();
+   }
+
+   public Credentials(String username, String password, String role) {
+      this.username = username;
+      this.password = password;
+      this.role = role;
+   }
 
    public String getUsername() {
       return this.username;
@@ -51,14 +66,6 @@ public class Credentials {
 
    public void setId(Long id) {
       this.id = id;
-   }
-
-   public User getUser() {
-      return this.user;
-   }
-
-   public void setUser(User user) {
-      this.user = user;
    }
 
    public String getPassword() {
@@ -82,21 +89,23 @@ public class Credentials {
       return "Credentials: {" +
               " id = " + this.getId().toString() +
               ", username = '" + this.getUsername() + '\'' +
+              ", role = " + this.getRole() +
               ", password = '" + this.getPassword() + '\'' +
-              ", user = " + this.getUser().toString() +
               " }";
    }
 
    @Override
    public boolean equals(Object object) {
       if (this == object) return true;
-      if (object == null || this.getClass() != object.getClass()) return false;
+      if (object == null || this.getClass() != object.getClass()) {
+         return false;
+      }
       Credentials credentials = (Credentials) object;
-      return Objects.equals(this.getId(), credentials.getId()) || Objects.equals(this.getUser(), credentials.getUser()) || Objects.equals(this.getUsername(), credentials.getUsername());
+      return Objects.equals(this.getId(), credentials.getId()) || Objects.equals(this.getUsername(), credentials.getUsername());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId(), this.getUser(), this.getUsername());
+      return Objects.hash(this.getId(), this.getUsername());
    }
 }

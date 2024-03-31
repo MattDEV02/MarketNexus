@@ -1,6 +1,7 @@
 package com.lambert.lambertecommerce.model;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.constants.Global;
 import com.lambert.lambertecommerce.helpers.constants.TemporalFormats;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -11,33 +12,47 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Carts", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "sale", "inserted_at"}))
+@Table(name = "Carts", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "sale", "inserted_at"}))
 public class Cart {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "id")
+   @Column(name = "id", nullable = false)
+   @Min(1)
    private Long id;
 
    @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
    @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
-   @Column(name = "quantity")
+   @Column(name = "quantity", nullable = false)
    private Integer quantity;
 
    @ManyToOne
-   @JoinColumn(name = "_user", nullable = false)
+   @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "carts_users_fk"))
    private User user;
 
    @ManyToOne
-   @JoinColumn(name = "sale", nullable = false)
+   @JoinColumn(name = "sale", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_sales_fk"))
    private Sale sale;
 
    @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
    @Column(name = "inserted_at", nullable = false)
+   @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
 
+   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
    @Column(name = "updated_at", nullable = false)
+   @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime updatedAt;
+
+   public Cart() {
+
+   }
+
+   public Cart(Sale sale, User user, Integer quantity) {
+      this.quantity = quantity;
+      this.user = user;
+      this.sale = sale;
+   }
 
    public Long getId() {
       return this.id;
@@ -105,7 +120,9 @@ public class Cart {
    @Override
    public boolean equals(Object object) {
       if (this == object) return true;
-      if (object == null || this.getClass() != object.getClass()) return false;
+      if (object == null || this.getClass() != object.getClass()) {
+         return false;
+      }
       Cart sale = (Cart) object;
       return Objects.equals(this.getId(), sale.getId()) || (Objects.equals(this.getUser(), sale.getUser()) && Objects.equals(this.getSale(), sale.getSale()) && Objects.equals(this.getInsertedAt(), sale.getInsertedAt()));
    }

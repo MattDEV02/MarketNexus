@@ -35,20 +35,14 @@ public class GlobalController {
    private static final Map<String, Object> fieldSizesMap = new HashMap<String, Object>();
 
    static {
-      // Inizializza la mappa dei valori dei campi alla creazione dell'istanza della classe
       Field[] fields = FieldSizes.class.getDeclaredFields();
       for (Field field : fields) {
          try {
-            // Ottieni il nome del campo
             String name = field.getName();
-
-            // Ottieni il valore del campo
             Object value = field.get(null);
-            // Aggiungi il nome del campo e il suo valore alla mappa
             GlobalController.fieldSizesMap.put(name, value);
-         } catch (IllegalAccessException e) {
-            // Gestione dell'eccezione
-            LOGGER.warn("Impossible to access at this field: " + field.getName(), e);
+         } catch (IllegalAccessException illegalAccessException) {
+            LOGGER.warn("Impossible to access at this field: " + field.getName(), illegalAccessException);
          }
       }
    }
@@ -86,23 +80,10 @@ public class GlobalController {
       if (Utils.userIsLoggedIn(authentication)) {
          userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
          credentials = this.credentialsService.getCredentials(userDetails.getUsername());
-         loggedUser = this.userService.getUser(credentials.getUser().getId());
+         loggedUser = this.userService.getUser(credentials);
          model.addAttribute("loggedUser", loggedUser);
       }
       return loggedUser;
-   }
-
-   @ModelAttribute("loggedCredentials")
-   public Credentials getCredentials(Model model) {
-      UserDetails userDetails = null;
-      Credentials loggedCredentials = null;
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      if (Utils.userIsLoggedIn(authentication)) {
-         userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-         loggedCredentials = this.credentialsService.getCredentials(userDetails.getUsername());
-         model.addAttribute("loggedCredentials", loggedCredentials);
-      }
-      return loggedCredentials;
    }
 
    @ModelAttribute("productCategories")

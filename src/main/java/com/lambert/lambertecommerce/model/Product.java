@@ -1,13 +1,17 @@
 package com.lambert.lambertecommerce.model;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.constants.Global;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "Products")
+@Table(name = "Products", schema = Global.SQL_SCHEMA_NAME)
 public class Product {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +27,9 @@ public class Product {
    @NotBlank
    private String description;
 
-   @Column(name = "price", nullable = false)
-   @NotNull
    @Min((long) (FieldSizes.PRODUCT_PRICE_MIN_VALUE))
    @Max((long) (FieldSizes.PRODUCT_PRICE_MAX_VALUE))
+   @Column(name = "price", nullable = false)
    private Float price;
 
    @Column(name = "image_relative_path", nullable = false)
@@ -34,8 +37,27 @@ public class Product {
    private String imageRelativePath;
 
    @ManyToOne
-   @JoinColumn(name = "category", nullable = false)
+   @JoinColumn(name = "category", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "products_productcategories_fk"))
    private ProductCategory category;
+
+   public Product() {
+
+   }
+
+   public Product(String name, String description, Float price, ProductCategory category) {
+      this.name = name;
+      this.description = description;
+      this.price = price;
+      this.category = category;
+   }
+
+   public Product(String name, String description, Float price, ProductCategory category, String imageRelativePath) {
+      this.name = name;
+      this.description = description;
+      this.price = price;
+      this.imageRelativePath = imageRelativePath;
+      this.category = category;
+   }
 
    public Long getId() {
       return this.id;
@@ -88,7 +110,9 @@ public class Product {
    @Override
    public boolean equals(Object object) {
       if (this == object) return true;
-      if (object == null || this.getClass() != object.getClass()) return false;
+      if (object == null || this.getClass() != object.getClass()) {
+         return false;
+      }
       Product product = (Product) object;
       return Objects.equals(this.getId(), product.getId());
    }

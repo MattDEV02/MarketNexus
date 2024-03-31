@@ -1,0 +1,30 @@
+<div class="row justify-content-center">
+   <div class="card mt-5" style="width: 21rem;" th:fragment="sale(sale)">
+      <a th:href="@{'/dashboard/sale/' + ${sale.product.id}}">
+         <img class="card-img-top" style="height: 18rem"
+              th:alt="${sale.product.name}"
+              th:src="@{${sale.product.imageRelativePath}}"
+              th:title="${sale.product.name}"/>
+      </a>
+      <div class="card-body border">
+         <div class="col-12 mt-1">
+            <h4 th:text="${sale.product.name}"></h4>
+            <p th:text="${sale.product.description}"></p>
+            <p class="fw-bold" th:text="${sale.product.category.name}"></p>
+         </div>
+         <div class="col-12">
+            <a class="link-primary text-decoration-underline"
+               th:href="@{'/dashboard/account/' + ${sale.user.credentials.username}}"
+               th:text="${sale.user.credentials.username}">
+            </a>
+         </div>
+         <div class="col-12 mt-4">
+            <span th:text="${sale.product.price} + ' $'"></span>
+            <a class="btn btn-primary mx-4"
+               th:href="@{'/dashboard/cart/' + ${sale.product.id} + '?quantity=' + ${sale.quantity}}">
+               <i class="fas fa-cart-plus"></i>
+            </a>
+         </div>
+      </div>
+   </div>
+</div>

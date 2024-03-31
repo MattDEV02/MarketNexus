@@ -13,7 +13,7 @@ public class OrderService {
    @Autowired
    protected OrderRepository orderRepository;
 
-   public Set<Order> findAllByUser(User user) {
+   public Set<Order> findAllOrdersByUser(User user) {
       return this.orderRepository.findAllByUser(user);
    }
 }

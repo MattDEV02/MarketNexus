@@ -1,6 +1,7 @@
 package com.lambert.lambertecommerce.model;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.constants.Global;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -8,7 +9,7 @@ import jakarta.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
-@Table(name = "product_categories")
+@Table(name = "product_categories", schema = Global.SQL_SCHEMA_NAME)
 public class ProductCategory {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +17,7 @@ public class ProductCategory {
    private Long id;
 
    @NotBlank
-   @Column(name = "name", nullable = false)
+   @Column(name = "name", nullable = false, unique = true)
    @Size(min = FieldSizes.PRODUCT_CATEGORY_NAME_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_NAME_MAX_LENGTH)
    private String name;
 
@@ -24,6 +25,21 @@ public class ProductCategory {
    @Column(name = "description", nullable = false)
    @Size(min = FieldSizes.PRODUCT_CATEGORY_DESCRIPTION_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_DESCRIPTION_MAX_LENGTH)
    private String description;
+
+   public ProductCategory() {
+
+   }
+
+   public ProductCategory(Long id, String name, String description) {
+      this.id = id;
+      this.name = name;
+      this.description = description;
+   }
+
+   public ProductCategory(String name, String description) {
+      this.name = name;
+      this.description = description;
+   }
 
    public Long getId() {
       return this.id;
@@ -57,7 +73,9 @@ public class ProductCategory {
    @Override
    public boolean equals(Object object) {
       if (this == object) return true;
-      if (object == null || this.getClass() != object.getClass()) return false;
+      if (object == null || this.getClass() != object.getClass()) {
+         return false;
+      }
       ProductCategory productCategory = (ProductCategory) object;
       return Objects.equals(this.getId(), productCategory.getId()) || Objects.equals(this.getName(), productCategory.getName());
    }

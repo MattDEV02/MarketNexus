@@ -23,7 +23,7 @@ DROP TYPE IF EXISTS ROLES;
 CREATE TYPE ROLES AS ENUM (
     'SELLER',
     'BOUGHTER',
-    'ALL'
+    'SELLER_AND_BOUGHTER'
     );
 
 COMMENT ON TYPE ROLES IS 'LambertEcommerce Users Credentials Roles.';
@@ -160,6 +160,40 @@ VALUES ('Smartphone', 599.99, 'High-end smartphone', 1),
        ('Rice', 2.99, 'Long-grain white rice', 9);
 
 
+CREATE OR REPLACE FUNCTION CHECK_ROLE_ROLES_ENUM(role TEXT) RETURNS BOOLEAN AS
+$$
+BEGIN
+    RETURN role IN (SELECT TEXT_ROLE::text
+                    FROM (SELECT unnest(enum_range(NULL::ROLES)) AS TEXT_ROLE) as SubQuery);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TABLE IF NOT EXISTS LambertEcommerce.Credentials
+(
+    id       SERIAL      NOT NULL PRIMARY KEY,
+    password VARCHAR(72) NOT NULL,
+    username VARCHAR(10) NOT NULL,
+    role     VARCHAR(20) DEFAULT 'SELLER_AND_BOUGHTER',
+    CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(LambertEcommerce.Credentials.role) >= 3),
+    CONSTRAINT credentials_role_valid_check CHECK (LambertEcommerce.CHECK_ROLE_ROLES_ENUM(role)),
+    CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(LambertEcommerce.Credentials.username) >= 3),
+    --CONSTRAINT credentials_username_valid__check CHECK (LambertEcommerce.Credentials.username ~ ''::TEXT),
+    --CONSTRAINT credentials_password_valid__check CHECK (LambertEcommerce.Credentials.password),
+    CONSTRAINT credentials_id_min_value_check CHECK (LambertEcommerce.Credentials.id >= 1)
+);
+
+COMMENT ON TABLE LambertEcommerce.Credentials IS 'LambertEcommerce Users Credentials.';
+
+ALTER TABLE LambertEcommerce.Credentials
+    OWNER TO postgres;
+
+INSERT INTO LambertEcommerce.Credentials (username, password, role)
+VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BOUGHTER'),
+       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'SELLER_AND_BOUGHTER'),
+       ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'SELLER_AND_BOUGHTER');
+
+-- N.B. = La password è criptata da spring boot e arriva a 60 caratteri.
+
 CREATE TABLE IF NOT EXISTS LambertEcommerce.Users
 (
     id          SERIAL                                                        NOT NULL PRIMARY KEY,
@@ -168,10 +202,12 @@ CREATE TABLE IF NOT EXISTS LambertEcommerce.Users
     email       VARCHAR(50)                                                   NOT NULL,
     birthdate   DATE,
     balance     FLOAT                                                         NOT NULL,
+    credentials INTEGER                                                       NOT NULL,
     nation      INTEGER                                                       NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     CONSTRAINT users_email_unique UNIQUE (email),
+    CONSTRAINT users_credentials_fk FOREIGN KEY (credentials) REFERENCES LamberteCommerce.Credentials (id) ON DELETE CASCADE,
     CONSTRAINT users_nations_fk FOREIGN KEY (nation) REFERENCES LamberteCommerce.Nations (id) ON DELETE CASCADE,
     CONSTRAINT users_name_min_length_check CHECK (LENGTH(LambertEcommerce.Users.name) >= 3),
     CONSTRAINT users_id_min_value_check CHECK (LambertEcommerce.Users.id >= 1),
@@ -183,8 +219,9 @@ CREATE TABLE IF NOT EXISTS LambertEcommerce.Users
                                               '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'::TEXT),
     CONSTRAINT users_balance_min_value_check CHECK (LambertEcommerce.Users.balance >= 0),
     CONSTRAINT users_balance_max_value_check CHECK (LambertEcommerce.Users.balance <= 10000),
+    CONSTRAINT users_credentials_min_value_check CHECK (LambertEcommerce.Users.credentials >= 1),
     CONSTRAINT users_nation_min_value_check CHECK (LambertEcommerce.Users.nation >= 1),
-    CONSTRAINT users_insertedat_min_value_check CHECK (LambertEcommerce.Users.inserted_at >= NOW() - INTERVAL '1 minutes'),
+    --CONSTRAINT users_insertedat_min_value_check CHECK (LambertEcommerce.Users.inserted_at >= NOW() - INTERVAL '1 minutes'),
     CONSTRAINT users_insertedat_updatedat_value_check CHECK (LambertEcommerce.Users.inserted_at <=
                                                              LambertEcommerce.Users.updated_at)
 );
@@ -203,47 +240,10 @@ COMMENT ON TABLE LambertEcommerce.Users IS 'LambertEcommerce Users.';
 ALTER TABLE LambertEcommerce.Users
     OWNER TO postgres;
 
-CREATE OR REPLACE FUNCTION CHECK_ROLE_ROLES_ENUM(role TEXT) RETURNS BOOLEAN AS
-$$
-BEGIN
-    RETURN role IN (SELECT TEXT_ROLE::text
-                    FROM (SELECT unnest(enum_range(NULL::ROLES)) AS TEXT_ROLE) as SubQuery);
-END;
-$$ LANGUAGE plpgsql;
-
-INSERT INTO LambertEcommerce.Users (name, surname, email, birthdate, balance, nation)
-VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2024-03-14', 22, 1),
-       ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2),
-       ('Gabriel', 'Muscedere', 'gabrielmuscedere@gmail.com', '2002-03-27', 0.1, 6);
-
-
-CREATE TABLE IF NOT EXISTS LambertEcommerce.Credentials
-(
-    id       SERIAL      NOT NULL PRIMARY KEY,
-    password VARCHAR(72) NOT NULL,
-    username VARCHAR(10) NOT NULL,
-    role     VARCHAR(10) NOT NULL,
-    _user    INTEGER     NOT NULL,
-    CONSTRAINT credentials_users_fk FOREIGN KEY (_user) REFERENCES LamberteCommerce.Users (id) ON DELETE CASCADE,
-    CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(LambertEcommerce.Credentials.role) >= 3),
-    CONSTRAINT credentials_role_valid_check CHECK (LambertEcommerce.CHECK_ROLE_ROLES_ENUM(role)),
-    CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(LambertEcommerce.Credentials.username) >= 3),
-    --CONSTRAINT credentials_username_valid__check CHECK (LambertEcommerce.Credentials.username ~ ''::TEXT),
-    CONSTRAINT credentials_id_min_value_check CHECK (LambertEcommerce.Credentials.id >= 1),
-    CONSTRAINT credentials_user_min_value_check CHECK (LambertEcommerce.Credentials._user >= 1)
-);
-
-COMMENT ON TABLE LambertEcommerce.Credentials IS 'LambertEcommerce Users Credentials.';
-
-ALTER TABLE LambertEcommerce.Credentials
-    OWNER TO postgres;
-
-INSERT INTO LambertEcommerce.Credentials (username, password, role, _user)
-VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'ALL', 1),
-       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'ALL', 2),
-       ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'ALL', 3);
-
--- N.B. = La password è criptata da spring boot e arriva a 60 caratteri.
+INSERT INTO LambertEcommerce.Users (name, surname, email, birthdate, balance, credentials, nation)
+VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2024-03-14', 22, 1, 1),
+       ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2, 2),
+       ('Gabriel', 'Muscedere', 'gabrielmuscedere@gmail.com', '2002-03-27', 0.1, 3, 6);
 
 
 CREATE TABLE LambertEcommerce.Sales
@@ -305,7 +305,7 @@ CREATE TABLE LambertEcommerce.Carts
     CONSTRAINT carts_user_min_value_check CHECK (LambertEcommerce.Carts._user >= 1),
     CONSTRAINT carts_sale_min_value_check CHECK (LambertEcommerce.Carts.sale >= 1),
     CONSTRAINT carts_quantity_min_value_check CHECK (LambertEcommerce.Carts.quantity >= 0),
-    CONSTRAINT carts_insertedat_min_value_check CHECK (LambertEcommerce.Carts.inserted_at >= NOW()),
+    -- CONSTRAINT carts_insertedat_min_value_check CHECK (LambertEcommerce.Carts.inserted_at >= NOW()),
     CONSTRAINT carts_insertedat_updatedat_value_check CHECK (LambertEcommerce.Carts.inserted_at <=
                                                              LambertEcommerce.Carts.updated_at)
 );
@@ -325,9 +325,7 @@ ALTER TABLE Lambertecommerce.Carts
     OWNER TO postgres;
 
 INSERT INTO LambertEcommerce.Carts(quantity, _user, sale)
-VALUES (1, 1, 3),
-       (1, 1, 4),
-       (1, 2, 5);
+VALUES (1, 1, 6);
 
 
 CREATE TABLE LambertEcommerce.Orders
@@ -337,15 +335,15 @@ CREATE TABLE LambertEcommerce.Orders
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     _user       INTEGER                                                       NOT NULL,
-    sale        INTEGER                                                       NOT NULL,
-    CONSTRAINT orders_user_sale_insertedat_unique UNIQUE (_user, sale, inserted_at),
+    cart        INTEGER                                                       NOT NULL,
+    CONSTRAINT orders_user_cart_insertedat_unique UNIQUE (_user, cart, inserted_at),
     CONSTRAINT orders_users_fk FOREIGN KEY (_user) REFERENCES LambertEcommerce.Users (id) ON DELETE CASCADE,
-    CONSTRAINT orders_sale_fk FOREIGN KEY (sale) REFERENCES LambertEcommerce.Sales (id) ON DELETE CASCADE,
+    CONSTRAINT orders_carts_fk FOREIGN KEY (cart) REFERENCES LambertEcommerce.Sales (id) ON DELETE CASCADE,
     CONSTRAINT orders_id_min_value_check CHECK (LambertEcommerce.Orders.id >= 1),
     CONSTRAINT orders_user_min_value_check CHECK (LambertEcommerce.Orders._user >= 1),
-    CONSTRAINT orders_sale_min_value_check CHECK (LambertEcommerce.Orders.sale >= 1),
+    CONSTRAINT orders_sale_min_value_check CHECK (LambertEcommerce.Orders.cart >= 1),
     CONSTRAINT orders_quantity_min_value_check CHECK (LambertEcommerce.Orders.quantity >= 0),
-    CONSTRAINT orders_insertedat_min_value_check CHECK (LambertEcommerce.Orders.inserted_at >= NOW()),
+    --CONSTRAINT orders_insertedat_min_value_check CHECK (LambertEcommerce.Orders.inserted_at >= NOW()),
     CONSTRAINT orders_insertedat_updatedat_value_check CHECK (LambertEcommerce.Orders.inserted_at <=
                                                               LambertEcommerce.Orders.updated_at)
 );
@@ -359,14 +357,13 @@ CREATE
 EXECUTE
     FUNCTION updatedat_set_timestamp_function();
 
-COMMENT ON TABLE LambertEcommerce.Orders IS 'User who buys a sale product.';
+COMMENT ON TABLE LambertEcommerce.Orders IS 'User who buys sale products that are his cart.';
 
 ALTER TABLE Lambertecommerce.Orders
     OWNER TO postgres;
 
-INSERT INTO LambertEcommerce.Orders(quantity, _user, sale)
-VALUES (1, 1, 6),
-       (1, 1, 7);
+INSERT INTO LambertEcommerce.Orders(quantity, _user, cart)
+VALUES (1, 1, 1);
 
 
 /*

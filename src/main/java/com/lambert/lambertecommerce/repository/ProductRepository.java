@@ -13,5 +13,4 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
 
    public Set<Product> findAllByNameAndCategory(String name, ProductCategory category);
 
-
 }

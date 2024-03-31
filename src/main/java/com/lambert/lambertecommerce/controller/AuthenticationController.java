@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -45,7 +44,6 @@ public class AuthenticationController {
       ModelAndView modelAndView = new ModelAndView("registration.html");
       modelAndView.addObject("user", new User());
       modelAndView.addObject("credentials", new Credentials());
-      System.out.println(SecurityContextHolder.getContext().getAuthentication());
       return modelAndView;
    }
 
@@ -63,9 +61,9 @@ public class AuthenticationController {
       this.credentialsValidator.validate(credentials, credentialsBindingResult);
       // se user e credential hanno entrambi contenuti validi, memorizza User e the Credentials nel DB
       if (!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
+         Credentials savedCredentials = this.credentialsService.saveCredentials(credentials);
+         user.setCredentials(savedCredentials);
          this.userService.saveUser(user);
-         credentials.setUser(user);
-         this.credentialsService.saveCredentials(credentials);
          modelAndView.setViewName(registrationSuccessful);
       } else {
          for (ObjectError error : userBindingResult.getGlobalErrors()) {
@@ -94,7 +92,6 @@ public class AuthenticationController {
    public ModelAndView showLoginForm() {
       ModelAndView modelAndView = new ModelAndView("login.html");
       // TODO: Vedere se si possono rimuovere.
-      modelAndView.addObject("user", new User());
       modelAndView.addObject("credentials", new Credentials());
       return modelAndView;
    }

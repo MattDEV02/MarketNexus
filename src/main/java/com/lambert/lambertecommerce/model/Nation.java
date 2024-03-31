@@ -1,25 +1,43 @@
 package com.lambert.lambertecommerce.model;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.constants.Global;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "Nations")
+@Table(name = "Nations", schema = Global.SQL_SCHEMA_NAME)
 public class Nation {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
+   @Min(1)
    private Long id;
 
+   @NotNull
    @NotBlank
-   @Column(name = "name", nullable = false)
+   @Column(name = "name", nullable = false, unique = true)
    @Size(min = (FieldSizes.NATION_NAME_MIN_LENGTH), max = (FieldSizes.NATION_NAME_MAX_LENGTH))
    private String name;
+
+   public Nation() {
+
+   }
+
+   public Nation(String name) {
+      this.name = name;
+   }
+
+   public Nation(Long id, String name) {
+      this.id = id;
+      this.name = name;
+   }
 
    public Long getId() {
       return this.id;
@@ -45,7 +63,9 @@ public class Nation {
    @Override
    public boolean equals(Object o) {
       if (this == o) return true;
-      if (o == null || this.getClass() != o.getClass()) return false;
+      if (o == null || this.getClass() != o.getClass()) {
+         return false;
+      }
       Nation nation = (Nation) o;
       return Objects.equals(this.getId(), nation.getId()) || Objects.equals(this.getName(), nation.getName());
    }

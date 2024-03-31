@@ -3,19 +3,14 @@ package com.lambert.lambertecommerce.controller;
 import com.lambert.lambertecommerce.controller.validator.ProductValidator;
 import com.lambert.lambertecommerce.helpers.constants.ControllerSuffixes;
 import com.lambert.lambertecommerce.helpers.products.Utils;
-import com.lambert.lambertecommerce.model.Credentials;
-import com.lambert.lambertecommerce.model.Product;
-import com.lambert.lambertecommerce.model.Sale;
-import com.lambert.lambertecommerce.model.User;
-import com.lambert.lambertecommerce.service.ProductService;
-import com.lambert.lambertecommerce.service.SaleService;
+import com.lambert.lambertecommerce.model.*;
+import com.lambert.lambertecommerce.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -23,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Controller
@@ -36,60 +32,62 @@ public class DashboardController {
    private ProductService productService;
    @Autowired
    private SaleService saleService;
+   @Autowired
+   private OrderService orderService;
+   @Autowired
+   private CartService cartService;
+   @Autowired
+   private CredentialsService credentialsService;
+   @Autowired
+   private UserService userService;
 
 
    @GetMapping
    public ModelAndView showAdminIndex() {
       ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/index.html");
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      System.out.println(authentication.toString());
-      modelAndView.addObject("products", this.productService.getAllProducts());
+      modelAndView.addObject("sales", this.saleService.getAllSales());
       return modelAndView;
    }
 
    @GetMapping(value = "/searchProducts")
-   public ModelAndView searchProduct(HttpServletRequest request) {
+   public ModelAndView searchProduct(@NotNull HttpServletRequest request) {
       String productName = request.getParameter("product-name");
       String productCategoryId = request.getParameter("category");
       ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/index.html");
-      Set<Product> products = null;
+      Set<Sale> sales = null;
       if (productName.isEmpty() && productCategoryId.isEmpty()) {
-         products = this.productService.getAllProducts();
+         sales = this.saleService.getAllSales();
       } else if (productCategoryId.isEmpty()) {
-         products = this.productService.findAllByName(productName);
+         sales = this.saleService.getAllSalesByProductName(productName);
       } else {
          Long longProductCategoryId = Long.parseLong(productCategoryId);
          if (productName.isEmpty()) {
-            products = this.productService.findAllByCategory(longProductCategoryId);
+            sales = this.saleService.getAllSalesByProductCategoryId(longProductCategoryId);
          } else {
-            products = this.productService.findAllByNameAndCategory(productName, longProductCategoryId);
+            sales = this.saleService.getAllSalesByProductNameAndProductCategoryId(productName, longProductCategoryId);
          }
       }
-      modelAndView.addObject("products", products);
+      modelAndView.addObject("sales", sales);
       return modelAndView;
    }
 
    @GetMapping(value = "/account")
    public ModelAndView showAccount(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/account.html");
-      Set<Product> saleProducts = this.productService.findAllProductSaleByUser(loggedUser);
-      Set<Product> orderedProducts = this.productService.findAllProductOrderByUser(loggedUser);
+      Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
+      Set<Order> orderedProducts = this.orderService.findAllOrdersByUser(loggedUser);
+      modelAndView.addObject("user", loggedUser);
+      modelAndView.addObject("isLoggedUserAccount", true);
       modelAndView.addObject("salesProducts", saleProducts);
       modelAndView.addObject("orderedProducts", orderedProducts);
       return modelAndView;
    }
 
    @GetMapping(value = "/cart")
-   public ModelAndView showCart(@Valid @ModelAttribute("loggedUser") User loggedUser, @Valid @ModelAttribute("loggedCredentials") Credentials loggedCredentials) {
+   public ModelAndView showCart(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/cart.html");
-      Set<Product> cartProducts = this.productService.findAllProductCartByUser(loggedUser);
+      Set<Cart> cartProducts = this.cartService.findAllCartsByUser(loggedUser);
       modelAndView.addObject("cartProducts", cartProducts);
-      return modelAndView;
-   }
-
-   @GetMapping(value = "/stats")
-   public ModelAndView showStats() {
-      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/stats.html");
       return modelAndView;
    }
 
@@ -125,11 +123,8 @@ public class DashboardController {
             modelAndView.addObject("sale", savedSale);
          }
       } else {
-         System.out.println("error");
-         System.out.println(productBindingResult);
-         System.out.println(saleBindingResult);
          for (ObjectError error : productBindingResult.getGlobalErrors()) {
-            modelAndView.addObject(error.getCode(), error.getDefaultMessage());
+            modelAndView.addObject(Objects.requireNonNull(error.getCode()), error.getDefaultMessage());
          }
          modelAndView.setViewName(publishError);
       }
@@ -138,9 +133,43 @@ public class DashboardController {
 
    @GetMapping("/product/{id}")
    public ModelAndView getProductById(@PathVariable("id") Long id) {
-      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/product.html");
-      Product product = this.productService.findById(id);
-      modelAndView.addObject("product", product);
+      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/sale.html");
+      Product product = this.productService.getProduct(id);
+      Sale sale = this.saleService.getSale(product);
+      modelAndView.addObject("sale", sale);
+      return modelAndView;
+   }
+
+   @GetMapping("/cart/{id}")
+   public ModelAndView addProductToCartById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("id") Long id, @RequestParam("quantity") Integer quantity) {
+      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/sale.html");
+      Product product = this.productService.getProduct(id);
+      Sale sale = this.saleService.getSale(product);
+      Cart cart = new Cart(sale, loggedUser, quantity);
+      Cart savedCart = this.cartService.saveCart(cart);
+      modelAndView.addObject("sale", savedCart.getSale());
+      modelAndView.addObject("addedToCart", savedCart.getInsertedAt() != null);
+      return modelAndView;
+   }
+
+   @GetMapping("/order/")
+   public ModelAndView makeOrderFromCart(@Valid @ModelAttribute("loggedUser") User loggedUser) {
+      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/order.html");
+      return modelAndView;
+   }
+
+   @GetMapping("/account/{username}")
+   public ModelAndView getUserAccountByUsername(@Valid @ModelAttribute("loggedUser") @NotNull User loggedUser, @PathVariable("username") String username) {
+      ModelAndView modelAndView = new ModelAndView(ControllerSuffixes.DASHBOARD + "/account.html");
+      Credentials credentials = this.credentialsService.getCredentials(username);
+      User user = this.userService.getUser(credentials);
+      Boolean isLoggedUserAccount = loggedUser.equals(user);
+      Set<Sale> saleProducts = this.saleService.getAllSalesByUser(user);
+      Set<Order> orderedProducts = this.orderService.findAllOrdersByUser(user);
+      modelAndView.addObject("salesProducts", saleProducts);
+      modelAndView.addObject("orderedProducts", orderedProducts);
+      modelAndView.addObject("isLoggedUserAccount", isLoggedUserAccount);
+      modelAndView.addObject("user", user);
       return modelAndView;
    }
 

@@ -1,9 +1,11 @@
 package com.lambert.lambertecommerce.model;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.constants.Global;
 import com.lambert.lambertecommerce.helpers.constants.TemporalFormats;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -12,12 +14,14 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "Users")
+@Table(name = "Users", schema = Global.SQL_SCHEMA_NAME)
 public class User {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
+   @Unsigned
+   @Min(1)
    private Long id;
 
    @NotBlank
@@ -33,34 +37,59 @@ public class User {
    @DateTimeFormat(pattern = TemporalFormats.DATE_FORMAT)
    @Past(message = "The birth date must be in the past.")
    @Column(name = "birthdate", nullable = true)
+   @Temporal(TemporalType.DATE)
    private Date birthDate;
 
    @NotBlank
-   @Email
+   @Email(message = "Invalid email format.")
    @Size(min = FieldSizes.EMAIL_MIN_LENGTH, max = FieldSizes.EMAIL_MAX_LENGTH)
    @Column(name = "email", unique = true, nullable = false)
    private String email;
-
-   @NotNull
    @Min(FieldSizes.BALANCE_MIN_VALUE)
    @Max(FieldSizes.BALANCE_MAX_VALUE)
    @Column(name = "balance", nullable = false)
    private Float balance;
 
    @ManyToOne
-   @JoinColumn(name = "nation", nullable = false)
+   @JoinColumn(name = "nation", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "users_nations_fk"))
    private Nation nation;
 
-   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @OneToOne
+   @JoinColumn(name = "credentials", referencedColumnName = "id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "users_credentials_fk"))
+   private Credentials credentials;
+
    @Column(name = "inserted_at", nullable = false)
-   // @Past(message = "La data deve essere nel passato")
+   @Temporal(TemporalType.TIMESTAMP)
+   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
    private LocalDateTime insertedAt;
 
-   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
    @Column(name = "updated_at", nullable = false)
-   //@Past(message = "La data deve essere nel passato")
+   @Temporal(TemporalType.TIMESTAMP)
+   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
    private LocalDateTime updatedAt;
 
+   public User() {
+
+   }
+
+   public User(String name, String surname, String email, Float balance, Credentials credentials, Nation nation) {
+      this.name = name;
+      this.surname = surname;
+      this.email = email;
+      this.balance = balance;
+      this.credentials = credentials;
+      this.nation = nation;
+   }
+
+   public User(String name, String surname, String email, Float balance, Credentials credentials, Nation nation, Date birthDate) {
+      this.name = name;
+      this.surname = surname;
+      this.birthDate = birthDate;
+      this.email = email;
+      this.balance = balance;
+      this.credentials = credentials;
+      this.nation = nation;
+   }
 
    public Long getId() {
       return this.id;
@@ -110,6 +139,14 @@ public class User {
       this.email = email;
    }
 
+   public Credentials getCredentials() {
+      return this.credentials;
+   }
+
+   public void setCredentials(Credentials credentials) {
+      this.credentials = credentials;
+   }
+
    public Nation getNation() {
       return this.nation;
    }
@@ -154,12 +191,12 @@ public class User {
       if (this == object) return true;
       if (object == null || this.getClass() != object.getClass()) return false;
       User user = (User) object;
-      return Objects.equals(this.getId(), user.getId()) || Objects.equals(this.getEmail(), user.getEmail());
+      return Objects.equals(this.getId(), user.getId()) || Objects.equals(this.getEmail(), user.getEmail()) || Objects.equals(this.getCredentials(), user.getCredentials());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId(), this.getEmail());
+      return Objects.hash(this.getId(), this.getEmail(), this.getCredentials());
    }
 
 
@@ -172,10 +209,10 @@ public class User {
               ", birthDate = " + this.getBirthDate().toString() +
               ", email = '" + this.getEmail() + '\'' +
               ", balance = " + this.getBalance().toString() +
+              ", credentials = " + this.getCredentials().toString() +
               ", nation = " + this.getNation().toString() +
               ", insertedAt = " + this.getInsertedAt().toString() +
               ", updatedAt = " + this.getUpdatedAt().toString() +
               " }";
    }
-
 }

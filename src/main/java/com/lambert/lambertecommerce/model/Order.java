@@ -1,6 +1,7 @@
 package com.lambert.lambertecommerce.model;
 
 import com.lambert.lambertecommerce.helpers.constants.FieldSizes;
+import com.lambert.lambertecommerce.helpers.constants.Global;
 import com.lambert.lambertecommerce.helpers.constants.TemporalFormats;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -11,8 +12,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Orders", uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "sale", "inserted_at"}))
+@Table(name = "Orders", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "cart", "inserted_at"}))
 public class Order {
+
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
@@ -24,20 +26,32 @@ public class Order {
    private Integer quantity;
 
    @ManyToOne
-   @JoinColumn(name = "_user", nullable = false)
+   @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "orders_users_fk"))
    private User user;
 
    @ManyToOne
-   @JoinColumn(name = "sale", nullable = false)
-   private Sale sale;
+   @JoinColumn(name = "cart", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "orders_carts_fk"))
+   private Cart cart;
 
-   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
    @Column(name = "inserted_at", nullable = false)
+   @Temporal(TemporalType.TIMESTAMP)
+   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
    private LocalDateTime insertedAt;
-
+   
    @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
    @Column(name = "updated_at", nullable = false)
+   @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime updatedAt;
+
+   public Order() {
+
+   }
+
+   public Order(Integer quantity, User user, Cart cart) {
+      this.quantity = quantity;
+      this.user = user;
+      this.cart = cart;
+   }
 
    public Long getId() {
       return this.id;
@@ -63,12 +77,12 @@ public class Order {
       this.user = user;
    }
 
-   public Sale getSale() {
-      return this.sale;
+   public Cart getCart() {
+      return this.cart;
    }
 
-   public void setSale(Sale sale) {
-      this.sale = sale;
+   public void setCart(Cart cart) {
+      this.cart = cart;
    }
 
    public LocalDateTime getInsertedAt() {
@@ -105,14 +119,16 @@ public class Order {
    @Override
    public boolean equals(Object object) {
       if (this == object) return true;
-      if (object == null || this.getClass() != object.getClass()) return false;
+      if (object == null || this.getClass() != object.getClass()) {
+         return false;
+      }
       Order order = (Order) object;
-      return Objects.equals(this.getId(), order.getId()) || (Objects.equals(this.getUser(), order.getUser()) && Objects.equals(this.getSale(), order.getSale()) && Objects.equals(this.getInsertedAt(), order.getInsertedAt()));
+      return Objects.equals(this.getId(), order.getId()) || (Objects.equals(this.getUser(), order.getUser()) && Objects.equals(this.getCart(), order.getCart()) && Objects.equals(this.getInsertedAt(), order.getInsertedAt()));
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId(), this.getUser(), this.getSale(), this.getInsertedAt());
+      return Objects.hash(this.getId(), this.getUser(), this.getCart(), this.getInsertedAt());
    }
 
    @Override
@@ -121,7 +137,7 @@ public class Order {
               " id = " + this.getId().toString() +
               ", quantity = " + this.getQuantity().toString() +
               ", user = " + this.getUser().toString() +
-              ", sale = " + this.getSale().toString() +
+              ", cart = " + this.getCart().toString() +
               ", insertedAt = " + this.getInsertedAt().toString() +
               ", updatedAt = " + this.getUpdatedAt().toString() +
               " }";

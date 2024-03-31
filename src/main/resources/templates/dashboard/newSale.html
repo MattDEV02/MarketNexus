@@ -73,7 +73,6 @@
                      <option th:each="productCategory : ${productCategories}" th:field="${product.category}"
                              th:id="${productCategory.name + '#' + productCategory.id}"
                              th:name="${productCategory.name + '#' + productCategory.id}"
-                             th:object="${product}"
                              th:text="${productCategory.name}" th:value="${productCategory.id}"></option>
                   </select>
                   <span th:errors="${product.category}" th:if="${#fields.hasErrors('product.category')}"
