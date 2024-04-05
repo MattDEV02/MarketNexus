@@ -17,12 +17,12 @@ public class Sale {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Column(name = "id")
+   @Column(name = "id", nullable = false)
    private Long id;
 
    @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
    @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
-   @Column(name = "quantity")
+   @Column(name = "quantity", nullable = false)
    private Integer quantity;
 
    @ManyToOne

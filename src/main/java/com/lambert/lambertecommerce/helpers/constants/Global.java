@@ -10,5 +10,7 @@ public class Global {
 
    public final static String ROOT_PATH = ProjectPaths.root;
 
+   public final static String CHARSET = "UTF-8";
+
    public final static String LANG = "en-uS";
 }

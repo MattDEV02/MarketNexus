@@ -1,0 +1,74 @@
+<div class="container-fluid">
+   <nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="header()">
+      <div class="container-fluid py-1">
+         <button aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation"
+                 class="navbar-toggler"
+                 data-bs-target="#navbarTogglerDemo03" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="navbar-brand mx-2">
+            <a th:replace="~{fragments/shared/logo.html :: logo()}"> </a>
+         </div>
+         <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <ul class="navbar-nav me-5 mb-2 mb-lg-0 mx-2">
+               <li class="nav-item">
+                  <a aria-current="page" class="nav-link active" th:href="@{/templates/dashboard}">
+                     Home
+                     <i class="fas fa-home mx-1"></i>
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link link-primary" th:href="@{/dashboard/account}">
+                     Account
+                     <i class="fas fa-user-alt mx-1"></i>
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link link-warning" th:href="@{/dashboard/cart}">
+                     Cart
+                     <i class="fas fa-cart-plus mx-1"></i>
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link link-success" th:href="@{/dashboard/newSale}">
+                     New Sale
+                     <i class="fas fa-plus-square mx-1"></i>
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link link-danger fw-bold" th:href="@{/logout}">
+                     Logout
+                     <i class="fas fa-sign-out-alt mx-1"></i>
+                  </a>
+               </li>
+            </ul>
+            <form class="d-flex mx-4" id="search-product-form" method="GET"
+                  name="search-product-form" th:action="@{/dashboard/searchProducts}">
+               <label class="form-label visually-hidden" for="product-name"></label>
+               <input class="form-control p-2 mx-3" id="product-name"
+                      name="product-name" placeholder="Search a Product"
+                      th:maxlength="${fieldSizes.get('PRODUCT_NAME_MAX_LENGTH')}"
+                      th:minlength="${fieldSizes.get('PRODUCT_NAME_MIN_LENGTH')}"
+                      th:value="${param != null ? param.get('product-name') : null}"
+                      type="text"/>
+               <label class="form-label visually-hidden" for="category">Product Category:</label>
+               <select class="form-select p-2" id="category" name="category">
+                  <option th:value="${null}">Category</option>
+                  <option th:each="productCategory : ${productCategories}"
+                          th:id="${productCategory.name + '#' + productCategory.id}"
+                          th:name="${productCategory.name + '#' + productCategory.id}"
+                          th:selected="${param != null && ((productCategory.id + '') == (param.category + ''))}"
+                          th:text="${productCategory.name}"
+                          th:value="${productCategory.id}"
+                  ></option>
+               </select>
+               <button class="form-control btn btn-outline-success form-control mx-3" id="submit" name="submit"
+                       type="submit" value="submit">
+                  Search
+                  <i class="fas fa-search mx-1"></i>
+               </button>
+            </form>
+         </div>
+      </div>
+   </nav>
+</div>

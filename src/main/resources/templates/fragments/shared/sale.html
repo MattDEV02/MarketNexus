@@ -1,30 +1,43 @@
-<div class="row justify-content-center">
-   <div class="card mt-5" style="width: 21rem;" th:fragment="sale(sale)">
-      <a th:href="@{'/dashboard/sale/' + ${sale.product.id}}">
-         <img class="card-img-top" style="height: 18rem"
-              th:alt="${sale.product.name}"
-              th:src="@{${sale.product.imageRelativePath}}"
-              th:title="${sale.product.name}"/>
+<div class="card text-center shadow mt-5" th:fragment="sale(sale)"
+     th:with="isCartPage=(${isCartPage} ?: false), isAccountPage=(${isAccountPage} ?: false)">
+   <a th:href="@{'/dashboard/sale/' + ${sale.id}}">
+      <img class="card-img-top"
+           th:alt="${sale.product.name}"
+           th:src="@{${sale.product.imageRelativePath}}"
+           th:title="${sale.product.name}"/>
+   </a>
+   <div class="card-body border">
+      <h3 class="card-title" th:text="${sale.product.name}"></h3>
+      <p class="card-text" th:text="${sale.product.description}"></p>
+      <p class="card-text fw-bold" th:text="${sale.product.category.name}"></p>
+   </div>
+   <div th:class="'card-footer' + ${!isCartPage && !isAccountPage ? ' pb-2 pt-3' : ' py-3'}">
+      <a class="card-link link-primary text-decoration-underline fs-5 ms-1 me-3"
+         th:href="@{'/dashboard/account/' + ${sale.user.credentials.username}}"
+         th:text="${sale.user.credentials.username}">
       </a>
-      <div class="card-body border">
-         <div class="col-12 mt-1">
-            <h4 th:text="${sale.product.name}"></h4>
-            <p th:text="${sale.product.description}"></p>
-            <p class="fw-bold" th:text="${sale.product.category.name}"></p>
-         </div>
-         <div class="col-12">
-            <a class="link-primary text-decoration-underline"
-               th:href="@{'/dashboard/account/' + ${sale.user.credentials.username}}"
-               th:text="${sale.user.credentials.username}">
-            </a>
-         </div>
-         <div class="col-12 mt-4">
-            <span th:text="${sale.product.price} + ' $'"></span>
-            <a class="btn btn-primary mx-4"
-               th:href="@{'/dashboard/cart/' + ${sale.product.id} + '?quantity=' + ${sale.quantity}}">
-               <i class="fas fa-cart-plus"></i>
-            </a>
-         </div>
-      </div>
+      <span class="text-secondary fs-5 ms-2 me-3" th:text="${sale.product.price} + ' $'"></span>
+      <a role="button" th:class="'btn btn-primary ms-3 mb-2 ' + ${loggedUser == sale.user ? 'disabled' : ''}"
+         th:href="@{'/dashboard/cart/' + ${sale.id} + '?quantity=' + ${sale.quantity}}"
+         th:if="${!isCartPage && !isAccountPage}">
+         <i class="fas fa-cart-plus"></i>
+      </a>
+      <a class="btn btn-success ms-3 mb-2" role="button"
+         th:href="@{'/dashboard/order/' + ${sale.id}}"
+         th:if="${isCartPage}">
+         <i class="fas fa-receipt"></i>
+      </a>
+      <a class="btn btn-danger ms-3 mb-2" id="delete-cart" role="button"
+         th:href="@{'/dashboard/cart/delete/' + ${sale.id}}"
+         th:if="${isCartPage}">
+         <i class="fas fa-trash"></i>
+      </a>
+      <!--
+       <a class="btn btn-secondary mb-1" role="button"
+          th:href="@{'/dashboard/update' + ${sale.id}}"
+          th:if="${isAccountPage && loggedUser == sale.user}">
+          <i class="fas fa-edit"></i>
+       </a>
+      -->
    </div>
 </div>

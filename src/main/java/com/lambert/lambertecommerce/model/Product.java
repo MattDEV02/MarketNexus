@@ -22,6 +22,7 @@ public class Product {
    @Column(name = "name", nullable = false)
    @NotBlank
    private String name;
+
    @Size(min = (FieldSizes.PRODUCT_DESCRIPTION_MIN_LENGTH), max = (FieldSizes.PRODUCT_DESCRIPTION_MAX_LENGTH))
    @Column(name = "description", nullable = false)
    @NotBlank
@@ -32,7 +33,7 @@ public class Product {
    @Column(name = "price", nullable = false)
    private Float price;
 
-   @Column(name = "image_relative_path", nullable = false)
+   @Column(name = "image_relative_path", nullable = true)
    @Size(min = (FieldSizes.PRODUCT_IMAGERELATIVEPATH_MIN_LENGTH))
    private String imageRelativePath;
 

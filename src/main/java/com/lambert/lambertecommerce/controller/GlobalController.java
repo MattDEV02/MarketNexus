@@ -56,6 +56,7 @@ public class GlobalController {
    @Autowired
    private ProductCategoryService productCategoryService;
 
+
    @ModelAttribute("fieldSizes")
    public Map<String, Object> getFieldSizesFields() {
       return GlobalController.fieldSizesMap;

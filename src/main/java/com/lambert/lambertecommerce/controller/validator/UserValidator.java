@@ -1,6 +1,5 @@
 package com.lambert.lambertecommerce.controller.validator;
 
-import com.lambert.lambertecommerce.helpers.validators.FieldValidators;
 import com.lambert.lambertecommerce.model.User;
 import com.lambert.lambertecommerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,6 @@ public class UserValidator implements Validator {
    @Override
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       User user = (User) object;
-      if (!FieldValidators.emailValidator(user.getEmail())) {
-         errors.reject("emailFormatError", "Invalid email format." + user.getEmail());
-      }
       if (this.userRepepository.existsByEmail(user.getEmail())) {
          //String[] errorArgs = {""};
          errors.reject("emailUniqueError", "Email " + user.getEmail() + " already used.");

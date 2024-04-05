@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/shared/head.html :: head(title = 'Error 404')}">
+</head>
+<div th:replace="~{fragments/shared/pagination/header.html :: header()}">
+</div>
+<body>
+<main>
+   <div class="container">
+      <div class="row justify-content-center">
+         <div class="col-12 pt-4 pb-5 text-center border rounded shadow mt-5 mb-4"
+              th:with="statusCode = 404, statusMessage = 'Page Not Found'">
+            <h1 class="display-1 fw-bold" th:text="${statusCode}"></h1>
+            <h1 class="display-1 fw-bold" th:text="${statusMessage}"></h1>
+            <h5 class="text-muted mt-5">The page got swallowed by a black hole...</h5>
+            <a class="btn btn-outline-dark mt-5" role="button" th:href="@{/dashboard}">
+               Back to Dashboard
+               <i class="fas fa-home mx-1"></i>
+            </a>
+         </div>
+      </div>
+   </div>
+</main>
+<div th:replace="~{fragments/shared/pagination/footer.html :: footer()}">
+</div>
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+<div th:fragment="successMessage(text, condition)" th:if="${condition}" th:with="condition=(${condition} ?: false)">
+   <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="fas fa-check-circle me-2"></i>
+      <strong th:text="${text}"></strong>
+      <button aria-label="Close" class="btn btn-close" data-bs-dismiss="alert" type="button"></button>
+   </div>
+</div>

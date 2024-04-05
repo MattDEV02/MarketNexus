@@ -1,7 +1,8 @@
 package com.lambert.lambertecommerce.authentication;
 
-import com.lambert.lambertecommerce.helpers.constants.ControllerSuffixes;
+import com.lambert.lambertecommerce.helpers.constants.PathSuffixes;
 import com.lambert.lambertecommerce.helpers.constants.ProjectPaths;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,21 +29,21 @@ public class AuthConfiguration implements WebMvcConfigurer {
    private DataSource dataSource;
 
    @Override
-   public void addResourceHandlers(ResourceHandlerRegistry registry) {
+   public void addResourceHandlers(@NotNull ResourceHandlerRegistry registry) {
       registry.addResourceHandler("/**")
               .addResourceLocations(AuthConfiguration.CLASSPATH_RESOURCE_LOCATIONS);
    }
 
    @Autowired
-   public void configureGlobal(AuthenticationManagerBuilder auth)
+   public void configureGlobal(@NotNull AuthenticationManagerBuilder auth)
            throws Exception {
       auth.jdbcAuthentication()
               //use the autowired datasource to access the saved credentials
               .dataSource(this.dataSource)
               //retrieve username and role
-              .authoritiesByUsernameQuery("SELECT username, role FROM credentials WHERE username=?")
+              .authoritiesByUsernameQuery("SELECT username, role FROM credentials WHERE username = ?")
               //retrieve username, password and a boolean flag specifying whether the user is enabled or not (always enabled in our case)
-              .usersByUsernameQuery("SELECT username, password, 1 AS enabled FROM credentials WHERE username=?");
+              .usersByUsernameQuery("SELECT username, password, TRUE AS enabled FROM credentials WHERE username = ?");
    }
 
 
@@ -52,19 +53,19 @@ public class AuthConfiguration implements WebMvcConfigurer {
    }
 
    @Bean
-   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+   public AuthenticationManager authenticationManager(@NotNull AuthenticationConfiguration authenticationConfiguration) throws Exception {
       return authenticationConfiguration.getAuthenticationManager();
    }
 
    @Bean
-   protected SecurityFilterChain configure(final HttpSecurity httpSecurity) throws Exception {
+   protected SecurityFilterChain configure(final @NotNull HttpSecurity httpSecurity) throws Exception {
       httpSecurity
               .csrf().disable().cors().disable()
               .authorizeHttpRequests(
                       auth -> auth
-                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/webjars/**", "/css/**", "/js/**", "/images/**").permitAll()
-                              .requestMatchers(HttpMethod.POST, "/registerNewUser", "/login").permitAll()
-                              .requestMatchers(HttpMethod.GET, "/" + ControllerSuffixes.DASHBOARD + "/**").authenticated()
+                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
+                              .requestMatchers(HttpMethod.POST, "/registerNewUser").permitAll()
+                              .requestMatchers(HttpMethod.GET, "/" + PathSuffixes.DASHBOARD + "/**").authenticated()
                               .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin
@@ -77,7 +78,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               )
               .logout(logout -> logout
                       .logoutUrl("/logout")
-                      .logoutSuccessUrl("/")
+                      .logoutSuccessUrl("/login?logoutSuccessful=true")
                       .invalidateHttpSession(true)
                       .clearAuthentication(true)
                       .deleteCookies("JSESSIONID")

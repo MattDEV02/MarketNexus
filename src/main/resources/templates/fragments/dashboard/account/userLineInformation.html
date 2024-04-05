@@ -1,10 +1,10 @@
 <div class="row border rounded p-2 align-items-center"
-     th:fragment="userInformationRow(property, type, value, isLoggedUserAccount)"
+     th:fragment="userLineInformation(property, type, value, isLoggedUserAccount)"
      th:with="isReadOnly=(${isReadOnly} ?: false), isSelect=(${isSelect} ?: false)">
-   <div class="col-md-3">
+   <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
       <h6 class="mt-2" th:text="${#strings.capitalize(property) + ': '}"></h6>
    </div>
-   <div class="col-md-7">
+   <div class="col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7 col-xxl-7">
       <h6 class="mt-2" th:if="${(isReadOnly || !isLoggedUserAccount) && !isSelect}"
           th:text="${value} + ${property == 'balance' ? ' $' : ''}"></h6>
       <h6 class="mt-2" th:if="${isSelect && !isLoggedUserAccount}" th:text="${value.name}"></h6>
@@ -25,9 +25,12 @@
              th:unless="${isReadOnly || !isLoggedUserAccount}"
              th:value="${value}"/>
    </div>
-   <div class="col-md-2">
-      <button disabled th:class="'btn btn-' + ${(isReadOnly || !isLoggedUserAccount) ? 'danger' : 'primary'}">
-         <i th:class="'fas fa-' + ${(isReadOnly || !isLoggedUserAccount) ? 'ban' : 'edit'}"></i>
+   <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
+      <button
+            disabled
+            th:class="'btn btn-' + ${(isReadOnly || !isLoggedUserAccount) ? 'danger' : 'primary'}"
+            type="button">
+         <i th:class="' fas fa-' + ${(isReadOnly || !isLoggedUserAccount) ? 'ban' : 'edit'}"></i>
       </button>
    </div>
 </div>

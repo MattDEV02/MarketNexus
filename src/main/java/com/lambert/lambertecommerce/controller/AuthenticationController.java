@@ -19,8 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+import java.util.Objects;
 
+@Controller
 public class AuthenticationController {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
@@ -34,11 +35,6 @@ public class AuthenticationController {
    private CredentialsValidator credentialsValidator;
 
 
-   @GetMapping(value = "/")
-   public ModelAndView showIndex() {
-      return new ModelAndView("index.html");
-   }
-
    @GetMapping(value = "/registration")
    public ModelAndView showRegisterForm() throws IllegalAccessException {
       ModelAndView modelAndView = new ModelAndView("registration.html");
@@ -47,13 +43,13 @@ public class AuthenticationController {
       return modelAndView;
    }
 
-   @PostMapping(value = {"/registerNewUser"})
+   @PostMapping(value = "/registerNewUser")
    public ModelAndView registerUser(@Valid @ModelAttribute("user") User user,
                                     BindingResult userBindingResult,
                                     @Valid @ModelAttribute("credentials") Credentials credentials,
                                     BindingResult credentialsBindingResult,
                                     @RequestParam("confirm-password") String confirmPassword) {
-      final String registrationSuccessful = "redirect:/login?registrationSuccessful=true";
+      final String registrationSuccessful = "redirect:/login";
       final String registrationError = "registration.html";
       ModelAndView modelAndView = new ModelAndView(registrationError);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
@@ -65,33 +61,21 @@ public class AuthenticationController {
          user.setCredentials(savedCredentials);
          this.userService.saveUser(user);
          modelAndView.setViewName(registrationSuccessful);
+         modelAndView.addObject("registrationSuccessful", true);
       } else {
-         for (ObjectError error : userBindingResult.getGlobalErrors()) {
-            modelAndView.addObject(error.getCode(), error.getDefaultMessage());
+         for (ObjectError userGlobalError : userBindingResult.getGlobalErrors()) {
+            modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
          }
-         for (ObjectError error : credentialsBindingResult.getGlobalErrors()) {
-            modelAndView.addObject(error.getCode(), error.getDefaultMessage());
+         for (ObjectError credentialsGlobalError : credentialsBindingResult.getGlobalErrors()) {
+            modelAndView.addObject(Objects.requireNonNull(credentialsGlobalError.getCode()), credentialsGlobalError.getDefaultMessage());
          }
       }
       return modelAndView;
    }
 
-/*
-   @GetMapping(value = "/registrationSuccessful")
-   public ModelAndView defaultAfterLogin() {
-      ModelAndView modelAndView = new ModelAndView("registrationSuccessful");
-      UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      Credentials credentials = credentialsService.getCredentials(userDetails.getUsername());
-      modelAndView.addObject("user", userDetails);
-      modelAndView.addObject("credentials", credentials);
-      return modelAndView;
-   }
-*/
-
    @GetMapping(value = "/login")
    public ModelAndView showLoginForm() {
       ModelAndView modelAndView = new ModelAndView("login.html");
-      // TODO: Vedere se si possono rimuovere.
       modelAndView.addObject("credentials", new Credentials());
       return modelAndView;
    }

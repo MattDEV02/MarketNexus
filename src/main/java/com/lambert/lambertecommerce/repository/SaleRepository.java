@@ -15,7 +15,5 @@ public interface SaleRepository extends CrudRepository<Sale, Long> {
 
    Set<Sale> findAllByUser(User user);
 
-   Optional<Sale> findByProduct(Product product);
-
    Set<Sale> findAllByUserAndProduct(User user, Product product);
 }

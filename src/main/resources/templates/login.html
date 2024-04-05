@@ -6,46 +6,68 @@
 
 <body>
 <div class="container">
-   <h1>Login</h1>
-   <span th:if="${param.registrationSuccessful != null}" th:style="'color:green'">Successfully registered</span>
-   <form id="login-form" method="POST" name="login-form" th:action="@{/login}">
-      <div class="input-group">
-         <label class="form-label" for="username">Username:</label>
-         <input class="form-control" id="username"
-                name="username"
-                placeholder="Insert your username" required th:field="${credentials.username}"
-                th:maxlength="${fieldSizes.get('USERNAME_MAX_LENGTH')}"
-                th:minlength="${fieldSizes.get('USERNAME_MIN_LENGTH')}"
-                type="text"/>
-         <span th:errors="${credentials.username}" th:if="${#fields.hasErrors('credentials.username')}"
-               th:style="'color:red'"></span>
+   <div class="row justify-content-center">
+      <div class="col-12 mt-5">
+         <div class="row justify-content-center">
+            <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 pt-4 pb-3 mt-3">
+               <div class="col-12 mb-3">
+                  <div class="row text-center">
+                     <h1>Login</h1>
+                  </div>
+               </div>
+               <div th:with="registrationSuccessful = ${param.registrationSuccessful != null}, logoutSuccessful = ${param.logoutSuccessful != null}, invalidCredentials = ${param.invalidCredentials != null}">
+                  <div
+                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Successfully registered.', condition = ${registrationSuccessful})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Successfully logged out.', condition = ${logoutSuccessful})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Incorrect username or password.', condition = ${invalidCredentials})}"></div>
+               </div>
+               <form id="login-form" method="POST" name="login-form" th:action="@{/login}">
+                  <div class="mb-3">
+                     <label class="form-label" for="username">Username:</label>
+                     <input class="form-control" id="username"
+                            name="username"
+                            placeholder="Insert your username" required th:field="${credentials.username}"
+                            th:maxlength="${fieldSizes.get('USERNAME_MAX_LENGTH')}"
+                            th:minlength="${fieldSizes.get('USERNAME_MIN_LENGTH')}"
+                            type="text"/>
+                  </div>
+                  <div class="mb-3">
+                     <label class="form-label" for="password">Password:</label>
+                     <div class="input-group">
+                        <input aria-describedby="toggle-password-visibility" aria-label="Password"
+                               class="form-control"
+                               id="password" name="password" placeholder="Insert your password"
+                               required
+                               th:field="${credentials.password}"
+                               th:maxlength="${fieldSizes.get('PASSWORD_MAX_LENGTH')}"
+                               th:minlength="${fieldSizes.get('PASSWORD_MIN_LENGTH')}"
+                               type="password"/>
+                        <button class="btn btn-outline-secondary" id="toggle-password-visibility" type="button">
+                           <!-- Icona dell'occhio per mostrare/nascondere la password -->
+                           <i class="fas fa-eye" id="eye-icon"></i>
+                        </button>
+                     </div>
+                  </div>
+                  <div class="my-4">
+                     <button class="btn btn-primary form-control" form="login-form" formmethod="POST" id="submit"
+                             name="submit" type="submit">
+                        Login
+                     </button>
+                  </div>
+               </form>
+               <div class="col-12">
+                  <div class="row text-center">
+                     <p>
+                        <a class="me-1" th:href="@{/}">Home</a>
+                        <a class="ms-1" th:href="@{/registration}">Register</a>
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </div>
       </div>
-      <br>
-      <div class="input-group">
-         <label class="form-label" for="password">Password:</label>
-         <input aria-describedby="toggle-password" aria-label="Password"
-                class="form-control"
-                id="password" name="password" placeholder="Insert your password"
-                required
-                th:field="${credentials.password}" th:maxlength="${fieldSizes.get('PASSWORD_MAX_LENGTH')}"
-                th:minlength="${fieldSizes.get('PASSWORD_MIN_LENGTH')}"
-                type="password"/>
-         <button class="btn btn-outline-secondary" id="toggle-password" type="button">
-            <!-- Icona dell'occhio per mostrare/nascondere la password -->
-            <i class="fas fa-eye" id="eye-icon"></i>
-         </button>
-         <span th:errors="${credentials.password}" th:if="${#fields.hasErrors('credentials.password')}"
-               th:style="'color:red'"></span>
-         <br><br>
-      </div>
-      <div>
-         <span th:if="${param.invalidCredentials != null}" th:style="'color:red'">Username o password errati</span>
-      </div>
-      <input form="login-form" formmethod="POST" id="submit" name="submit" type="submit" value="Login"/>
-   </form>
-   <div>
-      <a th:href="@{/}">index</a>
-      <a th:href="@{/registration}" th:text="Registrati"></a>
    </div>
 </div>
 <script charset="UTF-8" th:src="@{/js/shared/index.js}" type="text/javascript"></script>

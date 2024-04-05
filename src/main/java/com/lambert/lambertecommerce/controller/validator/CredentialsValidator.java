@@ -2,7 +2,6 @@ package com.lambert.lambertecommerce.controller.validator;
 
 import com.lambert.lambertecommerce.helpers.validators.FieldValidators;
 import com.lambert.lambertecommerce.model.Credentials;
-import com.lambert.lambertecommerce.model.User;
 import com.lambert.lambertecommerce.repository.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -35,13 +34,13 @@ public class CredentialsValidator implements Validator {
          errors.reject("passwordFormatError", "La password deve essere lunga 8 caratteri e..." + credentials.getPassword());
       }
       if (this.getConfirmPassword() != null && !this.getConfirmPassword().isEmpty() && !credentials.getPassword().equals(this.getConfirmPassword())) {
-         errors.reject("passwordDifferentFromConfirmPassword", "La password deve essere uguale alla confirm password.");
+         errors.reject("passwordDifferentFromConfirmPasswordError", "La password deve essere uguale alla confirm password.");
       }
 
    }
 
    @Override
    public boolean supports(@NonNull Class<?> aClass) {
-      return User.class.equals(aClass);
+      return Credentials.class.equals(aClass);
    }
 }

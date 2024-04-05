@@ -2,3 +2,27 @@
    border: none;
    cursor: pointer;
 }
+
+@media (max-width: 767px) {
+   img.card-img-top {
+      height: 27.5rem;
+   }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+   img.card-img-top {
+      height: 19.5rem;
+   }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+   img.card-img-top {
+      height: 26rem;
+   }
+}
+
+@media (min-width: 1200px) {
+   img.card-img-top {
+      height: 18rem;
+   }
+}

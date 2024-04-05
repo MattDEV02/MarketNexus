@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/shared/head.html :: head(title = 'FAQs')}">
+</head>
+
+<body>
+<div class="container py-5">
+   <div class="row justify-content-center">
+      <div class="col-12">
+         <div class="row text-center">
+            <h1>LambertEcommerce FAQs</h1>
+         </div>
+      </div>
+      <div class="col-12 mt-5">
+         <div class="row justify-content-center">
+            <div class="accordion" id="faq-accordion" th:each="accordion, iterStat : ${accordions}">
+               <div th:replace="fragments/accordion.html :: accordion(${accordion}, ${iterStat.count })"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+</body>
+
+</html>

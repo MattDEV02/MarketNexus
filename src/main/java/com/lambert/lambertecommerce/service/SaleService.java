@@ -36,8 +36,8 @@ public class SaleService {
       return this.saleRepository.save(sale);
    }
 
-   public Sale getSale(Product product) {
-      Optional<Sale> result = this.saleRepository.findByProduct(product);
+   public Sale getSale(Long id) {
+      Optional<Sale> result = this.saleRepository.findById(id);
       return result.orElse(null);
    }
 

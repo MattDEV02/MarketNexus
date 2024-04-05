@@ -1,0 +1,15 @@
+<div class="accordion-item" th:fragment="accordion(accordion, index)">
+   <h2 class="accordion-header" th:id="'faq-heading' + ${index}">
+      <button aria-expanded="false" class="accordion-button collapsed" data-bs-toggle="collapse"
+              th:aria-controls="'faq-collapse' + ${index}"
+              th:data-bs-target="'#faq-collapse' + ${index}" th:text="${index} + '. ' + '&nbsp;' + ${accordion.key}"
+              type="button">
+      </button>
+   </h2>
+   <div class="accordion-collapse collapse" data-bs-parent="#faq-accordion"
+        th:aria-labelledby="'faq-heading' + ${index}"
+        th:id="'faq-collapse' + ${index}">
+      <div class="accordion-body" th:text="${accordion.value}">
+      </div>
+   </div>
+</div>

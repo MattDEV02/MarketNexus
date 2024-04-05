@@ -3,6 +3,7 @@ package com.lambert.lambertecommerce.service;
 import com.lambert.lambertecommerce.model.Credentials;
 import com.lambert.lambertecommerce.model.User;
 import com.lambert.lambertecommerce.repository.UserRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,20 @@ public class UserService {
          result.add(user);
       }
       return result;
+   }
+
+   @Transactional
+   public void updateUser(Long id, @NotNull User updatedUser) {
+      User user = this.userRepository.findById(id).orElse(null);
+      if (user != null) {
+         user.setName(updatedUser.getName());
+         user.setSurname(updatedUser.getSurname());
+         user.setBirthDate(updatedUser.getBirthDate());
+         user.setBalance(updatedUser.getBalance());
+         user.setNation(updatedUser.getNation());
+         user.setCredentials(updatedUser.getCredentials());
+         this.userRepository.save(user);
+      }
    }
 
 }
