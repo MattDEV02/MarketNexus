@@ -1,5 +1,5 @@
 <div class="row border rounded p-2 align-items-center"
-     th:fragment="userLineInformation(property, type, value, isLoggedUserAccount)"
+     th:fragment="userLineInformation(object, property, type, value, isLoggedUserAccount)"
      th:with="isReadOnly=(${isReadOnly} ?: false), isSelect=(${isSelect} ?: false)">
    <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
       <h6 class="mt-2" th:text="${#strings.capitalize(property) + ': '}"></h6>
@@ -16,13 +16,17 @@
                  th:name="${nation.name + '#' + nation.id}"
                  th:selected="${nation.id == value.id}" th:text="${nation.name}" th:value="${nation.id}"></option>
       </select>
-      <input class="form-control" step="0.01" th:id="${property}" th:if="${!isSelect}"
-             th:max="${fieldSizes.get('BALANCE_MAX_VALUE')}" th:maxlength="${fieldSizes.get('EMAIL_MAX_LENGTH')}"
+      <input step="0.01"
+             th:class="'form-control ' + ${isReadOnly || !isLoggedUserAccount ? 'visually-hidden disabled' : ''}"
+             
+             th:id="${property}"
+             th:if="${!isSelect}" th:max="${fieldSizes.get('BALANCE_MAX_VALUE')}"
+             th:maxlength="${fieldSizes.get('EMAIL_MAX_LENGTH')}"
              th:min="${fieldSizes.get('BALANCE_MIN_VALUE')}"
              th:minlength="${fieldSizes.get('NAME_MIN_LENGTH')}"
              th:name="${property}"
-             th:placeholder="'Insert your ' + ${property}" th:type="${type}"
-             th:unless="${isReadOnly || !isLoggedUserAccount}"
+             th:object="${object}"
+             th:placeholder="'Update your ' + ${property}" th:type="${type}"
              th:value="${value}"/>
    </div>
    <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">

@@ -1,5 +1,5 @@
 <div th:fragment="errorMessage(text)" th:if="${condition}" th:with="condition=(${condition} ?: false)">
-   <div class="alert alert-danger alert-dismissible fade show" role="alert">
+   <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
       <i class="fas fa-exclamation-triangle me-2"></i>
       <strong th:text="${text}"></strong>
       <button aria-label="Close" class="btn btn-close" data-bs-dismiss="alert" type="button"></button>

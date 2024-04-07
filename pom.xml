@@ -8,11 +8,11 @@
         <version>3.2.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.lambert</groupId>
-    <artifactId>LambertEcommerce</artifactId>
+    <groupId>com.market</groupId>
+    <artifactId>MarketNexus</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>LambertEcommerce</name>
-    <description>LambertEcommerce</description>
+    <name>MarketNexus</name>
+    <description>MarketNexus</description>
     <properties>
         <java.version>17</java.version>
     </properties>
