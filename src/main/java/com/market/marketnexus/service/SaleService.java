@@ -47,7 +47,7 @@ public class SaleService {
 
    public Set<Sale> getAllSales() {
       Set<Sale> result = new HashSet<Sale>();
-      Iterable<Sale> iterable = this.saleRepository.findAll();
+      Iterable<Sale> iterable = this.saleRepository.findAllByOrderByUpdatedAt();
       for (Sale sale : iterable) {
          result.add(sale);
       }
@@ -57,7 +57,7 @@ public class SaleService {
    public Set<Sale> getAllSalesByProductName(String productName) {
       Set<Sale> result = new HashSet<Sale>();
       Set<Sale> sales = this.getAllSales();
-      Set<Product> products = this.productRepository.findAllByName(productName);
+      Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCase(productName);
       for (Sale sale : sales) {
          if (products.contains(sale.getProduct())) {
             result.add(sale);
@@ -83,7 +83,7 @@ public class SaleService {
       Set<Sale> result = new HashSet<Sale>();
       Set<Sale> sales = this.getAllSales();
       ProductCategory productCategory = this.productCategoryRepository.findById(productCategoryId).orElse(null);
-      Set<Product> products = this.productRepository.findAllByNameAndCategory(productName, productCategory);
+      Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCaseAndCategory(productName, productCategory);
       for (Sale sale : sales) {
          if (products.contains(sale.getProduct())) {
             result.add(sale);

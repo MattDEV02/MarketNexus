@@ -2,6 +2,7 @@ package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.PathSuffixes;
+import com.market.marketnexus.helpers.constants.Temporals;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.Nation;
@@ -34,6 +35,8 @@ public class GlobalController {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalController.class);
    private static final Map<String, Object> fieldSizesMap = new HashMap<String, Object>();
+   private static final Map<String, Object> temporalsMap = new HashMap<String, Object>();
+   //TODO: Global constants.
 
    static {
       Field[] fields = FieldSizes.class.getDeclaredFields();
@@ -42,8 +45,21 @@ public class GlobalController {
             String name = field.getName();
             Object value = field.get(null);
             GlobalController.fieldSizesMap.put(name, value);
-         } catch (IllegalAccessException illegalAccessException) {
-            LOGGER.warn("Impossible to access at this field: " + field.getName(), illegalAccessException);
+         } catch (IllegalAccessException | IllegalArgumentException illegalException) {
+            LOGGER.warn("Impossible to access at this field: {}", field.getName(), illegalException);
+         }
+      }
+   }
+
+   static {
+      Field[] fields = Temporals.class.getDeclaredFields();
+      for (Field field : fields) {
+         try {
+            String name = field.getName();
+            Object value = field.get(null);
+            GlobalController.temporalsMap.put(name, value);
+         } catch (IllegalAccessException | IllegalArgumentException illegalException) {
+            LOGGER.warn("Impossible to access at this field: {}", field.getName(), illegalException);
          }
       }
    }
@@ -59,15 +75,20 @@ public class GlobalController {
 
 
    @ModelAttribute("fieldSizes")
-   public Map<String, Object> getFieldSizesFields() {
+   public Map<String, Object> getFieldSizesMap() {
       return GlobalController.fieldSizesMap;
+   }
+
+   @ModelAttribute("temporals")
+   public Map<String, Object> getTemporalsMap() {
+      return GlobalController.temporalsMap;
    }
 
    @ModelAttribute("nations")
    public Set<Nation> getNations(@NotNull HttpServletRequest request) {
       Set<Nation> nations = null;
       final String URI = request.getRequestURI();
-      if (URI.equals("/" + PathSuffixes.DASHBOARD + "/account") || URI.equals("/registration") || URI.equals("/registerNewUser")) {
+      if (URI.contains("/regist") || URI.contains("/" + PathSuffixes.ACCOUNT)) {
          nations = this.nationService.getAllNations();
       }
       return nations;
@@ -80,7 +101,7 @@ public class GlobalController {
       User loggedUser = null;
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
       if (Utils.userIsLoggedIn(authentication)) {
-         userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+         userDetails = (UserDetails) authentication.getPrincipal();
          credentials = this.credentialsService.getCredentials(userDetails.getUsername());
          loggedUser = this.userService.getUser(credentials);
          model.addAttribute("loggedUser", loggedUser);

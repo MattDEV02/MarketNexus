@@ -19,7 +19,6 @@ public class UserValidator implements Validator {
       User user = (User) object;
       if (this.userService.existsByEmail(user.getEmail())) {
          //String[] errorArgs = {""};
-         System.out.println("Esiste");
          errors.reject("emailUniqueError", "Email " + user.getEmail() + " already used.");
       }
    }

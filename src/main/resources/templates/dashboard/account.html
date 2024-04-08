@@ -10,20 +10,32 @@
 <div th:replace="~{fragments/shared/pagination/header.html :: header()}">
 </div>
 <main>
-   <div class="container" th:with="isLoggedUserAccount = ${true}">
+   <div class="container"
+        th:with="isLoggedUserAccount = ${!#sets.isEmpty(saleProducts) && loggedUser == saleProducts[0].user}">
       <div class="row justify-content-center">
          <div class="col-12 mt-5">
             <div class="row text-center">
                <h1>Account</h1>
             </div>
          </div>
-         <div class="col-12 mt-5">
-            <form class="row justify-content-center rounded shadow py-4 px-md-2  border" id="update-account-form"
+         <div th:class="'col-12 mt-5 py-4 ' + ${!isLoggedUserAccount ? 'pb-5' : ''} + ' px-md-2 rounded shadow border'"
+              th:with="accountUpdatedSuccessful = ${param.accountUpdatedSuccessful}">
+            <form class="row justify-content-center" id="update-account-form"
                   method="POST"
                   name="update-account-form"
                   th:action="@{/dashboard/account/updateAccount}">
                <div
                      th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Account updated successfully.', condition = ${accountUpdatedSuccessful != null})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.name')}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.surname')}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.birthDate')}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.balance')}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
                <div class="col-12 col-sm-12 col-md-11 col-lg-8 col-xl-5 col-xxl-5 text-center me-3 mt-lg-2 mt-xl-0">
                   <h2 class="mt-4 mt-md-3 mt-lg-3 mt-xl-3 mt-xxl-3 mb-5">User informations</h2>
                   <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'name', type = 'text', value =  ${user.name}, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
@@ -36,9 +48,9 @@
                   <h2 class="mt-3 mb-5">Account informations</h2>
                   <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'username', type = 'text', value = ${credentials.username}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
                   <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'email', type = 'email', value = ${user.email}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'registered', type = 'date', value = ${#temporals.format(user.insertedAt, 'dd/MM/YYYY HH:mm')}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'updated', type = 'date', value = ${#temporals.format(user.updatedAt, 'dd/MM/YYYY HH:mm')}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
                   <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'role', type = 'text', value = ${#strings.capitalize(#strings.replace(credentials.role, '_', ' ').toLowerCase())}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
+                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'registered', type = 'date', value = ${#temporals.format(user.insertedAt, temporals.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
+                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'updated', type = 'date', value = ${#temporals.format(user.updatedAt, temporals.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
                </div>
                <div class="col-12 mt-5 mb-3" th:if="${isLoggedUserAccount}">
                   <div class="row justify-content-center ">
@@ -94,6 +106,7 @@
 </main>
 <div th:replace="~{fragments/shared/pagination/footer.html :: footer()}">
 </div>
+<script charset="UTF-8" th:src="@{/js/shared/maxDateInputValue.js}" type="text/javascript"></script>
 <script charset="UTF-8" th:src="@{/js/dashboard/account/index.js}" type="text/javascript"></script>
 </body>
 

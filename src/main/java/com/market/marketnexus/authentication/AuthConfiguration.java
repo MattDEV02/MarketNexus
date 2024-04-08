@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -60,7 +61,8 @@ public class AuthConfiguration implements WebMvcConfigurer {
    @Bean
    protected SecurityFilterChain configure(final @NotNull HttpSecurity httpSecurity) throws Exception {
       httpSecurity
-              .csrf().disable().cors().disable()
+              .cors(AbstractHttpConfigurer::disable)
+              .csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(
                       auth -> auth
                               .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()

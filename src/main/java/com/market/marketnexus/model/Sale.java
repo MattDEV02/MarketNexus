@@ -2,7 +2,7 @@ package com.market.marketnexus.model;
 
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.Global;
-import com.market.marketnexus.helpers.constants.TemporalFormats;
+import com.market.marketnexus.helpers.constants.Temporals;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -33,12 +33,12 @@ public class Sale {
    @JoinColumn(name = "product", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_products_fk"))
    private Product product;
 
-   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    @Column(name = "inserted_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
 
-   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    @Column(name = "updated_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime updatedAt;

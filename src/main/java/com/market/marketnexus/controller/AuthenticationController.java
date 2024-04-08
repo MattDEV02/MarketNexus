@@ -35,8 +35,8 @@ public class AuthenticationController {
    private CredentialsValidator credentialsValidator;
 
 
-   @GetMapping(value = "/registration")
-   public ModelAndView showRegisterForm() throws IllegalAccessException {
+   @GetMapping(value = {"/registration", "/registration/"})
+   public ModelAndView showRegisterForm() {
       ModelAndView modelAndView = new ModelAndView("registration.html");
       modelAndView.addObject("user", new User());
       modelAndView.addObject("credentials", new Credentials());
@@ -49,19 +49,17 @@ public class AuthenticationController {
                                     @Valid @ModelAttribute("credentials") Credentials credentials,
                                     BindingResult credentialsBindingResult,
                                     @RequestParam("confirm-password") String confirmPassword) {
-      final String registrationSuccessful = "redirect:/login";
+      final String registrationSuccessful = "redirect:/login?registrationSuccessful=true";
       final String registrationError = "registration.html";
       ModelAndView modelAndView = new ModelAndView(registrationError);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
       this.credentialsValidator.validate(credentials, credentialsBindingResult);
-      // se user e credential hanno entrambi contenuti validi, memorizza User e the Credentials nel DB
       if (!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
          Credentials savedCredentials = this.credentialsService.saveCredentials(credentials);
          user.setCredentials(savedCredentials);
          this.userService.saveUser(user);
          modelAndView.setViewName(registrationSuccessful);
-         modelAndView.addObject("registrationSuccessful", true);
       } else {
          for (ObjectError userGlobalError : userBindingResult.getGlobalErrors()) {
             modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());

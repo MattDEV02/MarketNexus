@@ -5,7 +5,6 @@ import com.market.marketnexus.repository.ProductCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -20,11 +19,7 @@ public class ProductCategoryService {
    }
 
    public Set<ProductCategory> getAllProductCategories() {
-      Set<ProductCategory> result = new HashSet<ProductCategory>();
-      Iterable<ProductCategory> iterable = this.productCategoryRepository.findAll();
-      for (ProductCategory productCategory : iterable) {
-         result.add(productCategory);
-      }
-      return result;
+      Set<ProductCategory> allProductCategoriesOrderByName = this.productCategoryRepository.findAllByOrderByName();
+      return allProductCategoriesOrderByName;
    }
 }

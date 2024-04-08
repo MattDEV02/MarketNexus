@@ -193,6 +193,7 @@ INSERT INTO MarketNexus.Credentials (username, password, role)
 VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BOUGHTER'),
        ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'SELLER_AND_BOUGHTER'),
        ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'SELLER_AND_BOUGHTER');
+-- Gabriel1
 
 -- N.B. = La password è criptata da spring boot e arriva a 60 caratteri.
 
@@ -243,7 +244,7 @@ ALTER TABLE MarketNexus.Users
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Users (name, surname, email, birthdate, balance, credentials, nation)
-VALUES ('Matteo', 'Lambertucci', 'matteomarketucci3@gmail.com', '2024-03-14', 22, 1, 1),
+VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2024-03-14', 22, 1, 1),
        ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2, 2),
        ('Gabriel', 'Muscedere', 'gabrielmuscedere@gmail.com', '2002-03-27', 0.1, 3, 6);
 

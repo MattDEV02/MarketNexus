@@ -12,6 +12,7 @@ import java.util.Set;
 public interface SaleRepository extends CrudRepository<Sale, Long> {
    Optional<Sale> findByUserAndProductAndInsertedAt(User user, Product product, LocalDateTime insertedAt);
 
+   Set<Sale> findAllByOrderByUpdatedAt();
 
    Set<Sale> findAllByUser(User user);
 

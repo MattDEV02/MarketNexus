@@ -1,7 +1,3 @@
-const today = new Date().toISOString().split("T")[0];
-const birthDateInput = document.getElementById("birth-date");
-birthDateInput.max = today;
-birthDateInput.value = today;
 // Italy selezionata
 const italySelectOptionInput = document.getElementById("Italy#1");
 italySelectOptionInput.selected = true;

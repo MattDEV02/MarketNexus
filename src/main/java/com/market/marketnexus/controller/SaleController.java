@@ -36,36 +36,37 @@ public class SaleController {
    @Autowired
    private SaleService saleService;
 
-   @GetMapping(value = "")
+   @GetMapping(value = {"", "/"})
    public ModelAndView showAllSales() {
       ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/index.html");
-      modelAndView.addObject("sales", this.saleService.getAllSales());
+      Set<Sale> allSales = this.saleService.getAllSales();
+      modelAndView.addObject("sales", allSales);
       return modelAndView;
    }
 
-   @GetMapping(value = "/searchProducts")
+   @GetMapping(value = {"/searchProducts", "/searchProducts/"})
    public ModelAndView searchSales(@NotNull HttpServletRequest request) {
       String productName = request.getParameter("product-name");
       String productCategoryId = request.getParameter("category");
       ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/index.html");
-      Set<Sale> sales = null;
+      Set<Sale> searchedSales = null;
       if (productName.isEmpty() && productCategoryId.isEmpty()) {
-         sales = this.saleService.getAllSales();
+         searchedSales = this.saleService.getAllSales();
       } else if (productCategoryId.isEmpty()) {
-         sales = this.saleService.getAllSalesByProductName(productName);
+         searchedSales = this.saleService.getAllSalesByProductName(productName);
       } else {
          Long longProductCategoryId = Long.parseLong(productCategoryId);
          if (productName.isEmpty()) {
-            sales = this.saleService.getAllSalesByProductCategoryId(longProductCategoryId);
+            searchedSales = this.saleService.getAllSalesByProductCategoryId(longProductCategoryId);
          } else {
-            sales = this.saleService.getAllSalesByProductNameAndProductCategoryId(productName, longProductCategoryId);
+            searchedSales = this.saleService.getAllSalesByProductNameAndProductCategoryId(productName, longProductCategoryId);
          }
       }
-      modelAndView.addObject("sales", sales);
+      modelAndView.addObject("sales", searchedSales);
       return modelAndView;
    }
 
-   @GetMapping(value = "/newSale")
+   @GetMapping(value = {"/newSale", "/newSale/"})
    public ModelAndView showNewSaleForm() {
       ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/newSale.html");
       modelAndView.addObject("sale", new Sale());
@@ -73,7 +74,7 @@ public class SaleController {
       return modelAndView;
    }
 
-   @PostMapping(value = "/publishNewSale")
+   @PostMapping(value = {"/publishNewSale", "/publishNewSale/"})
    public ModelAndView publishNewSale(
            @Valid @ModelAttribute("loggedUser") User loggedUser,
            @Valid @ModelAttribute("product") Product product,
@@ -83,7 +84,7 @@ public class SaleController {
            @RequestParam("product-image") MultipartFile productImage) {
       System.out.println(productBindingResult);
       System.out.println(saleBindingResult);
-      final String publishSuccessful = "redirect:/" + PathSuffixes.DASHBOARD + "/product/";
+      final String publishSuccessful = "redirect:/" + PathSuffixes.SALE + "/";
       final String publishError = PathSuffixes.DASHBOARD + "/newSale.html";
       ModelAndView modelAndView = new ModelAndView(publishError);
       this.productValidator.setProductImage(productImage);
@@ -93,7 +94,6 @@ public class SaleController {
          Sale savedSale = this.saleService.saveSale(sale, loggedUser, savedProduct);
          if (Utils.storeProductImage(savedProduct, productImage)) {
             modelAndView.setViewName(publishSuccessful + savedProduct.getId().toString());
-            modelAndView.addObject("product", savedProduct);
             modelAndView.addObject("sale", savedSale);
          }
       } else {
@@ -104,7 +104,7 @@ public class SaleController {
       return modelAndView;
    }
 
-   @GetMapping(value = "/sale/{saleId}")
+   @GetMapping(value = {"/sale/{saleId}", "/sale/{saleId}/"})
    public ModelAndView showSaleById(@PathVariable("saleId") Long saleId) {
       ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/sale.html");
       Sale sale = this.saleService.getSale(saleId);

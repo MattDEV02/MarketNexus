@@ -35,8 +35,11 @@
    
    <div>
       <label for="birth-date">Date of birth:</label>
-      <input id="birth-date" min="1900-01-01" name="birth-date" required
-             th:field="${user.birthDate}" th:fieldformat="'yyyy-MM-dd'" th:object="${user}" type="date"/>
+      <input id="birth-date" name="birth-date"
+             required th:field="${user.birthDate}" th:fieldFormat="${temporals.get('DATE_FORMAT')}"
+             th:format="${temporals.get('DATE_FORMAT')}"
+             th:max="${temporals.get('BIRTHDATE_MAX_VALUE')}" th:min="${temporals.get('BIRTHDATE_MIN_VALUE')}"
+             th:object="${user}" type="date"/>
       <div
             th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.birthDate')}"></div>
       <br><br>
@@ -121,7 +124,8 @@
       <input form="registration-form" formmethod="POST" id="submit" name="submit" type="submit" value="Register"/>
    </div>
 </form>
-<script charset="UTF-8" th:src="@{/js/shared/index.js}" type="text/javascript"></script>
+<script charset="UTF-8" th:src="@{/js/shared/maxDateInputValue.js}" type="text/javascript"></script>
+<script charset="UTF-8" th:src="@{/js/shared/showPassword.js}" type="text/javascript"></script>
 <script charset="UTF-8" th:src="@{/js/registration/index.js}" type="text/javascript"></script>
 </body>
 

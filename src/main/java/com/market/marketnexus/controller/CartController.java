@@ -24,7 +24,7 @@ public class CartController {
    @Autowired
    private CartService cartService;
 
-   @GetMapping(value = "")
+   @GetMapping(value = {"", "/"})
    public ModelAndView showCart(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/cart.html");
       Set<Cart> cartProducts = this.cartService.getAllCartsByUser(loggedUser);
@@ -32,7 +32,7 @@ public class CartController {
       return modelAndView;
    }
 
-   @GetMapping(value = "/{saleId}")
+   @GetMapping(value = {"/{saleId}", "/{saleId}/"})
    public ModelAndView addSaleProductToCartById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("saleId") Long saleId, @RequestParam("quantity") Integer quantity) {
       ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/sale.html");
       Sale sale = this.saleService.getSale(saleId);
@@ -43,7 +43,7 @@ public class CartController {
       return modelAndView;
    }
 
-   @GetMapping(value = "/delete/{cartId}")
+   @GetMapping(value = {"/delete/{cartId}", "/delete/{cartId}/"})
    public ModelAndView deleteCartById(@PathVariable("cartId") Long cartId) {
       ModelAndView modelAndView = new ModelAndView("redirect:/" + PathSuffixes.DASHBOARD + "/cart");
       Cart cartToDelete = this.cartService.getCart(cartId);

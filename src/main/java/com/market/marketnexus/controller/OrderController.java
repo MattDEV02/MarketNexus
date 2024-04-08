@@ -18,7 +18,7 @@ public class OrderController {
    @Autowired
    private OrderService orderService;
 
-   @GetMapping(value = "")
+   @GetMapping(value = {"", "/"})
    public ModelAndView makeOrderFromCart(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/order.html");
       return modelAndView;

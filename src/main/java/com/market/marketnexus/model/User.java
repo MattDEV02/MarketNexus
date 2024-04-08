@@ -2,7 +2,7 @@ package com.market.marketnexus.model;
 
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.Global;
-import com.market.marketnexus.helpers.constants.TemporalFormats;
+import com.market.marketnexus.helpers.constants.Temporals;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import jdk.jfr.Unsigned;
@@ -35,7 +35,7 @@ public class User {
    @Column(name = "surname", nullable = false)
    private String surname;
 
-   @DateTimeFormat(pattern = TemporalFormats.DATE_FORMAT)
+   @DateTimeFormat(pattern = Temporals.DATE_FORMAT)
    @Past(message = "The birth date must be in the past.")
    @Column(name = "birthdate", nullable = true)
    @Temporal(TemporalType.DATE)
@@ -61,12 +61,12 @@ public class User {
 
    @Column(name = "inserted_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
-   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    private LocalDateTime insertedAt;
 
    @Column(name = "updated_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
-   @DateTimeFormat(pattern = TemporalFormats.DATE_TIME_FORMAT)
+   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    private LocalDateTime updatedAt;
 
    public User() {

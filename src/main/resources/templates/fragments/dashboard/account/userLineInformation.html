@@ -1,33 +1,38 @@
-<div class="row border rounded p-2 align-items-center"
+<div class="row border rounded p-1 align-items-center"
      th:fragment="userLineInformation(object, property, type, value, isLoggedUserAccount)"
      th:with="isReadOnly=(${isReadOnly} ?: false), isSelect=(${isSelect} ?: false)">
    <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
-      <h6 class="mt-2" th:text="${#strings.capitalize(property) + ': '}"></h6>
+      <h6 class="">
+         <label class="form-label mt-3" th:for="${property == 'birth date' ? 'birthDate' : property}"
+                th:text="${#strings.capitalize(property) + ': '}">
+         </label>
+      </h6>
    </div>
    <div class="col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7 col-xxl-7">
       <h6 class="mt-2" th:if="${(isReadOnly || !isLoggedUserAccount) && !isSelect}"
           th:text="${value} + ${property == 'balance' ? ' $' : ''}"></h6>
       <h6 class="mt-2" th:if="${isSelect && !isLoggedUserAccount}" th:text="${value.name}"></h6>
-      <label class="form-label visually-hidden" th:for="${property}" th:unless="${isReadOnly || !isLoggedUserAccount}">
-      </label>
       <select class="form-control form-select" th:id="${property}" th:if="${isSelect && isLoggedUserAccount}"
               th:name="${property}">
          <option th:each="nation : ${nations}" th:id="${nation.name + '#' + nation.id}"
                  th:name="${nation.name + '#' + nation.id}"
                  th:selected="${nation.id == value.id}" th:text="${nation.name}" th:value="${nation.id}"></option>
       </select>
-      <input step="0.01"
-             th:class="'form-control ' + ${isReadOnly || !isLoggedUserAccount ? 'visually-hidden disabled' : ''}"
-             
-             th:id="${property}"
-             th:if="${!isSelect}" th:max="${fieldSizes.get('BALANCE_MAX_VALUE')}"
-             th:maxlength="${fieldSizes.get('EMAIL_MAX_LENGTH')}"
-             th:min="${fieldSizes.get('BALANCE_MIN_VALUE')}"
-             th:minlength="${fieldSizes.get('NAME_MIN_LENGTH')}"
-             th:name="${property}"
+      <input th:class="'form-control ' + ${isReadOnly || !isLoggedUserAccount ? 'visually-hidden disabled' : ''}"
+             th:fieldFormat="${property == 'birth date' ? fieldSizes.get('DATE_FORMAT') : null}"
+             th:format="${property == 'birth date' ? fieldSizes.get('DATE_FORMAT') : null}"
+             th:id="${property == 'birth date' ? 'birthDate' : property}"
+             th:if="${!isSelect && property != 'registered' && property != 'updated' && property != 'role'}"
+             th:max="${property == 'balance' ? fieldSizes.get('BALANCE_MAX_VALUE') : (property == 'birth date' ? temporals.get('BIRTHDATE_MAX_VALUE') : null)}"
+             th:maxlength="${fieldSizes.get(#strings.toUpperCase(property) + '_MAX_LENGTH')}"
+             th:min="${property == 'balance' ? fieldSizes.get('BALANCE_MIN_VALUE') : (property == 'birth date' ? temporals.get('BIRTHDATE_MIN_VALUE') : null)}"
+             th:minlength="${fieldSizes.get(#strings.toUpperCase(property) + '_MIN_LENGTH')}"
+             th:name="${property == 'birth date' ? 'birthDate' : property}"
              th:object="${object}"
-             th:placeholder="'Update your ' + ${property}" th:type="${type}"
-             th:value="${value}"/>
+             th:placeholder="'Update your ' + ${property}" th:step="${property == 'balance' ? '0.01' : null}"
+             th:type="${type}"
+             th:value="${value}"
+      />
    </div>
    <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
       <button

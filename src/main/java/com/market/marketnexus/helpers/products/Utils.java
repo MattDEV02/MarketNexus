@@ -29,7 +29,7 @@ public class Utils {
             if (directory.mkdir()) {
                String destinationFilePath = destinationDirectory + "/" + Utils.getProductRelativeImageFile(product);
                File file = new File(destinationFilePath);
-               productImage.transferTo(file); // Salva il file sul filesystem del server
+               productImage.transferTo(file);
                return productImage.getResource().exists() && file.exists(); //
             } else {
                System.err.println("Directory for the new Product inserted (id = " + product.getId().toString() + ")" + " not created, file cannot be stored.");

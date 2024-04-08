@@ -5,7 +5,6 @@ import com.market.marketnexus.repository.NationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -15,11 +14,7 @@ public class NationService {
    protected NationRepository nationRepository;
 
    public Set<Nation> getAllNations() {
-      Set<Nation> result = new HashSet<Nation>();
-      Iterable<Nation> iterable = this.nationRepository.findAll();
-      for (Nation nation : iterable) {
-         result.add(nation);
-      }
-      return result;
+      Set<Nation> allNationsOrderByName = this.nationRepository.findAllByOrderByName();
+      return allNationsOrderByName;
    }
 }
