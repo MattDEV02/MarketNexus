@@ -1,8 +1,10 @@
 package com.market.marketnexus.controller;
 
+import com.market.marketnexus.helpers.constants.APISuffixes;
 import com.market.marketnexus.helpers.constants.FieldSizes;
-import com.market.marketnexus.helpers.constants.PathSuffixes;
+import com.market.marketnexus.helpers.constants.Global;
 import com.market.marketnexus.helpers.constants.Temporals;
+import com.market.marketnexus.helpers.credentials.Roles;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.Nation;
@@ -13,10 +15,10 @@ import com.market.marketnexus.service.NationService;
 import com.market.marketnexus.service.ProductCategoryService;
 import com.market.marketnexus.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,9 +36,17 @@ import java.util.Set;
 public class GlobalController {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalController.class);
-   private static final Map<String, Object> fieldSizesMap = new HashMap<String, Object>();
-   private static final Map<String, Object> temporalsMap = new HashMap<String, Object>();
+   private static final Map<String, Object> GLOBAL_CONSTANTS_MAP = new HashMap<String, Object>();
+   private static final Map<String, Object> FIELD_SIZES_MAP = new HashMap<String, Object>();
+   private static final Map<String, Object> TEMPORALS_MAP = new HashMap<String, Object>();
+   private static final Map<String, Roles> ALL_ROLES_MAP = Utils.getAllRoles();
    //TODO: Global constants.
+
+   static {
+      GlobalController.GLOBAL_CONSTANTS_MAP.put("APP_NAME", Global.APP_NAME);
+      GlobalController.GLOBAL_CONSTANTS_MAP.put("CHARSET", Global.CHARSET);
+      GlobalController.GLOBAL_CONSTANTS_MAP.put("LANG", Global.LANG);
+   }
 
    static {
       Field[] fields = FieldSizes.class.getDeclaredFields();
@@ -44,7 +54,7 @@ public class GlobalController {
          try {
             String name = field.getName();
             Object value = field.get(null);
-            GlobalController.fieldSizesMap.put(name, value);
+            GlobalController.FIELD_SIZES_MAP.put(name, value);
          } catch (IllegalAccessException | IllegalArgumentException illegalException) {
             LOGGER.warn("Impossible to access at this field: {}", field.getName(), illegalException);
          }
@@ -57,7 +67,7 @@ public class GlobalController {
          try {
             String name = field.getName();
             Object value = field.get(null);
-            GlobalController.temporalsMap.put(name, value);
+            GlobalController.TEMPORALS_MAP.put(name, value);
          } catch (IllegalAccessException | IllegalArgumentException illegalException) {
             LOGGER.warn("Impossible to access at this field: {}", field.getName(), illegalException);
          }
@@ -73,22 +83,31 @@ public class GlobalController {
    @Autowired
    private ProductCategoryService productCategoryService;
 
-
-   @ModelAttribute("fieldSizes")
-   public Map<String, Object> getFieldSizesMap() {
-      return GlobalController.fieldSizesMap;
+   @ModelAttribute("GLOBAL_CONSTANTS_MAP")
+   public Map<String, Object> getGlobalConstantsMap() {
+      return GlobalController.GLOBAL_CONSTANTS_MAP;
    }
 
-   @ModelAttribute("temporals")
+   @ModelAttribute("FIELD_SIZES_MAP")
+   public Map<String, Object> getFieldSizesMap() {
+      return GlobalController.FIELD_SIZES_MAP;
+   }
+
+   @ModelAttribute("TEMPORALS_MAP")
    public Map<String, Object> getTemporalsMap() {
-      return GlobalController.temporalsMap;
+      return GlobalController.TEMPORALS_MAP;
+   }
+
+   @ModelAttribute("ALL_ROLES_MAP")
+   public Map<String, Roles> getRoles() {
+      return GlobalController.ALL_ROLES_MAP;
    }
 
    @ModelAttribute("nations")
-   public Set<Nation> getNations(@NotNull HttpServletRequest request) {
+   public Set<Nation> getNations(@NonNull HttpServletRequest request) {
       Set<Nation> nations = null;
       final String URI = request.getRequestURI();
-      if (URI.contains("/regist") || URI.contains("/" + PathSuffixes.ACCOUNT)) {
+      if (URI.contains("/regist") || URI.contains("/" + APISuffixes.ACCOUNT)) {
          nations = this.nationService.getAllNations();
       }
       return nations;

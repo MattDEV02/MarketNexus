@@ -1,6 +1,7 @@
 package com.market.marketnexus.controller.validator;
 
 import com.market.marketnexus.model.User;
+import com.market.marketnexus.service.NationService;
 import com.market.marketnexus.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -13,6 +14,8 @@ public class UserValidator implements Validator {
 
    @Autowired
    private UserService userService;
+   @Autowired
+   private NationService nationService;
 
    @Override
    public void validate(@NonNull Object object, @NonNull Errors errors) {
@@ -20,6 +23,9 @@ public class UserValidator implements Validator {
       if (this.userService.existsByEmail(user.getEmail())) {
          //String[] errorArgs = {""};
          errors.reject("emailUniqueError", "Email " + user.getEmail() + " already used.");
+      }
+      if (user.getNation() == null) {
+         errors.reject("nationNotExistsError", "Selected Nation not exists.");
       }
    }
 

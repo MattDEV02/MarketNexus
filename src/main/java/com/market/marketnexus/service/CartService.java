@@ -41,4 +41,13 @@ public class CartService {
       this.cartRepository.deleteById(cartId);
       return cartToDelete.orElse(null);
    }
+
+   public Float getTotalCartPriceByUser(User user) {
+      Float total = 0.0F;
+      Set<Cart> carts = this.getAllCartsByUser(user);
+      for (Cart cart : carts) {
+         total += cart.getSale().getProduct().getPrice() * cart.getQuantity();
+      }
+      return total;
+   }
 }

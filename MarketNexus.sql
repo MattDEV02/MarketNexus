@@ -10,7 +10,7 @@ DROP SCHEMA IF EXISTS MarketNexus CASCADE;
 
 CREATE SCHEMA IF NOT EXISTS MarketNexus;
 
-COMMENT ON SCHEMA MarketNexus IS 'MarketNexus SQL DataBase.';
+COMMENT ON SCHEMA MarketNexus IS 'MarketNexus SQL DataBase Schema.';
 
 SELECT CURRENT_DATABASE();
 
@@ -25,7 +25,7 @@ DROP TYPE IF EXISTS ROLES;
 CREATE TYPE ROLES AS ENUM (
     'SELLER',
     'BUYER',
-    'SELLER_AND_BOUGHTER'
+    'SELLER_AND_BUYER'
     );
 
 COMMENT ON TYPE ROLES IS 'MarketNexus Users Credentials Roles.';
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Credentials
     id       SERIAL      NOT NULL PRIMARY KEY,
     password VARCHAR(72) NOT NULL,
     username VARCHAR(10) NOT NULL,
-    role     VARCHAR(20) DEFAULT 'SELLER_AND_BOUGHTER',
+    role     VARCHAR(20) DEFAULT 'SELLER_AND_BUYER',
     CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(MarketNexus.Credentials.role) >= 3),
     CONSTRAINT credentials_role_valid_check CHECK (MarketNexus.CHECK_ROLE_ROLES_ENUM_FUNCTION(role)),
     CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(MarketNexus.Credentials.username) >= 3),
@@ -190,9 +190,9 @@ ALTER TABLE MarketNexus.Credentials
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Credentials (username, password, role)
-VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BOUGHTER'),
-       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'SELLER_AND_BOUGHTER'),
-       ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'SELLER_AND_BOUGHTER');
+VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BUYER'),
+       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'SELLER_AND_BUYER'),
+       ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'SELLER_AND_BUYER');
 -- Gabriel1
 
 -- N.B. = La password è criptata da spring boot e arriva a 60 caratteri.

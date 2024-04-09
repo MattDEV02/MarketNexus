@@ -3,8 +3,8 @@ package com.market.marketnexus.service;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.repository.UserRepository;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +46,7 @@ public class UserService {
    }
 
    @Transactional
-   public User updateUser(Long id, @NotNull User updatedUser) {
+   public User updateUser(Long id, @NonNull User updatedUser) {
       User user = this.userRepository.findById(id).orElse(null);
       if (user != null) {
          user.setName(updatedUser.getName());

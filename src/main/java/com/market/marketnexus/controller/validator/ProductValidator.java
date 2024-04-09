@@ -31,6 +31,9 @@ public class ProductValidator implements Validator {
       if (this.getProductImage() == null || this.getProductImage().isEmpty()) {
          errors.reject("productImageEmptyError", "Invalid or empty product image.");
       }
+      if (product.getCategory() == null) {
+         errors.reject("productCategoryNotExistsError", "Selected Product Category not exists.");
+      }
    }
 
    @Override

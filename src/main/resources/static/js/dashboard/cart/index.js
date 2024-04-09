@@ -8,35 +8,24 @@ const validateURL = (URL) =>
 
 
 const sendDeleteCartRequest = (URI) => {
-   // Esegui una richiesta al controller Spring Boot
-   let xhr = new XMLHttpRequest();
-   const method = "GET",
-      async = true;
-   xhr.open(method, URI, async);
-   xhr.onload = () => {
-      console.log(`Request: [ ${method} ${URI} ] ${xhr.status === 200 ? "Sent" : "NOT sent"}.`);
-   };
-   xhr.onreadystatechange = () => {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-         if (xhr.status === 302) {
-            const redirectURL = xhr.getResponseHeader("Location");
-            validateURL(redirectURL) ?
-               window.location.href = redirectURL :
-               window.alert("There was a problem with the Server.");
-         }
-      }
-   };
-   xhr.send();
+   if (validateURL(URI)) {
+      window.location.href = URI;
+   } else {
+      window.alert("Server error.");
+   }
 }
 
-const deleteCartButton = document.getElementById('delete-cart');
+const deleteCartButtons = document.querySelectorAll('.delete-cart-button');
 
-deleteCartButton.addEventListener('click', (event) => {
-   event.preventDefault();
-   if (window.confirm("Are you sure you want to delete this cart line?")) {
-      sendDeleteCartRequest(deleteCartButton.href);
-      window.alert("Cart line deleted.");
-   } else {
-      window.alert("Cart line not deleted.");
-   }
+deleteCartButtons.forEach(deleteCartButton => {
+   deleteCartButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (window.confirm("Are you sure you want to delete this cart line?")) {
+         sendDeleteCartRequest(deleteCartButton.href);
+         window.alert("Cart line deleted.");
+      } else {
+         window.alert("Cart line not deleted.");
+      }
+   });
 });
+

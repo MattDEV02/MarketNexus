@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -44,13 +45,14 @@ public class AuthenticationController {
    }
 
    @PostMapping(value = "/registerNewUser")
-   public ModelAndView registerUser(@Valid @ModelAttribute("user") User user,
-                                    BindingResult userBindingResult,
-                                    @Valid @ModelAttribute("credentials") Credentials credentials,
-                                    BindingResult credentialsBindingResult,
-                                    @RequestParam("confirm-password") String confirmPassword) {
+   public ModelAndView registerUser(@Valid @NonNull @ModelAttribute("user") User user,
+                                    @NonNull BindingResult userBindingResult,
+                                    @Valid @NonNull @ModelAttribute("credentials") Credentials credentials,
+                                    @NonNull BindingResult credentialsBindingResult,
+                                    @NonNull @RequestParam("confirm-password") String confirmPassword) {
       final String registrationSuccessful = "redirect:/login?registrationSuccessful=true";
       final String registrationError = "registration.html";
+      System.out.println(user.getEmail() + user.getNation() + credentials.getUsername());
       ModelAndView modelAndView = new ModelAndView(registrationError);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);

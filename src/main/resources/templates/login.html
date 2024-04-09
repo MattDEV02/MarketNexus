@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Login')}">
 </head>
@@ -29,8 +29,8 @@
                      <input class="form-control" id="username"
                             name="username"
                             placeholder="Insert your username" required th:field="${credentials.username}"
-                            th:maxlength="${fieldSizes.get('USERNAME_MAX_LENGTH')}"
-                            th:minlength="${fieldSizes.get('USERNAME_MIN_LENGTH')}"
+                            th:maxlength="${FIELD_SIZES_MAP.get('USERNAME_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('USERNAME_MIN_LENGTH')}"
                             type="text"/>
                   </div>
                   <div class="mb-3">
@@ -41,8 +41,8 @@
                                id="password" name="password" placeholder="Insert your password"
                                required
                                th:field="${credentials.password}"
-                               th:maxlength="${fieldSizes.get('PASSWORD_MAX_LENGTH')}"
-                               th:minlength="${fieldSizes.get('PASSWORD_MIN_LENGTH')}"
+                               th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
+                               th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
                                type="password"/>
                         <button class="btn btn-outline-secondary" id="toggle-password-visibility" type="button">
                            <!-- Icona dell'occhio per mostrare/nascondere la password -->
@@ -70,7 +70,8 @@
       </div>
    </div>
 </div>
-<script charset="UTF-8" th:src="@{/js/shared/showPassword.js}" type="text/javascript"></script>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/showPassword.js}"
+        type="text/javascript"></script>
 </body>
 
 </html>

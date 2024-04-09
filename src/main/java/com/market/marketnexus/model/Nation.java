@@ -5,8 +5,8 @@ import com.market.marketnexus.helpers.constants.Global;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.lang.NonNull;
 
 import java.util.Objects;
 
@@ -20,7 +20,7 @@ public class Nation {
    @Min(1)
    private Long id;
 
-   @NotNull
+   @NonNull
    @NotBlank
    @Column(name = "name", nullable = false, unique = true)
    @Size(min = (FieldSizes.NATION_NAME_MIN_LENGTH), max = (FieldSizes.NATION_NAME_MAX_LENGTH))

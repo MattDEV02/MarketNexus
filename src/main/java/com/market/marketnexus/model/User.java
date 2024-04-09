@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
-// com.market.marketnexus
-
 @Entity
 @Table(name = "Users", schema = Global.SQL_SCHEMA_NAME)
 public class User {

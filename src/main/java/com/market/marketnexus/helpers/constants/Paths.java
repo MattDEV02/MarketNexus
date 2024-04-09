@@ -2,7 +2,7 @@ package com.market.marketnexus.helpers.constants;
 
 import org.springframework.core.io.FileSystemResource;
 
-public class ProjectPaths {
+public class Paths {
 
    public final static String root = new FileSystemResource("").getFile().getAbsolutePath();
 
@@ -15,11 +15,11 @@ public class ProjectPaths {
    public final static String images = "/images";
 
    public static String getStaticPath() {
-      return ProjectPaths.root + ProjectPaths.src + ProjectPaths.resources + ProjectPaths._static;
+      return Paths.root + Paths.src + Paths.resources + Paths._static;
    }
 
    public static String getImagesPath() {
-      return ProjectPaths.getStaticPath() + ProjectPaths.images;
+      return Paths.getStaticPath() + Paths.images;
    }
 
 }

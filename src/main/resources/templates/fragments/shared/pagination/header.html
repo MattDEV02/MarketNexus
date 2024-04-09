@@ -29,7 +29,7 @@
                      <i class="fas fa-cart-plus mx-1"></i>
                   </a>
                </li>
-               <li class="nav-item">
+               <li class="nav-item" th:if="${#strings.contains(loggedUser.credentials.role, 'SELLER')}">
                   <a class="nav-link link-success" th:href="@{/dashboard/newSale}">
                      New Sale
                      <i class="fas fa-plus-square mx-1"></i>
@@ -47,8 +47,8 @@
                <label class="form-label visually-hidden" for="product-name"></label>
                <input class="form-control p-2 mx-3" id="product-name"
                       name="product-name" placeholder="Search a Product"
-                      th:maxlength="${fieldSizes.get('PRODUCT_NAME_MAX_LENGTH')}"
-                      th:minlength="${fieldSizes.get('PRODUCT_NAME_MIN_LENGTH')}"
+                      th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
+                      th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MIN_LENGTH')}"
                       th:value="${param != null ? param.get('product-name') : null}"
                       type="text"/>
                <label class="form-label visually-hidden" for="category">Product Category:</label>

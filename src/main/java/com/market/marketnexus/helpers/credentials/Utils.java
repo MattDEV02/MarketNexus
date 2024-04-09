@@ -5,9 +5,8 @@ import com.market.marketnexus.model.User;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Utils {
 
@@ -23,8 +22,12 @@ public class Utils {
       return !(authentication instanceof AnonymousAuthenticationToken);
    }
 
-   public Set<Roles> getAllRoles() {
-      Set<Roles> allRoles = new HashSet<Roles>(Arrays.asList(Roles.values()));
-      return allRoles;
+   public static Map<String, Roles> getAllRoles() {
+      Map<String, Roles> result = new HashMap<String, Roles>();
+      Roles[] allRoles = Roles.values();
+      for (Roles role : allRoles) {
+         result.put(role.name(), role);
+      }
+      return result;
    }
 }

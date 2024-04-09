@@ -1,7 +1,7 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.controller.validator.ProductValidator;
-import com.market.marketnexus.helpers.constants.PathSuffixes;
+import com.market.marketnexus.helpers.constants.APISuffixes;
 import com.market.marketnexus.helpers.products.Utils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.Sale;
@@ -10,10 +10,10 @@ import com.market.marketnexus.service.ProductService;
 import com.market.marketnexus.service.SaleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Controller
-@RequestMapping(value = "/" + PathSuffixes.DASHBOARD)
+@RequestMapping(value = "/" + APISuffixes.DASHBOARD)
 public class SaleController {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(SaleController.class);
@@ -38,17 +38,17 @@ public class SaleController {
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showAllSales() {
-      ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/index.html");
+      ModelAndView modelAndView = new ModelAndView(APISuffixes.DASHBOARD + "/index.html");
       Set<Sale> allSales = this.saleService.getAllSales();
       modelAndView.addObject("sales", allSales);
       return modelAndView;
    }
 
    @GetMapping(value = {"/searchProducts", "/searchProducts/"})
-   public ModelAndView searchSales(@NotNull HttpServletRequest request) {
+   public ModelAndView searchSales(@NonNull HttpServletRequest request) {
       String productName = request.getParameter("product-name");
       String productCategoryId = request.getParameter("category");
-      ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/index.html");
+      ModelAndView modelAndView = new ModelAndView(APISuffixes.DASHBOARD + "/index.html");
       Set<Sale> searchedSales = null;
       if (productName.isEmpty() && productCategoryId.isEmpty()) {
          searchedSales = this.saleService.getAllSales();
@@ -68,7 +68,7 @@ public class SaleController {
 
    @GetMapping(value = {"/newSale", "/newSale/"})
    public ModelAndView showNewSaleForm() {
-      ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/newSale.html");
+      ModelAndView modelAndView = new ModelAndView(APISuffixes.DASHBOARD + "/newSale.html");
       modelAndView.addObject("sale", new Sale());
       modelAndView.addObject("product", new Product());
       return modelAndView;
@@ -84,8 +84,8 @@ public class SaleController {
            @RequestParam("product-image") MultipartFile productImage) {
       System.out.println(productBindingResult);
       System.out.println(saleBindingResult);
-      final String publishSuccessful = "redirect:/" + PathSuffixes.SALE + "/";
-      final String publishError = PathSuffixes.DASHBOARD + "/newSale.html";
+      final String publishSuccessful = "redirect:/" + APISuffixes.SALE + "/";
+      final String publishError = APISuffixes.DASHBOARD + "/newSale.html";
       ModelAndView modelAndView = new ModelAndView(publishError);
       this.productValidator.setProductImage(productImage);
       this.productValidator.validate(product, productBindingResult);
@@ -106,7 +106,7 @@ public class SaleController {
 
    @GetMapping(value = {"/sale/{saleId}", "/sale/{saleId}/"})
    public ModelAndView showSaleById(@PathVariable("saleId") Long saleId) {
-      ModelAndView modelAndView = new ModelAndView(PathSuffixes.DASHBOARD + "/sale.html");
+      ModelAndView modelAndView = new ModelAndView(APISuffixes.DASHBOARD + "/sale.html");
       Sale sale = this.saleService.getSale(saleId);
       modelAndView.addObject("sale", sale);
       modelAndView.addObject("isAddedToCart", false);

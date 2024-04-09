@@ -1,8 +1,8 @@
 package com.market.marketnexus.helpers.products;
 
-import com.market.marketnexus.helpers.constants.ProjectPaths;
+import com.market.marketnexus.helpers.constants.Paths;
 import com.market.marketnexus.model.Product;
-import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -13,18 +13,18 @@ public class Utils {
    public final static String productImagesDirectory = "/products";
    public final static String productImageExtension = ".jpeg";
 
-   public static @NotNull String getProductRelativeImageDirectory(@NotNull Product product) {
+   public static @NonNull String getProductRelativeImageDirectory(@NonNull Product product) {
       return Utils.productImagesDirectory + '/' + product.getId().toString();
    }
 
-   public static @NotNull String getProductRelativeImageFile(@NotNull Product product) {
+   public static @NonNull String getProductRelativeImageFile(@NonNull Product product) {
       return product.getName().toLowerCase() + Utils.productImageExtension;
    }
 
-   public static boolean storeProductImage(Product product, @NotNull MultipartFile productImage) {
+   public static boolean storeProductImage(Product product, @NonNull MultipartFile productImage) {
       if (!productImage.isEmpty()) {
          try {
-            String destinationDirectory = ProjectPaths.getImagesPath() + Utils.getProductRelativeImageDirectory(product);
+            String destinationDirectory = Paths.getImagesPath() + Utils.getProductRelativeImageDirectory(product);
             File directory = new File(destinationDirectory);
             if (directory.mkdir()) {
                String destinationFilePath = destinationDirectory + "/" + Utils.getProductRelativeImageFile(product);

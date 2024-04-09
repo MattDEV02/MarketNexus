@@ -1,12 +1,13 @@
 package com.market.marketnexus.authentication;
 
-import com.market.marketnexus.helpers.constants.PathSuffixes;
-import com.market.marketnexus.helpers.constants.ProjectPaths;
-import org.jetbrains.annotations.NotNull;
+import com.market.marketnexus.helpers.constants.APISuffixes;
+import com.market.marketnexus.helpers.constants.Paths;
+import com.market.marketnexus.helpers.credentials.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -25,18 +26,18 @@ import javax.sql.DataSource;
 //@EnableWebMvc
 public class AuthConfiguration implements WebMvcConfigurer {
 
-   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + ProjectPaths._static + '/'};
+   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + Paths._static + '/'};
    @Autowired
    private DataSource dataSource;
 
    @Override
-   public void addResourceHandlers(@NotNull ResourceHandlerRegistry registry) {
+   public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
       registry.addResourceHandler("/**")
               .addResourceLocations(AuthConfiguration.CLASSPATH_RESOURCE_LOCATIONS);
    }
 
    @Autowired
-   public void configureGlobal(@NotNull AuthenticationManagerBuilder auth)
+   public void configureGlobal(@NonNull AuthenticationManagerBuilder auth)
            throws Exception {
       auth.jdbcAuthentication()
               //use the autowired datasource to access the saved credentials
@@ -54,12 +55,12 @@ public class AuthConfiguration implements WebMvcConfigurer {
    }
 
    @Bean
-   public AuthenticationManager authenticationManager(@NotNull AuthenticationConfiguration authenticationConfiguration) throws Exception {
+   public AuthenticationManager authenticationManager(@NonNull AuthenticationConfiguration authenticationConfiguration) throws Exception {
       return authenticationConfiguration.getAuthenticationManager();
    }
 
    @Bean
-   protected SecurityFilterChain configure(final @NotNull HttpSecurity httpSecurity) throws Exception {
+   protected SecurityFilterChain configure(final @NonNull HttpSecurity httpSecurity) throws Exception {
       httpSecurity
               .cors(AbstractHttpConfigurer::disable)
               .csrf(AbstractHttpConfigurer::disable)
@@ -67,7 +68,9 @@ public class AuthConfiguration implements WebMvcConfigurer {
                       auth -> auth
                               .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser").permitAll()
-                              .requestMatchers(HttpMethod.GET, "/" + PathSuffixes.DASHBOARD + "/**").authenticated()
+                              .requestMatchers(HttpMethod.GET, "/" + APISuffixes.DASHBOARD + "/**").authenticated()
+                              .requestMatchers(HttpMethod.GET, "/" + APISuffixes.DASHBOARD + "/newSale").hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(HttpMethod.GET, "/" + APISuffixes.DASHBOARD + "/publishNewSale").hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
                               .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin

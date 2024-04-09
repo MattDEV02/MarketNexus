@@ -15,7 +15,7 @@ import java.util.Objects;
 @Table(name = "Credentials", schema = Global.SQL_SCHEMA_NAME)
 public class Credentials {
 
-   public static String DEFAULT_ROLE = Roles.SELLER_AND_BOUGHTER.toString();
+   public static String DEFAULT_ROLE = Roles.SELLER_AND_BUYER.toString();
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)

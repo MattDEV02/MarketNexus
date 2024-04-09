@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'new Sale')}">
 
@@ -26,8 +26,9 @@
                <div class="my-3">
                   <label class="form-label" for="name">Name</label>
                   <input class="form-control" id="name" name="name" placeholder="Insert product name"
-                         required th:field="${product.name}" th:maxlength="${fieldSizes.get('PRODUCT_NAME_MAX_LENGTH')}"
-                         th:minlength="${fieldSizes.get('PRODUCT_NAME_MIN_LENGTH')}"
+                         required th:field="${product.name}"
+                         th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
+                         th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MIN_LENGTH')}"
                          th:object="${product}"
                          type="text"/>
                   <div
@@ -41,8 +42,9 @@
                   <textarea class="form-control" id="description" name="description"
                             placeholder="Insert product description"
                             required th:field="${product.description}"
-                            th:maxlength="${fieldSizes.get('PRODUCT_DESCRIPTION_MAX_LENGTH')}"
-                            th:minlength="${fieldSizes.get('PRODUCT_DESCRIPTION_MIN_LENGTH')}" th:object="${product}"
+                            th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_DESCRIPTION_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_DESCRIPTION_MIN_LENGTH')}"
+                            th:object="${product}"
                             type="text"></textarea>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.description')}"></div>
@@ -52,8 +54,8 @@
                   <label class="form-label" for="price">Price ($)</label>
                   <input class="form-control" id="price" name="price"
                          placeholder="Insert product price ($)" required step="0.01"
-                         th:field="${product.price}" th:max="${fieldSizes.get('PRODUCT_PRICE_MAX_VALUE')}"
-                         th:min="${fieldSizes.get('PRODUCT_PRICE_MIN_VALUE')}" th:object="${product}"
+                         th:field="${product.price}" th:max="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MAX_VALUE')}"
+                         th:min="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MIN_VALUE')}" th:object="${product}"
                          type="number"/>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.price')}"></div>
@@ -63,8 +65,8 @@
                   <label class="form-label" for="quantity">Quantity</label>
                   <input class="form-control" id="quantity" name="quantity"
                          placeholder="Insert product quantity" required
-                         step="1" th:field="${sale.quantity}" th:max="${fieldSizes.get('SALE_QUANTITY_MAX_VALUE')}"
-                         th:min="${fieldSizes.get('SALE_QUANTITY_MIN_VALUE')}"
+                         step="1" th:field="${sale.quantity}" th:max="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MAX_VALUE')}"
+                         th:min="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MIN_VALUE')}"
                          th:object="${sale}" type="number"/>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'sale.quantity')}"></div>
@@ -81,13 +83,15 @@
                   </select>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.category')}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productCategoryNotExistsError}, condition = ${productCategoryNotExistsError != null})}"></div>
                </div>
                <div class="mb-0">
                   <label class="form-label" for="product-image">Product image</label>
                   <input accept="image/png, image/jpeg, image/jpg, image/" class="form-control" form="new-sale-form"
                          id="product-image"
                          name="product-image" placeholder="Insert product image"
-                         required th:size="${fieldSizes.get('PRODUCT_IMAGE_MAX_BYTE_SIZE')}"
+                         required th:size="${FIELD_SIZES_MAP.get('PRODUCT_IMAGE_MAX_BYTE_SIZE')}"
                          type="file"/>
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productImageEmptyError}, condition = ${productImageEmptyError != null})}"></div>

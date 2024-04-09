@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Account')}">
 
@@ -46,11 +46,21 @@
                </div>
                <div class="col-12 col-sm-12 col-md-11 col-lg-8 col-xl-5 col-xxl-5 text-center mt-4 mt-xl-0 ms-xl-3">
                   <h2 class="mt-3 mb-5">Account informations</h2>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'username', type = 'text', value = ${credentials.username}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
+                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'username', type = 'text', value = ${credentials.username}, isReadOnly = false, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
                   <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'email', type = 'email', value = ${user.email}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
                   <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'role', type = 'text', value = ${#strings.capitalize(#strings.replace(credentials.role, '_', ' ').toLowerCase())}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'registered', type = 'date', value = ${#temporals.format(user.insertedAt, temporals.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'updated', type = 'date', value = ${#temporals.format(user.updatedAt, temporals.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
+                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'registered', type = 'date', value = ${#temporals.format(user.insertedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
+                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'updated', type = 'date', value = ${#temporals.format(user.updatedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
+                  <input class="form-control visually-hidden disabled"
+                         name="password"
+                         placeholder=""
+                         th:id="password"
+                         th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
+                         th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
+                         th:object="${credentials}"
+                         th:value="${credentials.password}"
+                         type="text"
+                  />
                </div>
                <div class="col-12 mt-5 mb-3" th:if="${isLoggedUserAccount}">
                   <div class="row justify-content-center ">
@@ -82,7 +92,7 @@
             <div class="row">
                <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
                     th:each="saleProduct : ${saleProducts}">
-                  <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${saleProduct}, isAccountPage = true)}"></div>
+                  <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${saleProduct}, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
                </div>
             </div>
          </div>
@@ -106,8 +116,10 @@
 </main>
 <div th:replace="~{fragments/shared/pagination/footer.html :: footer()}">
 </div>
-<script charset="UTF-8" th:src="@{/js/shared/maxDateInputValue.js}" type="text/javascript"></script>
-<script charset="UTF-8" th:src="@{/js/dashboard/account/index.js}" type="text/javascript"></script>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/maxDateInputValue.js}"
+        type="text/javascript"></script>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/dashboard/account/index.js}"
+        type="text/javascript"></script>
 </body>
 
 </html>

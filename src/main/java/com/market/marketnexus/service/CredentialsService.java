@@ -2,8 +2,8 @@ package com.market.marketnexus.service;
 
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.repository.CredentialsRepository;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,13 +29,13 @@ public class CredentialsService {
    }
 
    @Transactional
-   public Credentials saveCredentials(@NotNull Credentials credentials) {
+   public Credentials saveCredentials(@NonNull Credentials credentials) {
       credentials.setPassword(this.passwordEncoder.encode(credentials.getPassword()));
       return this.credentialsRepository.save(credentials);
    }
 
    @Transactional
-   public Credentials updateCredentials(Long id, @NotNull Credentials updatedCredentials) {
+   public Credentials updateCredentials(Long id, @NonNull Credentials updatedCredentials) {
       Credentials credentials = this.credentialsRepository.findById(id).orElse(null);
       if (credentials != null) {
          credentials.setUsername(updatedCredentials.getUsername());
