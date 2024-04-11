@@ -1,36 +1,31 @@
 package com.market.marketnexus.model;
 
-import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.Global;
 import com.market.marketnexus.helpers.constants.Temporals;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Carts", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "sale", "inserted_at"}))
-public class Cart {
+@Table(name = "cart_line_items", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "cartlineitems_user_sale_insertedat_unique", columnNames = {"_user", "sale", "inserted_at"}))
+public class CartLineItem {
 
    @Id
+   @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    @Min(1)
    private Long id;
 
-   @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
-   @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
-   @Column(name = "quantity", nullable = false)
-   private Integer quantity;
-
-   @ManyToOne
+   @ManyToOne(targetEntity = User.class)
    @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "carts_users_fk"))
    private User user;
 
-   @ManyToOne
+   @ManyToOne(targetEntity = Sale.class, optional = false)
    @JoinColumn(name = "sale", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_sales_fk"))
    private Sale sale;
 
@@ -44,12 +39,11 @@ public class Cart {
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime updatedAt;
 
-   public Cart() {
+   public CartLineItem() {
 
    }
 
-   public Cart(Sale sale, User user, Integer quantity) {
-      this.quantity = quantity;
+   public CartLineItem(Sale sale, User user) {
       this.user = user;
       this.sale = sale;
    }
@@ -60,14 +54,6 @@ public class Cart {
 
    public void setId(Long id) {
       this.id = id;
-   }
-
-   public Integer getQuantity() {
-      return this.quantity;
-   }
-
-   public void setQuantity(Integer quantity) {
-      this.quantity = quantity;
    }
 
    public User getUser() {
@@ -123,7 +109,7 @@ public class Cart {
       if (object == null || this.getClass() != object.getClass()) {
          return false;
       }
-      Cart sale = (Cart) object;
+      CartLineItem sale = (CartLineItem) object;
       return Objects.equals(this.getId(), sale.getId()) || (Objects.equals(this.getUser(), sale.getUser()) && Objects.equals(this.getSale(), sale.getSale()) && Objects.equals(this.getInsertedAt(), sale.getInsertedAt()));
    }
 
@@ -136,7 +122,6 @@ public class Cart {
    public String toString() {
       return "Cart: {" +
               "id = " + this.getId().toString() +
-              ", quantity = " + this.getQuantity().toString() +
               ", user = " + this.getUser().toString() +
               ", sale = " + this.getSale().toString() +
               ", insertedAt = " + this.getInsertedAt().toString() +

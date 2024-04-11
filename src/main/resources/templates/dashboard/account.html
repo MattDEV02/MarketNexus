@@ -11,103 +11,105 @@
 </div>
 <main>
    <div class="container"
-        th:with="isLoggedUserAccount = ${!#sets.isEmpty(saleProducts) && loggedUser == saleProducts[0].user}">
+        th:with="isLoggedUser = ${loggedUser == user}, userFound = ${user != null}">
       <div class="row justify-content-center">
-         <div class="col-12 mt-5">
+         <div th:class="'col-12 mt-5 ' + ${!userFound ? 'mb-4' : null}">
             <div class="row text-center">
-               <h1>Account</h1>
+               <h1 th:text="${userFound ?  'Account' : 'User not found'}"></h1>
             </div>
          </div>
-         <div th:class="'col-12 mt-5 py-4 ' + ${!isLoggedUserAccount ? 'pb-5' : ''} + ' px-md-2 rounded shadow border'"
-              th:with="accountUpdatedSuccessful = ${param.accountUpdatedSuccessful}">
-            <form class="row justify-content-center" id="update-account-form"
-                  method="POST"
-                  name="update-account-form"
-                  th:action="@{/dashboard/account/updateAccount}">
-               <div
-                     th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Account updated successfully.', condition = ${accountUpdatedSuccessful != null})}"></div>
-               <div
-                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.name')}"></div>
-               <div
-                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.surname')}"></div>
-               <div
-                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.birthDate')}"></div>
-               <div
-                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.balance')}"></div>
-               <div
-                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
-               <div class="col-12 col-sm-12 col-md-11 col-lg-8 col-xl-5 col-xxl-5 text-center me-3 mt-lg-2 mt-xl-0">
-                  <h2 class="mt-4 mt-md-3 mt-lg-3 mt-xl-3 mt-xxl-3 mb-5">User informations</h2>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'name', type = 'text', value =  ${user.name}, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'surname', type = 'text', value =  ${user.surname}, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property ='birth date', type = 'date', value = ${#dates.format(user.birthDate, 'yyyy-MM-dd')}, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'balance', type = 'number', value = ${user.balance}, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'nation', type = 'text', value = ${user.nation}, isSelect = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-               </div>
-               <div class="col-12 col-sm-12 col-md-11 col-lg-8 col-xl-5 col-xxl-5 text-center mt-4 mt-xl-0 ms-xl-3">
-                  <h2 class="mt-3 mb-5">Account informations</h2>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'username', type = 'text', value = ${credentials.username}, isReadOnly = false, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'email', type = 'email', value = ${user.email}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'role', type = 'text', value = ${#strings.capitalize(#strings.replace(credentials.role, '_', ' ').toLowerCase())}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'registered', type = 'date', value = ${#temporals.format(user.insertedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'updated', type = 'date', value = ${#temporals.format(user.updatedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
-                  <input class="form-control visually-hidden disabled"
-                         name="password"
-                         placeholder=""
-                         th:id="password"
-                         th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
-                         th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
-                         th:object="${credentials}"
-                         th:value="${credentials.password}"
-                         type="text"
-                  />
-               </div>
-               <div class="col-12 mt-5 mb-3" th:if="${isLoggedUserAccount}">
-                  <div class="row justify-content-center ">
-                     <div class="col-5 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3">
-                        <button class="btn btn-lg btn-outline-success form-control py-2" id="submit" type="submit">
-                           Confirm
-                           <i class="fas fa-check-square ms-1"></i>
-                        </button>
-                     </div>
-                     <div class="col-5 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3">
-                        <button class="btn btn-lg btn-outline-danger form-control py-2" id="cancel-button"
-                                type="button">
-                           Cancel
-                           <i class="fas fa-ban ms-1"></i>
-                        </button>
+         <div th:if="${userFound}">
+            <div th:class="'col-12 mt-5 py-4 ' + ${!isLoggedUser ? 'pb-5' : null} + ' px-md-2 rounded shadow border'"
+                 th:with="accountUpdatedSuccessful = ${param.accountUpdatedSuccessful}">
+               <form class="row justify-content-center" id="update-account-form"
+                     method="POST"
+                     name="update-account-form"
+                     th:action="@{/dashboard/account/updateAccount}">
+                  <div
+                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Account updated successfully.', condition = ${accountUpdatedSuccessful != null})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.name')}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.surname')}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.birthDate')}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.balance')}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
+                  <div class="col-12 col-sm-12 col-md-11 col-lg-8 col-xl-5 col-xxl-5 text-center me-3 mt-lg-2 mt-xl-0">
+                     <h2 class="mt-4 mt-md-3 mt-lg-3 mt-xl-3 mt-xxl-3 mb-5">User informations</h2>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'name', type = 'text', value =  ${user.name}, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'surname', type = 'text', value =  ${user.surname}, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property ='birth date', type = 'date', value = ${#dates.format(user.birthDate, 'yyyy-MM-dd')}, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'balance', type = 'number', value = ${user.balance}, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'nation', type = 'text', value = ${user.nation}, isSelect = true, isLoggedUser = ${isLoggedUser})}"></div>
+                  </div>
+                  <div class="col-12 col-sm-12 col-md-11 col-lg-8 col-xl-5 col-xxl-5 text-center mt-4 mt-xl-0 ms-xl-3">
+                     <h2 class="mt-3 mb-5">Account informations</h2>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'username', type = 'text', value = ${credentials.username}, isReadOnly = false, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'email', type = 'email', value = ${user.email}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'role', type = 'text', value = ${#strings.capitalize(#strings.replace(credentials.role, '_', ' ').toLowerCase())}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'registered', type = 'date', value = ${#temporals.format(user.credentials.insertedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'updated', type = 'date', value = ${#temporals.format(user.credentials.updatedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
+                     <input class="form-control visually-hidden disabled"
+                            name="password"
+                            placeholder=""
+                            th:id="password"
+                            th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
+                            th:object="${credentials}"
+                            th:value="${credentials.password}"
+                            type="text"
+                     />
+                  </div>
+                  <div class="col-12 mt-5 mb-3" th:if="${isLoggedUser}">
+                     <div class="row justify-content-center ">
+                        <div class="col-5 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3">
+                           <button class="btn btn-lg btn-outline-success form-control py-2" id="submit" type="submit">
+                              Confirm
+                              <i class="fas fa-check-square ms-1"></i>
+                           </button>
+                        </div>
+                        <div class="col-5 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3">
+                           <button class="btn btn-lg btn-outline-danger form-control py-2" id="cancel-button"
+                                   type="button">
+                              Cancel
+                              <i class="fas fa-ban ms-1"></i>
+                           </button>
+                        </div>
                      </div>
                   </div>
-               </div>
-            </form>
-         </div>
-         <div class="col-12 mt-5">
-            <div class="row text-center">
-               <h1 th:if="${#sets.isEmpty(saleProducts)}">No sale products</h1>
-               <h1 th:text="${isLoggedUserAccount ? 'Your' : 'His'} + ' Sale products'"
-                   th:unless="${#sets.isEmpty(saleProducts)}"></h1>
+               </form>
             </div>
-         </div>
-         <div class="col-12">
-            <div class="row">
-               <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
-                    th:each="saleProduct : ${saleProducts}">
-                  <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${saleProduct}, isLoggedUserAccount = ${isLoggedUserAccount})}"></div>
+            <div class="col-12 mt-5">
+               <div class="row text-center">
+                  <h1 th:if="${#sets.isEmpty(saleProducts)}">No sale products</h1>
+                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' Sale products'"
+                      th:unless="${#sets.isEmpty(saleProducts)}"></h1>
                </div>
             </div>
-         </div>
-         <div class="col-12 mt-5" id="ordered-products">
-            <div class="row text-center">
-               <h1 th:if="${#sets.isEmpty(orderedProducts)}">No ordered products</h1>
-               <h1 th:text="${isLoggedUserAccount ? 'Your' : 'His'} + ' ordered products'"
-                   th:unless="${#sets.isEmpty(orderedProducts)}"></h1>
+            <div class="col-12">
+               <div class="row">
+                  <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
+                       th:each="saleProduct : ${saleProducts}">
+                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${saleProduct}, isLoggedUser = ${isLoggedUser})}"></div>
+                  </div>
+               </div>
             </div>
-         </div>
-         <div class="col-12 mb-5">
-            <div class="row">
-               <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
-                    th:each="orderedProduct : ${orderedProducts}">
-                  <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${orderedProduct.cart.sale}, isAccountPage = true)}"></div>
+            <div class="col-12 mt-5" id="ordered-products">
+               <div class="row text-center">
+                  <h1 th:if="${#sets.isEmpty(orderedProducts)}">No ordered products</h1>
+                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' ordered products'"
+                      th:unless="${#sets.isEmpty(orderedProducts)}"></h1>
+               </div>
+            </div>
+            <div class="col-12 mb-4">
+               <div class="row">
+                  <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
+                       th:each="orderedProduct : ${orderedProducts}" th:if="${false}">
+                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${orderedProduct.cart.sale}, isLoggedUser = isLoggedUser)}"></div>
+                  </div>
                </div>
             </div>
          </div>

@@ -8,9 +8,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -36,19 +34,11 @@ public class UserService {
       return this.userRepository.save(user);
    }
 
-   public Set<User> getAllUsers() {
-      Set<User> result = new HashSet<User>();
-      Iterable<User> iterable = this.userRepository.findAll();
-      for (User user : iterable) {
-         result.add(user);
-      }
-      return result;
-   }
-
    @Transactional
    public User updateUser(Long id, @NonNull User updatedUser) {
       User user = this.userRepository.findById(id).orElse(null);
       if (user != null) {
+         user.setCredentials(updatedUser.getCredentials());
          user.setName(updatedUser.getName());
          user.setSurname(updatedUser.getSurname());
          user.setBirthDate(updatedUser.getBirthDate());
@@ -57,6 +47,12 @@ public class UserService {
          return this.userRepository.save(user);
       }
       return null;
+   }
+
+   @Transactional
+   public Boolean deleteUser(User user) {
+      this.userRepository.delete(user);
+      return true;
    }
 
 }

@@ -6,15 +6,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import jdk.jfr.Unsigned;
 import org.springframework.lang.NonNull;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "Nations", schema = Global.SQL_SCHEMA_NAME)
+@Table(name = "Nations", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "nations_name_unique", columnNames = "name"))
 public class Nation {
 
    @Id
+   @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    @Min(1)

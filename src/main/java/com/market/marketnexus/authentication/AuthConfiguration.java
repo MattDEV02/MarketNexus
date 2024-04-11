@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -50,7 +51,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
 
 
    @Bean
-   public PasswordEncoder passwordEncoder() {
+   public PasswordEncoder passwordEncoder() { // Bcrypt algorithm
       return new BCryptPasswordEncoder();
    }
 
@@ -66,11 +67,13 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(
                       auth -> auth
-                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
+                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser").permitAll()
                               .requestMatchers(HttpMethod.GET, "/" + APISuffixes.DASHBOARD + "/**").authenticated()
-                              .requestMatchers(HttpMethod.GET, "/" + APISuffixes.DASHBOARD + "/newSale").hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
-                              .requestMatchers(HttpMethod.GET, "/" + APISuffixes.DASHBOARD + "/publishNewSale").hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*sale.*", null)).hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
+                              .requestMatchers(HttpMethod.DELETE).denyAll()
                               .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin

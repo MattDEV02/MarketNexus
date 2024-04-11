@@ -1,26 +1,26 @@
-<div class="col-8" th:fragment="cartLineInformation(cart)">
+<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-8 col-xxl-8" th:fragment="cartLineInformation(cartLineItem)">
    <div class="card border border-bottom-0 rounded shadow">
       <div class="card-body">
          <div class="row">
             <div class="col-3">
                <div class="ms-2">
-                  <img class="img-fluid product-image" th:alt="${cart.sale.product.name}"
-                       th:src="@{${cart.sale.product.imageRelativePath}}">
+                  <img class="img-fluid product-image" th:alt="${cartLineItem.sale.product.name}"
+                       th:src="@{${cartLineItem.sale.product.imageRelativePath}}">
                </div>
             </div>
             <div class="col-7">
                <div class="ms-5 mt-2">
-                  <h5 class="card-title" th:text="${cart.sale.product.name}"></h5>
-                  <p class="card-text" th:text="${cart.sale.product.description}"></p>
+                  <h5 class="card-title" th:text="${cartLineItem.sale.product.name}"></h5>
+                  <p class="card-text" th:text="${cartLineItem.sale.product.description}"></p>
                   <p class="card-text text-secondary fw-bold"
-                     th:text="'Price: ' + ${cart.sale.product.price} + ' $'"></p>
-                  <p class="card-text fw-bold" th:text="'Quantity: ' + ${cart.quantity}"></p>
+                     th:text="'Price: ' + ${cartLineItem.sale.salePrice} + ' $'"></p>
+                  <p class="card-text fw-bold" th:text="'Quantity: ' + ${cartLineItem.sale.quantity}"></p>
                </div>
             </div>
             <div class="col-2">
                <div class="mt-5">
                   <a class="btn btn-danger delete-cart-button" role="button"
-                     th:href="@{'/dashboard/cart/delete/' + ${cart.id}}"
+                     th:href="@{'/dashboard/cart/delete/' + ${cartLineItem.id}}"
                      title="Remove from cart">
                      <i class="fas fa-trash"></i>
                   </a>

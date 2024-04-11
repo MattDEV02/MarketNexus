@@ -18,11 +18,14 @@
                </h1>
             </div>
          </div>
-         <div class="col-12 my-5" th:with="cartNotDeletedError = ${param.cartNotDeletedError != null}">
+         <div class="col-12 my-5"
+              th:with="cartNotDeletedError = ${param.cartNotDeletedError != null}, cartDeletedSuccess = ${param.cartDeletedSuccess != null}">
             <div
                   th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartNotDeletedError})}"></div>
+            <div
+                  th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Cart line deleted.', condition = ${cartDeletedSuccess})}"></div>
             <div class="row justify-content-center" th:each="cartProduct : ${cartProducts}">
-               <div th:replace="~{fragments/dashboard/cart/cartLineInformation.html :: cartLineInformation(cart = ${cartProduct})}"></div>
+               <div th:replace="~{fragments/dashboard/cart/cartLineInformation.html :: cartLineInformation(cartLineItem = ${cartProduct})}"></div>
             </div>
             <div th:replace="~{fragments/dashboard/cart/cartTotalLineInformation.html :: cartTotalLineInformation(totalPrice = ${cartTotalPrice})}"></div>
          </div>

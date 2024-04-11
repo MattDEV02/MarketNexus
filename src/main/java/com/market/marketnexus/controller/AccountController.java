@@ -1,6 +1,7 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.APISuffixes;
+import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.Order;
 import com.market.marketnexus.model.Sale;
@@ -12,10 +13,6 @@ import com.market.marketnexus.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -55,12 +52,14 @@ public class AccountController {
       ModelAndView modelAndView = new ModelAndView(APISuffixes.ACCOUNT + ".html");
       Credentials credentials = this.credentialsService.getCredentials(username);
       User user = this.userService.getUser(credentials);
-      Set<Sale> saleProducts = this.saleService.getAllSalesByUser(user);
-      Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(user);
-      modelAndView.addObject("saleProducts", saleProducts);
-      modelAndView.addObject("orderedProducts", orderedProducts);
       modelAndView.addObject("user", user);
-      modelAndView.addObject("credentials", user.getCredentials());
+      if (user != null) {
+         Set<Sale> saleProducts = this.saleService.getAllSalesByUser(user);
+         Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(user);
+         modelAndView.addObject("saleProducts", saleProducts);
+         modelAndView.addObject("orderedProducts", orderedProducts);
+         modelAndView.addObject("credentials", user.getCredentials());
+      }
       return modelAndView;
    }
 
@@ -77,19 +76,9 @@ public class AccountController {
       ModelAndView modelAndView = new ModelAndView(updateError);
       if (!userBindingResult.hasFieldErrors() && !credentialsBindingResult.hasFieldErrors()) {
          modelAndView.setViewName(updateSuccessful);
-         Credentials updatedCredentials = this.credentialsService.updateCredentials(loggedUser.getCredentials().getId(), credentials);
-         user.setCredentials(updatedCredentials);
-         this.userService.updateUser(loggedUser.getId(), user);
-         Authentication currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
-         UserDetails currentUserDetails = (UserDetails) currentAuthentication.getPrincipal();
-         UserDetails newPrincipal = new org.springframework.security.core.userdetails.User(updatedCredentials.getUsername(), updatedCredentials.getPassword(), currentUserDetails.getAuthorities());
-         Authentication newAuthentication = new UsernamePasswordAuthenticationToken(
-                 newPrincipal,
-                 null, // authentication.credentials
-                 currentAuthentication.getAuthorities()
-         );
-         // Imposta l'oggetto Authentication aggiornato nel contesto di sicurezza
-         SecurityContextHolder.getContext().setAuthentication(newAuthentication);
+         user.setCredentials(credentials);
+         User updatedUser = this.userService.updateUser(loggedUser.getId(), user);
+         Utils.updateUserCredentialsAuthentication(updatedUser.getCredentials());
       } else {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
          Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(loggedUser);
@@ -99,6 +88,20 @@ public class AccountController {
          for (ObjectError error : userBindingResult.getGlobalErrors()) {
             modelAndView.addObject(Objects.requireNonNull(error.getCode()), error.getDefaultMessage());
          }
+      }
+      return modelAndView;
+   }
+
+   @GetMapping(value = {"/delete", "/delete/"})
+   public ModelAndView deleteUserAccountByUsername(@Valid @ModelAttribute("loggedUser") @NonNull User loggedUser) {
+      final String accountDeletedSuccessfully = "redirect:/logout";
+      final String accountNotDeleted = APISuffixes.ACCOUNT + ".html";
+      ModelAndView modelAndView = new ModelAndView(accountNotDeleted);
+      if (this.userService.deleteUser(loggedUser)) {
+         modelAndView.setViewName(accountDeletedSuccessfully);
+         modelAndView.addObject("accountDeletedSuccessfully", true);
+      } else {
+         modelAndView.addObject("accountNotDeletedError", true);
       }
       return modelAndView;
    }

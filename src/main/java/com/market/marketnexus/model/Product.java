@@ -7,14 +7,17 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import jdk.jfr.Unsigned;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "Products", schema = Global.SQL_SCHEMA_NAME)
+@Table(name = "Products", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "products_name_description_price_imagerelvepath_category_unique", columnNames = {"name", "description", "price", "image_relative_path", "category"}))
 public class Product {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Unsigned
+   @Min(1)
    @Column(name = "id", nullable = false)
    private Long id;
 
@@ -37,7 +40,7 @@ public class Product {
    @Size(min = (FieldSizes.PRODUCT_IMAGERELATIVEPATH_MIN_LENGTH))
    private String imageRelativePath;
 
-   @ManyToOne
+   @ManyToOne(targetEntity = ProductCategory.class, optional = false)
    @JoinColumn(name = "category", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "products_productcategories_fk"))
    private ProductCategory category;
 

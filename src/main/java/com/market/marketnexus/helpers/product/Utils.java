@@ -1,4 +1,4 @@
-package com.market.marketnexus.helpers.products;
+package com.market.marketnexus.helpers.product;
 
 import com.market.marketnexus.helpers.constants.Paths;
 import com.market.marketnexus.model.Product;

@@ -34,11 +34,13 @@ public class FieldSizes {
    public static final int PRODUCT_IMAGE_MAX_BYTE_SIZE = 5000000; // 5 MB
 
    public static final float PRODUCT_PRICE_MIN_VALUE = 1;
-   public static final float PRODUCT_PRICE_MAX_VALUE = 10000;
-
+   public static final float PRODUCT_PRICE_MAX_VALUE = 1000;
 
    public static final int SALE_QUANTITY_MIN_VALUE = 1;
    public static final int SALE_QUANTITY_MAX_VALUE = 10;
+
+   public static final float SALE_SALEPRICE_MIN_VALUE = 0.01F;
+   public static final float SALE_SALEPRICE_MAX_VALUE = 10000;
 
    public static final int NATION_NAME_MIN_LENGTH = 3;
    public static final int NATION_NAME_MAX_LENGTH = 10;

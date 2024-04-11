@@ -19,7 +19,7 @@ public class OrderController {
    private OrderService orderService;
 
    @GetMapping(value = {"", "/"})
-   public ModelAndView makeOrderFromCart(@Valid @ModelAttribute("loggedUser") User loggedUser) {
+   public ModelAndView makeOrderFromCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(APISuffixes.DASHBOARD + "/order.html");
       return modelAndView;
    }

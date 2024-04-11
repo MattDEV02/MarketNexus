@@ -1,11 +1,11 @@
 <div class="row justify-content-center text-center" th:fragment="cartTotalLineInformation(totalPrice)">
-   <div class="col-8">
-      <div class="card pb-1 border rounded">
+   <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-8 col-xxl-8">
+      <div class="card border rounded shadow pb-1">
          <div class="card-body">
             <div class="row">
                <h3 class="card-title">Cart total</h3>
                <p class="card-text text-secondary fw-bold" th:text="'Total: ' + ${totalPrice} + ' $'"></p>
-               <a class="btn btn-success" role="button" th:href="@{/dashboard/order}">
+               <a class="btn btn-success" role="button" th:href="@{'/dashboard/order/' }"> <!-- cartId -->
                   Proceed to Payment
                   <i class="fas fa-receipt ms-1"></i>
                </a>

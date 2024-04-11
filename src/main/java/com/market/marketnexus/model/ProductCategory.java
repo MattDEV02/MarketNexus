@@ -3,15 +3,19 @@ package com.market.marketnexus.model;
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.Global;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import jdk.jfr.Unsigned;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "product_categories", schema = Global.SQL_SCHEMA_NAME)
+@Table(name = "product_categories", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "productcategories_name_unique", columnNames = "name"))
 public class ProductCategory {
    @Id
+   @Unsigned
+   @Min(1)
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    private Long id;

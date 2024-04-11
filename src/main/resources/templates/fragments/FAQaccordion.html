@@ -1,4 +1,5 @@
-<div class="accordion-item" th:fragment="accordion(accordion, index)">
+<div th:class="'accordion-item border border-2 ' + ${!isLastAccordion ? 'border-bottom-0' : null}"
+     th:fragment="FAQaccordion(accordion, index)" th:with="isLastAccordion = (${isLastAccordion} ?: false)">
    <h2 class="accordion-header" th:id="'faq-heading' + ${index}">
       <button aria-expanded="false" class="accordion-button collapsed" data-bs-toggle="collapse"
               th:aria-controls="'faq-collapse' + ${index}"
@@ -6,8 +7,8 @@
               type="button">
       </button>
    </h2>
-   <div class="accordion-collapse collapse" data-bs-parent="#faq-accordion"
-        th:aria-labelledby="'faq-heading' + ${index}"
+   <div class="accordion-collapse collapse" th:aria-labelledby="'faq-heading' + ${index}"
+        th:data-bs-parent="'#faq-accordion' + ${index}"
         th:id="'faq-collapse' + ${index}">
       <div class="accordion-body" th:text="${accordion.value}">
       </div>

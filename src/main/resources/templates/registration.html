@@ -13,6 +13,8 @@
 <h1>Registrazione nuovo utente</h1>
 <form id="registration-form" method="POST" name="registration-form"
       th:action="@{/registerNewUser}">
+   <div
+         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${userNotRegisteredError}, condition = ${userNotRegisteredError != null})}"></div>
    <div>
       <label for="name">Nome:</label>
       <input id="name" name="name" placeholder="Insert your name" required th:field="${user.name}"

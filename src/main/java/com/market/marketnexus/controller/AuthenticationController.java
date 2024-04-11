@@ -2,6 +2,7 @@ package com.market.marketnexus.controller;
 
 import com.market.marketnexus.controller.validator.CredentialsValidator;
 import com.market.marketnexus.controller.validator.UserValidator;
+import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.CredentialsService;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -27,6 +29,8 @@ public class AuthenticationController {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
    @Autowired
+   protected PasswordEncoder passwordEncoder;
+   @Autowired
    private CredentialsService credentialsService;
    @Autowired
    private UserService userService;
@@ -34,7 +38,6 @@ public class AuthenticationController {
    private UserValidator userValidator;
    @Autowired
    private CredentialsValidator credentialsValidator;
-
 
    @GetMapping(value = {"/registration", "/registration/"})
    public ModelAndView showRegisterForm() {
@@ -52,16 +55,19 @@ public class AuthenticationController {
                                     @NonNull @RequestParam("confirm-password") String confirmPassword) {
       final String registrationSuccessful = "redirect:/login?registrationSuccessful=true";
       final String registrationError = "registration.html";
-      System.out.println(user.getEmail() + user.getNation() + credentials.getUsername());
       ModelAndView modelAndView = new ModelAndView(registrationError);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
       this.credentialsValidator.validate(credentials, credentialsBindingResult);
       if (!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
-         Credentials savedCredentials = this.credentialsService.saveCredentials(credentials);
-         user.setCredentials(savedCredentials);
-         this.userService.saveUser(user);
-         modelAndView.setViewName(registrationSuccessful);
+         Utils.cryptAndSaveUserCredentialsPassword(credentials, passwordEncoder);
+         user.setCredentials(credentials);
+         User savedUser = this.userService.saveUser(user);
+         if (savedUser != null) {
+            modelAndView.setViewName(registrationSuccessful);
+         } else {
+            modelAndView.addObject("userNotRegisteredError", "Server ERROR, User not registered.");
+         }
       } else {
          for (ObjectError userGlobalError : userBindingResult.getGlobalErrors()) {
             modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());

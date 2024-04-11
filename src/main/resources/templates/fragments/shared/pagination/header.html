@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<header class="container-fluid">
    <nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="header()">
       <div class="container-fluid py-1">
          <button aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation"
@@ -6,12 +6,12 @@
                  data-bs-target="#navbarTogglerDemo03" data-bs-toggle="collapse" type="button">
             <span class="navbar-toggler-icon"></span>
          </button>
-         <div class="navbar-brand mx-2">
+         <div class="navbar-brand ms-3">
             <a th:replace="~{fragments/shared/logo.html :: logo()}"> </a>
          </div>
-         <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-            <ul class="navbar-nav me-5 mb-2 mb-lg-0 mx-2">
-               <li class="nav-item">
+         <div class="collapse navbar-collapse text-center" id="navbarTogglerDemo03">
+            <ul class="navbar-nav ms-2 me-5">
+               <li class="nav-item ju">
                   <a aria-current="page" class="nav-link active" th:href="@{/dashboard}">
                      Home
                      <i class="fas fa-home mx-1"></i>
@@ -42,7 +42,7 @@
                   </a>
                </li>
             </ul>
-            <form class="d-flex mx-4" id="search-product-form" method="GET"
+            <form class="d-flex ms-5 mt-4 mt-xl-0" id="search-product-form" method="GET"
                   name="search-product-form" th:action="@{/dashboard/searchProducts}">
                <label class="form-label visually-hidden" for="product-name"></label>
                <input class="form-control p-2 mx-3" id="product-name"
@@ -71,4 +71,4 @@
          </div>
       </div>
    </nav>
-</div>
+</header>

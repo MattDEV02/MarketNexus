@@ -2,22 +2,27 @@ package com.market.marketnexus.model;
 
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.Global;
+import com.market.marketnexus.helpers.constants.Temporals;
 import com.market.marketnexus.helpers.credentials.Roles;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import jdk.jfr.Unsigned;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
 @Entity
-@Table(name = "Credentials", schema = Global.SQL_SCHEMA_NAME)
+@Table(name = "Credentials", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "credentials_username_unique", columnNames = "username"))
 public class Credentials {
 
    public static String DEFAULT_ROLE = Roles.SELLER_AND_BUYER.toString();
 
    @Id
+   @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    @Min(1)
@@ -35,6 +40,16 @@ public class Credentials {
    @NotBlank
    @Size(min = FieldSizes.ROLE_MIN_LENGTH, max = FieldSizes.ROLE_MAX_LENGTH)
    private String role;
+
+   @Column(name = "inserted_at", nullable = false)
+   @Temporal(TemporalType.TIMESTAMP)
+   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
+   private LocalDateTime insertedAt;
+
+   @Column(name = "updated_at", nullable = false)
+   @Temporal(TemporalType.TIMESTAMP)
+   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
+   private LocalDateTime updatedAt;
 
    public Credentials() {
       this.role = Credentials.DEFAULT_ROLE;
@@ -84,6 +99,37 @@ public class Credentials {
       this.role = role;
    }
 
+   public LocalDateTime getInsertedAt() {
+      return this.insertedAt;
+   }
+
+   public void setInsertedAt(LocalDateTime insertedAt) {
+      this.insertedAt = insertedAt;
+   }
+
+   public LocalDateTime getUpdatedAt() {
+      return this.updatedAt;
+   }
+
+   public void setUpdatedAt(LocalDateTime updatedAt) {
+      this.updatedAt = updatedAt;
+   }
+
+   @PrePersist
+   public void prePersist() {
+      if (this.insertedAt == null) {
+         this.insertedAt = LocalDateTime.now();
+      }
+      if (this.updatedAt == null) {
+         this.updatedAt = this.insertedAt;
+      }
+   }
+
+   @PreUpdate
+   public void preUpdate() {
+      this.updatedAt = LocalDateTime.now();
+   }
+
    @Override
    public String toString() {
       return "Credentials: {" +
@@ -91,12 +137,16 @@ public class Credentials {
               ", username = '" + this.getUsername() + '\'' +
               ", role = " + this.getRole() +
               ", password = '" + this.getPassword() + '\'' +
+              ", insertedAt = " + this.getInsertedAt().toString() +
+              ", updatedAt = " + this.getUpdatedAt().toString() +
               " }";
    }
 
    @Override
    public boolean equals(Object object) {
-      if (this == object) return true;
+      if (this == object) {
+         return true;
+      }
       if (object == null || this.getClass() != object.getClass()) {
          return false;
       }

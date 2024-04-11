@@ -8,12 +8,11 @@ import jakarta.validation.constraints.*;
 import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Users", schema = Global.SQL_SCHEMA_NAME)
+@Table(name = "Users", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "users_email_unique", columnNames = "email"), @UniqueConstraint(name = "users_credentials_unique", columnNames = "credentials")})
 public class User {
 
    @Id
@@ -49,23 +48,13 @@ public class User {
    @Column(name = "balance", nullable = false)
    private Float balance;
 
-   @ManyToOne
+   @ManyToOne(targetEntity = Nation.class, optional = false)
    @JoinColumn(name = "nation", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "users_nations_fk"))
    private Nation nation;
 
-   @OneToOne
+   @OneToOne(cascade = CascadeType.ALL, targetEntity = Credentials.class, optional = false, orphanRemoval = true)
    @JoinColumn(name = "credentials", referencedColumnName = "id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "users_credentials_fk"))
    private Credentials credentials;
-
-   @Column(name = "inserted_at", nullable = false)
-   @Temporal(TemporalType.TIMESTAMP)
-   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
-   private LocalDateTime insertedAt;
-
-   @Column(name = "updated_at", nullable = false)
-   @Temporal(TemporalType.TIMESTAMP)
-   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
-   private LocalDateTime updatedAt;
 
    public User() {
 
@@ -154,40 +143,12 @@ public class User {
       this.nation = nation;
    }
 
-   public LocalDateTime getInsertedAt() {
-      return this.insertedAt;
-   }
-
-   public void setInsertedAt(LocalDateTime insertedAt) {
-      this.insertedAt = insertedAt;
-   }
-
-   public LocalDateTime getUpdatedAt() {
-      return this.updatedAt;
-   }
-
-   public void setUpdatedAt(LocalDateTime updatedAt) {
-      this.updatedAt = updatedAt;
-   }
-
-   @PrePersist
-   public void prePersist() {
-      if (this.insertedAt == null) {
-         this.insertedAt = LocalDateTime.now();
-      }
-      if (this.updatedAt == null) {
-         this.updatedAt = this.insertedAt;
-      }
-   }
-
-   @PreUpdate
-   public void preUpdate() {
-      this.updatedAt = LocalDateTime.now();
-   }
 
    @Override
    public boolean equals(Object object) {
-      if (this == object) return true;
+      if (this == object) {
+         return true;
+      }
       if (object == null || this.getClass() != object.getClass()) return false;
       User user = (User) object;
       return Objects.equals(this.getId(), user.getId()) || Objects.equals(this.getEmail(), user.getEmail()) || Objects.equals(this.getCredentials(), user.getCredentials());
@@ -210,8 +171,6 @@ public class User {
               ", balance = " + this.getBalance().toString() +
               ", credentials = " + this.getCredentials().toString() +
               ", nation = " + this.getNation().toString() +
-              ", insertedAt = " + this.getInsertedAt().toString() +
-              ", updatedAt = " + this.getUpdatedAt().toString() +
               " }";
    }
 }

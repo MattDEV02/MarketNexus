@@ -4,7 +4,7 @@ SELECT VERSION();
 
 --CONNECT MarketNexus;
 
---ALTER DATABASE MarketNexus SET TIMEZONE TO 'Europe/Rome';
+--ALTER DATABASE MarketNexus SET pg_catalog.TIMEZONE TO 'Europe/Rome';
 
 DROP SCHEMA IF EXISTS MarketNexus CASCADE;
 
@@ -41,6 +41,10 @@ $$ LANGUAGE plpgsql;
 
 COMMENT ON FUNCTION UPDATEDAT_SET_TIMESTAMP_FUNCTION IS 'Function that allows to update the updated_at TIMESTAMP fields.';
 
+--CREATE SEQUENCE nome_sequenza START 1;
+
+--COMMENT ON SEQUENCE nome_sequenza IS '';
+
 CREATE TABLE IF NOT EXISTS MarketNexus.Nations
 (
     id   SERIAL      NOT NULL PRIMARY KEY,
@@ -74,7 +78,8 @@ CREATE TABLE IF NOT EXISTS MarketNexus.product_categories
     description VARCHAR(60) NOT NULL,
     CONSTRAINT productcategories_name_unique UNIQUE (name),
     CONSTRAINT productcategories_id_min_value_check CHECK (MarketNexus.product_categories.id >= 1),
-    CONSTRAINT productcategories_name_min_length_check CHECK (LENGTH(MarketNexus.product_categories.name) >= 3)
+    CONSTRAINT productcategories_name_min_length_check CHECK (LENGTH(MarketNexus.product_categories.name) >= 3),
+    CONSTRAINT productcategories_description_min_length_check CHECK (LENGTH(MarketNexus.product_categories.description) >= 3)
 );
 
 ALTER TABLE MarketNexus.product_categories
@@ -102,11 +107,13 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Products
     price               FLOAT       NOT NULL,
     image_relative_path TEXT,
     category            INTEGER     NOT NULL,
+    CONSTRAINT products_name_description_price_imagerelvepath_category_unique UNIQUE (name, description, price, image_relative_path, category),
     CONSTRAINT products_productcategories_fk FOREIGN KEY (category) REFERENCES MarketNexus.product_categories (id) ON DELETE CASCADE,
     CONSTRAINT products_id_min_value_check CHECK (MarketNexus.Products.id >= 1),
     CONSTRAINT products_name_min_length_check CHECK (LENGTH(MarketNexus.Products.name) >= 3),
     CONSTRAINT products_name_valid_check CHECK (MarketNexus.Products.name ~ '^[^\\\\/:*?"<>|]*$'::TEXT),
     CONSTRAINT products_price_min_value_check CHECK (MarketNexus.Products.price > 0),
+    CONSTRAINT products_price_max_value_check CHECK (MarketNexus.Products.price <= 1000),
     CONSTRAINT products_description_min_length_check CHECK (LENGTH(MarketNexus.Products.description) >= 3),
     CONSTRAINT products_imagerelativepath_min_length_check CHECK (LENGTH(MarketNexus.Products.image_relative_path) >= 3),
     CONSTRAINT products_imagerelativepath_min_valid_check CHECK (POSITION('/' IN MarketNexus.Products.image_relative_path) > 0),
@@ -140,7 +147,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER product_imagerelativepath_trigger
+CREATE OR REPLACE TRIGGER PRODUCTS_INSERT_IMAGERELATIVEIMAGEPATH_TRIGGER
     BEFORE INSERT
     ON MarketNexus.Products
     FOR EACH ROW
@@ -151,7 +158,7 @@ INSERT INTO MarketNexus.Products (name, price, description, category)
 VALUES ('Smartphone', 599.99, 'High-end smartphone', 1),
        ('T-shirt', 29.99, 'Cotton T-shirt', 2),
        ('Java Programming Book', 49.99, 'Learn Java programming', 3),
-       ('Laptop', 1299.99, 'Powerful laptop', 1),
+       ('Laptop', 999.99, 'Powerful laptop', 1),
        ('Running Shoes', 79.99, 'Lightweight running shoes', 2),
        ('Python Book', 39.99, 'Master Python programming', 3),
        ('Coffee Maker', 89.99, 'Automatic coffee maker', 4),
@@ -166,23 +173,38 @@ CREATE OR REPLACE FUNCTION CHECK_ROLE_ROLES_ENUM_FUNCTION(role TEXT) RETURNS BOO
 $$
 BEGIN
     RETURN role IN (SELECT TEXT_ROLE::text
-                    FROM (SELECT unnest(enum_range(NULL::ROLES)) AS TEXT_ROLE) as SubQuery);
+                    FROM (SELECT UNNEST(ENUM_RANGE(NULL::ROLES)) AS TEXT_ROLE) as SUB_QUERY);
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Credentials
 (
-    id       SERIAL      NOT NULL PRIMARY KEY,
-    password VARCHAR(72) NOT NULL,
-    username VARCHAR(10) NOT NULL,
-    role     VARCHAR(20) DEFAULT 'SELLER_AND_BUYER',
+    id          SERIAL                                                                   NOT NULL PRIMARY KEY,
+    password    VARCHAR(72)                                                              NOT NULL,
+    username    VARCHAR(10)                                                              NOT NULL,
+    role        VARCHAR(20)                                                              NOT NULL DEFAULT 'SELLER_AND_BUYER',
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    CONSTRAINT credentials_username_unique UNIQUE (username),
     CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(MarketNexus.Credentials.role) >= 3),
     CONSTRAINT credentials_role_valid_check CHECK (MarketNexus.CHECK_ROLE_ROLES_ENUM_FUNCTION(role)),
     CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(MarketNexus.Credentials.username) >= 3),
     --CONSTRAINT credentials_username_valid__check CHECK (MarketNexus.Credentials.username ~ ''::TEXT),
-    --CONSTRAINT credentials_password_valid__check CHECK (MarketNexus.Credentials.password),
-    CONSTRAINT credentials_id_min_value_check CHECK (MarketNexus.Credentials.id >= 1)
+    CONSTRAINT credentials_password_min_check CHECK (LENGTH(MarketNexus.Credentials.password) >= 60),
+    CONSTRAINT credentials_id_min_value_check CHECK (MarketNexus.Credentials.id >= 1),
+    --CONSTRAINT credentials_insertedat_min_value_check CHECK (MarketNexus.Users.inserted_at >= NOW() - INTERVAL '1 minutes'),
+    CONSTRAINT credentials_insertedat_updatedat_value_check CHECK (MarketNexus.Credentials.inserted_at <=
+                                                                   MarketNexus.Credentials.updated_at)
 );
+
+CREATE
+    OR REPLACE TRIGGER CREDENTIALS_UPDATEDAT_TRIGGER
+    BEFORE
+        UPDATE
+    ON MarketNexus.Credentials
+    FOR EACH ROW
+EXECUTE
+    FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
 COMMENT ON TABLE MarketNexus.Credentials IS 'MarketNexus Users Credentials.';
 
@@ -195,21 +217,20 @@ VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 
        ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'SELLER_AND_BUYER');
 -- Gabriel1
 
--- N.B. = La password è criptata da spring boot e arriva a 60 caratteri.
+-- N.B. = La password è criptata da spring boot con l'algoritmo bscrypt e va da 60 caratteri a 72.
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Users
 (
-    id          SERIAL                                                        NOT NULL PRIMARY KEY,
-    name        VARCHAR(30)                                                   NOT NULL,
-    surname     VARCHAR(30)                                                   NOT NULL,
-    email       VARCHAR(50)                                                   NOT NULL,
+    id          SERIAL      NOT NULL PRIMARY KEY,
+    name        VARCHAR(30) NOT NULL,
+    surname     VARCHAR(30) NOT NULL,
+    email       VARCHAR(50) NOT NULL,
     birthdate   DATE,
-    balance     FLOAT                                                         NOT NULL,
-    credentials INTEGER                                                       NOT NULL,
-    nation      INTEGER                                                       NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    balance     FLOAT       NOT NULL,
+    credentials INTEGER     NOT NULL,
+    nation      INTEGER     NOT NULL,
     CONSTRAINT users_email_unique UNIQUE (email),
+    CONSTRAINT users_credentials_unique UNIQUE (credentials),
     CONSTRAINT users_credentials_fk FOREIGN KEY (credentials) REFERENCES MarketNexus.Credentials (id) ON DELETE CASCADE,
     CONSTRAINT users_nations_fk FOREIGN KEY (nation) REFERENCES MarketNexus.Nations (id) ON DELETE CASCADE,
     CONSTRAINT users_name_min_length_check CHECK (LENGTH(MarketNexus.Users.name) >= 3),
@@ -223,20 +244,8 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Users
     CONSTRAINT users_balance_min_value_check CHECK (MarketNexus.Users.balance >= 0),
     CONSTRAINT users_balance_max_value_check CHECK (MarketNexus.Users.balance <= 10000),
     CONSTRAINT users_credentials_min_value_check CHECK (MarketNexus.Users.credentials >= 1),
-    CONSTRAINT users_nation_min_value_check CHECK (MarketNexus.Users.nation >= 1),
-    --CONSTRAINT users_insertedat_min_value_check CHECK (MarketNexus.Users.inserted_at >= NOW() - INTERVAL '1 minutes'),
-    CONSTRAINT users_insertedat_updatedat_value_check CHECK (MarketNexus.Users.inserted_at <=
-                                                             MarketNexus.Users.updated_at)
+    CONSTRAINT users_nation_min_value_check CHECK (MarketNexus.Users.nation >= 1)
 );
-
-CREATE
-    OR REPLACE TRIGGER users_updatedat_trigger
-    BEFORE
-        UPDATE
-    ON MarketNexus.Users
-    FOR EACH ROW
-EXECUTE
-    FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
 COMMENT ON TABLE MarketNexus.Users IS 'MarketNexus Users.';
 
@@ -249,25 +258,60 @@ VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2024-03-14', 2
        ('Gabriel', 'Muscedere', 'gabrielmuscedere@gmail.com', '2002-03-27', 0.1, 3, 6);
 
 
-CREATE TABLE MarketNexus.Sales
+CREATE TABLE IF NOT EXISTS MarketNexus.Sales
 (
-    id          SERIAL                                                        NOT NULL PRIMARY KEY,
-    quantity    INTEGER                                                       NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    _user       INTEGER                                                       NOT NULL,
-    product     INTEGER                                                       NOT NULL,
-    CONSTRAINT user_product_insertedat_unique UNIQUE (_user, product, inserted_at),
+    id          SERIAL                                                                   NOT NULL PRIMARY KEY,
+    _user       INTEGER                                                                  NOT NULL,
+    product     INTEGER                                                                  NOT NULL,
+    quantity    INTEGER                                                                  NOT NULL,
+    sale_price  FLOAT                                                                    NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    CONSTRAINT sales_user_product_insertedat_unique UNIQUE (_user, product, inserted_at),
     CONSTRAINT sale_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
     CONSTRAINT sale_products_fk FOREIGN KEY (product) REFERENCES MarketNexus.Products (id) ON DELETE CASCADE,
     CONSTRAINT sale_id_min_value_check CHECK (MarketNexus.Sales.id >= 1),
     CONSTRAINT sale_user_min_value_check CHECK (MarketNexus.Sales._user >= 1),
     CONSTRAINT sale_product_min_value_check CHECK (MarketNexus.Sales.product >= 1),
     CONSTRAINT sale_quantity_min_value_check CHECK (MarketNexus.Sales.quantity >= 0),
+    CONSTRAINT sale_quantity_max_value_check CHECK (MarketNexus.Sales.quantity <= 10),
+    CONSTRAINT sale_saleprice_min_value_check CHECK (MarketNexus.Sales.quantity > 0),
+    CONSTRAINT sale_saleprice_max_value_check CHECK (MarketNexus.Sales.quantity <= 10000),
     -- CONSTRAINT sale_insertedat_min_value_check CHECK (MarketNexus.Sales.inserted_at >= NOW()),
     CONSTRAINT sale_insertedat_updatedat_value_check CHECK (MarketNexus.Sales.inserted_at <=
                                                             MarketNexus.Sales.updated_at)
 );
+
+CREATE
+    OR REPLACE FUNCTION CHECK_SALE_SALEPRICE_VALUE_FUNCTION()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF ((SELECT CASE WHEN s.sale_price = (p.price * s.quantity) THEN TRUE ELSE FALSE END AS are_equals
+         FROM MarketNexus.Products p
+                  JOIN MarketNexus.Sales s ON p.id = s.product
+         WHERE s.id = NEW.ID) = TRUE) THEN
+
+        RETURN NEW;
+    ELSE
+        RAISE EXCEPTION 'sale_price error with this Sale ID: % .' , NEW.ID;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+/*
+SELECT CASE WHEN s.sale_price = (p.price * s.quantity) THEN TRUE ELSE FALSE END AS are_equal
+FROM MarketNexus.Products p
+         JOIN MarketNexus.Sales s ON p.id = s.product
+WHERE s.id = 1;
+*/
+CREATE
+    OR REPLACE TRIGGER SALE_SALEPRICE_VALUE_TRIGGER
+    AFTER
+        INSERT
+    ON MarketNexus.Sales
+    FOR EACH ROW
+EXECUTE
+    FUNCTION MarketNexus.CHECK_SALE_SALEPRICE_VALUE_FUNCTION();
 
 CREATE
     OR REPLACE TRIGGER sale_updatedat_trigger
@@ -278,78 +322,77 @@ CREATE
 EXECUTE
     FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
-COMMENT ON TABLE MarketNexus.Sales IS 'Publication of a Sales by the MarketNexus Users.';
+COMMENT ON TABLE MarketNexus.Sales IS 'Publication of a Sale (Product in Sale) by the MarketNexus Users.';
 
 ALTER TABLE MarketNexus.Sales
     OWNER TO postgres;
 
-INSERT INTO MarketNexus.Sales(quantity, _user, product)
-VALUES (1, 1, 1),
-       (2, 1, 2),
-       (3, 2, 3),
-       (2, 2, 4),
-       (2, 2, 5),
-       (2, 2, 6),
-       (2, 2, 7);
+INSERT INTO MarketNexus.Sales(_user, product, quantity, sale_price)
+VALUES (1, 1, 1, 599.99),
+       (1, 2, 2, 59.98),
+       (2, 3, 3, 149.97),
+       (2, 4, 1, 999.99),
+       (2, 5, 2, 159.98),
+       (2, 6, 2, 79.98),
+       (2, 7, 2, 179.98);
 
 
-CREATE TABLE MarketNexus.Carts
+CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
 (
-    id          SERIAL                                                        NOT NULL PRIMARY KEY,
-    quantity    INTEGER                                                       NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    _user       INTEGER                                                       NOT NULL,
-    sale        INTEGER                                                       NOT NULL,
-    CONSTRAINT carts_user_sale_insertedat_unique UNIQUE (_user, sale, inserted_at),
+    id          SERIAL                                                                   NOT NULL PRIMARY KEY,
+    _user       INTEGER                                                                  NOT NULL,
+    sale        INTEGER                                                                  NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    CONSTRAINT cartlineitems_user_sale_insertedat_unique UNIQUE (_user, sale, inserted_at),
     CONSTRAINT carts_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
     CONSTRAINT carts_sale_fk FOREIGN KEY (sale) REFERENCES MarketNexus.Sales (id) ON DELETE CASCADE,
-    CONSTRAINT carts_id_min_value_check CHECK (MarketNexus.Carts.id >= 1),
-    CONSTRAINT carts_user_min_value_check CHECK (MarketNexus.Carts._user >= 1),
-    CONSTRAINT carts_sale_min_value_check CHECK (MarketNexus.Carts.sale >= 1),
-    CONSTRAINT carts_quantity_min_value_check CHECK (MarketNexus.Carts.quantity >= 0),
-    -- CONSTRAINT carts_insertedat_min_value_check CHECK (MarketNexus.Carts.inserted_at >= NOW()),
-    CONSTRAINT carts_insertedat_updatedat_value_check CHECK (MarketNexus.Carts.inserted_at <=
-                                                             MarketNexus.Carts.updated_at)
+    CONSTRAINT carts_id_min_value_check CHECK (MarketNexus.cart_line_items.id >= 1),
+    CONSTRAINT carts_user_min_value_check CHECK (MarketNexus.cart_line_items._user >= 1),
+    CONSTRAINT carts_sale_min_value_check CHECK (MarketNexus.cart_line_items.sale >= 1),
+    -- CONSTRAINT carts_insertedat_min_value_check CHECK (MarketNexus.cart_line_items.inserted_at >= NOW()),
+    CONSTRAINT carts_insertedat_updatedat_value_check CHECK (MarketNexus.cart_line_items.inserted_at <=
+                                                             MarketNexus.cart_line_items.updated_at)
 );
 
 CREATE
     OR REPLACE TRIGGER carts_updatedat_trigger
     BEFORE
         UPDATE
-    ON MarketNexus.Carts
+    ON MarketNexus.cart_line_items
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
-COMMENT ON TABLE MarketNexus.Carts IS 'User who puts a sale product in his cart.';
+COMMENT ON TABLE MarketNexus.cart_line_items IS 'User who puts a sale product in his cart.';
 
-ALTER TABLE MarketNexus.Carts
+ALTER TABLE MarketNexus.cart_line_items
     OWNER TO postgres;
 
-INSERT INTO MarketNexus.Carts(quantity, _user, sale)
-VALUES (1, 1, 6);
+INSERT INTO MarketNexus.cart_line_items(_user, sale)
+VALUES (1, 6);
 
 
-CREATE TABLE MarketNexus.Orders
+CREATE TABLE IF NOT EXISTS MarketNexus.Orders
 (
-    id          SERIAL                                                        NOT NULL PRIMARY KEY,
-    quantity    INTEGER                                                       NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    _user       INTEGER                                                       NOT NULL,
-    cart        INTEGER                                                       NOT NULL,
+    id          SERIAL                                                                   NOT NULL PRIMARY KEY,
+    _user       INTEGER                                                                  NOT NULL,
+    cart        INTEGER                                                                  NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     CONSTRAINT orders_user_cart_insertedat_unique UNIQUE (_user, cart, inserted_at),
     CONSTRAINT orders_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
-    CONSTRAINT orders_carts_fk FOREIGN KEY (cart) REFERENCES MarketNexus.Sales (id) ON DELETE CASCADE,
+    CONSTRAINT orders_carts_fk FOREIGN KEY (cart) REFERENCES MarketNexus.cart_line_items (id) ON DELETE CASCADE,
     CONSTRAINT orders_id_min_value_check CHECK (MarketNexus.Orders.id >= 1),
     CONSTRAINT orders_user_min_value_check CHECK (MarketNexus.Orders._user >= 1),
     CONSTRAINT orders_sale_min_value_check CHECK (MarketNexus.Orders.cart >= 1),
-    CONSTRAINT orders_quantity_min_value_check CHECK (MarketNexus.Orders.quantity >= 0),
     --CONSTRAINT orders_insertedat_min_value_check CHECK (MarketNexus.Orders.inserted_at >= NOW()),
     CONSTRAINT orders_insertedat_updatedat_value_check CHECK (MarketNexus.Orders.inserted_at <=
                                                               MarketNexus.Orders.updated_at)
 );
+
+select *
+from cart_line_items;
 
 CREATE
     OR REPLACE TRIGGER orders_updatedat_trigger
@@ -360,21 +403,17 @@ CREATE
 EXECUTE
     FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
-COMMENT ON TABLE MarketNexus.Orders IS 'User who buys sale products that are his cart.';
+COMMENT ON TABLE MarketNexus.Orders IS 'User who buys sale products that are in his cart.';
 
 ALTER TABLE MarketNexus.Orders
     OWNER TO postgres;
 
-INSERT INTO MarketNexus.Orders(quantity, _user, cart)
-VALUES (1, 1, 1);
+INSERT INTO MarketNexus.Orders(_user, cart)
+VALUES (1, 1);
+
 
 select *
-from MarketNexus.Users
-where id = 1;
-
-select *
-from MarketNexus.Credentials
-where id = 1;
+from credentials;
 
 /*
 

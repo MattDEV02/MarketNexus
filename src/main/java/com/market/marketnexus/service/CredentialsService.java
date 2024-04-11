@@ -4,7 +4,6 @@ import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.repository.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +12,6 @@ import java.util.Optional;
 @Service
 public class CredentialsService {
 
-   @Autowired
-   protected PasswordEncoder passwordEncoder;
    @Autowired
    protected CredentialsRepository credentialsRepository;
 
@@ -30,7 +27,6 @@ public class CredentialsService {
 
    @Transactional
    public Credentials saveCredentials(@NonNull Credentials credentials) {
-      credentials.setPassword(this.passwordEncoder.encode(credentials.getPassword()));
       return this.credentialsRepository.save(credentials);
    }
 

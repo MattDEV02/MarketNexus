@@ -1,5 +1,5 @@
 <div class="card text-center shadow mt-5" th:fragment="sale(sale)"
-     th:with=" isLoggedUserAccount=(${isLoggedUserAccount} ?: false)">
+     th:with=" isLoggedUser=(${isLoggedUser} ?: false)">
    <a th:href="@{'/dashboard/sale/' + ${sale.id}}">
       <img class="card-img-top"
            th:alt="${sale.product.name}"
@@ -11,15 +11,15 @@
       <p class="card-text" th:text="${sale.quantity} + 'X ' + ${sale.product.description}"></p>
       <p class="card-text fw-bold" th:text="${sale.product.category.name}"></p>
    </div>
-   <div th:class="'card-footer' + ${!isLoggedUserAccount ? ' pb-2 pt-3' : ' py-3'}">
+   <div th:class="'card-footer' + ${!isLoggedUser ? ' pb-2 pt-3' : ' py-3'}">
       <a class="card-link link-primary text-decoration-underline fs-5 ms-1 me-3"
          th:href="@{'/dashboard/account/' + ${sale.user.credentials.username}}"
          th:text="${sale.user.credentials.username}">
       </a>
-      <span class="text-secondary fs-5 ms-2 me-3" th:text="${sale.product.price} + ' $'"></span>
-      <a role="button" th:class="'btn btn-primary ms-3 mb-2 ' + ${isLoggedUserAccount ? 'disabled' : ''}"
+      <span class="text-secondary fs-5 ms-2 me-3" th:text="${sale.salePrice} + ' $'"></span>
+      <a role="button" th:class="'btn btn-primary ms-3 mb-2 ' + ${isLoggedUser ? 'disabled' : null}"
          th:href="@{'/dashboard/cart/' + ${sale.id} + '?quantity=' + ${sale.quantity}}"
-         th:if="${!isLoggedUserAccount}">
+         th:if="${!isLoggedUser}">
          <i class="fas fa-cart-plus"></i>
       </a>
    </div>

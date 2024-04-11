@@ -2,7 +2,7 @@ package com.market.marketnexus.controller;
 
 import com.market.marketnexus.controller.validator.ProductValidator;
 import com.market.marketnexus.helpers.constants.APISuffixes;
-import com.market.marketnexus.helpers.products.Utils;
+import com.market.marketnexus.helpers.product.Utils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;

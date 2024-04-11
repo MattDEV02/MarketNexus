@@ -9,13 +9,14 @@
    <div class="row justify-content-center">
       <div class="col-12">
          <div class="row text-center">
-            <h1>MarketNexus FAQs</h1>
+            <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' FAQs'"></h1>
          </div>
       </div>
       <div class="col-12 mt-5">
          <div class="row justify-content-center">
-            <div class="accordion" id="faq-accordion" th:each="accordion, iterStat : ${accordions}">
-               <div th:replace="~{fragments/accordion.html :: accordion(${accordion}, ${iterStat.count })}"></div>
+            <div class="accordion" th:each="accordion, iterStat : ${accordions}"
+                 th:id="'faq-accordion' + ${iterStat.count}">
+               <div th:replace="~{fragments/FAQaccordion.html :: FAQaccordion(accordion = ${accordion}, index = ${iterStat.count}, isLastAccordion = ${iterStat.count == #maps.size(accordions)})}"></div>
             </div>
          </div>
       </div>

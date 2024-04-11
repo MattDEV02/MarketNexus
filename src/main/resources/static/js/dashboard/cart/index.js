@@ -22,7 +22,6 @@ deleteCartButtons.forEach(deleteCartButton => {
       event.preventDefault();
       if (window.confirm("Are you sure you want to delete this cart line?")) {
          sendDeleteCartRequest(deleteCartButton.href);
-         window.alert("Cart line deleted.");
       } else {
          window.alert("Cart line not deleted.");
       }

@@ -1,29 +1,25 @@
 package com.market.marketnexus.model;
 
-import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.Global;
 import com.market.marketnexus.helpers.constants.Temporals;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Orders", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(columnNames = {"_user", "cart", "inserted_at"}))
+@Table(name = "Orders", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "orders_user_cart_insertedat_unique", columnNames = {"_user", "cart", "inserted_at"}))
 public class Order {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
+   @Unsigned
+   @Min(1)
    private Long id;
-
-   @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
-   @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
-   @Column(name = "quantity", nullable = false)
-   private Integer quantity;
 
    @ManyToOne
    @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "orders_users_fk"))
@@ -31,7 +27,7 @@ public class Order {
 
    @ManyToOne
    @JoinColumn(name = "cart", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "orders_carts_fk"))
-   private Cart cart;
+   private CartLineItem cart;
 
    @Column(name = "inserted_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
@@ -47,8 +43,7 @@ public class Order {
 
    }
 
-   public Order(Integer quantity, User user, Cart cart) {
-      this.quantity = quantity;
+   public Order(User user, CartLineItem cart) {
       this.user = user;
       this.cart = cart;
    }
@@ -61,14 +56,6 @@ public class Order {
       this.id = id;
    }
 
-   public Integer getQuantity() {
-      return this.quantity;
-   }
-
-   public void setQuantity(Integer quantity) {
-      this.quantity = quantity;
-   }
-
    public User getUser() {
       return this.user;
    }
@@ -77,11 +64,11 @@ public class Order {
       this.user = user;
    }
 
-   public Cart getCart() {
+   public CartLineItem getCartLineItem() {
       return this.cart;
    }
 
-   public void setCart(Cart cart) {
+   public void setCartLineItem(CartLineItem cart) {
       this.cart = cart;
    }
 
@@ -123,21 +110,20 @@ public class Order {
          return false;
       }
       Order order = (Order) object;
-      return Objects.equals(this.getId(), order.getId()) || (Objects.equals(this.getUser(), order.getUser()) && Objects.equals(this.getCart(), order.getCart()) && Objects.equals(this.getInsertedAt(), order.getInsertedAt()));
+      return Objects.equals(this.getId(), order.getId()) || (Objects.equals(this.getUser(), order.getUser()) && Objects.equals(this.getCartLineItem(), order.getCartLineItem()) && Objects.equals(this.getInsertedAt(), order.getInsertedAt()));
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId(), this.getUser(), this.getCart(), this.getInsertedAt());
+      return Objects.hash(this.getId(), this.getUser(), this.getCartLineItem(), this.getInsertedAt());
    }
 
    @Override
    public String toString() {
       return "Order: {" +
               " id = " + this.getId().toString() +
-              ", quantity = " + this.getQuantity().toString() +
               ", user = " + this.getUser().toString() +
-              ", cart = " + this.getCart().toString() +
+              ", cart = " + this.getCartLineItem().toString() +
               ", insertedAt = " + this.getInsertedAt().toString() +
               ", updatedAt = " + this.getUpdatedAt().toString() +
               " }";

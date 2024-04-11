@@ -12,7 +12,7 @@
             <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 pt-4 pb-3 mt-3">
                <div class="col-12 mb-3">
                   <div class="row text-center">
-                     <h1>Login</h1>
+                     <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Login'"></h1>
                   </div>
                </div>
                <div th:with="registrationSuccessful = ${param.registrationSuccessful != null}, logoutSuccessful = ${param.logoutSuccessful != null}, invalidCredentials = ${param.invalidCredentials != null}">
@@ -23,7 +23,7 @@
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Incorrect username or password.', condition = ${invalidCredentials})}"></div>
                </div>
-               <form id="login-form" method="POST" name="login-form" th:action="@{/login}">
+               <form id="login-form" method="POST" name="login-form" th:action="@{/login}" th:object="${credentials}">
                   <div class="mb-3">
                      <label class="form-label" for="username">Username:</label>
                      <input class="form-control" id="username"

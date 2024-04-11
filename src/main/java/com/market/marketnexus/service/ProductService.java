@@ -18,7 +18,7 @@ public class ProductService {
    @Autowired
    protected ProductCategoryRepository productCategoryRepository;
    @Autowired
-   protected CartService cartService;
+   protected CartLineItemService cartLineItemService;
    @Autowired
    private SaleService saleService;
    @Autowired
