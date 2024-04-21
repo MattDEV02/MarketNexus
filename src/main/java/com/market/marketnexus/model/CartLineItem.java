@@ -1,6 +1,6 @@
 package com.market.marketnexus.model;
 
-import com.market.marketnexus.helpers.constants.Global;
+import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.constants.Temporals;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "cart_line_items", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "cartlineitems_user_sale_insertedat_unique", columnNames = {"_user", "sale", "inserted_at"}))
+@Table(name = "cart_line_items", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "cartlineitems_user_sale_insertedat_unique", columnNames = {"_user", "sale", "inserted_at"}))
 public class CartLineItem {
 
    @Id

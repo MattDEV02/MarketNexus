@@ -1,7 +1,7 @@
 package com.market.marketnexus.model;
 
 import com.market.marketnexus.helpers.constants.FieldSizes;
-import com.market.marketnexus.helpers.constants.Global;
+import com.market.marketnexus.helpers.constants.GlobalValues;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +11,7 @@ import jdk.jfr.Unsigned;
 import java.util.Objects;
 
 @Entity
-@Table(name = "product_categories", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "productcategories_name_unique", columnNames = "name"))
+@Table(name = "product_categories", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "productcategories_name_unique", columnNames = "name"))
 public class ProductCategory {
    @Id
    @Unsigned

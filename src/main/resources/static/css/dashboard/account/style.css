@@ -9,3 +9,17 @@
    box-shadow: none;
 !important
 }
+
+#email-text {
+   font-family: Arial, Helvetica, sans-serif;
+!important;
+   font-style: italic;
+!important;
+}
+
+@media (max-width: 530px) {
+   #email-text {
+      font-size: 0.9em;
+   !important;
+   }
+}

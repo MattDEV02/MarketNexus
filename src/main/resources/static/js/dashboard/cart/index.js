@@ -1,14 +1,5 @@
-const regExp = new RegExp("^(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*$");
-
-const validateURL = (URL) =>
-   URL !== undefined && URL !== null && URL !== "" && URL !== " " &&
-   regExp.test(
-      URL
-   );
-
-
-const sendDeleteCartRequest = (URI) => {
-   if (validateURL(URI)) {
+const sendDeleteCartLineItemRequest = (URI) => {
+   if (validateURI(URI)) {
       window.location.href = URI;
    } else {
       window.alert("Server error.");
@@ -21,7 +12,7 @@ deleteCartButtons.forEach(deleteCartButton => {
    deleteCartButton.addEventListener('click', (event) => {
       event.preventDefault();
       if (window.confirm("Are you sure you want to delete this cart line?")) {
-         sendDeleteCartRequest(deleteCartButton.href);
+         sendDeleteCartLineItemRequest(deleteCartButton.href);
       } else {
          window.alert("Cart line not deleted.");
       }

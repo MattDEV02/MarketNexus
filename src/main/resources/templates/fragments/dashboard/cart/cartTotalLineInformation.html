@@ -5,7 +5,9 @@
             <div class="row">
                <h3 class="card-title">Cart total</h3>
                <p class="card-text text-secondary fw-bold" th:text="'Total: ' + ${totalPrice} + ' $'"></p>
-               <a class="btn btn-success" role="button" th:href="@{'/dashboard/order/' }"> <!-- cartId -->
+               <a class="btn btn-success" role="button" th:href="@{'/dashboard/order/' }"
+                  title="Proceed to pay all the products in your cart">
+                  <!-- cartId -->
                   Proceed to Payment
                   <i class="fas fa-receipt ms-1"></i>
                </a>

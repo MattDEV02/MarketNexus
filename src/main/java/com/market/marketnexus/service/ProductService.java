@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class ProductService {
@@ -19,10 +17,6 @@ public class ProductService {
    protected ProductCategoryRepository productCategoryRepository;
    @Autowired
    protected CartLineItemService cartLineItemService;
-   @Autowired
-   private SaleService saleService;
-   @Autowired
-   private OrderService orderService;
 
    public Product getProduct(Long id) {
       Optional<Product> result = this.productRepository.findById(id);
@@ -32,15 +26,6 @@ public class ProductService {
    @Transactional
    public Product saveProduct(Product product) {
       return this.productRepository.save(product);
-   }
-
-   public Set<Product> getAllProducts() {
-      Set<Product> result = new HashSet<Product>();
-      Iterable<Product> iterable = this.productRepository.findAll();
-      for (Product product : iterable) {
-         result.add(product);
-      }
-      return result;
    }
 
 }

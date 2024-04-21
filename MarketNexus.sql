@@ -93,10 +93,10 @@ VALUES ('Electronics', 'Electronics products'),
        ('Books', 'Books products'),
        ('Home Appliances', 'Home Appliances products'),
        ('Footwear', 'Footwear products'),
-       ('Sports and Outdoors', 'Sports and Outdoors products'),
-       ('Beauty and Personal Care', 'Beauty and Personal Care products'),
-       ('Toys and Games', 'Toys and Games products'),
-       ('Food and Grocery', 'Food and Grocery products');
+       ('Sports', 'Sports products'),
+       ('Beauty', 'Beauty products'),
+       ('Games', 'Games products'),
+       ('Food', 'Food products');
 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Products
@@ -253,7 +253,7 @@ ALTER TABLE MarketNexus.Users
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Users (name, surname, email, birthdate, balance, credentials, nation)
-VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2024-03-14', 22, 1, 1),
+VALUES ('Matteo', 'Lambertucci', 'matteolambertucci@gmail.com', '2024-03-14', 22, 1, 1),
        ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2, 2),
        ('Gabriel', 'Muscedere', 'gabrielmuscedere@gmail.com', '2002-03-27', 0.1, 3, 6);
 
@@ -413,7 +413,8 @@ VALUES (1, 1);
 
 
 select *
-from credentials;
+from credentials c
+         join users u on c.id = u.credentials;
 
 /*
 

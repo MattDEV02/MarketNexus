@@ -1,6 +1,6 @@
 package com.market.marketnexus.authentication;
 
-import com.market.marketnexus.helpers.constants.APISuffixes;
+import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.Paths;
 import com.market.marketnexus.helpers.credentials.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
                       auth -> auth
                               .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser").permitAll()
-                              .requestMatchers(HttpMethod.GET, "/" + APISuffixes.DASHBOARD + "/**").authenticated()
+                              .requestMatchers(HttpMethod.GET, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
                               .requestMatchers(new RegexRequestMatcher(".*sale.*", null)).hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())

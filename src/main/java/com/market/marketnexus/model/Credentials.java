@@ -1,7 +1,7 @@
 package com.market.marketnexus.model;
 
 import com.market.marketnexus.helpers.constants.FieldSizes;
-import com.market.marketnexus.helpers.constants.Global;
+import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.constants.Temporals;
 import com.market.marketnexus.helpers.credentials.Roles;
 import jakarta.persistence.*;
@@ -16,7 +16,7 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "Credentials", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "credentials_username_unique", columnNames = "username"))
+@Table(name = "Credentials", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "credentials_username_unique", columnNames = "username"))
 public class Credentials {
 
    public static String DEFAULT_ROLE = Roles.SELLER_AND_BUYER.toString();

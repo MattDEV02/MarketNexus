@@ -10,11 +10,11 @@
       <div class="col-12 mt-5">
          <div class="row justify-content-center">
             <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 pt-4 pb-3 mt-3">
-               <div class="col-12 mb-3">
-                  <div class="row text-center">
-                     <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Login'"></h1>
-                  </div>
+               
+               <div class="row text-center mt-2 mb-4">
+                  <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Login 🕵️‍♂️'"></h1>
                </div>
+               
                <div th:with="registrationSuccessful = ${param.registrationSuccessful != null}, logoutSuccessful = ${param.logoutSuccessful != null}, invalidCredentials = ${param.invalidCredentials != null}">
                   <div
                         th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Successfully registered.', condition = ${registrationSuccessful})}"></div>
@@ -26,33 +26,40 @@
                <form id="login-form" method="POST" name="login-form" th:action="@{/login}" th:object="${credentials}">
                   <div class="mb-3">
                      <label class="form-label" for="username">Username:</label>
-                     <input class="form-control" id="username"
+                     <input class="form-control py-2" id="username"
                             name="username"
                             placeholder="Insert your username" required th:field="${credentials.username}"
                             th:maxlength="${FIELD_SIZES_MAP.get('USERNAME_MAX_LENGTH')}"
                             th:minlength="${FIELD_SIZES_MAP.get('USERNAME_MIN_LENGTH')}"
+                            th:title="'Insert your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' username'"
                             type="text"/>
                   </div>
                   <div class="mb-3">
                      <label class="form-label" for="password">Password:</label>
                      <div class="input-group">
                         <input aria-describedby="toggle-password-visibility" aria-label="Password"
-                               class="form-control"
+                               class="form-control py-2"
                                id="password" name="password" placeholder="Insert your password"
                                required
                                th:field="${credentials.password}"
                                th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
                                th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
+                               th:title="'Insert your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' password'"
                                type="password"/>
-                        <button class="btn btn-outline-secondary" id="toggle-password-visibility" type="button">
+                        <button class="btn btn-outline-secondary" id="toggle-password-visibility"
+                                title="Show or hide password"
+                                type="button">
                            <!-- Icona dell'occhio per mostrare/nascondere la password -->
                            <i class="fas fa-eye" id="eye-icon"></i>
                         </button>
                      </div>
                   </div>
                   <div class="my-4">
-                     <button class="btn btn-primary form-control" form="login-form" formmethod="POST" id="submit"
-                             name="submit" type="submit">
+                     <button class="btn btn-primary form-control py-2 fw-bold mt-2" form="login-form"
+                             formmethod="POST"
+                             id="submit"
+                             name="submit" th:title="'Login to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')}"
+                             type="submit">
                         Login
                      </button>
                   </div>
@@ -60,8 +67,10 @@
                <div class="col-12">
                   <div class="row text-center">
                      <p>
-                        <a class="me-1" th:href="@{/}">Home</a>
-                        <a class="ms-1" th:href="@{/registration}">Register</a>
+                        <a class="me-1" th:href="@{/}"
+                           th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' home'">Home</a>
+                        <a class="ms-1" th:href="@{/registration}"
+                           th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' registration'">Register</a>
                      </p>
                   </div>
                </div>

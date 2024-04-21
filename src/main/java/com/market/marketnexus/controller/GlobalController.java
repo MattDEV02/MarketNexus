@@ -1,8 +1,8 @@
 package com.market.marketnexus.controller;
 
-import com.market.marketnexus.helpers.constants.APISuffixes;
+import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.FieldSizes;
-import com.market.marketnexus.helpers.constants.Global;
+import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.constants.Temporals;
 import com.market.marketnexus.helpers.credentials.Roles;
 import com.market.marketnexus.helpers.credentials.Utils;
@@ -40,12 +40,18 @@ public class GlobalController {
    private static final Map<String, Object> FIELD_SIZES_MAP = new HashMap<String, Object>();
    private static final Map<String, Object> TEMPORALS_MAP = new HashMap<String, Object>();
    private static final Map<String, Roles> ALL_ROLES_MAP = Utils.getAllRoles();
-   //TODO: Global constants.
 
    static {
-      GlobalController.GLOBAL_CONSTANTS_MAP.put("APP_NAME", Global.APP_NAME);
-      GlobalController.GLOBAL_CONSTANTS_MAP.put("CHARSET", Global.CHARSET);
-      GlobalController.GLOBAL_CONSTANTS_MAP.put("LANG", Global.LANG);
+      Field[] fields = GlobalValues.class.getDeclaredFields();
+      for (Field field : fields) {
+         try {
+            String name = field.getName();
+            Object value = field.get(null);
+            GlobalController.GLOBAL_CONSTANTS_MAP.put(name, value);
+         } catch (IllegalAccessException | IllegalArgumentException illegalException) {
+            LOGGER.warn("Impossible to access at this field: {}", field.getName(), illegalException);
+         }
+      }
    }
 
    static {
@@ -76,6 +82,7 @@ public class GlobalController {
 
    @Autowired
    private NationService nationService;
+   //TODO: Global constants.
    @Autowired
    private UserService userService;
    @Autowired
@@ -107,7 +114,7 @@ public class GlobalController {
    public Set<Nation> getNations(@NonNull HttpServletRequest request) {
       Set<Nation> nations = null;
       final String URI = request.getRequestURI();
-      if (URI.contains("/regist") || URI.contains("/" + APISuffixes.ACCOUNT)) {
+      if (URI.contains("/regist") || URI.contains("/" + APIPrefixes.ACCOUNT)) {
          nations = this.nationService.getAllNations();
       }
       return nations;

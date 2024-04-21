@@ -5,7 +5,6 @@ import com.market.marketnexus.controller.validator.UserValidator;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.User;
-import com.market.marketnexus.service.CredentialsService;
 import com.market.marketnexus.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -27,11 +26,11 @@ import java.util.Objects;
 @Controller
 public class AuthenticationController {
 
+   public final static String REGISTRATION_SUCCESSFUL = "redirect:/login?REGISTRATION_SUCCESSFUL=true";
+   public final static String REGISTRATION_ERROR = "registration.html";
    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
    @Autowired
    protected PasswordEncoder passwordEncoder;
-   @Autowired
-   private CredentialsService credentialsService;
    @Autowired
    private UserService userService;
    @Autowired
@@ -53,9 +52,7 @@ public class AuthenticationController {
                                     @Valid @NonNull @ModelAttribute("credentials") Credentials credentials,
                                     @NonNull BindingResult credentialsBindingResult,
                                     @NonNull @RequestParam("confirm-password") String confirmPassword) {
-      final String registrationSuccessful = "redirect:/login?registrationSuccessful=true";
-      final String registrationError = "registration.html";
-      ModelAndView modelAndView = new ModelAndView(registrationError);
+      ModelAndView modelAndView = new ModelAndView(AuthenticationController.REGISTRATION_ERROR);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
       this.credentialsValidator.validate(credentials, credentialsBindingResult);
@@ -64,7 +61,7 @@ public class AuthenticationController {
          user.setCredentials(credentials);
          User savedUser = this.userService.saveUser(user);
          if (savedUser != null) {
-            modelAndView.setViewName(registrationSuccessful);
+            modelAndView.setViewName(AuthenticationController.REGISTRATION_SUCCESSFUL);
          } else {
             modelAndView.addObject("userNotRegisteredError", "Server ERROR, User not registered.");
          }

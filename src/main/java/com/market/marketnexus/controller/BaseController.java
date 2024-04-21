@@ -1,6 +1,6 @@
 package com.market.marketnexus.controller;
 
-import com.market.marketnexus.helpers.constants.Global;
+import com.market.marketnexus.helpers.constants.GlobalValues;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,11 +15,11 @@ public class BaseController {
 
    static {
       // https://github.com/MattDEV02/LambertQuiz/blob/main/src/screens/helpScreen.js
-      ACCORDIONS.put("How can I register in " + Global.APP_NAME + "?", "Response.");
+      ACCORDIONS.put("How can I register in " + GlobalValues.APP_NAME + "?", "Response.");
       ACCORDIONS.put("Is it possible to have 2 account?", "Response.");
       ACCORDIONS.put("Is it possible to navigate in offline-mode?", "Response.");
       ACCORDIONS.put("Is it possible to have the same account on multiple devices?", "Response.");
-      ACCORDIONS.put("How many Product Categories there are in " + Global.APP_NAME + "?", "Response.");
+      ACCORDIONS.put("How many Product Categories there are in " + GlobalValues.APP_NAME + "?", "Response.");
       ACCORDIONS.put("How should my password be made?", "Response.");
       ACCORDIONS.put("Where can I see my account?", "Response.");
       ACCORDIONS.put("Where is the repo of this beautiful site?", "Response.");

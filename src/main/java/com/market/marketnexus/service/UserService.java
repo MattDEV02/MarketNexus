@@ -38,7 +38,12 @@ public class UserService {
    public User updateUser(Long id, @NonNull User updatedUser) {
       User user = this.userRepository.findById(id).orElse(null);
       if (user != null) {
-         user.setCredentials(updatedUser.getCredentials());
+         if (!updatedUser.getCredentials().getUsername().equals(user.getCredentials().getUsername())) {
+            user.setCredentials(updatedUser.getCredentials());
+         } else {
+            // edit role...
+         }
+         user.getCredentials().preUpdate();
          user.setName(updatedUser.getName());
          user.setSurname(updatedUser.getSurname());
          user.setBirthDate(updatedUser.getBirthDate());
@@ -52,6 +57,7 @@ public class UserService {
    @Transactional
    public Boolean deleteUser(User user) {
       this.userRepository.delete(user);
+      // TODO: RETURN
       return true;
    }
 

@@ -1,4 +1,5 @@
 <div class="card text-center shadow mt-5" th:fragment="sale(sale)"
+     th:title="${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' X' + ${sale.quantity} + ' at ' + ${sale.product.price} + ' $ in sale'"
      th:with=" isLoggedUser=(${isLoggedUser} ?: false)">
    <a th:href="@{'/dashboard/sale/' + ${sale.id}}">
       <img class="card-img-top"
@@ -14,12 +15,16 @@
    <div th:class="'card-footer' + ${!isLoggedUser ? ' pb-2 pt-3' : ' py-3'}">
       <a class="card-link link-primary text-decoration-underline fs-5 ms-1 me-3"
          th:href="@{'/dashboard/account/' + ${sale.user.credentials.username}}"
-         th:text="${sale.user.credentials.username}">
+         th:text="${sale.user.credentials.username}"
+         th:title="'Go to ' + ${sale.user.credentials.username} + ' ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account'"
+      >
       </a>
       <span class="text-secondary fs-5 ms-2 me-3" th:text="${sale.salePrice} + ' $'"></span>
       <a role="button" th:class="'btn btn-primary ms-3 mb-2 ' + ${isLoggedUser ? 'disabled' : null}"
          th:href="@{'/dashboard/cart/' + ${sale.id} + '?quantity=' + ${sale.quantity}}"
-         th:if="${!isLoggedUser}">
+         th:if="${!isLoggedUser}"
+         th:title="'Add this ' + ${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' cart'"
+      >
          <i class="fas fa-cart-plus"></i>
       </a>
    </div>

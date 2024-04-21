@@ -17,6 +17,7 @@ import java.util.Set;
 
 @Service
 public class SaleService {
+   // TODO: ASSOCIAZIONE USER E SALE BIDIREZIONALE E CASCADE TRA SALE E PRODUCT
    @Autowired
    protected SaleRepository saleRepository;
    @Autowired

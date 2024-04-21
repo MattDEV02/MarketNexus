@@ -1,6 +1,6 @@
 package com.market.marketnexus.controller;
 
-import com.market.marketnexus.helpers.constants.APISuffixes;
+import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.OrderService;
 import jakarta.validation.Valid;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = "/" + APISuffixes.ORDER)
+@RequestMapping(value = "/" + APIPrefixes.ORDER)
 public class OrderController {
 
    @Autowired
@@ -20,7 +20,7 @@ public class OrderController {
 
    @GetMapping(value = {"", "/"})
    public ModelAndView makeOrderFromCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser) {
-      ModelAndView modelAndView = new ModelAndView(APISuffixes.DASHBOARD + "/order.html");
+      ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/order.html");
       return modelAndView;
    }
 

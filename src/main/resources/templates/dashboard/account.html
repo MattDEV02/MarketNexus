@@ -6,6 +6,11 @@
 </head>
 <link rel="stylesheet" th:href="@{/css/dashboard/shared/style.css}"/>
 <link rel="stylesheet" th:href="@{/css/dashboard/account/style.css}"/>
+<link crossorigin="" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" rel="stylesheet"/>
+<link rel="stylesheet" th:href="@{/css/dashboard/account/stats/map/style.css}"/>
+<link rel="stylesheet" th:href="@{/css/dashboard/account/stats/calendar/style.css}"/>
+<link rel="stylesheet" th:href="@{/css/dashboard/account/stats/chart/style.css}"/>
 <body>
 <div th:replace="~{fragments/shared/pagination/header.html :: header()}">
 </div>
@@ -15,11 +20,11 @@
       <div class="row justify-content-center">
          <div th:class="'col-12 mt-5 ' + ${!userFound ? 'mb-4' : null}">
             <div class="row text-center">
-               <h1 th:text="${userFound ?  'Account' : 'User not found'}"></h1>
+               <h1 th:text="${userFound ? ( user.credentials.username + ' account 👨‍💻') : 'User not found'}"></h1>
             </div>
          </div>
          <div th:if="${userFound}">
-            <div th:class="'col-12 mt-5 py-4 ' + ${!isLoggedUser ? 'pb-5' : null} + ' px-md-2 rounded shadow border'"
+            <div th:class="'col-12 mt-5 py-4' + ${!isLoggedUser ? ' pb-5' : ''} + ' px-5 px-xl-0 rounded shadow border'"
                  th:with="accountUpdatedSuccessful = ${param.accountUpdatedSuccessful}">
                <form class="row justify-content-center" id="update-account-form"
                      method="POST"
@@ -27,6 +32,8 @@
                      th:action="@{/dashboard/account/updateAccount}">
                   <div
                         th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Account updated successfully.', condition = ${accountUpdatedSuccessful != null})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'ERROR Account not deleted.', condition = ${accountNotDeletedError != null})}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.name')}"></div>
                   <div
@@ -37,7 +44,8 @@
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.balance')}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
-                  <div class="col-12 col-sm-12 col-md-11 col-lg-8 col-xl-5 col-xxl-5 text-center me-3 mt-lg-2 mt-xl-0">
+                  <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-5 col-xxl-5 text-center me-3 mt-lg-2 mt-xl-0"
+                       th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' user informations'">
                      <h2 class="mt-4 mt-md-3 mt-lg-3 mt-xl-3 mt-xxl-3 mb-5">User informations</h2>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'name', type = 'text', value =  ${user.name}, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'surname', type = 'text', value =  ${user.surname}, isLoggedUser = ${isLoggedUser})}"></div>
@@ -45,7 +53,8 @@
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'balance', type = 'number', value = ${user.balance}, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'nation', type = 'text', value = ${user.nation}, isSelect = true, isLoggedUser = ${isLoggedUser})}"></div>
                   </div>
-                  <div class="col-12 col-sm-12 col-md-11 col-lg-8 col-xl-5 col-xxl-5 text-center mt-4 mt-xl-0 ms-xl-3">
+                  <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-5 col-xxl-5 text-center mt-4 mt-xl-0 ms-xl-3"
+                       th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account informations'">
                      <h2 class="mt-3 mb-5">Account informations</h2>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'username', type = 'text', value = ${credentials.username}, isReadOnly = false, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'email', type = 'email', value = ${user.email}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
@@ -65,18 +74,30 @@
                   </div>
                   <div class="col-12 mt-5 mb-3" th:if="${isLoggedUser}">
                      <div class="row justify-content-center ">
-                        <div class="col-5 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3">
-                           <button class="btn btn-lg btn-outline-success form-control py-2" id="submit" type="submit">
+                        <div class="col-12 col-sm-10 col-md-9 col-lg-7 col-xl-3 col-xxl-3">
+                           <button class="btn btn-lg btn-outline-success form-control py-2" id="confirm-button"
+                                   th:title="'Confirm your new ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' informations'"
+                                   type="submit">
                               Confirm
                               <i class="fas fa-check-square ms-1"></i>
                            </button>
                         </div>
-                        <div class="col-5 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3">
-                           <button class="btn btn-lg btn-outline-danger form-control py-2" id="cancel-button"
+                        <div class="col-12 col-sm-10 col-md-9 col-lg-7 col-xl-3 col-xxl-3 mt-4 mt-xl-0">
+                           <button class="btn btn-lg btn-outline-warning form-control py-2" id="cancel-button"
+                                   th:title="'Reset your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' informations'"
                                    type="button">
                               Cancel
                               <i class="fas fa-ban ms-1"></i>
                            </button>
+                        </div>
+                        <div class="col-12 col-sm-10 col-md-9 col-lg-7 col-xl-3 col-xxl-3 mt-4 mt-xl-0">
+                           <a class="btn btn-lg btn-outline-danger form-control py-2" id="delete-account-button"
+                              role="button"
+                              th:href="@{/dashboard/account/delete}"
+                              th:title="'Delete your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account with this email: ' + ${loggedUser.email}">
+                              Delete Account
+                              <i class="fas fa-trash ms-1"></i>
+                           </a>
                         </div>
                      </div>
                   </div>
@@ -84,9 +105,9 @@
             </div>
             <div class="col-12 mt-5">
                <div class="row text-center">
-                  <h1 th:if="${#sets.isEmpty(saleProducts)}">No sale products</h1>
-                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' Sale products'"
-                      th:unless="${#sets.isEmpty(saleProducts)}"></h1>
+                  <h1 th:if="${saleProducts != null && #sets.isEmpty(saleProducts)}">No sale products</h1>
+                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' Sale products 🏖️'"
+                      th:unless="${saleProducts != null && #sets.isEmpty(saleProducts)}"></h1>
                </div>
             </div>
             <div class="col-12">
@@ -99,17 +120,37 @@
             </div>
             <div class="col-12 mt-5" id="ordered-products">
                <div class="row text-center">
-                  <h1 th:if="${#sets.isEmpty(orderedProducts)}">No ordered products</h1>
-                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' ordered products'"
-                      th:unless="${#sets.isEmpty(orderedProducts)}"></h1>
+                  <h1 th:if="${orderedProducts != null && #sets.isEmpty(orderedProducts)}">No ordered products</h1>
+                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' ordered products 🗂️'"
+                      th:unless="${orderedProducts != null && #sets.isEmpty(orderedProducts)}"></h1>
                </div>
             </div>
-            <div class="col-12 mb-4">
+            <div class="col-12 mt-5">
                <div class="row">
                   <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
                        th:each="orderedProduct : ${orderedProducts}" th:if="${false}">
                      <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${orderedProduct.cart.sale}, isLoggedUser = isLoggedUser)}"></div>
                   </div>
+               </div>
+            </div>
+            <div class="col-12 mt-5">
+               <div class="row">
+                  <div th:replace="~{fragments/dashboard/account/stats/chart/chart.html :: chart()}"></div>
+               </div>
+            </div>
+            <div class="col-12 mt-5">
+               <div class="row">
+                  <div th:replace="~{fragments/dashboard/account/stats/calendar/calendar.html :: calendar()}"></div>
+               </div>
+            </div>
+            <div class="col-12 mt-5">
+               <div class="row">
+                  <div th:replace="~{fragments/dashboard/account/stats/map/map.html :: map()}"></div>
+               </div>
+            </div>
+            <div class="col-12 mt-5">
+               <div class="row justify-content-center">
+                  <div th:replace="~{fragments/dashboard/account/stats/table/table.html :: table()}"></div>
                </div>
             </div>
          </div>
@@ -118,9 +159,24 @@
 </main>
 <div th:replace="~{fragments/shared/pagination/footer.html :: footer()}">
 </div>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/validators.js}"
+        type="text/javascript"></script>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/maxDateInputValue.js}"
         type="text/javascript"></script>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/dashboard/account/index.js}"
+        type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/dashboard/account/stats/chart/chart.js}"
+        type="text/javascript"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/dashboard/account/stats/calendar/index.js}"
+        type="text/javascript"></script>
+<script crossorigin=""
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/dashboard/account/stats/map/index.js}"
+        type="text/javascript"></script>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/dashboard/account/stats/table/index.js}"
         type="text/javascript"></script>
 </body>
 

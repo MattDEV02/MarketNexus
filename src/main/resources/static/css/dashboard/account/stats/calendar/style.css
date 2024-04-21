@@ -1,0 +1,16 @@
+:root {
+   --fc-border-color: #000000;
+}
+
+#user-calendar {
+   border: 1px solid #000000;
+!important;
+   text-align: center;
+}
+
+.fc-event-title {
+   font-weight: bold;
+   color: #000000;
+}
+
+/*# sourceMappingURL=index.css.map */

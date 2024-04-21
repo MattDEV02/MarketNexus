@@ -1,7 +1,7 @@
 package com.market.marketnexus.model;
 
 import com.market.marketnexus.helpers.constants.FieldSizes;
-import com.market.marketnexus.helpers.constants.Global;
+import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.constants.Temporals;
 import com.market.marketnexus.helpers.sale.Utils;
 import jakarta.persistence.*;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Sales", schema = Global.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "sales_user_product_insertedat_unique", columnNames = {"_user", "product", "inserted_at"}))
+@Table(name = "Sales", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "sales_user_product_insertedat_unique", columnNames = {"_user", "product", "inserted_at"}))
 public class Sale {
 
    @Id

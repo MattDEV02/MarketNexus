@@ -2,7 +2,6 @@ package com.market.marketnexus.service;
 
 import com.market.marketnexus.helpers.sale.Utils;
 import com.market.marketnexus.model.CartLineItem;
-import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.repository.CartLineItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,8 @@ public class CartLineItemService {
    @Autowired
    protected CartLineItemRepository cartLineItemRepository;
 
-   public CartLineItem getCartLineItem(Long cartId) {
-      return this.cartLineItemRepository.findById(cartId).orElse(null);
+   public CartLineItem getCartLineItem(Long cartLineItemId) {
+      return this.cartLineItemRepository.findById(cartLineItemId).orElse(null);
    }
 
    public Set<CartLineItem> getAllCartLineItemsByUser(User user) {
@@ -26,13 +25,14 @@ public class CartLineItemService {
    }
 
    @Transactional
-   public CartLineItem saveCartLineItem(CartLineItem cart) {
-      return this.cartLineItemRepository.save(cart);
+   public CartLineItem saveCartLineItem(CartLineItem cartLineItem) {
+      return this.cartLineItemRepository.save(cartLineItem);
    }
 
    @Transactional
-   public Boolean deleteCartLineItem(CartLineItem cart) {
-      this.cartLineItemRepository.delete(cart);
+   public Boolean deleteCartLineItem(CartLineItem cartLineItemToDelete) {
+      this.cartLineItemRepository.delete(cartLineItemToDelete);
+      // TODO: RETURN
       return true;
    }
 
@@ -43,10 +43,9 @@ public class CartLineItemService {
       return cartToDelete.orElse(null);
    }
 
-   public Float getTotalCartPriceByUser(User user) {
+   public Float getTotalCartPriceByUser(User user) { // TODO: In Cart Model
       Float total = 0.0F;
       Set<CartLineItem> carts = this.getAllCartLineItemsByUser(user);
-      Sale cartSale = null;
       for (CartLineItem cart : carts) {
          total += cart.getSale().getSalePrice();
       }

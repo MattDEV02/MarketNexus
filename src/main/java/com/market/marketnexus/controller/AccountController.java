@@ -1,6 +1,6 @@
 package com.market.marketnexus.controller;
 
-import com.market.marketnexus.helpers.constants.APISuffixes;
+import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.Order;
@@ -23,8 +23,13 @@ import java.util.Objects;
 import java.util.Set;
 
 @Controller
-@RequestMapping(value = "/" + APISuffixes.ACCOUNT)
+@RequestMapping(value = "/" + APIPrefixes.ACCOUNT)
 public class AccountController {
+
+   public final static String UPDATE_SUCCESSFUL = "redirect:/" + APIPrefixes.ACCOUNT + "?accountUpdatedSuccessful=true#update-account-form";
+   public final static String UPDATE_ERROR = "/" + APIPrefixes.ACCOUNT + ".html";
+   public final static String ACCOUNT_DELETED_SUCCESSFULLY = "redirect:/logout";
+   public final static String ACCOUNT_DELETED = APIPrefixes.ACCOUNT + ".html";
 
    @Autowired
    private SaleService saleService;
@@ -37,7 +42,7 @@ public class AccountController {
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showUserAccount(@Valid @ModelAttribute("loggedUser") User loggedUser) {
-      ModelAndView modelAndView = new ModelAndView(APISuffixes.ACCOUNT + ".html");
+      ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + ".html");
       Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
       Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(loggedUser);
       modelAndView.addObject("user", loggedUser);
@@ -49,7 +54,7 @@ public class AccountController {
 
    @GetMapping(value = {"/{username}", "/{username}/"})
    public ModelAndView showUserAccountByUsername(@Valid @ModelAttribute("loggedUser") @NonNull User loggedUser, @PathVariable("username") String username) {
-      ModelAndView modelAndView = new ModelAndView(APISuffixes.ACCOUNT + ".html");
+      ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + ".html");
       Credentials credentials = this.credentialsService.getCredentials(username);
       User user = this.userService.getUser(credentials);
       modelAndView.addObject("user", user);
@@ -71,13 +76,12 @@ public class AccountController {
            @Valid @NonNull @ModelAttribute("credentials") Credentials credentials,
            @NonNull BindingResult credentialsBindingResult
    ) {
-      final String updateSuccessful = "redirect:/" + APISuffixes.ACCOUNT + "?accountUpdatedSuccessful=true";
-      final String updateError = "/" + APISuffixes.ACCOUNT + ".html";
-      ModelAndView modelAndView = new ModelAndView(updateError);
+      ModelAndView modelAndView = new ModelAndView(AccountController.UPDATE_ERROR);
       if (!userBindingResult.hasFieldErrors() && !credentialsBindingResult.hasFieldErrors()) {
-         modelAndView.setViewName(updateSuccessful);
+         modelAndView.setViewName(AccountController.UPDATE_SUCCESSFUL);
          user.setCredentials(credentials);
          User updatedUser = this.userService.updateUser(loggedUser.getId(), user);
+         System.out.println("quu");
          Utils.updateUserCredentialsAuthentication(updatedUser.getCredentials());
       } else {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
@@ -94,12 +98,9 @@ public class AccountController {
 
    @GetMapping(value = {"/delete", "/delete/"})
    public ModelAndView deleteUserAccountByUsername(@Valid @ModelAttribute("loggedUser") @NonNull User loggedUser) {
-      final String accountDeletedSuccessfully = "redirect:/logout";
-      final String accountNotDeleted = APISuffixes.ACCOUNT + ".html";
-      ModelAndView modelAndView = new ModelAndView(accountNotDeleted);
+      ModelAndView modelAndView = new ModelAndView(AccountController.ACCOUNT_DELETED);
       if (this.userService.deleteUser(loggedUser)) {
-         modelAndView.setViewName(accountDeletedSuccessfully);
-         modelAndView.addObject("accountDeletedSuccessfully", true);
+         modelAndView.setViewName(AccountController.ACCOUNT_DELETED_SUCCESSFULLY);
       } else {
          modelAndView.addObject("accountNotDeletedError", true);
       }

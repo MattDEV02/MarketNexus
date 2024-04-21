@@ -1,4 +1,4 @@
-<div class="row border rounded p-1 align-items-center"
+<div class="row border rounded py-1 align-items-center"
      th:fragment="userLineInformation(object, property, type, value, isLoggedUser)"
      th:with="isReadOnly=(${isReadOnly} ?: false), isSelect=(${isSelect} ?: false)">
    <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
@@ -9,11 +9,13 @@
       </h6>
    </div>
    <div class="col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7 col-xxl-7">
-      <h6 class="mt-2" th:if="${(isReadOnly || !isLoggedUser) && !isSelect}"
-          th:text="${value} + ${property == 'balance' ? ' $' : ''}"></h6>
+      <h6 class="mt-2" th:id="${property} + '-text'" th:if="${(isReadOnly || !isLoggedUser) && !isSelect}"
+          th:text="${value} + ${property == 'balance' ? ' $' : ''}"
+          th:title="'User ' + ${property}"></h6>
       <h6 class="mt-2" th:if="${isSelect && !isLoggedUser}" th:text="${value.name}"></h6>
       <select class="form-control form-select" th:id="${property}" th:if="${isSelect && isLoggedUser}"
-              th:name="${property}">
+              th:name="${property}"
+              th:title="'User ' + ${property}">
          <option th:each="nation : ${nations}" th:id="${nation.name + '#' + nation.id}"
                  th:name="${nation.name + '#' + nation.id}"
                  th:selected="${nation.id == value.id}" th:text="${nation.name}" th:value="${nation.id}"></option>
@@ -29,12 +31,14 @@
              th:minlength="${FIELD_SIZES_MAP.get(#strings.toUpperCase(property) + '_MIN_LENGTH')}"
              th:name="${property == 'birth date' ? 'birthDate' : property}"
              th:object="${object}"
-             th:placeholder="'Update your ' + ${property}" th:step="${property == 'balance' ? '0.01' : ''}"
+             th:placeholder="'Update your ' + ${property}"
+             th:step="${property == 'balance' ? '0.01' : ''}" th:title="'User ' + ${property}"
              th:type="${type}"
              th:value="${value}"
       />
    </div>
-   <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2">
+   <div class="col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xxl-2"
+        th:title="${(isReadOnly || !isLoggedUser) ? 'Non-editable' : 'Editable'} + ' information'">
       <button
             disabled
             th:class="'btn btn-' + ${(isReadOnly || !isLoggedUser) ? 'danger' : 'primary'}"

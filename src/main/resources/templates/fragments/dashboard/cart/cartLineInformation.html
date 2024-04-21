@@ -1,11 +1,15 @@
-<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-8 col-xxl-8" th:fragment="cartLineInformation(cartLineItem)">
+<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-8 col-xxl-8" th:fragment="cartLineInformation(cartLineItem)"
+     th:title="${cartLineItem.sale.user.credentials.username} + ' ' + ${cartLineItem.sale.product.name} + ' X' + ${cartLineItem.sale.quantity} + ' at ' + ${cartLineItem.sale.product.price} + ' $ in your cart'">
    <div class="card border border-bottom-0 rounded shadow">
       <div class="card-body">
          <div class="row">
             <div class="col-3">
                <div class="ms-2">
-                  <img class="img-fluid product-image" th:alt="${cartLineItem.sale.product.name}"
-                       th:src="@{${cartLineItem.sale.product.imageRelativePath}}">
+                  <a th:href="@{'/dashboard/sale/' + ${cartLineItem.sale.id}}">
+                     <img class="img-fluid product-image" th:alt="${cartLineItem.sale.product.name}"
+                          th:src="@{${cartLineItem.sale.product.imageRelativePath}}"
+                          th:title="${cartLineItem.sale.product.name}"/>
+                  </a>
                </div>
             </div>
             <div class="col-7">

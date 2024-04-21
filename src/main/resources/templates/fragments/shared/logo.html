@@ -1,3 +1,4 @@
 <a target="_blank" th:fragment="logo()" th:href="@{/}">
-   <img alt="Logo" class="rounded-circle" height="32" th:src="@{/images/logo/logo.png}" title="Logo" width="32"/>
+   <img alt="Logo" class="rounded-circle" height="32" th:src="@{/images/logo/logo.png}"
+        th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' logo'" title="Logo" width="32"/>
 </a>

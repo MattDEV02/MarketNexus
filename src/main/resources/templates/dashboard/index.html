@@ -13,7 +13,11 @@
       <div class="row justify-content-center">
          <div class="col-12 mt-5">
             <div class="row text-center">
-               <h1 th:text="${!#sets.isEmpty(sales) ? 'DashBoard' : 'No Products'}">
+               <div th:if="${hasSearchedSales}">
+                  <h1 th:text="${sales != null && !#sets.isEmpty(sales) ? 'Searched sales' : 'No sales found'} + ' 🏖️️'">
+                  </h1>
+               </div>
+               <h1 th:text="${'Welcome ' + loggedUser.credentials.username + ' 👋'}" th:unless="${hasSearchedSales}">
                </h1>
             </div>
          </div>

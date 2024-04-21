@@ -1,6 +1,6 @@
 package com.market.marketnexus.controller;
 
-import com.market.marketnexus.helpers.constants.APISuffixes;
+import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.validators.DateValidators;
 import com.market.marketnexus.model.CartLineItem;
 import com.market.marketnexus.model.Sale;
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.Set;
 
 @Controller
-@RequestMapping(value = "/" + APISuffixes.CART)
+@RequestMapping(value = "/" + APIPrefixes.CART)
 public class CartController {
 
    @Autowired
@@ -26,7 +26,7 @@ public class CartController {
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser) {
-      ModelAndView modelAndView = new ModelAndView(APISuffixes.CART + ".html");
+      ModelAndView modelAndView = new ModelAndView(APIPrefixes.CART + ".html");
       Set<CartLineItem> cartProducts = this.cartLineItemService.getAllCartLineItemsByUser(loggedUser);
       Float cartTotalPrice = this.cartLineItemService.getTotalCartPriceByUser(loggedUser);
       modelAndView.addObject("cartProducts", cartProducts);
@@ -36,7 +36,7 @@ public class CartController {
 
    @GetMapping(value = {"/{saleId}", "/{saleId}/"})
    public ModelAndView addSaleProductToCartById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("saleId") Long saleId, @RequestParam("quantity") Integer quantity) {
-      ModelAndView modelAndView = new ModelAndView(APISuffixes.SALE + ".html");
+      ModelAndView modelAndView = new ModelAndView(APIPrefixes.SALE + ".html");
       Sale sale = this.saleService.getSale(saleId);
       CartLineItem cart = new CartLineItem(sale, loggedUser);
       CartLineItem savedCartLineItem = this.cartLineItemService.saveCartLineItem(cart);
@@ -47,7 +47,7 @@ public class CartController {
 
    @GetMapping(value = {"/delete/{cartId}", "/delete/{cartId}/"})
    public ModelAndView deleteCartById(@PathVariable("cartId") Long cartId) {
-      ModelAndView modelAndView = new ModelAndView("redirect:/" + APISuffixes.CART);
+      ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.CART);
       CartLineItem cartToDelete = this.cartLineItemService.getCartLineItem(cartId);
       if (this.cartLineItemService.deleteCartLineItem(cartToDelete)) {
          modelAndView.addObject("cartDeletedSuccess", true);

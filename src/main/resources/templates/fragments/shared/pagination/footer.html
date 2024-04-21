@@ -1,20 +1,22 @@
 <footer class="container-fluid bg-secondary" th:fragment="footer()">
    <div class="d-flex flex-wrap justify-content-between align-items-center py-4 mt-4 border-top">
       <p class="col-md-4 mb-0 text-body-secondary"
-         th:text="'&copy ' + ${T(java.time.LocalDate).now().getYear()} + ' ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ', Inc'"></p>
+         th:text="'©️ ' + ${T(java.time.LocalDate).now().getYear()} + ' ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ', Inc'"></p>
       <div class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis">
          <a th:replace="~{fragments/shared/logo.html :: logo()}"> </a>
       </div>
       <ul class="nav col-md-4 justify-content-end">
          <li class="nav-item">
-            <a class="nav-link px-2 text-body-secondary" target="_blank" th:href="@{/FAQs}">
+            <a class="nav-link px-2 text-body-secondary" target="_blank" th:href="@{/FAQs}"
+               th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' FAQs'}">
                FAQs
                <i class="fas fa-question"></i>
             </a>
          </li>
          <li class="nav-item">
             <a class="nav-link px-2 text-body-secondary"
-               href="https://github.com/MattDEV02/MarketNexus.git" target="_blank">
+               target="_blank" th:href="${GLOBAL_CONSTANTS_MAP.get('APP_REPO')}"
+               th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' Github repo'}">
                Github
                <i class="fab fa-github"></i>
             </a>
@@ -22,14 +24,18 @@
          <li class="nav-item">
             <a class="nav-link px-2 text-body-secondary"
                href="https://www.linkedin.com/in/matteo-lambertucci-134073211/"
-               target="_blank">
+               target="_blank"
+               th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' Author Linkedin profile'}"
+            >
                Matteo
                <i class="fab fa-linkedin"></i>
             </a>
          </li>
          <li class="nav-item">
             <a class="nav-link px-2 text-body-secondary" href="https://www.linkedin.com/in/gabriel-muscedere-563742140/"
-               target="_blank">
+               target="_blank"
+               th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' Author Linkedin profile'}"
+            >
                Gabriel
                <i class="fab fa-linkedin"></i>
             </a>
