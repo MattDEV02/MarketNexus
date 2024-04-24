@@ -416,6 +416,13 @@ select *
 from credentials c
          join users u on c.id = u.credentials;
 
+
+SELECT n.name               AS Nation,
+       COUNT(DISTINCT u.id) AS n
+FROM Users u
+         JOIN Nations n ON u.nation = n.id
+GROUP BY n.name;
+
 /*
 
 TODO:

@@ -1,1 +1,4 @@
-<canvas class="p-3" id="chart" th:fragment="chart()"></canvas>
+<canvas class="p-3" id="chart"
+        th:fragment="chart()"
+        th:title="'A dynamic and interactive chart with the most present product categories on ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + '.'"
+        width="100%"></canvas>

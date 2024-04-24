@@ -1,3 +1,4 @@
-<div th:fragment="table()">
-
-</div>
+<table class="table table-light table-bordered table-hover text-center" th:fragment="table()">
+   <thead th:replace="~{fragments/dashboard/account/stats/table/tableComponent/tableHead.html :: tableHead()}"></thead>
+   <tbody th:replace="~{fragments/dashboard/account/stats/table/tableComponent/tableBody.html :: tableBody()}"></tbody>
+</table>

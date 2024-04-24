@@ -3,7 +3,7 @@ const map = L.map("map").setView([0, 0], 1.5);
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
    minZoom: 1,
    maxZoom: 17,
-   attribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
+   attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
 }).addTo(map);
 
 
@@ -24,16 +24,16 @@ info.update = function (props) {
 info.addTo(map);
 
 
-const highlightCountry = countryToNumberOfUsers => {
-   fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${countryToNumberOfUsers.countryName}`)
-      .then(response => response.json())
-      .then(data => {
-         console.log(data);
+const highlightNation = nationToNumberOfUsers => {
+   axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${nationToNumberOfUsers.nationName}`)
+      .then(response => {
          // Se ci sono risultati, prendi le coordinate del primo risultato
-         if (validateObject(data)) {
-            L.marker([data[0].lat, data[0].lon])
+         const coordinatesData = response.data;
+         console.log(coordinatesData);
+         if (validateObject(coordinatesData) && response.status === 200) {
+            L.marker([coordinatesData[0].lat, coordinatesData[0].lon])
                .addTo(map)
-               .bindPopup(`${countryToNumberOfUsers.countryName} has ${countryToNumberOfUsers.numbersOfUsers} MarketNexus ${countryToNumberOfUsers.numbersOfUsers > 1 ? 'users' : 'user'}.`);
+               .bindPopup(`${nationToNumberOfUsers.nationName} has ${nationToNumberOfUsers.numbersOfUsers} MarketNexus ${nationToNumberOfUsers.numbersOfUsers > 1 ? "users" : "user"}.`);
          } else {
             console.warn("Nation not found.");
          }
@@ -41,27 +41,21 @@ const highlightCountry = countryToNumberOfUsers => {
       .catch(error => console.error("Error:", error));
 }
 
+let nationsToNumberOfUsers = [];
 
-const countriesToNumberOfUsers = [
-   {
-      countryName: "Italy",
-      numbersOfUsers: 1
-   },
-   {
-      countryName: "France",
-      numbersOfUsers: 2
-   },
-   {
-      countryName: "Germany",
-      numbersOfUsers: 3
-   },
-   {
-      countryName: "United Kingdom",
-      numbersOfUsers: 4
-   }
-];
-
-// Evidenzia ciascuna nazione sulla mappa
-countriesToNumberOfUsers.forEach(countryToNumberOfUsers =>
-   highlightCountry(countryToNumberOfUsers)
-)
+axios.get(`${baseAPIURI}mapData`)
+   .then(response => {
+      const mapData = response.data;
+      if (validateObject(mapData) && response.status === 200) {
+         mapData.forEach(mapDataRow => {
+            nationsToNumberOfUsers.push({
+               nationName: mapDataRow[0],
+               numbersOfUsers: mapDataRow[1],
+            });
+         });
+         nationsToNumberOfUsers.forEach(nationToNumberOfUsers =>
+            highlightNation(nationToNumberOfUsers)
+         );
+      }
+   })
+   .catch(error => console.error("Error:", error));

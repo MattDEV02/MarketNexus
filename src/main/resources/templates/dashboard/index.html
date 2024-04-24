@@ -9,24 +9,28 @@
 <div th:replace="~{fragments/shared/pagination/header.html :: header()}">
 </div>
 <main>
-   <div class="container">
+   <div class="container" th:with="areSalesValid = ${sales != null && !#sets.isEmpty(sales)}">
       <div class="row justify-content-center">
          <div class="col-12 mt-5">
             <div class="row text-center">
-               <div th:if="${hasSearchedSales}">
-                  <h1 th:text="${sales != null && !#sets.isEmpty(sales) ? 'Searched sales' : 'No sales found'} + ' 🏖️️'">
-                  </h1>
-               </div>
+               <h1 th:if="${hasSearchedSales}">
+                  Searched sales 🏖️
+               </h1>
                <h1 th:text="${'Welcome ' + loggedUser.credentials.username + ' 👋'}" th:unless="${hasSearchedSales}">
                </h1>
             </div>
          </div>
-         <div class="col-12 mb-5">
+         <div class="col-12 mb-5" th:if="${areSalesValid}">
             <div class="row">
                <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4" th:each="sale : ${sales}">
                   <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${sale}, isLoggedUser = ${loggedUser == sale.user})}"></div>
                </div>
             </div>
+         </div>
+         <div th:unless="${areSalesValid}"
+              th:with="productName = ${param['product-name']}">
+            <div
+                  th:replace="~{fragments/dashboard/home/salesNotFound.html :: salesNotFound(hasSearchedSales = ${hasSearchedSales}, productName = ${productName})}"></div>
          </div>
       </div>
    </div>

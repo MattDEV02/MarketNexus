@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "Users", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "users_email_unique", columnNames = "email"), @UniqueConstraint(name = "users_credentials_unique", columnNames = "credentials")})
@@ -55,6 +56,9 @@ public class User {
    @OneToOne(cascade = CascadeType.ALL, targetEntity = Credentials.class, optional = false, orphanRemoval = true)
    @JoinColumn(name = "credentials", referencedColumnName = "id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "users_credentials_fk"))
    private Credentials credentials;
+
+   @OneToMany(targetEntity = Sale.class, mappedBy = "user")
+   private Set<Sale> sales;
 
    public User() {
 
@@ -143,6 +147,13 @@ public class User {
       this.nation = nation;
    }
 
+   public Set<Sale> getSales() {
+      return this.sales;
+   }
+
+   public void setSales(Set<Sale> sales) {
+      this.sales = sales;
+   }
 
    @Override
    public boolean equals(Object object) {
@@ -171,6 +182,7 @@ public class User {
               ", balance = " + this.getBalance().toString() +
               ", credentials = " + this.getCredentials().toString() +
               ", nation = " + this.getNation().toString() +
+              // ", sales = " + this.getSales().toString() +
               " }";
    }
 }

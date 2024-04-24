@@ -7,4 +7,5 @@ import java.util.Set;
 
 public interface NationRepository extends CrudRepository<Nation, Long> {
    public Set<Nation> findAllByOrderByName();
+
 }

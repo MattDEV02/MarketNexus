@@ -36,7 +36,8 @@
 </div>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/validators.js}"
         type="text/javascript"></script>
-<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/dashboard/cart/index.js}"
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
+        th:src="@{'/js/' + ${API_PREFIXES_MAP.get('CART')} + '/index.js'}"
         type="text/javascript"></script>
 </body>
 

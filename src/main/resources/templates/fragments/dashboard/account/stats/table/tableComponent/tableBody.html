@@ -1,0 +1,3 @@
+<tbody th:each="userDataRow, iterStat : ${userDataRows}" th:fragment="tableBody()">
+<tr th:replace="~{fragments/dashboard/account/stats/table/tableComponent/tableBodyComponent/tableBodyRow.html :: tableBodyRow(userDataRow = ${userDataRow, index = ${iterStat.count}})}"></tr>
+</tbody>

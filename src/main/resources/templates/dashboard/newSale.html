@@ -25,7 +25,7 @@
                <!-- Campo Nome -->
                <div class="my-3">
                   <label class="form-label" for="name">Name</label>
-                  <input class="form-control" id="name" name="name" placeholder="Insert product name"
+                  <input class="form-control py-2" id="name" name="name" placeholder="Insert product name"
                          required th:field="${product.name}"
                          th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
                          th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MIN_LENGTH')}"
@@ -52,7 +52,7 @@
                <!-- Campo Prezzo -->
                <div class="mb-3">
                   <label class="form-label" for="price">Price ($)</label>
-                  <input class="form-control" id="price" name="price"
+                  <input class="form-control py-2" id="price" name="price"
                          placeholder="Insert product price ($)" required step="0.01"
                          th:field="${product.price}" th:max="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MAX_VALUE')}"
                          th:min="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MIN_VALUE')}" th:object="${product}"
@@ -63,7 +63,7 @@
                <!-- Campo Quantità -->
                <div class="mb-3">
                   <label class="form-label" for="quantity">Quantity</label>
-                  <input class="form-control" id="quantity" name="quantity"
+                  <input class="form-control py-2" id="quantity" name="quantity"
                          placeholder="Insert product quantity" required
                          step="1" th:field="${sale.quantity}" th:max="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MAX_VALUE')}"
                          th:min="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MIN_VALUE')}"
@@ -74,7 +74,7 @@
                <!-- Campo Categoria (Select) -->
                <div class="mb-3">
                   <label class="form-label" for="category">Category</label>
-                  <select class="form-select" id="category" name="category" required th:field="${product.category}"
+                  <select class="form-select py-2" id="category" name="category" required th:field="${product.category}"
                           th:object="${product}">
                      <option th:each="productCategory : ${productCategories}" th:field="${product.category}"
                              th:id="${productCategory.name + '#' + productCategory.id}"
@@ -88,7 +88,8 @@
                </div>
                <div class="mb-1">
                   <label class="form-label" for="product-image">Product image</label>
-                  <input accept="image/png, image/jpeg, image/jpg, image/" class="form-control" form="new-sale-form"
+                  <input accept="image/png, image/jpeg, image/jpg, image/" class="form-control py-2"
+                         form="new-sale-form"
                          id="product-image"
                          name="product-image" placeholder="Insert product image"
                          required th:size="${FIELD_SIZES_MAP.get('PRODUCT_IMAGE_MAX_BYTE_SIZE')}"

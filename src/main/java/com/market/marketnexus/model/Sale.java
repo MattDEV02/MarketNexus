@@ -1,5 +1,7 @@
 package com.market.marketnexus.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.constants.Temporals;
@@ -24,16 +26,19 @@ public class Sale {
    @Column(name = "id", nullable = false)
    private Long id;
 
+   @JsonIgnore
    @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
    @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
    @Column(name = "quantity", nullable = false)
    private Integer quantity;
 
+   @JsonIgnore
    @Min((long) FieldSizes.SALE_SALEPRICE_MIN_VALUE)
    @Max((long) FieldSizes.SALE_SALEPRICE_MAX_VALUE)
    @Column(name = "sale_price", nullable = false)
    private Float salePrice;
 
+   @JsonIgnore
    @ManyToOne(targetEntity = User.class, optional = false)
    @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_users_fk"))
    private User user;
@@ -42,11 +47,13 @@ public class Sale {
    @JoinColumn(name = "product", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_products_fk"))
    private Product product;
 
+   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Temporals.DATE_FORMAT)
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    @Column(name = "inserted_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
 
+   @JsonIgnore
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    @Column(name = "updated_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
@@ -155,12 +162,8 @@ public class Sale {
    public String toString() {
       return "Sale: {" +
               " id = " + this.getId().toString() +
-              ", quantity = " + this.getQuantity().toString() +
-              ", salePrice = " + this.getSalePrice().toString() +
-              ", user = " + this.getUser().getId() +
-              ", product = " + this.getProduct().getId() +
+              ", product = " + this.getProduct().getName() +
               ", insertedAt = " + this.getInsertedAt().toString() +
-              ", updatedAt = " + this.getUpdatedAt().toString() +
               " }";
    }
 

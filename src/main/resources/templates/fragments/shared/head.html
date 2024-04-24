@@ -15,19 +15,19 @@
    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
    <meta content="MarketPlace, HTML, CSS, BOOTSTRAP, Java" name="keywords"/>
    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-   <meta content="no-cache" http-equiv="cache-control"/>
+   <meta content="no-cache" http-equiv="content-type"/>
    <meta content="Owner of this Web-App" name="copyright"/>
    <meta content="NOINDEX, NOFOLLOW" name="robots"/>
    <title th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' ' + ${title}"></title>
    <link rel="icon" sizes="64x64" th:href="@{/images/logo/logo.png}" type="image/x-icon"/>
    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/images/logo/logo.png}">
    <!-- FontAwesome 5 -->
-   <link rel="stylesheet" th:href="@{/css/fontawesome/all.css}"/>
+   <link rel="stylesheet" th:href="@{/css/libraries/fontawesome/all.css}"/>
    <!-- Bootstrap 5 -->
-   <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}"/>
-   <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/bootstrap/bootstrap.bundle.js}"
+   <link rel="stylesheet" th:href="@{/css/libraries/bootstrap/bootstrap.min.css}"/>
+   <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/libraries/bootstrap/bootstrap.bundle.js}"
            type="text/javascript"></script>
-   <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/fontawesome/all.min.js}"
+   <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/libraries/fontawesome/all.min.js}"
            type="text/javascript"></script>
    <link rel="stylesheet" th:href="@{/css/shared/style.css}"/>
 </head>

@@ -13,4 +13,6 @@ public class APIPrefixes {
    public static final String ORDER = APIPrefixes.DASHBOARD + "/order";
 
    public static final String ACCOUNT = APIPrefixes.DASHBOARD + "/account";
+
+   public static final String STATS = APIPrefixes.ACCOUNT + "/api/stats";
 }

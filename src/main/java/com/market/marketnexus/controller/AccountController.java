@@ -19,6 +19,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -42,6 +44,7 @@ public class AccountController {
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showUserAccount(@Valid @ModelAttribute("loggedUser") User loggedUser) {
+      System.out.println(this.userService.getAllSalesForUser(loggedUser.getId()));
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + ".html");
       Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
       Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(loggedUser);
@@ -49,6 +52,7 @@ public class AccountController {
       modelAndView.addObject("credentials", loggedUser.getCredentials());
       modelAndView.addObject("saleProducts", saleProducts);
       modelAndView.addObject("orderedProducts", orderedProducts);
+      modelAndView.addObject("userDataRows", new ArrayList<String>(Arrays.asList("1", "2")));
       return modelAndView;
    }
 
@@ -58,6 +62,7 @@ public class AccountController {
       Credentials credentials = this.credentialsService.getCredentials(username);
       User user = this.userService.getUser(credentials);
       modelAndView.addObject("user", user);
+      modelAndView.addObject("searchedUsername", username);
       if (user != null) {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(user);
          Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(user);

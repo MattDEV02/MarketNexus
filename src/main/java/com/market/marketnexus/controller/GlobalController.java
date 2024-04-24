@@ -39,6 +39,7 @@ public class GlobalController {
    private static final Map<String, Object> GLOBAL_CONSTANTS_MAP = new HashMap<String, Object>();
    private static final Map<String, Object> FIELD_SIZES_MAP = new HashMap<String, Object>();
    private static final Map<String, Object> TEMPORALS_MAP = new HashMap<String, Object>();
+   private static final Map<String, Object> API_PREFIXES_MAP = new HashMap<String, Object>();
    private static final Map<String, Roles> ALL_ROLES_MAP = Utils.getAllRoles();
 
    static {
@@ -80,9 +81,21 @@ public class GlobalController {
       }
    }
 
+   static {
+      Field[] fields = APIPrefixes.class.getDeclaredFields();
+      for (Field field : fields) {
+         try {
+            String name = field.getName();
+            Object value = field.get(null);
+            GlobalController.API_PREFIXES_MAP.put(name, value);
+         } catch (IllegalAccessException | IllegalArgumentException illegalException) {
+            LOGGER.warn("Impossible to access at this field: {}", field.getName(), illegalException);
+         }
+      }
+   }
+
    @Autowired
    private NationService nationService;
-   //TODO: Global constants.
    @Autowired
    private UserService userService;
    @Autowired
@@ -103,6 +116,11 @@ public class GlobalController {
    @ModelAttribute("TEMPORALS_MAP")
    public Map<String, Object> getTemporalsMap() {
       return GlobalController.TEMPORALS_MAP;
+   }
+
+   @ModelAttribute("API_PREFIXES_MAP")
+   public Map<String, Object> getApiPrefixesMap() {
+      return GlobalController.API_PREFIXES_MAP;
    }
 
    @ModelAttribute("ALL_ROLES_MAP")
