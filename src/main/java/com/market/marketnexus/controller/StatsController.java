@@ -1,7 +1,9 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.APIPrefixes;
-import com.market.marketnexus.model.*;
+import com.market.marketnexus.model.Order;
+import com.market.marketnexus.model.Sale;
+import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.SaleService;
 import com.market.marketnexus.service.UserService;
 import jakarta.validation.Valid;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,8 +28,8 @@ public class StatsController {
    private SaleService saleService;
 
    @GetMapping(value = {"/chartData", "/chartData/"})
-   public List<Object[]> getChartData() {
-      return this.saleService.countSalesByProductCategory();
+   public List<Object[]> getChartData(@NotNull @Valid @ModelAttribute("loggedUser") User loggedUser) {
+      return this.saleService.countCurrentWeekUserSales(loggedUser.getId());
    }
 
    @GetMapping(value = {"/mapData", "/mapData/"})
@@ -49,10 +50,7 @@ public class StatsController {
 
 
    @GetMapping(value = {"/tableData", "/tableData/"})
-   public Object getTableData() {
-      User user = new User("Matteo", "Lambertucci", "matteolambertucci3@gmail.com", 20.0F, new Credentials(), new Nation());
-      Set<User> set = new HashSet<User>();
-      set.add(user);
-      return set;
+   public List<Object[]> getTableData() {
+      return this.userService.usersPublishedSalesStats();
    }
 }

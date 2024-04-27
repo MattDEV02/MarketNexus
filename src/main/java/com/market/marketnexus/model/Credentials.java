@@ -19,7 +19,7 @@ import java.util.Objects;
 @Table(name = "Credentials", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "credentials_username_unique", columnNames = "username"))
 public class Credentials {
 
-   public static String DEFAULT_ROLE = Roles.SELLER_AND_BUYER.toString();
+   public static Roles DEFAULT_ROLE = Roles.SELLER_AND_BUYER_ROLE;
 
    @Id
    @Unsigned
@@ -36,7 +36,7 @@ public class Credentials {
    @Column(name = "password", nullable = false)
    private String password;
 
-   @Column(name = "role", nullable = true)
+   @Column(name = "role", nullable = false)
    @NotBlank
    @Size(min = FieldSizes.ROLE_MIN_LENGTH, max = FieldSizes.ROLE_MAX_LENGTH)
    private String role;
@@ -52,7 +52,7 @@ public class Credentials {
    private LocalDateTime updatedAt;
 
    public Credentials() {
-      this.role = Credentials.DEFAULT_ROLE;
+      this.role = Credentials.DEFAULT_ROLE.toString();
    }
 
    public Credentials(String username, String password, Roles role) {

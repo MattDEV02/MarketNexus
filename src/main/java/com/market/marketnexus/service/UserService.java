@@ -43,13 +43,13 @@ public class UserService {
 
    @Transactional
    public User updateUser(Long id, @NonNull User updatedUser) {
+      Credentials updatedCredentials = updatedUser.getCredentials();
       User user = this.userRepository.findById(id).orElse(null);
       if (user != null) {
-         if (!updatedUser.getCredentials().getUsername().equals(user.getCredentials().getUsername())) {
-            user.setCredentials(updatedUser.getCredentials());
-         } else {
-            // edit role...
-         }
+         Credentials credentials = user.getCredentials();
+         updatedCredentials.setInsertedAt(credentials.getInsertedAt());
+         user.getCredentials().setUsername(updatedCredentials.getUsername());
+         user.getCredentials().setRole(updatedCredentials.getRole());
          user.getCredentials().preUpdate();
          user.setName(updatedUser.getName());
          user.setSurname(updatedUser.getSurname());
@@ -64,8 +64,7 @@ public class UserService {
    @Transactional
    public Boolean deleteUser(User user) {
       this.userRepository.delete(user);
-      // TODO: RETURN
-      return true;
+      return this.userRepository.existsById(user.getId());
    }
 
    public List<Object[]> countUsersByNation() {
@@ -102,5 +101,9 @@ public class UserService {
       } else {
          return null;
       }
+   }
+
+   public List<Object[]> usersPublishedSalesStats() {
+      return this.userRepository.usersPublishedSalesStats();
    }
 }

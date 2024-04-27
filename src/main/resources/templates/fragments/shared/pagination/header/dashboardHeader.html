@@ -1,5 +1,5 @@
-<header class="container-fluid">
-   <nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="header()">
+<header th:fragment="dashboardHeader()">
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid py-1">
          <button aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation"
                  class="navbar-toggler"
@@ -11,8 +11,8 @@
          </div>
          <div class="collapse navbar-collapse text-center" id="navbarTogglerDemo03">
             <ul class="navbar-nav ms-2 me-5">
-               <li class="nav-item ju">
-                  <a aria-current="page" class="nav-link active" th:href="@{/dashboard}"
+               <li class="nav-item">
+                  <a aria-current="page" class="nav-link active" th:href="@{/templates/dashboard}"
                      th:title="'Go to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' home'}">
                      Home
                      <i class="fas fa-home mx-1"></i>
@@ -25,7 +25,7 @@
                      <i class="fas fa-user-alt mx-1"></i>
                   </a>
                </li>
-               <li class="nav-item">
+               <li class="nav-item" th:if="${#strings.contains(loggedUser.credentials.role, 'BUYER')}">
                   <a class="nav-link link-warning" th:href="@{/dashboard/cart}"
                      th:title="'Go to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' cart'}">
                      Cart
@@ -58,13 +58,13 @@
                       type="text"/>
                <label class="form-label visually-hidden" for="category">Product Category:</label>
                <select class="form-select p-2" id="category" name="category" title="Search products by them category">
-                  <option th:value="${null}">Category</option>
-                  <option th:each="productCategory : ${productCategories}"
-                          th:id="${productCategory.name + '#' + productCategory.id}"
-                          th:name="${productCategory.name + '#' + productCategory.id}"
-                          th:selected="${param != null && ((productCategory.id + '') == (param.category + ''))}"
-                          th:text="${productCategory.name}"
-                          th:value="${productCategory.id}"
+                  <option th:value="${null}">All categories</option>
+                  <option th:each="productCategoriesEntry : ${productCategoriesMap}"
+                          th:id="${productCategoriesEntry.value.name + '#' + productCategoriesEntry.key}"
+                          th:name="${productCategoriesEntry.value.name + '#' + productCategoriesEntry.key}"
+                          th:selected="${param != null && ((productCategoriesEntry.key + '') == (param.category + ''))}"
+                          th:text="${productCategoriesEntry.value.name}"
+                          th:value="${productCategoriesEntry.key}"
                   ></option>
                </select>
                <button class="form-control btn btn-outline-success form-control mx-3" id="submit" name="submit"

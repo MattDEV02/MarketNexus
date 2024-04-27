@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 
 @ControllerAdvice
@@ -128,16 +127,6 @@ public class GlobalController {
       return GlobalController.ALL_ROLES_MAP;
    }
 
-   @ModelAttribute("nations")
-   public Set<Nation> getNations(@NonNull HttpServletRequest request) {
-      Set<Nation> nations = null;
-      final String URI = request.getRequestURI();
-      if (URI.contains("/regist") || URI.contains("/" + APIPrefixes.ACCOUNT)) {
-         nations = this.nationService.getAllNations();
-      }
-      return nations;
-   }
-
    @ModelAttribute("loggedUser")
    public User getUser(Model model) {
       UserDetails userDetails = null;
@@ -153,12 +142,22 @@ public class GlobalController {
       return loggedUser;
    }
 
-   @ModelAttribute("productCategories")
-   public Set<ProductCategory> getProductCategories() {
-      Set<ProductCategory> productCategories = null;
+   @ModelAttribute("nationsMap")
+   public Map<Long, Nation> getNations(@NonNull HttpServletRequest request) {
+      Map<Long, Nation> nations = null;
+      final String URI = request.getRequestURI();
+      if (URI.contains("/regist") || URI.contains("/" + APIPrefixes.ACCOUNT)) {
+         nations = this.nationService.getAllNationsMap();
+      }
+      return nations;
+   }
+
+   @ModelAttribute("productCategoriesMap")
+   public Map<Long, ProductCategory> getProductCategories() {
+      Map<Long, ProductCategory> productCategories = null;
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
       if (Utils.userIsLoggedIn(authentication)) {
-         productCategories = this.productCategoryService.getAllProductCategories();
+         productCategories = this.productCategoryService.getAllProductCategoriesMap();
       }
       return productCategories;
    }

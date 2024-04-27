@@ -1,0 +1,30 @@
+<header th:fragment="baseHeader()">
+   <nav class="ms-3 mt-2 navbar navbar-expand-md navbar-light">
+      <div class="container-fluid">
+         <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+                 class="navbar-toggler"
+                 data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="navbar-brand ms-2">
+            <a th:replace="~{fragments/shared/logo.html :: logo()}"> </a>
+         </div>
+         <div class="collapse navbar-collapse mt-3 mt-lg-0" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+               <li class="nav-item active">
+                  <a class="nav-link" target="_blank" th:href="@{/}">Home</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" target="_blank" th:href="@{/login}">Login</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" target="_blank" th:href="@{/FAQs}">FAQs</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" target="_blank" th:href="${GLOBAL_CONSTANTS_MAP.get('APP_REPO')}">About</a>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </nav>
+</header>

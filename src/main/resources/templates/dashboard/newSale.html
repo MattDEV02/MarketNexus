@@ -6,7 +6,7 @@
 </head>
 
 <body>
-<div th:replace="~{fragments/shared/pagination/header.html :: header()}">
+<div th:replace="~{fragments/shared/pagination/header/dashboardHeader.html :: dashboardHeader()}">
 </div>
 <main>
    <div class="container">
@@ -14,6 +14,8 @@
          <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 py-4 mt-5 mb-4">
             <form enctype="multipart/form-data" id="new-sale-form" method="POST"
                   name="new-sale-form" th:action="@{/dashboard/publishNewSale}" title="Publish a new Sale">
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${userNotSellerPublishedASaleError}, condition = ${userNotSellerPublishedASaleError})}"></div>
                <div class="col-12 mt-2 mb-4">
                   <div class="row text-center">
                      <h1>
@@ -76,10 +78,12 @@
                   <label class="form-label" for="category">Category</label>
                   <select class="form-select py-2" id="category" name="category" required th:field="${product.category}"
                           th:object="${product}">
-                     <option th:each="productCategory : ${productCategories}" th:field="${product.category}"
-                             th:id="${productCategory.name + '#' + productCategory.id}"
-                             th:name="${productCategory.name + '#' + productCategory.id}"
-                             th:text="${productCategory.name}" th:value="${productCategory.id}"></option>
+                     <option th:each="productCategoriesMapEntry : ${productCategoriesMap}"
+                             th:field="${product.category}"
+                             th:id="${productCategoriesMapEntry.value.name + '#' + productCategoriesMapEntry.key}"
+                             th:name="${productCategoriesMapEntry.value.name + '#' + productCategoriesMapEntry.key}"
+                             th:text="${productCategoriesMapEntry.value.name}"
+                             th:value="${productCategoriesMapEntry.key}"></option>
                   </select>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.category')}"></div>
@@ -109,7 +113,7 @@
       </div>
    </div>
 </main>
-<div th:replace="~{fragments/shared/pagination/footer.html :: footer()}">
+<div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
 </div>
 </body>
 

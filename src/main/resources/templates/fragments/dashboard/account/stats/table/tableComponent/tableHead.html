@@ -1,11 +1,14 @@
 <thead class="table-header table-dark" th:fragment="tableHead()">
 <tr>
-   <th scope="col">#</th>
-   <th scope="col">User</th>
-   <th scope="col">Min</th>
-   <th scope="col">Max</th>
-   <th scope="col">Media</th>
-   <th scope="col">Total</th>
-   <th scope="col">%</th>
+   <th scope="col" title="User number.">#</th>
+   <th scope="col" title="User username.">User</th>
+   <th scope="col" title="User minus number of Sales published per day.">Min</th>
+   <th scope="col" title="User maximum number of Sales published per day.">Max</th>
+   <th scope="col" title="User average number of Sales published per day.">Tot</th>
+   <th scope="col" title="User total number of Sales published.">Avg</th>
+   <th scope="col"
+       th:title="'Percentage of sales published by the User compared to the total sales present on ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + '.'">
+      %
+   </th>
 </tr>
 </thead>

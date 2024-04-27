@@ -24,7 +24,7 @@ public class UserValidator implements Validator {
          //String[] errorArgs = {""};
          errors.reject("emailUniqueError", "Email " + user.getEmail() + " already used.");
       }
-      if (user.getNation() == null) {
+      if (user.getNation() == null || !this.nationService.existsById(user.getNation().getId())) {
          errors.reject("nationNotExistsError", "Selected Nation not exists.");
       }
    }

@@ -69,11 +69,12 @@ public class AuthConfiguration implements WebMvcConfigurer {
                       auth -> auth
                               .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser").permitAll()
-                              .requestMatchers(HttpMethod.GET, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
-                              .requestMatchers(new RegexRequestMatcher(".*sale.*", null)).hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
-                              .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
-                              .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyRole(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.SELLER_ROLE.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.BUYER_ROLE.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.BUYER_ROLE.toString())
                               .requestMatchers(HttpMethod.DELETE).denyAll()
+                              .requestMatchers(HttpMethod.GET, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
+                              .requestMatchers(HttpMethod.POST, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
                               .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin

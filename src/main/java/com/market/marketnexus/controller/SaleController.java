@@ -2,10 +2,12 @@ package com.market.marketnexus.controller;
 
 import com.market.marketnexus.controller.validator.ProductValidator;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.credentials.Roles;
 import com.market.marketnexus.helpers.product.Utils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
+import com.market.marketnexus.service.ProductCategoryService;
 import com.market.marketnexus.service.ProductService;
 import com.market.marketnexus.service.SaleService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +34,8 @@ public class SaleController {
    public final static String PUBLISH_ERROR = APIPrefixes.DASHBOARD + "/newSale.html";
 
    private static final Logger LOGGER = LoggerFactory.getLogger(SaleController.class);
+   @Autowired
+   private ProductCategoryService productCategoryService;
    @Autowired
    private ProductValidator productValidator;
    @Autowired
@@ -60,6 +64,7 @@ public class SaleController {
          searchedSales = this.saleService.getAllSalesByProductName(productName);
       } else {
          Long longProductCategoryId = Long.parseLong(productCategoryId);
+         modelAndView.addObject("searchedProductCategoryName", this.productCategoryService.getProductCategory(longProductCategoryId).getName());
          if (productName.isEmpty()) {
             searchedSales = this.saleService.getAllSalesByProductCategoryId(longProductCategoryId);
          } else {
@@ -67,6 +72,7 @@ public class SaleController {
          }
       }
       modelAndView.addObject("sales", searchedSales);
+      modelAndView.addObject("searchedProductName", productName);
       modelAndView.addObject("hasSearchedSales", true);
       return modelAndView;
    }
@@ -87,9 +93,11 @@ public class SaleController {
            @Valid @ModelAttribute("sale") Sale sale,
            BindingResult saleBindingResult,
            @RequestParam("product-image") MultipartFile productImage) {
-      System.out.println(productBindingResult);
-      System.out.println(saleBindingResult);
       ModelAndView modelAndView = new ModelAndView(SaleController.PUBLISH_ERROR);
+      if (!loggedUser.getCredentials().getRole().contains(Roles.SELLER_ROLE.toString().replace("_ROLE", ""))) {
+         modelAndView.addObject("userNotSellerPublishedASaleError", true);
+         return modelAndView;
+      }
       this.productValidator.setProductImage(productImage);
       this.productValidator.validate(product, productBindingResult);
       if (!productBindingResult.hasErrors() && !saleBindingResult.hasErrors()) {
@@ -115,6 +123,5 @@ public class SaleController {
       modelAndView.addObject("isAddedToCart", false);
       return modelAndView;
    }
-
 
 }

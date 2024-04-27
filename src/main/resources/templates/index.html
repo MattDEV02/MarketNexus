@@ -3,14 +3,25 @@
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Home')}">
 </head>
-
+<link rel="stylesheet" th:href="@{/css/home/style.css}"/>
 <body>
-<h1>Home</h1>
-<div>
-   <a th:href="@{/}" th:text="Home"></a>
-   <a th:href="@{/login}" th:text="Login"></a>
-   <a th:href="@{/registration}" th:text="Registrati"></a>
+<div th:replace="~{fragments/shared/pagination/header/baseHeader.html :: baseHeader()}">
 </div>
+<main>
+   <div class="container-fluid py-5">
+      <div class="row justify-content-start">
+         <div class="col-8 col-sm-3 col-md-3 col-lg-4 col-xl-5 col-xxl-5 mt-5 mt-sm-4 ms-5">
+            <h1 th:text="${'Welcome to ' + GLOBAL_CONSTANTS_MAP.get('APP_NAME')}"></h1>
+            <p class="lead mt-3">
+               Explore our diverse selection of high-quality products sourced from reputable and
+               reliable
+               sellers, and embark on a journey to discover an array of amazing offerings.
+            </p>
+            <a class="btn btn-primary mt-2" role="button" target="_blank" th:href="@{/register}">Explore Sales</a>
+         </div>
+      </div>
+   </div>
+</main>
 </body>
 
 </html>

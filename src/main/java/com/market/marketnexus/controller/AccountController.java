@@ -19,8 +19,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -41,10 +39,11 @@ public class AccountController {
    private CredentialsService credentialsService;
    @Autowired
    private UserService userService;
+   @Autowired
+   private StatsController statsController;
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showUserAccount(@Valid @ModelAttribute("loggedUser") User loggedUser) {
-      System.out.println(this.userService.getAllSalesForUser(loggedUser.getId()));
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + ".html");
       Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
       Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(loggedUser);
@@ -52,7 +51,7 @@ public class AccountController {
       modelAndView.addObject("credentials", loggedUser.getCredentials());
       modelAndView.addObject("saleProducts", saleProducts);
       modelAndView.addObject("orderedProducts", orderedProducts);
-      modelAndView.addObject("userDataRows", new ArrayList<String>(Arrays.asList("1", "2")));
+      modelAndView.addObject("tableData", this.statsController.getTableData());
       return modelAndView;
    }
 
@@ -81,12 +80,12 @@ public class AccountController {
            @Valid @NonNull @ModelAttribute("credentials") Credentials credentials,
            @NonNull BindingResult credentialsBindingResult
    ) {
+      // TODO: update role.
       ModelAndView modelAndView = new ModelAndView(AccountController.UPDATE_ERROR);
       if (!userBindingResult.hasFieldErrors() && !credentialsBindingResult.hasFieldErrors()) {
          modelAndView.setViewName(AccountController.UPDATE_SUCCESSFUL);
          user.setCredentials(credentials);
          User updatedUser = this.userService.updateUser(loggedUser.getId(), user);
-         System.out.println("quu");
          Utils.updateUserCredentialsAuthentication(updatedUser.getCredentials());
       } else {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);

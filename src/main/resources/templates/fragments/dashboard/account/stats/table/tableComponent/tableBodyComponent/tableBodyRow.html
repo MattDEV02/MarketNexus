@@ -1,9 +1,4 @@
-<tr th:fragment="tableBodyRow(userDataRow, index)">
+<tr th:fragment="tableBodyRow(tableDataRow, index)">
    <th scope="row" th:text="${index}"></th>
-   <td th:text="${userDataRow.username}"></td>
-   <td th:text="${userDataRow.min}"></td>
-   <td th:text="${userDataRow.max}"></td>
-   <td th:text="${userDataRow.media}"></td>
-   <td th:text="${userDataRow.total}"></td>
-   <td th:text="${userDataRow.percentage}"></td>
+   <td th:each="tableDataRowColumn : ${tableDataRow}" th:text="${tableDataRowColumn}"></td>
 </tr>

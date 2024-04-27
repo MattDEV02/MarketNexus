@@ -1,5 +1,6 @@
 package com.market.marketnexus.controller.validator;
 
+import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.helpers.validators.FieldValidators;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.repository.CredentialsRepository;
@@ -35,6 +36,9 @@ public class CredentialsValidator implements Validator {
       }
       if (this.getConfirmPassword() != null && !this.getConfirmPassword().isEmpty() && !credentials.getPassword().equals(this.getConfirmPassword())) {
          errors.reject("passwordDifferentFromConfirmPasswordError", "La password deve essere uguale alla confirm password.");
+      }
+      if (!Utils.existsRole(credentials.getRole())) {
+         errors.reject("roleNotExistsError", "Selected Role not exists.");
       }
 
    }

@@ -5,6 +5,7 @@ import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,12 +21,20 @@ public interface SaleRepository extends CrudRepository<Sale, Long> {
 
    public Set<Sale> findAllByUserAndProduct(User user, Product product);
 
-   @Query("SELECT pc.name AS productCategory, COUNT(DISTINCT s.id) AS numberOfSales " +
-           "FROM Sale s " +
-           "JOIN s.product p " +
-           "JOIN p.category pc " +
-           "GROUP BY pc.name " +
-           "ORDER BY pc.name ASC")
-   public List<Object[]> countSalesByProductCategory();
+   @Query(value = """
+           WITH RECURSIVE date_series AS (SELECT NOW() AS date
+                                          UNION ALL
+                                          SELECT (date - INTERVAL '1 day')
+                                          FROM date_series
+                                          WHERE date_series.date > (NOW() - INTERVAL '6 days'))
+           SELECT TO_CHAR(date_series.date, 'yyyy-MM-dd') AS day,
+                  COALESCE(COUNT(DISTINCT s.id), 0)             AS numberOfSales
+           FROM date_series
+                    LEFT JOIN Sales s ON CAST(date_series.date AS DATE) = CAST(s.inserted_at AS DATE) AND s._user = :userId
+           GROUP BY date_series.date
+           ORDER BY date_series.date;
+           """,
+           nativeQuery = true)
+   public List<Object[]> countCurrentWeekUserSales(@Param("userId") Long userId);
 
 }

@@ -32,8 +32,7 @@ public class CartLineItemService {
    @Transactional
    public Boolean deleteCartLineItem(CartLineItem cartLineItemToDelete) {
       this.cartLineItemRepository.delete(cartLineItemToDelete);
-      // TODO: RETURN
-      return true;
+      return this.cartLineItemRepository.existsById(cartLineItemToDelete.getId());
    }
 
    @Transactional

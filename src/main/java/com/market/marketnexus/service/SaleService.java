@@ -7,14 +7,12 @@ import com.market.marketnexus.model.User;
 import com.market.marketnexus.repository.ProductCategoryRepository;
 import com.market.marketnexus.repository.ProductRepository;
 import com.market.marketnexus.repository.SaleRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class SaleService {
@@ -27,7 +25,7 @@ public class SaleService {
    protected ProductCategoryRepository productCategoryRepository;
 
    @Transactional
-   public Sale saveSale(Sale sale, User user, Product product) {
+   public Sale saveSale(@NotNull Sale sale, User user, Product product) {
       sale.setUser(user);
       sale.setProduct(product);
       return this.saleRepository.save(sale);
@@ -94,7 +92,13 @@ public class SaleService {
       return result;
    }
 
-   public List<Object[]> countSalesByProductCategory() {
-      return this.saleRepository.countSalesByProductCategory();
+   public List<Object[]> countCurrentWeekUserSales(@NotNull Long userId) {
+      return this.saleRepository.countCurrentWeekUserSales(userId);
+   }
+
+   public List<Object> countSalesPerDay() {
+      List<Object> result = new ArrayList<>();
+      Set<Sale> allSales = this.getAllSales();
+      return result;
    }
 }

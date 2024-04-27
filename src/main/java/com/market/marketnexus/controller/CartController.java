@@ -1,6 +1,7 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.credentials.Roles;
 import com.market.marketnexus.helpers.validators.DateValidators;
 import com.market.marketnexus.model.CartLineItem;
 import com.market.marketnexus.model.Sale;
@@ -37,11 +38,19 @@ public class CartController {
    @GetMapping(value = {"/{saleId}", "/{saleId}/"})
    public ModelAndView addSaleProductToCartById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("saleId") Long saleId, @RequestParam("quantity") Integer quantity) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.SALE + ".html");
+      if (!loggedUser.getCredentials().getRole().contains(Roles.BUYER_ROLE.toString())) {
+         modelAndView.addObject("userNotBuyerAddOwnSaleToCartError", true);
+         return modelAndView;
+      }
       Sale sale = this.saleService.getSale(saleId);
-      CartLineItem cart = new CartLineItem(sale, loggedUser);
-      CartLineItem savedCartLineItem = this.cartLineItemService.saveCartLineItem(cart);
-      modelAndView.addObject("sale", savedCartLineItem.getSale());
-      modelAndView.addObject("isAddedToCart", DateValidators.validateTimestamp(savedCartLineItem.getInsertedAt()));
+      if (loggedUser.equals(sale.getUser())) {
+         modelAndView.addObject("userAddOwnSaleToCartError", true);
+      } else {
+         CartLineItem cartLineItem = new CartLineItem(sale, loggedUser);
+         CartLineItem savedCartLineItem = this.cartLineItemService.saveCartLineItem(cartLineItem);
+         modelAndView.addObject("sale", savedCartLineItem.getSale());
+         modelAndView.addObject("isAddedToCart", DateValidators.validateTimestamp(savedCartLineItem.getInsertedAt()));
+      }
       return modelAndView;
    }
 

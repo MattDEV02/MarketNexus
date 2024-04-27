@@ -23,9 +23,9 @@ SELECT NOW();
 DROP TYPE IF EXISTS ROLES;
 
 CREATE TYPE ROLES AS ENUM (
-    'SELLER',
-    'BUYER',
-    'SELLER_AND_BUYER'
+    'SELLER_ROLE',
+    'SELLER_AND_BUYER_ROLE',
+    'BUYER_ROLE'
     );
 
 COMMENT ON TYPE ROLES IS 'MarketNexus Users Credentials Roles.';
@@ -182,11 +182,11 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Credentials
     id          SERIAL                                                                   NOT NULL PRIMARY KEY,
     password    VARCHAR(72)                                                              NOT NULL,
     username    VARCHAR(10)                                                              NOT NULL,
-    role        VARCHAR(20)                                                              NOT NULL DEFAULT 'SELLER_AND_BUYER',
+    role        VARCHAR(30)                                                              NOT NULL DEFAULT 'ROLE_SELLER_AND_BUYER',
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
     CONSTRAINT credentials_username_unique UNIQUE (username),
-    CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(MarketNexus.Credentials.role) >= 3),
+    CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(MarketNexus.Credentials.role) >= 10),
     CONSTRAINT credentials_role_valid_check CHECK (MarketNexus.CHECK_ROLE_ROLES_ENUM_FUNCTION(role)),
     CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(MarketNexus.Credentials.username) >= 3),
     --CONSTRAINT credentials_username_valid__check CHECK (MarketNexus.Credentials.username ~ ''::TEXT),
@@ -212,9 +212,9 @@ ALTER TABLE MarketNexus.Credentials
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Credentials (username, password, role)
-VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BUYER'),
-       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'SELLER_AND_BUYER'),
-       ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'SELLER_AND_BUYER');
+VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BUYER_ROLE'),
+       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'SELLER_AND_BUYER_ROLE'),
+       ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'SELLER_AND_BUYER_ROLE');
 -- Gabriel1
 
 -- N.B. = La password è criptata da spring boot con l'algoritmo bscrypt e va da 60 caratteri a 72.
@@ -283,11 +283,20 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Sales
 );
 
 CREATE
+    OR REPLACE TRIGGER sale_updatedat_trigger
+    BEFORE
+        UPDATE
+    ON MarketNexus.Sales
+    FOR EACH ROW
+EXECUTE
+    FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
+
+CREATE
     OR REPLACE FUNCTION CHECK_SALE_SALEPRICE_VALUE_FUNCTION()
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF ((SELECT CASE WHEN s.sale_price = (p.price * s.quantity) THEN TRUE ELSE FALSE END AS are_equals
+    IF ((SELECT CASE WHEN (s.sale_price = (p.price * s.quantity)) THEN TRUE ELSE FALSE END AS are_equals
          FROM MarketNexus.Products p
                   JOIN MarketNexus.Sales s ON p.id = s.product
          WHERE s.id = NEW.ID) = TRUE) THEN
@@ -297,13 +306,8 @@ BEGIN
         RAISE EXCEPTION 'sale_price error with this Sale ID: % .' , NEW.ID;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
-/*
-SELECT CASE WHEN s.sale_price = (p.price * s.quantity) THEN TRUE ELSE FALSE END AS are_equal
-FROM MarketNexus.Products p
-         JOIN MarketNexus.Sales s ON p.id = s.product
-WHERE s.id = 1;
-*/
+$$ LANGUAGE PLPGSQL;
+
 CREATE
     OR REPLACE TRIGGER SALE_SALEPRICE_VALUE_TRIGGER
     AFTER
@@ -314,13 +318,32 @@ EXECUTE
     FUNCTION MarketNexus.CHECK_SALE_SALEPRICE_VALUE_FUNCTION();
 
 CREATE
-    OR REPLACE TRIGGER sale_updatedat_trigger
-    BEFORE
-        UPDATE
+    OR REPLACE FUNCTION CHECK_SALE_USER_CREDENTIALS_ROLE_FUNCTION()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF ((SELECT CASE
+                    WHEN (c.role = 'SELLER_AND_BUYER_ROLE' OR c.role = 'SELLER_ROLE') THEN TRUE
+                    ELSE FALSE END AS are_equals
+         FROM MarketNexus.Sales s
+                  JOIN MarketNexus.Users u ON s._user = u.id
+                  JOIN MarketNexus.Credentials c ON u.credentials = c.id
+         WHERE s.id = NEW.ID) = TRUE) THEN
+        RETURN NEW;
+    ELSE
+        RAISE EXCEPTION 'User Sale Credentials role error, with this User ID: % .' , NEW.ID;
+    END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE
+    OR REPLACE TRIGGER SALE_USER_CREDENTIALS_ROLE_TRIGGER
+    AFTER
+        INSERT
     ON MarketNexus.Sales
     FOR EACH ROW
 EXECUTE
-    FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
+    FUNCTION MarketNexus.CHECK_SALE_USER_CREDENTIALS_ROLE_FUNCTION();
 
 COMMENT ON TABLE MarketNexus.Sales IS 'Publication of a Sale (Product in Sale) by the MarketNexus Users.';
 
@@ -328,13 +351,15 @@ ALTER TABLE MarketNexus.Sales
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Sales(_user, product, quantity, sale_price)
-VALUES (1, 1, 1, 599.99),
-       (1, 2, 2, 59.98),
+VALUES (1, 2, 2, 59.98),
        (2, 3, 3, 149.97),
        (2, 4, 1, 999.99),
        (2, 5, 2, 159.98),
        (2, 6, 2, 79.98),
        (2, 7, 2, 179.98);
+
+INSERT INTO MarketNexus.Sales(_user, product, quantity, sale_price, inserted_at)
+VALUES (1, 1, 1, 599.99, NOW() - INTERVAL '1 days');
 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
@@ -355,14 +380,73 @@ CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
                                                              MarketNexus.cart_line_items.updated_at)
 );
 
-CREATE
-    OR REPLACE TRIGGER carts_updatedat_trigger
+CREATE -- ...
+    OR REPLACE TRIGGER CARTS_UPDATEDAT_TRIGGER
     BEFORE
         UPDATE
     ON MarketNexus.cart_line_items
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
+
+CREATE
+    OR REPLACE FUNCTION CHECK_CART_USER_CREDENTIALS_ROLE_FUNCTION()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF ((SELECT CASE
+                    WHEN (c.role = 'SELLER_AND_BUYER_ROLE' OR c.role = 'BUYER_ROLE')
+                        THEN TRUE
+                    ELSE FALSE END AS are_equals
+         FROM cart_line_items cli
+                  JOIN MarketNexus.Sales s ON cli.sale = s.id
+                  JOIN MarketNexus.Users u ON s._user = u.id
+                  JOIN MarketNexus.Credentials c ON u.credentials = c.id
+         WHERE cli.id = NEW.ID) = TRUE) THEN
+        RETURN NEW;
+    ELSE
+        RAISE EXCEPTION 'User Cart Credentials role error, with this User ID: % .' , NEW.ID;
+    END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE
+    OR REPLACE TRIGGER CART_USER_CREDENTIALS_ROLE_TRIGGER
+    AFTER
+        INSERT
+    ON MarketNexus.cart_line_items
+    FOR EACH ROW
+EXECUTE
+    FUNCTION MarketNexus.CHECK_CART_USER_CREDENTIALS_ROLE_FUNCTION();
+
+CREATE
+    OR REPLACE FUNCTION CHECK_CART_USER_SALE_FUNCTION()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF ((SELECT CASE
+                    WHEN (cli._user <> s._user)
+                        THEN TRUE
+                    ELSE FALSE END AS are_equals
+         FROM cart_line_items cli
+                  JOIN MarketNexus.Sales s ON cli.sale = s.id
+                  JOIN MarketNexus.Users u ON s._user = u.id
+         WHERE cli.id = NEW.ID) = TRUE) THEN
+        RETURN NEW;
+    ELSE
+        RAISE EXCEPTION 'User that add to Cart him sale error, with this User ID: % .' , NEW.ID;
+    END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE
+    OR REPLACE TRIGGER CART_USER_SALE_FUNCTION_TRIGGER
+    AFTER
+        INSERT
+    ON MarketNexus.cart_line_items
+    FOR EACH ROW
+EXECUTE
+    FUNCTION MarketNexus.CHECK_CART_USER_SALE_FUNCTION();
 
 COMMENT ON TABLE MarketNexus.cart_line_items IS 'User who puts a sale product in his cart.';
 
@@ -391,9 +475,6 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Orders
                                                               MarketNexus.Orders.updated_at)
 );
 
-select *
-from cart_line_items;
-
 CREATE
     OR REPLACE TRIGGER orders_updatedat_trigger
     BEFORE
@@ -403,6 +484,38 @@ CREATE
 EXECUTE
     FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
+/*
+for order
+CREATE
+    OR REPLACE FUNCTION CHECK_CART_USER_SALE_FUNCTION()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF ((SELECT CASE
+                    WHEN (cli._user <> s._user)
+                        THEN TRUE
+                    ELSE FALSE END AS are_equals
+         FROM cart_line_items cli
+                  JOIN MarketNexus.Sales s ON cli.sale = s.id
+                  JOIN MarketNexus.Users u ON s._user = u.id
+         WHERE cli.id = NEW.ID) = TRUE) THEN
+        RETURN NEW;
+    ELSE
+        RAISE EXCEPTION 'User that add to Cart him sale error, with this User ID: % .' , NEW.ID;
+    END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE
+    OR REPLACE TRIGGER CART_USER_SALE_FUNCTION_TRIGGER
+    AFTER
+        INSERT
+    ON MarketNexus.cart_line_items
+    FOR EACH ROW
+EXECUTE
+    FUNCTION MarketNexus.CHECK_CART_USER_SALE_FUNCTION();
+*/
+
 COMMENT ON TABLE MarketNexus.Orders IS 'User who buys sale products that are in his cart.';
 
 ALTER TABLE MarketNexus.Orders
@@ -411,23 +524,3 @@ ALTER TABLE MarketNexus.Orders
 INSERT INTO MarketNexus.Orders(_user, cart)
 VALUES (1, 1);
 
-
-select *
-from credentials c
-         join users u on c.id = u.credentials;
-
-
-SELECT n.name               AS Nation,
-       COUNT(DISTINCT u.id) AS n
-FROM Users u
-         JOIN Nations n ON u.nation = n.id
-GROUP BY n.name;
-
-/*
-
-TODO:
-    Vincoli da mettere:
-        Un Utente non può mettere nel carrello e ordinare i suoi stessi prodotti (messi in vendita).
-        Occhio alle quantità.
-
-*/

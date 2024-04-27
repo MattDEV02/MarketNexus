@@ -26,7 +26,7 @@ import java.util.Objects;
 @Controller
 public class AuthenticationController {
 
-   public final static String REGISTRATION_SUCCESSFUL = "redirect:/login?REGISTRATION_SUCCESSFUL=true";
+   public final static String REGISTRATION_SUCCESSFUL = "redirect:/login?registrationSuccessful=true";
    public final static String REGISTRATION_ERROR = "registration.html";
    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
    @Autowired

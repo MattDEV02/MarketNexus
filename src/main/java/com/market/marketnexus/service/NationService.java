@@ -5,6 +5,8 @@ import com.market.marketnexus.repository.NationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -20,5 +22,14 @@ public class NationService {
    public Set<Nation> getAllNations() {
       Set<Nation> allNationsOrderByName = this.nationRepository.findAllByOrderByName();
       return allNationsOrderByName;
+   }
+
+   public Map<Long, Nation> getAllNationsMap() {
+      Map<Long, Nation> allNationsOrderByNameMap = new HashMap<Long, Nation>();
+      Set<Nation> allNationsOrderByName = this.getAllNations();
+      for (Nation nation : allNationsOrderByName) {
+         allNationsOrderByNameMap.put(nation.getId(), nation);
+      }
+      return allNationsOrderByNameMap;
    }
 }

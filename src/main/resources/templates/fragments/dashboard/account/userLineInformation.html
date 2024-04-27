@@ -1,6 +1,6 @@
 <div class="row border rounded py-1 align-items-center"
-     th:fragment="userLineInformation(object, property, type, value, isLoggedUser)"
-     th:with="isReadOnly=(${isReadOnly} ?: false), isSelect=(${isSelect} ?: false)">
+     th:fragment="userLineInformation(object, property, value, isLoggedUser)"
+     th:with="isReadOnly=(${isReadOnly} ?: false), isSelect=(${isSelect} ?: false), type=(${type} ?: '')">
    <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
       <h6 class="">
          <label class="form-label mt-3" th:for="${property == 'birth date' ? 'birthDate' : property}"
@@ -16,9 +16,18 @@
       <select class="form-control form-select" th:id="${property}" th:if="${isSelect && isLoggedUser}"
               th:name="${property}"
               th:title="'User ' + ${property}">
-         <option th:each="nation : ${nations}" th:id="${nation.name + '#' + nation.id}"
-                 th:name="${nation.name + '#' + nation.id}"
-                 th:selected="${nation.id == value.id}" th:text="${nation.name}" th:value="${nation.id}"></option>
+         <option th:each="nationEntry : ${nationsMap}" th:id="${nationEntry.value.name + '#' + nationEntry.key}"
+                 th:if="${property == 'nation'}"
+                 th:name="${nationEntry.value.name + '#' + nationEntry.key}"
+                 th:selected="${nationEntry.key == value.id}" th:text="${nationEntry.value.name}"
+                 th:value="${nationEntry.key}"></option>
+         <option th:each="roleEntry : ${ALL_ROLES_MAP}" th:field="${credentials.role}"
+                 th:id="${roleEntry.key + '#role' }"
+                 th:if="${property == 'role'}"
+                 th:name="${roleEntry.key + '#role' }"
+                 th:selected="${roleEntry.value.toString() == value}"
+                 th:text="${#strings.capitalize(roleEntry.key.toLowerCase().replace('_', ' '))}"
+                 th:value="${roleEntry.value}"></option>
       </select>
       <input th:class="'form-control ' + ${isReadOnly || !isLoggedUser ? 'visually-hidden disabled' : ''}"
              th:fieldFormat="${property == 'birth date' ? FIELD_SIZES_MAP.get('DATE_FORMAT') : ''}"

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html th:fragment="HTTPErrorPage(statusCode, statusMessage, subTitle)"
+      th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/shared/head.html :: head(title = 'Error ' + statusCode)}">
+</head>
+<div th:replace="~{fragments/shared/pagination/header/dashboardHeader.html :: dashboardHeader()}">
+</div>
+<body>
+<main>
+   <div class="container">
+      <div class="row justify-content-center">
+         <div class="col-12 pt-4 pb-5 text-center border rounded shadow mt-5 mb-4">
+            <h1 class="display-1 fw-bold" th:text="${statusCode}"></h1>
+            <h1 class="display-1 fw-bold" th:text="${statusMessage}"></h1>
+            <h5 class="text-muted mt-5" th:text="${subTitle}"></h5>
+            <a class="btn btn-outline-dark mt-5" role="button" th:href="@{/dashboard}">
+               Back to Dashboard
+               <i class="fas fa-home mx-1"></i>
+            </a>
+         </div>
+      </div>
+   </div>
+</main>
+<div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
+</div>
+</body>
+
+</html>

@@ -2,9 +2,9 @@ const ctx = document.getElementById("chart").getContext("2d");
 
 //Chart.defaults.elements.bar.borderWidth = 2;
 
-const productCategoriesToNumberOfSales = [];
+const weekDaysXToNumberOfSales = [];
 
-let productCategoriesX, numberOfSalesY;
+let weekDaysX, numberOfSalesY;
 
 const CHART_TYPES = {
    bar: "bar",
@@ -16,21 +16,22 @@ const CHART_TYPES = {
 axios.get(`${baseAPIURI}chartData`)
    .then(response => {
       const chartData = response.data;
+      console.log(chartData);
       if (validateObject(chartData) && response.status === 200) {
          chartData.forEach(chartDataRow => {
-            productCategoriesToNumberOfSales.push({
-               productCategory: chartDataRow[0],
+            weekDaysXToNumberOfSales.push({
+               weekDay: chartDataRow[0],
                numberOfSales: chartDataRow[1],
             });
          });
-         productCategoriesX = productCategoriesToNumberOfSales.map(productCategoryToNumberOfSales => productCategoryToNumberOfSales.productCategory);
-         numberOfSalesY = productCategoriesToNumberOfSales.map(productCategoryToNumberOfSales => productCategoryToNumberOfSales.numberOfSales);
+         weekDaysX = weekDaysXToNumberOfSales.map(productCategoryToNumberOfSales => productCategoryToNumberOfSales.weekDay);
+         numberOfSalesY = weekDaysXToNumberOfSales.map(productCategoryToNumberOfSales => productCategoryToNumberOfSales.numberOfSales);
          chart = new Chart(ctx, {
             type: CHART_TYPES.bar,
             data: {
-               labels: productCategoriesX,
+               labels: weekDaysX,
                datasets: [{
-                  label: " Number of Sales",
+                  label: " Number of Sales published in this day",
                   data: numberOfSalesY,
                   borderWidth: 1,
                   backgroundColor: "#1D86BA",
@@ -45,7 +46,7 @@ axios.get(`${baseAPIURI}chartData`)
                plugins: {
                   title: {
                      display: true,
-                     text: "Sales per Product category",
+                     text: "Number of sales published in last week",
                      fullSize: true,
                      font: {
                         weight: "bold",

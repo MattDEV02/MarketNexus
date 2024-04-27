@@ -52,8 +52,20 @@ public class Utils {
       Map<String, Roles> result = new HashMap<String, Roles>();
       Roles[] allRoles = Roles.values();
       for (Roles role : allRoles) {
-         result.put(role.name(), role);
+         result.put(role.name().replace("_ROLE", ""), role);
       }
       return result;
+   }
+
+   public static Boolean existsRole(String stringRole) {
+      Boolean exists = false;
+      Roles[] roles = Roles.values();
+      for (Roles role : roles) {
+         if (role.toString().equals(stringRole)) {
+            exists = true;
+            break;
+         }
+      }
+      return exists;
    }
 }

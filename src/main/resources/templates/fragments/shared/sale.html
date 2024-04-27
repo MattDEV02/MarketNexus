@@ -8,6 +8,10 @@
            th:title="${sale.product.name}"/>
    </a>
    <div class="card-body border">
+      <div
+            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You cannot add your own sale to your cart.', condition = ${userAddOwnSaleToCartError})}"></div>
+      <div
+            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Not Buyer users cannot add sales at them cart.', condition = ${userNotBuyerAddOwnSaleToCartError})}"></div>
       <h3 class="card-title" th:text="${sale.product.name}"></h3>
       <p class="card-text" th:text="${sale.quantity} + 'X ' + ${sale.product.description}"></p>
       <p class="card-text fw-bold" th:text="${sale.product.category.name}"></p>
@@ -22,7 +26,7 @@
       <span class="text-secondary fs-5 ms-2 me-3" th:text="${sale.salePrice} + ' $'"></span>
       <a role="button" th:class="'btn btn-primary ms-3 mb-2 ' + ${isLoggedUser ? 'disabled' : null}"
          th:href="@{'/dashboard/cart/' + ${sale.id} + '?quantity=' + ${sale.quantity}}"
-         th:if="${!isLoggedUser}"
+         th:if="${#strings.contains(loggedUser.credentials.role, 'BUYER') && !isLoggedUser}"
          th:title="'Add this ' + ${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' cart'"
       >
          <i class="fas fa-cart-plus"></i>
