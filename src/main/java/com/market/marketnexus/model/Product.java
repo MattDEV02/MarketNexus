@@ -11,13 +11,13 @@ import jdk.jfr.Unsigned;
 
 import java.util.Objects;
 
-@Entity
+@Entity(name = "Products")
 @Table(name = "Products", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "products_name_description_price_imagerelvepath_category_unique", columnNames = {"name", "description", "price", "image_relative_path", "category"}))
 public class Product {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Unsigned
-   @Min(1)
+   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
    @Column(name = "id", nullable = false)
    private Long id;
 

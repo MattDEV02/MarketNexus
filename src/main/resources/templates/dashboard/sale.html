@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:with="areSaleValid = ${sale != null && sale.product != null}"
+      xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/shared/head.html :: head(title = ${sale.product.name} + ' in Sale')}">
+<head th:replace="~{fragments/shared/head.html :: head(title = ${areSaleValid ? (sale.product.name  + ' in Sale') : 'Sale not found'} )}">
 
 </head>
 <link rel="stylesheet" th:href="@{/css/dashboard/shared/style.css}"/>
@@ -13,35 +14,48 @@
       <div class="row justify-content-center">
          <div class="col-12 mt-5">
             <div class="row text-center">
-               <h1 th:if="${sale != null && sale.product != null && !isAddedToCart}"
-                   th:text="${sale.product.name}"></h1>
-               <h1 th:if="${(sale == null || sale.product == null) && !isAddedToCart}">Product not present.</h1>
+               <h1 th:if="${areSaleValid && !isAddedToCart}"
+                   th:text="${sale.product.name} + ' in sale'"></h1>
                <div th:if="${isAddedToCart}">
                   <h1 class="text-success"
                       th:text="'The product ' + ${sale.product.name} + ' has been added to the cart'"></h1>
                   <h3 class="text-dark mt-4" th:text="'Cart Subtotal: ' + ${sale.salePrice} + ' $'"></h3>
                </div>
+               <div class="mt-5"
+                    th:if="${userAddOwnSaleToCartError != null || userNotBuyerAddOwnSaleToCartError != null || userAddExistingSaleToCartError != null}">
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You cannot add your own sale to your cart.', condition = ${userAddOwnSaleToCartError})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Buyer users cannot add sales at them cart.', condition = ${userNotBuyerAddOwnSaleToCartError})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You have already added this product to your cart.', condition = ${userAddExistingSaleToCartError})}"></div>
+               </div>
             </div>
          </div>
-         <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 mb-5">
+         <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 mb-5" th:if="${areSaleValid}">
             <div class="row justify-content-center">
                <div th:if="${sale != null && sale.product != null}">
                   <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${sale}, isLoggedUser = ${loggedUser == sale.user})}"></div>
                </div>
             </div>
          </div>
-         <div class="col-12 mt-3 mb-4" th:if="${#strings.contains(loggedUser.credentials.role, 'BUYER') && isAddedToCart}"
+         <div th:unless="${areSaleValid}">
+            <div
+                  th:replace="~{fragments/dashboard/home/saleNotFound.html :: saleNotFound(${saleId})}"></div>
+         </div>
+         <div class="col-12 mt-3 mb-4"
+              th:if="${#strings.contains(loggedUser.credentials.role, 'BUYER') && isAddedToCart}">
             <div class="row justify-content-center">
                <div class="col-12 col-sm-8 col-md-5 col-lg-4 col-xl-3">
-                  <a class="btn btn-lg btn-outline-success form-control fw-bold" role="button"
-                     th:href="@{/dashboard/cart}">
+                  <a class="btn btn-lg btn-outline-warning form-control fw-bold" role="button" th:href="@{/dashboard}">
                      <i class="fas fa-chevron-left me-2"></i>
-                     Go to the Cart
+                     Continue the orders
                   </a>
                </div>
                <div class="col-12 col-sm-8 col-md-5 col-lg-4 col-xl-3 mt-4 mt-md-0">
-                  <a class="btn btn-lg btn-outline-warning form-control fw-bold" role="button" th:href="@{/dashboard}">
-                     Continue the orders
+                  <a class="btn btn-lg btn-outline-success form-control fw-bold" role="button"
+                     th:href="@{/dashboard/cart}">
+                     Go to the Cart
                      <i class="fas fa-chevron-right ms-2"></i>
                   </a>
                </div>

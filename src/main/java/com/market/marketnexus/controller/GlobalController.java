@@ -10,6 +10,7 @@ import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.Nation;
 import com.market.marketnexus.model.ProductCategory;
 import com.market.marketnexus.model.User;
+import com.market.marketnexus.repository.UserRepository;
 import com.market.marketnexus.service.CredentialsService;
 import com.market.marketnexus.service.NationService;
 import com.market.marketnexus.service.ProductCategoryService;
@@ -101,6 +102,8 @@ public class GlobalController {
    private CredentialsService credentialsService;
    @Autowired
    private ProductCategoryService productCategoryService;
+   @Autowired
+   private UserRepository userRepository;
 
    @ModelAttribute("GLOBAL_CONSTANTS_MAP")
    public Map<String, Object> getGlobalConstantsMap() {

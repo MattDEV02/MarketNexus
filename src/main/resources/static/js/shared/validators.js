@@ -1,7 +1,11 @@
-const regExp = new RegExp("^(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*$");
+const validateObject = object => object !== undefined && object !== null && object !== "";
 
-const validateURI = (URL) =>
-   URL !== undefined && URL !== null && URL !== "" && URL !== " " &&
-   regExp.test(
-      URL
+const validateArray = array => validateObject(array) && Array.isArray(array);
+
+const validateString = string => validateObject(string);
+
+const validateURI = (URI) =>
+   validateString(URI) && URI !== " " &&
+   new RegExp("^(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*$").test(
+      URI
    );

@@ -8,7 +8,7 @@ const getSalesEvent = sales => {
    return sales.map(sale => {
       return {
          id: `${sale.id}-${sale.productName}-${sale.inserted_at}`,
-         title: sale.productName + " in sale",
+         title: sale.productName + " in sale.",
          start: sale.inserted_at,
          url: saleBaseURI + sale.id,
          color: "yellow",
@@ -28,7 +28,7 @@ const getOrdersEvent = orders => {
          id: `${order.id}-${order.productName}-${order.inserted_at}`,
          title: order.productName + " ordered.",
          start: order.inserted_at,
-         url: orderBaseURI + order.id,
+         url: saleBaseURI + order.id,
          color: "green",
          editable: false,
          classNames: ["order-event"],
@@ -83,14 +83,14 @@ document.addEventListener("DOMContentLoaded", () => {
          }
          if (validateObject(ordersCalendarData) && ordersResponse.status === 200) {
             ordersCalendarData.forEach(orderCalendarData => {
-               sales.push({
-                  id: orderCalendarData.id,
-                  productName: orderCalendarData.sale.product.name,
-                  inserted_at: orderCalendarData.insertedAt,
+               orders.push({
+                  id: orderCalendarData[0],
+                  productName: orderCalendarData[1],
+                  inserted_at: orderCalendarData[2],
                });
             });
             const ordersEvent = getOrdersEvent(orders);
-            ordersEvent.forEach(orderEvent => calendar.addEvent(saleEvent));
+            ordersEvent.forEach(orderEvent => calendar.addEvent(orderEvent));
          }
       })
       .catch(error => console.error("Error:", error));

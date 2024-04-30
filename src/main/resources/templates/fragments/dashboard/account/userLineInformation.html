@@ -4,7 +4,7 @@
    <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
       <h6 class="">
          <label class="form-label mt-3" th:for="${property == 'birth date' ? 'birthDate' : property}"
-                th:text="${#strings.capitalize(property) + ': '}">
+                th:text="${#strings.capitalize(property) + (property == 'balance' ? '($)' : '' ) + ': '}">
          </label>
       </h6>
    </div>
@@ -12,7 +12,8 @@
       <h6 class="mt-2" th:id="${property} + '-text'" th:if="${(isReadOnly || !isLoggedUser) && !isSelect}"
           th:text="${value} + ${property == 'balance' ? ' $' : ''}"
           th:title="'User ' + ${property}"></h6>
-      <h6 class="mt-2" th:if="${isSelect && !isLoggedUser}" th:text="${value.name}"></h6>
+      <h6 class="mt-2" th:if="${isSelect && !isLoggedUser}"
+          th:text="${property == 'nation' ? value.name : #strings.capitalize(value.toLowerCase().replace('_', ' '))}"></h6>
       <select class="form-control form-select" th:id="${property}" th:if="${isSelect && isLoggedUser}"
               th:name="${property}"
               th:title="'User ' + ${property}">

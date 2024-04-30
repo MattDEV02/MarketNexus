@@ -1,7 +1,6 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.APIPrefixes;
-import com.market.marketnexus.model.Order;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.SaleService;
@@ -44,7 +43,7 @@ public class StatsController {
 
 
    @GetMapping(value = {"/calendarData/orders", "/calendarData/orders/"})
-   public Set<Order> getOrdersCalendarData(@NotNull @Valid @ModelAttribute("loggedUser") User loggedUser) {
+   public List<Object[]> getOrdersCalendarData(@NotNull @Valid @ModelAttribute("loggedUser") User loggedUser) {
       return this.userService.getAllOrdersForUser(loggedUser.getId());
    }
 

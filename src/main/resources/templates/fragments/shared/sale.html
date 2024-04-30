@@ -8,10 +8,6 @@
            th:title="${sale.product.name}"/>
    </a>
    <div class="card-body border">
-      <div
-            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You cannot add your own sale to your cart.', condition = ${userAddOwnSaleToCartError})}"></div>
-      <div
-            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Not Buyer users cannot add sales at them cart.', condition = ${userNotBuyerAddOwnSaleToCartError})}"></div>
       <h3 class="card-title" th:text="${sale.product.name}"></h3>
       <p class="card-text" th:text="${sale.quantity} + 'X ' + ${sale.product.description}"></p>
       <p class="card-text fw-bold" th:text="${sale.product.category.name}"></p>

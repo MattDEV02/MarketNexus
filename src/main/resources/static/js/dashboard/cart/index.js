@@ -6,10 +6,10 @@ const sendDeleteCartLineItemRequest = (URI) => {
    }
 }
 
-const deleteCartButtons = document.querySelectorAll('.delete-cart-button');
+const deleteCartButtons = document.querySelectorAll(".delete-cart-button");
 
 deleteCartButtons.forEach(deleteCartButton => {
-   deleteCartButton.addEventListener('click', (event) => {
+   deleteCartButton.addEventListener("click", (event) => {
       event.preventDefault();
       if (window.confirm("Are you sure you want to delete this cart line?")) {
          sendDeleteCartLineItemRequest(deleteCartButton.href);

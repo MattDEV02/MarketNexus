@@ -1,9 +1,12 @@
 package com.market.marketnexus.service;
 
+import com.market.marketnexus.helpers.sale.Utils;
+import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.Credentials;
-import com.market.marketnexus.model.Order;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
+import com.market.marketnexus.repository.CartRepository;
+import com.market.marketnexus.repository.OrderRepository;
 import com.market.marketnexus.repository.UserRepository;
 import org.hibernate.Hibernate;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +15,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -21,14 +23,13 @@ import java.util.Set;
 public class UserService {
    @Autowired
    protected UserRepository userRepository;
+   @Autowired
+   protected CartRepository cartRepository;
+   @Autowired
+   protected OrderRepository orderRepository;
 
    public Boolean existsByEmail(String email) {
       return this.userRepository.existsByEmail(email);
-   }
-
-   public User getUser(Long id) {
-      Optional<User> result = this.userRepository.findById(id);
-      return result.orElse(null);
    }
 
    public User getUser(Credentials credentials) {
@@ -38,7 +39,10 @@ public class UserService {
 
    @Transactional
    public User saveUser(User user) {
-      return this.userRepository.save(user);
+      User savedUser = this.userRepository.save(user);
+      Cart cart = new Cart();
+      this.cartRepository.save(cart);
+      return savedUser;
    }
 
    @Transactional
@@ -54,7 +58,7 @@ public class UserService {
          user.setName(updatedUser.getName());
          user.setSurname(updatedUser.getSurname());
          user.setBirthDate(updatedUser.getBirthDate());
-         user.setBalance(updatedUser.getBalance());
+         this.updateUserBalance(user, updatedUser.getBalance());
          user.setNation(updatedUser.getNation());
          return this.userRepository.save(user);
       }
@@ -63,8 +67,9 @@ public class UserService {
 
    @Transactional
    public Boolean deleteUser(User user) {
+      this.cartRepository.deleteByUser(user);
       this.userRepository.delete(user);
-      return this.userRepository.existsById(user.getId());
+      return !this.userRepository.existsById(user.getId());
    }
 
    public List<Object[]> countUsersByNation() {
@@ -89,21 +94,16 @@ public class UserService {
       }
    }
 
-   public Set<Order> getAllOrdersForUser(@NotNull Long userId) {
-      User user = this.userRepository.findById(userId).orElse(null);
-      if (user != null) {
-         /*
-          Hibernate.initialize(user.getOrders());
-          Set<Order> orders = user.getOrders();
-          return orders;
-         */
-         return new HashSet<Order>();
-      } else {
-         return null;
-      }
+   public List<Object[]> getAllOrdersForUser(@NotNull Long userId) {
+      return this.orderRepository.findAllByUserId(userId);
    }
 
    public List<Object[]> usersPublishedSalesStats() {
-      return this.userRepository.usersPublishedSalesStats();
+      return this.userRepository.userSalesStats();
+   }
+
+   @Transactional
+   public void updateUserBalance(@NotNull User user, Float newBalance) {
+      user.setBalance(Utils.roundNumberTo2Decimals(newBalance));
    }
 }

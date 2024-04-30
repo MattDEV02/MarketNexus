@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.constants.Temporals;
-import com.market.marketnexus.helpers.sale.Utils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -15,13 +14,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
+@Entity(name = "Sales")
 @Table(name = "Sales", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "sales_user_product_insertedat_unique", columnNames = {"_user", "product", "inserted_at"}))
 public class Sale {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Min(1)
+   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
    @Unsigned
    @Column(name = "id", nullable = false)
    private Long id;
@@ -63,11 +62,11 @@ public class Sale {
       //this.salePrice = this.calculateSalePrice(this.getProduct(), this.getQuantity());
    }
 
-   public Sale(Integer quantity, User user, Product product) {
+   public Sale(Integer quantity, User user, Product product, Float salePrice) {
       this.quantity = quantity;
       this.user = user;
       this.product = product;
-      this.salePrice = this.calculateSalePrice(product, quantity);
+      this.salePrice = salePrice;
    }
 
    public Long getId() {
@@ -162,12 +161,12 @@ public class Sale {
    public String toString() {
       return "Sale: {" +
               " id = " + this.getId().toString() +
-              ", product = " + this.getProduct().getName() +
+              ", quantity = " + this.getQuantity().toString() +
+              ", salePrice = " + this.getSalePrice().toString() +
+              ", user = " + this.getUser().getId().toString() +
+              ", product = " + this.getProduct().getId().toString() +
               ", insertedAt = " + this.getInsertedAt().toString() +
+              ", updatedAt = " + this.getUpdatedAt().toString() +
               " }";
-   }
-
-   public Float calculateSalePrice(Product product, Integer quantity) {
-      return Utils.roundNumberTo2Decimals(product.getPrice() * quantity);
    }
 }

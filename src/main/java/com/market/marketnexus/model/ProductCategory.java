@@ -10,12 +10,12 @@ import jdk.jfr.Unsigned;
 
 import java.util.Objects;
 
-@Entity
+@Entity(name = "product_categories")
 @Table(name = "product_categories", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "productcategories_name_unique", columnNames = "name"))
 public class ProductCategory {
    @Id
    @Unsigned
-   @Min(1)
+   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    private Long id;

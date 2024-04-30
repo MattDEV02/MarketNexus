@@ -11,7 +11,7 @@ import org.springframework.lang.NonNull;
 
 import java.util.Objects;
 
-@Entity
+@Entity(name = "Nations")
 @Table(name = "Nations", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "nations_name_unique", columnNames = "name"))
 public class Nation {
 
@@ -19,7 +19,7 @@ public class Nation {
    @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
-   @Min(1)
+   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
    @NonNull

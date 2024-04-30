@@ -102,7 +102,9 @@ public class SaleController {
       this.productValidator.validate(product, productBindingResult);
       if (!productBindingResult.hasErrors() && !saleBindingResult.hasErrors()) {
          Product savedProduct = this.productService.saveProduct(product);
-         Sale savedSale = this.saleService.saveSale(sale, loggedUser, savedProduct);
+         sale.setUser(loggedUser);
+         sale.setProduct(savedProduct);
+         Sale savedSale = this.saleService.saveSale(sale);
          if (Utils.storeProductImage(savedProduct, productImage)) {
             modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL + savedProduct.getId().toString());
             modelAndView.addObject("sale", savedSale);
@@ -119,6 +121,7 @@ public class SaleController {
    public ModelAndView showSaleById(@PathVariable("saleId") Long saleId) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/sale.html");
       Sale sale = this.saleService.getSale(saleId);
+      modelAndView.addObject("saleId", saleId);
       modelAndView.addObject("sale", sale);
       modelAndView.addObject("isAddedToCart", false);
       return modelAndView;

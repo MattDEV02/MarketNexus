@@ -1,9 +1,9 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
-import com.market.marketnexus.model.Order;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.CredentialsService;
@@ -44,30 +44,36 @@ public class AccountController {
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showUserAccount(@Valid @ModelAttribute("loggedUser") User loggedUser) {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + ".html");
-      Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
-      Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(loggedUser);
-      modelAndView.addObject("user", loggedUser);
-      modelAndView.addObject("credentials", loggedUser.getCredentials());
-      modelAndView.addObject("saleProducts", saleProducts);
-      modelAndView.addObject("orderedProducts", orderedProducts);
-      modelAndView.addObject("tableData", this.statsController.getTableData());
+      ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION);
+      if (loggedUser != null) {
+         Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
+         //Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(loggedUser);
+         modelAndView.addObject("user", loggedUser);
+         modelAndView.addObject("credentials", loggedUser.getCredentials());
+         modelAndView.addObject("saleProducts", saleProducts);
+         //  modelAndView.addObject("orderedProducts", orderedProducts);
+         modelAndView.addObject("tableData", this.statsController.getTableData());
+      }
       return modelAndView;
    }
 
    @GetMapping(value = {"/{username}", "/{username}/"})
    public ModelAndView showUserAccountByUsername(@Valid @ModelAttribute("loggedUser") @NonNull User loggedUser, @PathVariable("username") String username) {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + ".html");
+      ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION);
       Credentials credentials = this.credentialsService.getCredentials(username);
       User user = this.userService.getUser(credentials);
+      System.out.println(user);
       modelAndView.addObject("user", user);
       modelAndView.addObject("searchedUsername", username);
       if (user != null) {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(user);
-         Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(user);
+         //  Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(user);
          modelAndView.addObject("saleProducts", saleProducts);
-         modelAndView.addObject("orderedProducts", orderedProducts);
+         //  modelAndView.addObject("orderedProducts", orderedProducts);
          modelAndView.addObject("credentials", user.getCredentials());
+         if (user.equals(loggedUser)) {
+            modelAndView.addObject("tableData", this.statsController.getTableData());
+         }
       }
       return modelAndView;
    }
@@ -80,7 +86,6 @@ public class AccountController {
            @Valid @NonNull @ModelAttribute("credentials") Credentials credentials,
            @NonNull BindingResult credentialsBindingResult
    ) {
-      // TODO: update role.
       ModelAndView modelAndView = new ModelAndView(AccountController.UPDATE_ERROR);
       if (!userBindingResult.hasFieldErrors() && !credentialsBindingResult.hasFieldErrors()) {
          modelAndView.setViewName(AccountController.UPDATE_SUCCESSFUL);
@@ -89,9 +94,9 @@ public class AccountController {
          Utils.updateUserCredentialsAuthentication(updatedUser.getCredentials());
       } else {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
-         Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(loggedUser);
+         //Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(loggedUser);
          modelAndView.addObject("saleProducts", saleProducts);
-         modelAndView.addObject("orderedProducts", orderedProducts);
+         //  modelAndView.addObject("orderedProducts", orderedProducts);
          modelAndView.addObject("credentials", loggedUser.getCredentials());
          for (ObjectError error : userBindingResult.getGlobalErrors()) {
             modelAndView.addObject(Objects.requireNonNull(error.getCode()), error.getDefaultMessage());

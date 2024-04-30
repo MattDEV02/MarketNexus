@@ -1,7 +1,5 @@
 package com.market.marketnexus.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.constants.Temporals;
@@ -11,55 +9,59 @@ import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
-@Entity(name = "Orders")
-@Table(name = "Orders", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "orders_user_cart_insertedat_unique", columnNames = {"_user", "cart", "inserted_at"}))
-public class Order {
-
+@Entity(name = "Carts")
+@Table(name = "Carts", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(columnNames = {"_user", "inserted_at"})})
+public class Cart {
+   private final static Float CART_START_PRICE = 0.0F;
    @Id
+   @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
-   @Unsigned
    @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
-   @JsonIgnore
-   @ManyToOne(targetEntity = User.class, optional = false)
-   @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "orders_users_fk"))
+   @Min((long) FieldSizes.CART_CARTPRICE_MIN_VALUE)
+   @Column(name = "cart_price", nullable = false)
+   private Float cartPrice;
+
+   @OneToOne(targetEntity = User.class, optional = true)
+   @JoinColumn(name = "_user", referencedColumnName = "id", nullable = true, foreignKey = @ForeignKey(name = "carts_users_fk"))
    private User user;
 
-   @OneToOne(targetEntity = Cart.class, optional = false)
-   @JoinColumn(name = "cart", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "orders_carts_fk"))
-   private Cart cart;
-
-   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Temporals.DATE_FORMAT)
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    @Column(name = "inserted_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
 
-   @JsonIgnore
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    @Column(name = "updated_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime updatedAt;
 
-   public Order() {
+   @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+   private Set<CartLineItem> cartLineItems;
 
+   public Cart() {
+      this.cartPrice = Cart.CART_START_PRICE;
+      this.cartLineItems = Collections.emptySet();
    }
 
-   public Order(User user, Cart cart) {
+   public Cart(User user) {
       this.user = user;
-      this.cart = cart;
+      this.cartPrice = Cart.CART_START_PRICE;
+      this.cartLineItems = Collections.emptySet();
    }
 
-   public Long getId() {
-      return this.id;
+   public Float getCartPrice() {
+      return this.cartPrice;
    }
 
-   public void setId(Long id) {
-      this.id = id;
+   public void setCartPrice(Float cartPrice) {
+      this.cartPrice = cartPrice;
    }
 
    public User getUser() {
@@ -70,12 +72,12 @@ public class Order {
       this.user = user;
    }
 
-   public Cart getCart() {
-      return this.cart;
+   public Long getId() {
+      return this.id;
    }
 
-   public void setCart(Cart cart) {
-      this.cart = cart;
+   public void setId(Long id) {
+      this.id = id;
    }
 
    public LocalDateTime getInsertedAt() {
@@ -92,6 +94,14 @@ public class Order {
 
    public void setUpdatedAt(LocalDateTime updatedAt) {
       this.updatedAt = updatedAt;
+   }
+
+   public Set<CartLineItem> getCartLineItems() {
+      return this.cartLineItems;
+   }
+
+   public void setCartLineItems(Set<CartLineItem> cartLineItems) {
+      this.cartLineItems = cartLineItems;
    }
 
    @PrePersist
@@ -117,23 +127,24 @@ public class Order {
       if (object == null || this.getClass() != object.getClass()) {
          return false;
       }
-      Order order = (Order) object;
-      return Objects.equals(this.getId(), order.getId()) || (Objects.equals(this.getUser(), order.getUser()) && Objects.equals(this.getCart(), order.getCart()) && Objects.equals(this.getInsertedAt(), order.getInsertedAt()));
+      Cart cart = (Cart) object;
+      return Objects.equals(this.getId(), cart.getId()) || (Objects.equals(this.getUser(), cart.getUser()) && Objects.equals(this.getInsertedAt(), cart.getInsertedAt()));
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId(), this.getUser(), this.getCart(), this.getInsertedAt());
+      return Objects.hash(this.getId(), this.getUser(), this.getInsertedAt());
    }
 
    @Override
    public String toString() {
-      return "Order: {" +
-              " id = " + this.getId().toString() +
+      return "Cart: {" +
+              "id = " + this.getId().toString() +
               ", user = " + this.getUser().toString() +
-              ", cart = " + this.getCart().toString() +
+              ", cart_price = " + this.getCartPrice().toString() +
               ", insertedAt = " + this.getInsertedAt().toString() +
               ", updatedAt = " + this.getUpdatedAt().toString() +
               " }";
    }
+
 }

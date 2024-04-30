@@ -42,6 +42,8 @@ public class FieldSizes {
    public static final float SALE_SALEPRICE_MIN_VALUE = 0.01F;
    public static final float SALE_SALEPRICE_MAX_VALUE = 10000F;
 
+   public static final float CART_CARTPRICE_MIN_VALUE = 0.01F;
+
    public static final int NATION_NAME_MIN_LENGTH = 3;
    public static final int NATION_NAME_MAX_LENGTH = 10;
 
@@ -50,5 +52,7 @@ public class FieldSizes {
 
    public static final int PRODUCT_CATEGORY_DESCRIPTION_MIN_LENGTH = 3;
    public static final int PRODUCT_CATEGORY_DESCRIPTION_MAX_LENGTH = 10;
+
+   public static final long ENTITY_ID_MIN_VALUE = 1L;
 
 }

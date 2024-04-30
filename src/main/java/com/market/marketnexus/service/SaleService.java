@@ -1,5 +1,6 @@
 package com.market.marketnexus.service;
 
+import com.market.marketnexus.helpers.sale.Utils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.ProductCategory;
 import com.market.marketnexus.model.Sale;
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class SaleService {
@@ -33,7 +37,11 @@ public class SaleService {
 
    @Transactional
    public Sale saveSale(Sale sale) {
-      return this.saleRepository.save(sale);
+      Float salePrice = this.calculateSalePrice(sale);
+      sale.setSalePrice(salePrice);
+      Sale savedSale = this.saleRepository.save(sale);
+      savedSale.getUser().getSales().add(savedSale); //
+      return savedSale;
    }
 
    public Sale getSale(Long id) {
@@ -92,13 +100,15 @@ public class SaleService {
       return result;
    }
 
+   public void deleteSales(Set<Sale> sales) {
+      this.saleRepository.deleteAll(sales);
+   }
+
    public List<Object[]> countCurrentWeekUserSales(@NotNull Long userId) {
       return this.saleRepository.countCurrentWeekUserSales(userId);
    }
 
-   public List<Object> countSalesPerDay() {
-      List<Object> result = new ArrayList<>();
-      Set<Sale> allSales = this.getAllSales();
-      return result;
+   public Float calculateSalePrice(@NotNull Sale sale) {
+      return Utils.roundNumberTo2Decimals(sale.getProduct().getPrice() * sale.getQuantity());
    }
 }

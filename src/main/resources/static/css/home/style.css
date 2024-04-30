@@ -3,3 +3,7 @@ body {
    background-size: 106%;
    color: #000000;
 }
+
+.fade-in {
+   opacity: 0;
+}

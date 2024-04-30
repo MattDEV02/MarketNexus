@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
+@Entity(name = "Users")
 @Table(name = "Users", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "users_email_unique", columnNames = "email"), @UniqueConstraint(name = "users_credentials_unique", columnNames = "credentials")})
 public class User {
 
@@ -20,7 +20,7 @@ public class User {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    @Unsigned
-   @Min(1)
+   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
    @NotBlank
@@ -57,8 +57,14 @@ public class User {
    @JoinColumn(name = "credentials", referencedColumnName = "id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "users_credentials_fk"))
    private Credentials credentials;
 
-   @OneToMany(targetEntity = Sale.class, mappedBy = "user")
+   @OneToMany(cascade = {CascadeType.REMOVE}, targetEntity = Sale.class, mappedBy = "user", orphanRemoval = true)
    private Set<Sale> sales;
+
+   @OneToMany(cascade = {CascadeType.REMOVE}, targetEntity = Order.class, mappedBy = "user", orphanRemoval = true)
+   private Set<Order> orders;
+
+   @OneToOne(targetEntity = Cart.class, mappedBy = "user", optional = true)
+   private Cart cart;
 
    public User() {
 
@@ -155,12 +161,30 @@ public class User {
       this.sales = sales;
    }
 
+   public Set<Order> getOrders() {
+      return this.orders;
+   }
+
+   public void setOrders(Set<Order> orders) {
+      this.orders = orders;
+   }
+
+   public Cart getCart() {
+      return this.cart;
+   }
+
+   public void setCart(Cart cart) {
+      this.cart = cart;
+   }
+
    @Override
    public boolean equals(Object object) {
       if (this == object) {
          return true;
       }
-      if (object == null || this.getClass() != object.getClass()) return false;
+      if (object == null || this.getClass() != object.getClass()) {
+         return false;
+      }
       User user = (User) object;
       return Objects.equals(this.getId(), user.getId()) || Objects.equals(this.getEmail(), user.getEmail()) || Objects.equals(this.getCredentials(), user.getCredentials());
    }
@@ -169,7 +193,6 @@ public class User {
    public int hashCode() {
       return Objects.hash(this.getId(), this.getEmail(), this.getCredentials());
    }
-
 
    @Override
    public String toString() {
@@ -183,6 +206,8 @@ public class User {
               ", credentials = " + this.getCredentials().toString() +
               ", nation = " + this.getNation().toString() +
               // ", sales = " + this.getSales().toString() +
+              // ", orders = " + this.getOrders().toString() +
+              // ", cart = " + this.getCart().toString() +
               " }";
    }
 }

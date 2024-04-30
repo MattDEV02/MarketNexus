@@ -1,5 +1,6 @@
 package com.market.marketnexus.model;
 
+import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.constants.Temporals;
 import jakarta.persistence.*;
@@ -10,20 +11,20 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity
-@Table(name = "cart_line_items", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "cartlineitems_user_sale_insertedat_unique", columnNames = {"_user", "sale", "inserted_at"}))
+@Entity(name = "cart_line_items")
+@Table(name = "cart_line_items", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "carts_user_unique", columnNames = {"cart", "sale", "inserted_at"}))
 public class CartLineItem {
 
    @Id
    @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
-   @Min(1)
+   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
-   @ManyToOne(targetEntity = User.class)
-   @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "carts_users_fk"))
-   private User user;
+   @ManyToOne(targetEntity = Cart.class)
+   @JoinColumn(name = "cart", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "cartlineitems_carts_fk"))
+   private Cart cart;
 
    @ManyToOne(targetEntity = Sale.class, optional = false)
    @JoinColumn(name = "sale", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_sales_fk"))
@@ -43,8 +44,8 @@ public class CartLineItem {
 
    }
 
-   public CartLineItem(Sale sale, User user) {
-      this.user = user;
+   public CartLineItem(Cart cart, Sale sale) {
+      this.cart = cart;
       this.sale = sale;
    }
 
@@ -56,12 +57,12 @@ public class CartLineItem {
       this.id = id;
    }
 
-   public User getUser() {
-      return this.user;
+   public Cart getCart() {
+      return this.cart;
    }
 
-   public void setUser(User user) {
-      this.user = user;
+   public void setUser(Cart cart) {
+      this.cart = cart;
    }
 
    public Sale getSale() {
@@ -109,20 +110,20 @@ public class CartLineItem {
       if (object == null || this.getClass() != object.getClass()) {
          return false;
       }
-      CartLineItem sale = (CartLineItem) object;
-      return Objects.equals(this.getId(), sale.getId()) || (Objects.equals(this.getUser(), sale.getUser()) && Objects.equals(this.getSale(), sale.getSale()) && Objects.equals(this.getInsertedAt(), sale.getInsertedAt()));
+      CartLineItem cartLineItem = (CartLineItem) object;
+      return Objects.equals(this.getId(), sale.getId()) || (Objects.equals(this.getCart(), cartLineItem.getCart()) && Objects.equals(this.getSale(), cartLineItem.getSale()) && Objects.equals(this.getInsertedAt(), sale.getInsertedAt()));
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId(), this.getUser(), this.getSale(), this.getInsertedAt());
+      return Objects.hash(this.getId(), this.getCart(), this.getSale(), this.getInsertedAt());
    }
 
    @Override
    public String toString() {
-      return "Cart: {" +
+      return "CartLineItem: {" +
               "id = " + this.getId().toString() +
-              ", user = " + this.getUser().toString() +
+              ", cart = " + this.getCart().toString() +
               ", sale = " + this.getSale().toString() +
               ", insertedAt = " + this.getInsertedAt().toString() +
               ", updatedAt = " + this.getUpdatedAt().toString() +

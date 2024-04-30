@@ -9,7 +9,7 @@
    <div class="row justify-content-center">
       <div class="col-12 mt-5">
          <div class="row justify-content-center">
-            <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 pt-4 pb-3 mt-3">
+            <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 col-xxl-5 shadow border rounded px-5 pt-4 pb-3 mt-3">
                <div class="row text-center mt-2 mb-4">
                   <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Login 🕵️‍♂️'"></h1>
                </div>
@@ -44,12 +44,8 @@
                                th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
                                th:title="'Insert your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' password'"
                                type="password"/>
-                        <button class="btn btn-outline-secondary" id="toggle-password-visibility"
-                                title="Show or hide password"
-                                type="button">
-                           <!-- Icona dell'occhio per mostrare/nascondere la password -->
-                           <i class="fas fa-eye" id="eye-icon"></i>
-                        </button>
+                        <div
+                              th:replace="~{fragments/shared/showPasswordButton.html :: showPasswordButton()}"></div>
                      </div>
                   </div>
                   <div class="my-4">

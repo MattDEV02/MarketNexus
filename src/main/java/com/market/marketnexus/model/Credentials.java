@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 
-@Entity
+@Entity(name = "Credentials")
 @Table(name = "Credentials", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "credentials_username_unique", columnNames = "username"))
 public class Credentials {
 
@@ -25,7 +25,7 @@ public class Credentials {
    @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
-   @Min(1)
+   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
    @NotBlank
    @Size(min = FieldSizes.USERNAME_MIN_LENGTH, max = FieldSizes.USERNAME_MAX_LENGTH)

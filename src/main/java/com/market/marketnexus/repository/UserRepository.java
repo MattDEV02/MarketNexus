@@ -15,36 +15,19 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
    public Optional<User> findByCredentials(Credentials credentials);
 
-   @Query(value = "SELECT n.name AS nationName, COUNT(DISTINCT u.id) AS numbersOfUsers " +
-           "FROM User u JOIN u.nation n " +
-           "GROUP BY n.name")
+   @Query(value = """
+           SELECT DISTINCT n.name AS nationName, COUNT(DISTINCT u.id) AS numbersOfUsers 
+           FROM Users u JOIN u.nation n 
+           GROUP BY n.name
+           """
+   )
    public List<Object[]> countUsersByNation();
 
    @Query(value = """
-                SELECT "User",
-                       MIN(salesPublishedPerDay)               AS MIN,
-                       MAX(salesPublishedPerDay)               AS MAX,
-                       SUM(salesPublishedPerDay)               AS total,
-                       ROUND(AVG(salesPublishedPerDay), 2) AS AVG,
-                       CAST((ROUND(
-                                CAST(
-                                        (
-                                            CAST(SUM(salesPublishedPerDay) AS FLOAT) / (SELECT COUNT(DISTINCT id) FROM Sales)
-                                            ) AS NUMERIC
-                                ),
-                                2
-                        ) * 100) AS TEXT) || ' %'               AS "%"
-                FROM (SELECT c.username           AS "User",
-                             s.inserted_at,
-                             COUNT(DISTINCT s.id) AS salesPublishedPerDay
-                      FROM Users u
-                               JOIN Credentials c ON u.credentials = c.id
-                               LEFT JOIN Sales s ON s._user = u.id
-                      GROUP BY c.username, s.inserted_at
-                      ORDER BY salesPublishedPerDay DESC) AS userAndDayToSalesPublished
-                GROUP BY "User";
+           SELECT *
+           FROM GET_USERS_SALES_STATS();
            """,
            nativeQuery = true)
-   public List<Object[]> usersPublishedSalesStats();
+   public List<Object[]> userSalesStats();
 
 }

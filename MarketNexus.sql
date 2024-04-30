@@ -18,7 +18,9 @@ SET SEARCH_PATH TO MarketNexus;
 
 SELECT CURRENT_SCHEMA();
 
-SELECT NOW();
+SELECT CURRENT_CATALOG;
+
+SELECT CURRENT_TIMESTAMP;
 
 DROP TYPE IF EXISTS ROLES;
 
@@ -34,7 +36,7 @@ CREATE
     OR REPLACE FUNCTION UPDATEDAT_SET_TIMESTAMP_FUNCTION() RETURNS TRIGGER AS
 $$
 BEGIN
-    NEW.updated_at = NOW();
+    NEW.updated_at = CURRENT_TIMESTAMP;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -88,15 +90,15 @@ ALTER TABLE MarketNexus.product_categories
 COMMENT ON TABLE MarketNexus.product_categories IS 'MarketNexus Product Categories.';
 
 INSERT INTO MarketNexus.product_categories (name, description)
-VALUES ('Electronics', 'Electronics products'),
-       ('Clothing', 'Clothing products'),
-       ('Books', 'Books products'),
-       ('Home Appliances', 'Home Appliances products'),
-       ('Footwear', 'Footwear products'),
-       ('Sports', 'Sports products'),
-       ('Beauty', 'Beauty products'),
-       ('Games', 'Games products'),
-       ('Food', 'Food products');
+VALUES ('Electronics', 'Electronics products.'),
+       ('Clothing', 'Clothing products.'),
+       ('Books', 'Books products.'),
+       ('Home Appliances', 'Home Appliances products.'),
+       ('Footwear', 'Footwear products.'),
+       ('Sports', 'Sports products.'),
+       ('Beauty', 'Beauty products.'),
+       ('Games', 'Games products.'),
+       ('Food', 'Food products.');
 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Products
@@ -123,7 +125,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Products
 ALTER TABLE MarketNexus.Products
     OWNER TO postgres;
 
-COMMENT ON TABLE MarketNexus.Products IS 'MarketNexus Products.';
+COMMENT ON TABLE MarketNexus.Products IS 'MarketNexus Users Products.';
 
 CREATE OR REPLACE FUNCTION MarketNexus.GENERATE_PRODUCT_RELATIVEIMAGEPATH_FUNCTION(product_id INT, product_name TEXT)
     RETURNS TEXT AS
@@ -135,7 +137,7 @@ BEGIN
     RETURN base_path || product_id || '/' || LOWER(product_name) || extension;
 END;
 $$
-    LANGUAGE plpgsql;
+    LANGUAGE PLPGSQL;
 
 CREATE
     OR REPLACE FUNCTION MarketNexus.INSERT_PRODUCT_RELATIVEIMAGEPATH_FUNCTION()
@@ -145,7 +147,7 @@ BEGIN
     NEW.image_relative_path = MarketNexus.GENERATE_PRODUCT_RELATIVEIMAGEPATH_FUNCTION(NEW.ID, NEW.name);
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE TRIGGER PRODUCTS_INSERT_IMAGERELATIVEIMAGEPATH_TRIGGER
     BEFORE INSERT
@@ -155,36 +157,36 @@ EXECUTE FUNCTION MarketNexus.INSERT_PRODUCT_RELATIVEIMAGEPATH_FUNCTION();
 
 
 INSERT INTO MarketNexus.Products (name, price, description, category)
-VALUES ('Smartphone', 599.99, 'High-end smartphone', 1),
-       ('T-shirt', 29.99, 'Cotton T-shirt', 2),
-       ('Java Programming Book', 49.99, 'Learn Java programming', 3),
-       ('Laptop', 999.99, 'Powerful laptop', 1),
-       ('Running Shoes', 79.99, 'Lightweight running shoes', 2),
-       ('Python Book', 39.99, 'Master Python programming', 3),
-       ('Coffee Maker', 89.99, 'Automatic coffee maker', 4),
-       ('Denim Jeans', 49.99, 'Classic denim jeans', 2),
-       ('Fishing Rod', 39.99, 'Professional fishing rod', 6),
-       ('Hair Dryer', 29.99, 'Ionic hair dryer', 7),
-       ('Board Game', 19.99, 'Family board game', 8),
-       ('Rice', 2.99, 'Long-grain white rice', 9);
+VALUES ('Smartphone', 599.99, 'High-end smartphone.', 1),
+       ('T-shirt', 29.99, 'Cotton T-shirt.', 2),
+       ('Java Programming Book', 49.99, 'Learn Java programming.', 3),
+       ('Laptop', 999.99, 'Powerful laptop.', 1),
+       ('Running Shoes', 79.99, 'Lightweight running shoes.', 2),
+       ('Python Book', 39.99, 'Master Python programming.', 3),
+       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4),
+       ('Denim Jeans', 49.99, 'Classic denim jeans.', 2),
+       ('Fishing Rod', 39.99, 'Professional fishing rod.', 6),
+       ('Hair Dryer', 29.99, 'Ionic hair dryer.', 7),
+       ('Board Game', 19.99, 'Family board game.', 8),
+       ('Rice', 2.99, 'Long-grain white rice.', 9);
 
 
 CREATE OR REPLACE FUNCTION CHECK_ROLE_ROLES_ENUM_FUNCTION(role TEXT) RETURNS BOOLEAN AS
 $$
 BEGIN
-    RETURN role IN (SELECT TEXT_ROLE::text
-                    FROM (SELECT UNNEST(ENUM_RANGE(NULL::ROLES)) AS TEXT_ROLE) as SUB_QUERY);
+    RETURN role IN (SELECT TEXT_ROLE::TEXT
+                    FROM (SELECT UNNEST(ENUM_RANGE(NULL::ROLES)) AS TEXT_ROLE) AS TEXT_ROLES);
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE PLPGSQL;
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Credentials
 (
-    id          SERIAL                                                                   NOT NULL PRIMARY KEY,
-    password    VARCHAR(72)                                                              NOT NULL,
-    username    VARCHAR(10)                                                              NOT NULL,
-    role        VARCHAR(30)                                                              NOT NULL DEFAULT 'ROLE_SELLER_AND_BUYER',
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    id          SERIAL                                                                               NOT NULL PRIMARY KEY,
+    password    VARCHAR(72)                                                                          NOT NULL,
+    username    VARCHAR(10)                                                                          NOT NULL,
+    role        VARCHAR(30)                                                                          NOT NULL DEFAULT 'ROLE_SELLER_AND_BUYER',
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT credentials_username_unique UNIQUE (username),
     CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(MarketNexus.Credentials.role) >= 10),
     CONSTRAINT credentials_role_valid_check CHECK (MarketNexus.CHECK_ROLE_ROLES_ENUM_FUNCTION(role)),
@@ -192,7 +194,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Credentials
     --CONSTRAINT credentials_username_valid__check CHECK (MarketNexus.Credentials.username ~ ''::TEXT),
     CONSTRAINT credentials_password_min_check CHECK (LENGTH(MarketNexus.Credentials.password) >= 60),
     CONSTRAINT credentials_id_min_value_check CHECK (MarketNexus.Credentials.id >= 1),
-    --CONSTRAINT credentials_insertedat_min_value_check CHECK (MarketNexus.Users.inserted_at >= NOW() - INTERVAL '1 minutes'),
+    --CONSTRAINT credentials_insertedat_min_value_check CHECK (MarketNexus.Users.inserted_at >= CURRENT_TIMESTAMP - INTERVAL '1 minutes'),
     CONSTRAINT credentials_insertedat_updatedat_value_check CHECK (MarketNexus.Credentials.inserted_at <=
                                                                    MarketNexus.Credentials.updated_at)
 );
@@ -236,8 +238,9 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Users
     CONSTRAINT users_name_min_length_check CHECK (LENGTH(MarketNexus.Users.name) >= 3),
     CONSTRAINT users_id_min_value_check CHECK (MarketNexus.Users.id >= 1),
     CONSTRAINT users_surname_min_length_check CHECK (LENGTH(MarketNexus.Users.surname) >= 3),
-    CONSTRAINT users_birthdate_min_value_check CHECK (MarketNexus.Users.birthdate >= (NOW() - INTERVAL '100 years')),
-    CONSTRAINT users_birthdate_max_value_check CHECK (MarketNexus.Users.birthdate <= NOW()),
+    CONSTRAINT users_birthdate_min_value_check CHECK (MarketNexus.Users.birthdate >=
+                                                      (CURRENT_TIMESTAMP - INTERVAL '100 years')),
+    CONSTRAINT users_birthdate_max_value_check CHECK (MarketNexus.Users.birthdate <= CURRENT_TIMESTAMP),
     CONSTRAINT users_email_min_length_check CHECK (LENGTH(MarketNexus.Users.email) >= 3),
     CONSTRAINT users_email_valid_check CHECK (MarketNexus.Users.email ~
                                               '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'::TEXT),
@@ -253,20 +256,20 @@ ALTER TABLE MarketNexus.Users
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Users (name, surname, email, birthdate, balance, credentials, nation)
-VALUES ('Matteo', 'Lambertucci', 'matteolambertucci@gmail.com', '2024-03-14', 22, 1, 1),
+VALUES ('Matteo', 'Lambertucci', 'matteolambertucci@gmail.com', '2024-03-14', 220, 1, 1),
        ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2, 2),
        ('Gabriel', 'Muscedere', 'gabrielmuscedere@gmail.com', '2002-03-27', 0.1, 3, 6);
 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Sales
 (
-    id          SERIAL                                                                   NOT NULL PRIMARY KEY,
-    _user       INTEGER                                                                  NOT NULL,
-    product     INTEGER                                                                  NOT NULL,
-    quantity    INTEGER                                                                  NOT NULL,
-    sale_price  FLOAT                                                                    NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    id          SERIAL                                                                               NOT NULL PRIMARY KEY,
+    _user       INTEGER                                                                              NOT NULL,
+    product     INTEGER                                                                              NOT NULL,
+    quantity    INTEGER                                                                              NOT NULL,
+    sale_price  FLOAT                                                                                NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT sales_user_product_insertedat_unique UNIQUE (_user, product, inserted_at),
     CONSTRAINT sale_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
     CONSTRAINT sale_products_fk FOREIGN KEY (product) REFERENCES MarketNexus.Products (id) ON DELETE CASCADE,
@@ -277,13 +280,13 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Sales
     CONSTRAINT sale_quantity_max_value_check CHECK (MarketNexus.Sales.quantity <= 10),
     CONSTRAINT sale_saleprice_min_value_check CHECK (MarketNexus.Sales.quantity > 0),
     CONSTRAINT sale_saleprice_max_value_check CHECK (MarketNexus.Sales.quantity <= 10000),
-    -- CONSTRAINT sale_insertedat_min_value_check CHECK (MarketNexus.Sales.inserted_at >= NOW()),
+    -- CONSTRAINT sale_insertedat_min_value_check CHECK (MarketNexus.Sales.inserted_at >= CURRENT_TIMESTAMP),
     CONSTRAINT sale_insertedat_updatedat_value_check CHECK (MarketNexus.Sales.inserted_at <=
                                                             MarketNexus.Sales.updated_at)
 );
 
 CREATE
-    OR REPLACE TRIGGER sale_updatedat_trigger
+    OR REPLACE TRIGGER SALE_UPDATEDAT_TRIGGER
     BEFORE
         UPDATE
     ON MarketNexus.Sales
@@ -300,10 +303,9 @@ BEGIN
          FROM MarketNexus.Products p
                   JOIN MarketNexus.Sales s ON p.id = s.product
          WHERE s.id = NEW.ID) = TRUE) THEN
-
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'sale_price error with this Sale ID: % .' , NEW.ID;
+        RAISE EXCEPTION 'Sale sale_price error with this Sale ID: % .' , NEW.ID;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
@@ -331,7 +333,7 @@ BEGIN
          WHERE s.id = NEW.ID) = TRUE) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'User Sale Credentials role error, with this User ID: % .' , NEW.ID;
+        RAISE EXCEPTION 'User Sale Credentials role error, with this Sale ID: % .' , NEW.ID;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
@@ -359,29 +361,65 @@ VALUES (1, 2, 2, 59.98),
        (2, 7, 2, 179.98);
 
 INSERT INTO MarketNexus.Sales(_user, product, quantity, sale_price, inserted_at)
-VALUES (1, 1, 1, 599.99, NOW() - INTERVAL '1 days');
+VALUES (1, 1, 1, 599.99, CURRENT_TIMESTAMP - INTERVAL '1 days');
 
+
+CREATE TABLE IF NOT EXISTS MarketNexus.Carts
+(
+    id          SERIAL                                                                               NOT NULL PRIMARY KEY,
+    cart_price  FLOAT                                                                                NOT NULL,
+    _user       INTEGER,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
+    CONSTRAINT carts_user_insertedat_insertedat_unique UNIQUE (_user, inserted_at),
+    CONSTRAINT carts_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
+    CONSTRAINT carts_id_min_value_check CHECK (MarketNexus.Carts.id >= 1),
+    CONSTRAINT carts_cartprice_min_value_check CHECK (MarketNexus.Carts.cart_price >= 0),
+    CONSTRAINT carts_user_min_value_check CHECK (MarketNexus.Carts._user >= 1),
+    -- CONSTRAINT carts_insertedat_min_value_check CHECK (MarketNexus.cart_line_items.inserted_at >= CURRENT_TIMESTAMP),
+    CONSTRAINT carts_insertedat_updatedat_value_check CHECK (MarketNexus.Carts.inserted_at <=
+                                                             MarketNexus.Carts.updated_at)
+);
+
+CREATE
+    OR REPLACE TRIGGER CARTLINEITEMS_UPDATEDAT_TRIGGER
+    BEFORE
+        UPDATE
+    ON MarketNexus.Carts
+    FOR EACH ROW
+EXECUTE
+    FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
+
+COMMENT ON TABLE MarketNexus.Carts IS 'MarketNexus User Cart.';
+
+ALTER TABLE MarketNexus.Carts
+    OWNER TO postgres;
+
+INSERT INTO MarketNexus.Carts(cart_price, _user)
+VALUES (179.98, 1),
+       (0, 2),
+       (0, 3);
 
 CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
 (
-    id          SERIAL                                                                   NOT NULL PRIMARY KEY,
-    _user       INTEGER                                                                  NOT NULL,
-    sale        INTEGER                                                                  NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    CONSTRAINT cartlineitems_user_sale_insertedat_unique UNIQUE (_user, sale, inserted_at),
-    CONSTRAINT carts_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
-    CONSTRAINT carts_sale_fk FOREIGN KEY (sale) REFERENCES MarketNexus.Sales (id) ON DELETE CASCADE,
-    CONSTRAINT carts_id_min_value_check CHECK (MarketNexus.cart_line_items.id >= 1),
-    CONSTRAINT carts_user_min_value_check CHECK (MarketNexus.cart_line_items._user >= 1),
-    CONSTRAINT carts_sale_min_value_check CHECK (MarketNexus.cart_line_items.sale >= 1),
-    -- CONSTRAINT carts_insertedat_min_value_check CHECK (MarketNexus.cart_line_items.inserted_at >= NOW()),
-    CONSTRAINT carts_insertedat_updatedat_value_check CHECK (MarketNexus.cart_line_items.inserted_at <=
-                                                             MarketNexus.cart_line_items.updated_at)
+    id          SERIAL                                                                               NOT NULL PRIMARY KEY,
+    cart        INTEGER                                                                              NOT NULL,
+    sale        INTEGER                                                                              NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
+    CONSTRAINT cartlineitems_cart_sale_insertedat_unique UNIQUE (cart, sale, inserted_at),
+    CONSTRAINT cartlineitems_carts_fk FOREIGN KEY (cart) REFERENCES MarketNexus.Carts (id) ON DELETE CASCADE,
+    CONSTRAINT cartlineitems_sale_fk FOREIGN KEY (sale) REFERENCES MarketNexus.Sales (id) ON DELETE CASCADE,
+    CONSTRAINT cartlineitems_id_min_value_check CHECK (MarketNexus.cart_line_items.id >= 1),
+    CONSTRAINT cartlineitems_cart_min_value_check CHECK (MarketNexus.cart_line_items.cart >= 1),
+    CONSTRAINT cartlineitems_sale_min_value_check CHECK (MarketNexus.cart_line_items.sale >= 1),
+    -- CONSTRAINT cartlineitems_insertedat_min_value_check CHECK (MarketNexus.cart_line_items.inserted_at >= CURRENT_TIMESTAMP),
+    CONSTRAINT cartlineitems_insertedat_updatedat_value_check CHECK (MarketNexus.cart_line_items.inserted_at <=
+                                                                     MarketNexus.cart_line_items.updated_at)
 );
 
-CREATE -- ...
-    OR REPLACE TRIGGER CARTS_UPDATEDAT_TRIGGER
+CREATE
+    OR REPLACE TRIGGER CARTLINEITEMS_UPDATEDAT_TRIGGER
     BEFORE
         UPDATE
     ON MarketNexus.cart_line_items
@@ -398,14 +436,14 @@ BEGIN
                     WHEN (c.role = 'SELLER_AND_BUYER_ROLE' OR c.role = 'BUYER_ROLE')
                         THEN TRUE
                     ELSE FALSE END AS are_equals
-         FROM cart_line_items cli
+         FROM MarketNexus.cart_line_items cli
                   JOIN MarketNexus.Sales s ON cli.sale = s.id
                   JOIN MarketNexus.Users u ON s._user = u.id
                   JOIN MarketNexus.Credentials c ON u.credentials = c.id
          WHERE cli.id = NEW.ID) = TRUE) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'User Cart Credentials role error, with this User ID: % .' , NEW.ID;
+        RAISE EXCEPTION 'User Cart Credentials role error, with this Cart_Line_Item ID: % .' , NEW.ID;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
@@ -419,22 +457,24 @@ CREATE
 EXECUTE
     FUNCTION MarketNexus.CHECK_CART_USER_CREDENTIALS_ROLE_FUNCTION();
 
+
 CREATE
     OR REPLACE FUNCTION CHECK_CART_USER_SALE_FUNCTION()
     RETURNS TRIGGER AS
 $$
 BEGIN
     IF ((SELECT CASE
-                    WHEN (cli._user <> s._user)
+                    WHEN (c._user <> s._user)
                         THEN TRUE
                     ELSE FALSE END AS are_equals
          FROM cart_line_items cli
+                  JOIN MarketNexus.Carts c ON cli.cart = c.id
                   JOIN MarketNexus.Sales s ON cli.sale = s.id
                   JOIN MarketNexus.Users u ON s._user = u.id
          WHERE cli.id = NEW.ID) = TRUE) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'User that add to Cart him sale error, with this User ID: % .' , NEW.ID;
+        RAISE EXCEPTION 'User that adds to Cart him sale error, with this cart_line_items ID: % .' , NEW.ID;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
@@ -448,35 +488,88 @@ CREATE
 EXECUTE
     FUNCTION MarketNexus.CHECK_CART_USER_SALE_FUNCTION();
 
-COMMENT ON TABLE MarketNexus.cart_line_items IS 'User who puts a sale product in his cart.';
+
+
+CREATE OR REPLACE FUNCTION GET_CARTLINEITEMS_COUNT_FROM_CARTID(cart_id BIGINT)
+    RETURNS INTEGER AS
+$$
+DECLARE
+    cartLineItemsNumberFromCartId INTEGER;
+BEGIN
+    SELECT COUNT(DISTINCT cli.id)
+    FROM MarketNexus.Carts c
+             JOIN MarketNexus.cart_line_items cli ON cli.cart = c.id
+    WHERE c.id = cart_id
+    INTO cartLineItemsNumberFromCartId;
+    RETURN cartLineItemsNumberFromCartId;
+END;
+$$ LANGUAGE PLPGSQL;
+
+SELECT *
+from GET_CARTLINEITEMS_COUNT_FROM_CARTID(4);
+
+
+/*
+CREATE
+    OR REPLACE FUNCTION CHECK_CART_CARTPRICE_VALUE_FUNCTION()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF ((SELECT CASE
+                    WHEN (c.cart_price = (s.sale_price * (SELECT getCartLineItemsNumberFromCartId(NEW.id)))) THEN TRUE
+                    ELSE FALSE END AS are_equals
+         FROM MarketNexus.Carts c
+                  JOIN MarketNexus.cart_line_items cli ON cli.cart = c.id
+                  JOIN MarketNexus.Sales s ON cli.sale = s.id
+                  JOIN MarketNexus.Products p ON s.product = p.id
+         WHERE c.id = NEW.id) = TRUE) THEN
+        RETURN NEW;
+    ELSE
+        RAISE EXCEPTION 'Cart cart_price error with this Cart ID: % .' , NEW.ID;
+    END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE
+    OR REPLACE TRIGGER CART_CARTPRICE_VALUE_TRIGGER
+    AFTER
+        INSERT
+    ON MarketNexus.Carts
+    FOR EACH ROW
+EXECUTE
+    FUNCTION MarketNexus.CHECK_CART_CARTPRICE_VALUE_FUNCTION();
+
+*/
+
+COMMENT ON TABLE MarketNexus.cart_line_items IS 'MarketNexus User who puts a Sale Product in his Cart.';
 
 ALTER TABLE MarketNexus.cart_line_items
     OWNER TO postgres;
 
-INSERT INTO MarketNexus.cart_line_items(_user, sale)
+INSERT INTO MarketNexus.cart_line_items(cart, sale)
 VALUES (1, 6);
 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Orders
 (
-    id          SERIAL                                                                   NOT NULL PRIMARY KEY,
-    _user       INTEGER                                                                  NOT NULL,
-    cart        INTEGER                                                                  NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, NOW()) NOT NULL,
+    id          SERIAL                                                                               NOT NULL PRIMARY KEY,
+    _user       INTEGER                                                                              NOT NULL,
+    cart        INTEGER                                                                              NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT orders_user_cart_insertedat_unique UNIQUE (_user, cart, inserted_at),
     CONSTRAINT orders_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
-    CONSTRAINT orders_carts_fk FOREIGN KEY (cart) REFERENCES MarketNexus.cart_line_items (id) ON DELETE CASCADE,
+    CONSTRAINT orders_carts_fk FOREIGN KEY (cart) REFERENCES MarketNexus.Carts (id) ON DELETE CASCADE,
     CONSTRAINT orders_id_min_value_check CHECK (MarketNexus.Orders.id >= 1),
     CONSTRAINT orders_user_min_value_check CHECK (MarketNexus.Orders._user >= 1),
-    CONSTRAINT orders_sale_min_value_check CHECK (MarketNexus.Orders.cart >= 1),
-    --CONSTRAINT orders_insertedat_min_value_check CHECK (MarketNexus.Orders.inserted_at >= NOW()),
+    CONSTRAINT orders_cart_min_value_check CHECK (MarketNexus.Orders.cart >= 1),
+    --CONSTRAINT orders_insertedat_min_value_check CHECK (MarketNexus.Orders.inserted_at >= CURRENT_TIMESTAMP),
     CONSTRAINT orders_insertedat_updatedat_value_check CHECK (MarketNexus.Orders.inserted_at <=
                                                               MarketNexus.Orders.updated_at)
 );
 
 CREATE
-    OR REPLACE TRIGGER orders_updatedat_trigger
+    OR REPLACE TRIGGER ORDERS_UPDATED_AT_TRIGGER
     BEFORE
         UPDATE
     ON MarketNexus.Orders
@@ -484,43 +577,119 @@ CREATE
 EXECUTE
     FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
+
 /*
-for order
 CREATE
-    OR REPLACE FUNCTION CHECK_CART_USER_SALE_FUNCTION()
+    OR REPLACE FUNCTION CHECK_ORDER_USER_SALE_FUNCTION()
     RETURNS TRIGGER AS
 $$
 BEGIN
     IF ((SELECT CASE
-                    WHEN (cli._user <> s._user)
+                    WHEN (o._user = s._user)
                         THEN TRUE
                     ELSE FALSE END AS are_equals
-         FROM cart_line_items cli
+         FROM MarketNexus.Orders o
+                  JOIN MarketNexus.Carts c ON o.cart = c.id
+                  JOIN MarketNexus.cart_line_items cli ON cli.cart = c.id
                   JOIN MarketNexus.Sales s ON cli.sale = s.id
-                  JOIN MarketNexus.Users u ON s._user = u.id
-         WHERE cli.id = NEW.ID) = TRUE) THEN
+         WHERE o.id = NEW.ID) = TRUE) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'User that add to Cart him sale error, with this User ID: % .' , NEW.ID;
+        RAISE EXCEPTION 'User that Order his Sale error, with this Order ID: % .' , NEW.ID;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
 
 CREATE
-    OR REPLACE TRIGGER CART_USER_SALE_FUNCTION_TRIGGER
+    OR REPLACE TRIGGER ORDER_USER_SALE_FUNCTION_TRIGGER
     AFTER
         INSERT
-    ON MarketNexus.cart_line_items
+    ON MarketNexus.Orders
     FOR EACH ROW
 EXECUTE
-    FUNCTION MarketNexus.CHECK_CART_USER_SALE_FUNCTION();
+    FUNCTION MarketNexus.CHECK_ORDER_USER_SALE_FUNCTION();
 */
 
-COMMENT ON TABLE MarketNexus.Orders IS 'User who buys sale products that are in his cart.';
+COMMENT ON TABLE MarketNexus.Orders IS 'MarketNexus User who buys all Sale Products that are in his Cart.';
 
 ALTER TABLE MarketNexus.Orders
     OWNER TO postgres;
-
+/*
 INSERT INTO MarketNexus.Orders(_user, cart)
 VALUES (1, 1);
+*/
 
+DROP FUNCTION IF EXISTS GET_USER_SALES_STATS();
+
+CREATE OR REPLACE FUNCTION GET_USER_SALES_STATS(user_id BIGINT)
+    RETURNS TABLE
+            (
+                day           TEXT,
+                numberOfSales BIGINT
+            )
+AS
+$$
+BEGIN
+    RETURN QUERY
+        WITH RECURSIVE date_series AS (SELECT CURRENT_TIMESTAMP AS date
+                                       UNION ALL
+                                       SELECT (date - INTERVAL '1 day')
+                                       FROM date_series
+                                       WHERE date_series.date > (CURRENT_TIMESTAMP - INTERVAL '6 days'))
+        SELECT TO_CHAR(date_series.date, 'yyyy-MM-dd') AS day,
+               COALESCE(COUNT(DISTINCT cli.id), 0)     AS numberOfSales
+        FROM date_series
+                 LEFT JOIN MarketNexus.Sales s
+                           ON CAST(date_series.date AS DATE) = CAST(s.inserted_at AS DATE) AND s._user = user_id
+                 LEFT JOIN MarketNexus.cart_line_items cli ON cli.sale = s.id
+                 LEFT JOIN MarketNexus.Carts c ON cli.cart = c.id
+                 LEFT JOIN MarketNexus.Orders o ON o.cart = c.id
+        GROUP BY date_series.date
+        ORDER BY date_series.date;
+END
+$$ LANGUAGE PLPGSQL;
+
+DROP FUNCTION IF EXISTS GET_USERS_SALES_STATS();
+
+CREATE OR REPLACE FUNCTION GET_USERS_SALES_STATS()
+    RETURNS TABLE
+            (
+                user_username VARCHAR,
+                MIN           BIGINT,
+                MAX           BIGINT,
+                TOT           NUMERIC,
+                AVG           NUMERIC,
+                "%"           TEXT
+            )
+AS
+$$
+BEGIN
+    RETURN QUERY
+        SELECT userAndDayToSalesPublished.user_username,
+               MIN(salesPublishedPerDay)           AS MIN,
+               MAX(salesPublishedPerDay)           AS MAX,
+               SUM(salesPublishedPerDay)           AS TOT,
+               ROUND(AVG(salesPublishedPerDay), 2) AS AVG,
+               CAST((ROUND(
+                             CAST(
+                                     (
+                                         CAST(SUM(salesPublishedPerDay) AS FLOAT) /
+                                         (SELECT COUNT(DISTINCT id) FROM Sales)
+                                         ) AS NUMERIC
+                             ),
+                             2
+                     ) * 100) AS TEXT) || ' %'     AS "%"
+        FROM (SELECT c.username           AS user_username,
+                     s.inserted_at,
+                     COUNT(DISTINCT s.id) AS salesPublishedPerDay
+              FROM Users u
+                       JOIN Credentials c ON u.credentials = c.id
+                       LEFT JOIN Sales s ON s._user = u.id
+              GROUP BY c.username, s.inserted_at
+              ORDER BY salesPublishedPerDay DESC) AS userAndDayToSalesPublished
+        GROUP BY userAndDayToSalesPublished.user_username;
+END
+$$ LANGUAGE PLPGSQL;
+
+SELECT *
+FROM GET_USERS_SALES_STATS();

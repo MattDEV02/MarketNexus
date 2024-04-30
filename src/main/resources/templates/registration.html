@@ -3,148 +3,186 @@
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Registration')}">
 </head>
-
+<link rel="stylesheet" th:href="@{/css/registration/style.css}"/>
 <body>
-
-<div>
-   <a th:href="@{/}">Home</a>
-   <a th:href="@{/login}">Login</a>
+<div class="container">
+   <div class="row justify-content-center">
+      <div class="col-12 my-5">
+         <div class="row justify-content-center">
+            <div class="col-12 col-sm-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6 shadow border rounded px-5 pt-4 pb-2"
+                 th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' registration form.'">
+               <div class="row text-center mt-2 mb-4">
+                  <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Registration 🕵️‍♂️'"></h1>
+               </div>
+               <form id="registration-form" method="POST" name="registration-form"
+                     th:action="@{/registerNewUser}">
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${userNotRegisteredError}, condition = ${userNotRegisteredError != null})}"></div>
+                  <div class="mb-3">
+                     <label class="form-label" for="name">Name:</label>
+                     <input class="form-control py-2" id="name" name="name"
+                            placeholder="Insert your name"
+                            required th:field="${user.name}"
+                            th:maxlength="${FIELD_SIZES_MAP.get('NAME_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('NAME_MIN_LENGTH')}"
+                            th:object="${user}" title="Insert your name" type="text"/>
+                     <div
+                           th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.name')}"></div>
+                  </div>
+                  <div class="mb-3">
+                     <label class="form-label" for="surname">Surname:</label>
+                     <input class="form-control py-2" id="surname" name="surname"
+                            placeholder="Insert your surname"
+                            required th:field="${user.surname}"
+                            th:maxlength="${FIELD_SIZES_MAP.get('SURNAME_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('SURNAME_MIN_LENGTH')}"
+                            th:object="${user}" title="Insert your surname"
+                            type="text"/>
+                     <div
+                           th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.surname')}"></div>
+                  </div>
+                  <div class="mb-3">
+                     <label class="form-label" for="birth-date">Date of birth:</label>
+                     <input class="form-control py-2" id="birth-date" name="birth-date"
+                            required
+                            th:field="${user.birthDate}" th:fieldFormat="${TEMPORALS_MAP.get('DATE_FORMAT')}"
+                            th:format="${TEMPORALS_MAP.get('DATE_FORMAT')}"
+                            th:max="${TEMPORALS_MAP.get('BIRTHDATE_MAX_VALUE')}"
+                            th:min="${TEMPORALS_MAP.get('BIRTHDATE_MIN_VALUE')}"
+                            th:object="${user}"
+                            title="Insert your date of birth" type="date"/>
+                     <div
+                           th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.birthDate')}"></div>
+                  </div>
+                  <div class="mb-3">
+                     <label class="form-label" for="balance">Balance ($):</label>
+                     <input class="form-control py-2" id="balance" name="balance" placeholder="Insert your balance ($)"
+                            required step="0.1"
+                            th:field="${user.balance}"
+                            th:max="${FIELD_SIZES_MAP.get('BALANCE_MAX_VALUE') *2}"
+                            th:min="${FIELD_SIZES_MAP.get('BALANCE_MIN_VALUE')}"
+                            th:object="${user}" title="Insert your balance" type="number"/>
+                     <div
+                           th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.balance')}"></div>
+                  
+                  </div>
+                  <div class="mb-3">
+                     <label class="form-label" for="email">Email:</label>
+                     <input class="form-control py-2" id="email" name="email"
+                            placeholder="Insert your email"
+                            required th:field="${user.email}" th:maxlength="${FIELD_SIZES_MAP.get('EMAIL_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('EMAIL_MIN_LENGTH')}"
+                            th:object="${user}" title="Insert your email" type="email"/>
+                     <div
+                           th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.email')}"></div>
+                     <div
+                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${emailUniqueError}, condition = ${emailUniqueError != null})}"></div>
+                  </div>
+                  
+                  <div class="mb-3">
+                     <label class="form-label" for="username">Username:</label>
+                     <input class="form-control py-2" id="username" name="username"
+                            placeholder="Insert your username" required th:field="${credentials.username}"
+                            th:maxlength="${FIELD_SIZES_MAP.get('USERNAME_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('USERNAME_MIN_LENGTH')}"
+                            th:object="${credentials}"
+                            th:title="'Insert your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' username'"
+                            type="text">
+                     <div
+                           th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.username')}"></div>
+                     <div
+                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${usernameUniqueError}, condition = ${usernameUniqueError != null})}"></div>
+                  </div>
+                  
+                  <div class="mb-3">
+                     <label class="form-label" for="password">Password:</label>
+                     <div class="input-group">
+                        <input aria-describedby="toggle-password-visibility" aria-label="Password"
+                               class="form-control py-2"
+                               id="password" name="password" placeholder="Insert your password"
+                               required
+                               th:field="${credentials.password}"
+                               th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
+                               th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
+                               th:title="'Insert your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' password'"
+                               type="password"/>
+                        <div
+                              th:replace="~{fragments/shared/showPasswordButton.html :: showPasswordButton()}"></div>
+                     </div>
+                     <div
+                           th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.password')}"></div>
+                     <div
+                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${passwordFormatError}, condition = ${passwordFormatError != null})}"></div>
+                  </div>
+                  <div class="mb-3">
+                     <label class="form-label" for="confirm-password">Confirm Password:</label>
+                     <input class="form-control py-2" id="confirm-password" name="confirm-password"
+                            placeholder="Confirm your password"
+                            required th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
+                            th:title="'Confirm your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' username'"
+                            type="password"/>
+                     <div
+                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${passwordDifferentFromConfirmPasswordError}, condition = ${passwordDifferentFromConfirmPasswordError != null})}"></div>
+                  </div>
+                  
+                  <div class="mb-3">
+                     <label class="form-label" for="nation">Nation:</label>
+                     <select class="form-control form-select py-2" id="nation" name="nation" required
+                             th:field="${user.nation}" th:object="${user}" title="Insert your Nation">
+                        <option th:each="nationEntry : ${nationsMap}" th:field="${user.nation}"
+                                th:id="${nationEntry.value.name + '#' + nationEntry.key}"
+                                th:name="${nationEntry.value.name + '#' + nationEntry.key}"
+                                th:text="${nationEntry.value.name}" th:value="${nationEntry.key}"></option>
+                     </select>
+                     <div
+                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${nationNotExistsError}, condition = ${nationNotExistsError != null})}"></div>
+                  </div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
+                  <div class="mb-3">
+                     <label class="form-label" for="role">Role:</label>
+                     <select class="form-control form-select py-2" id="role" name="role" required
+                             th:field="${credentials.role}" th:object="${credentials}"
+                             th:title="'Insert your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' role'">
+                        <option th:each="roleEntry : ${ALL_ROLES_MAP}" th:field="${credentials.role}"
+                                th:id="${roleEntry.key + '#role' }"
+                                th:name="${roleEntry.key + '#role' }"
+                                th:selected="${roleEntry.key.contains('AND')}"
+                                th:text="${#strings.capitalize(roleEntry.key.toLowerCase().replace('_', ' '))}"
+                                th:value="${roleEntry.value}"></option>
+                     </select>
+                     <div
+                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${roleNotExistsError}, condition = ${roleNotExistsError != null})}"></div>
+                  </div>
+                  <div class="my-4">
+                     <button class="btn btn-primary form-control py-2 fw-bold mt-2" form="registration-form"
+                             formmethod="POST"
+                             id="submit"
+                             name="submit" th:title="'Register in ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')}"
+                             type="submit">
+                        Register
+                        <i class="fas fa-registered mx-1"></i>
+                     </button>
+                  </div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
+               </form>
+               <div class="col-12">
+                  <div class="row text-center" id="registration-footer">
+                     <p>
+                        <a class="text-decoration-none mx-4" th:href="@{/}"
+                           th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' home'">Home</a>
+                        <a class="text-decoration-none mx-4" th:href="@{/login}"
+                           th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' login'">Login</a>
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
-<h1>Registrazione nuovo utente</h1>
-<form id="registration-form" method="POST" name="registration-form"
-      th:action="@{/registerNewUser}">
-   <div
-         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${userNotRegisteredError}, condition = ${userNotRegisteredError != null})}"></div>
-   <div>
-      <label for="name">Nome:</label>
-      <input id="name" name="name" placeholder="Insert your name" required th:field="${user.name}"
-             th:maxlength="${FIELD_SIZES_MAP.get('NAME_MAX_LENGTH')}"
-             th:minlength="${FIELD_SIZES_MAP.get('NAME_MIN_LENGTH')}" th:object="${user}" type="text"/>
-      <div
-            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.name')}"></div>
-      <br><br>
-   </div>
-   <div>
-      <label for="surname">Surname:</label>
-      <input id="surname" name="surname"
-             placeholder="Insert your surname" required th:field="${user.surname}"
-             th:maxlength="${FIELD_SIZES_MAP.get('SURNAME_MAX_LENGTH')}"
-             th:minlength="${FIELD_SIZES_MAP.get('SURNAME_MIN_LENGTH')}" th:object="${user}" type="text"/>
-      <div
-            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.surname')}"></div>
-      <br><br>
-   </div>
-   
-   <div>
-      <label for="birth-date">Date of birth:</label>
-      <input id="birth-date" name="birth-date"
-             required th:field="${user.birthDate}" th:fieldFormat="${TEMPORALS_MAP.get('DATE_FORMAT')}"
-             th:format="${TEMPORALS_MAP.get('DATE_FORMAT')}"
-             th:max="${TEMPORALS_MAP.get('BIRTHDATE_MAX_VALUE')}" th:min="${TEMPORALS_MAP.get('BIRTHDATE_MIN_VALUE')}"
-             th:object="${user}" type="date"/>
-      <div
-            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.birthDate')}"></div>
-      <br><br>
-   </div>
-   
-   <div>
-      <label for="balance">Balance ($):</label>
-      <input id="balance" name="balance" placeholder="Insert your balance ($)" required step="0.1"
-             th:field="${user.balance}" th:max="${FIELD_SIZES_MAP.get('BALANCE_MAX_VALUE') *2}"
-             th:min="${FIELD_SIZES_MAP.get('BALANCE_MIN_VALUE')}" th:object="${user}" type="number"/>
-      <div
-            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.balance')}"></div>
-      <br><br>
-   </div>
-   
-   <div>
-      <label for="email">Email:</label>
-      <input id="email" name="email"
-             placeholder="Insert your email" required th:field="${user.email}"
-             th:maxlength="${FIELD_SIZES_MAP.get('EMAIL_MAX_LENGTH')}"
-             th:minlength="${FIELD_SIZES_MAP.get('EMAIL_MIN_LENGTH')}" th:object="${user}" type="email"/>
-      <div
-            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.email')}"></div>
-      <div
-            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${emailUniqueError}, condition = ${emailUniqueError != null})}"></div>
-      <br><br>
-   </div>
-   
-   <div>
-      <label for="username">Username:</label>
-      <input id="username" name="username"
-             placeholder="Insert your username" required th:field="${credentials.username}"
-             th:maxlength="${FIELD_SIZES_MAP.get('USERNAME_MAX_LENGTH')}"
-             th:minlength="${FIELD_SIZES_MAP.get('USERNAME_MIN_LENGTH')}"
-             th:object="${credentials}" type="text">
-      <div
-            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.username')}"></div>
-      <div
-            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${usernameUniqueError}, condition = ${usernameUniqueError != null})}"></div>
-      <br><br>
-   </div>
-   
-   <div class="input-group">
-      <label for="password">Password:</label>
-      <input id="password" name="password"
-             placeholder="Insert your password" required th:field="${credentials.password}"
-             th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
-             th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}" th:object="${credentials}" type="password"/>
-      <button class="btn btn-outline-secondary" id="toggle-password-visibility" type="button">
-         <!-- Icona dell'occhio per mostrare/nascondere la password -->
-         <i class="fas fa-eye" id="eye-icon"></i>
-      </button>
-   </div>
-   <div
-         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.password')}"></div>
-   <div>
-      <div
-            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${passwordFormatError}, condition = ${passwordFormatError != null})}"></div>
-      <br>
-      <label for="confirm-password">Confirm Password:</label>
-      <input id="confirm-password" name="confirm-password"
-             placeholder="Confirm your password" required
-             th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
-             th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}" type="password"/>
-      <div
-            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${passwordDifferentFromConfirmPasswordError}, condition = ${passwordDifferentFromConfirmPasswordError != null})}"></div>
-      <br><br>
-   </div>
-   
-   <div>
-      <label for="nation">Nation:</label>
-      <select id="nation" name="nation" required th:field="${user.nation}" th:object="${user}">
-         <option th:each="nationEntry : ${nationsMap}" th:field="${user.nation}"
-                 th:id="${nationEntry.value.name + '#' + nationEntry.key}"
-                 th:name="${nationEntry.value.name + '#' + nationEntry.key}"
-                 th:text="${nationEntry.value.name}" th:value="${nationEntry.key}"></option>
-      </select>
-      <div
-            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${nationNotExistsError}, condition = ${nationNotExistsError != null})}"></div>
-      <br><br>
-   </div>
-   <div
-         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
-   <div>
-      <label for="nation">Role:</label>
-      <select id="role" name="role" required th:field="${credentials.role}" th:object="${credentials}">
-         <option th:each="roleEntry : ${ALL_ROLES_MAP}" th:field="${credentials.role}"
-                 th:id="${roleEntry.key + '#role' }"
-                 th:name="${roleEntry.key + '#role' }"
-                 th:selected="${roleEntry.key.contains('AND')}"
-                 th:text="${#strings.capitalize(roleEntry.key.toLowerCase().replace('_', ' '))}"
-                 th:value="${roleEntry.value}"></option>
-      </select>
-      <div
-            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${roleNotExistsError}, condition = ${roleNotExistsError != null})}"></div>
-      <br><br>
-   </div>
-   <div>
-      <input form="registration-form" formmethod="POST" id="submit" name="submit" type="submit" value="Register"/>
-   </div>
-   <div
-         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
-</form>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/maxDateInputValue.js}"
         type="text/javascript"></script>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/showPassword.js}"

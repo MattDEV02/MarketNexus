@@ -4,7 +4,7 @@
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Home')}">
 </head>
 <link rel="stylesheet" th:href="@{/css/home/style.css}"/>
-<body>
+<body class="fade-in">
 <div th:replace="~{fragments/shared/pagination/header/baseHeader.html :: baseHeader()}">
 </div>
 <main>
@@ -17,11 +17,13 @@
                reliable
                sellers, and embark on a journey to discover an array of amazing offerings.
             </p>
-            <a class="btn btn-primary mt-2" role="button" target="_blank" th:href="@{/register}">Explore Sales</a>
+            <a class="btn btn-primary mt-2" role="button" target="_blank" th:href="@{/registration}">Explore Sales</a>
          </div>
       </div>
    </div>
 </main>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/effects/index.js}"
+        type="text/javascript"></script>
 </body>
 
 </html>
