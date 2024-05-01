@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'FAQs')}">
 </head>

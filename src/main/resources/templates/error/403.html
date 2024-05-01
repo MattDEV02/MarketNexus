@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}"
       th:replace="~{fragments/shared/HTTPErrorPage.html :: HTTPErrorPage(statusCode = 403, statusMessage = 'Forbidden', subTitle = 'The server understood the request but refuses to authorize it.')}"
-      xmlns:th="http://www.thymeleaf.org">
+      th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 </html>

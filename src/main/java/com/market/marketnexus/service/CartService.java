@@ -4,6 +4,7 @@ import com.market.marketnexus.helpers.sale.Utils;
 import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.CartLineItem;
 import com.market.marketnexus.model.Sale;
+import com.market.marketnexus.model.User;
 import com.market.marketnexus.repository.CartLineItemRepository;
 import com.market.marketnexus.repository.CartRepository;
 import org.hibernate.Hibernate;
@@ -37,11 +38,22 @@ public class CartService {
       return this.cartRepository.findById(cartId).orElse(null);
    }
 
-   /*
+
    public Cart getCart(User user) {
       return this.cartRepository.findByUser(user).orElse(null);
    }
-   */
+
+   @Transactional
+   public void updateCartLineItemsSalesIsSold(Long cartId) {
+      Cart cart = this.getCart(cartId);
+      Hibernate.initialize(cart.getCartLineItems());
+      Set<CartLineItem> cartLineItems = cart.getCartLineItems();
+      Sale sale = null;
+      for (CartLineItem cartLineItem : cartLineItems) {
+         sale = cartLineItem.getSale();
+         sale.setIsSold(true);
+      }
+   }
 
    @Transactional
    public Set<CartLineItem> getAllCartLineItems(Long cartId) {

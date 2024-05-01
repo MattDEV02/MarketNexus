@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}"
       th:replace="~{fragments/shared/HTTPErrorPage.html :: HTTPErrorPage(statusCode = 404, statusMessage = 'Page Not Found', subTitle = 'The page got swallowed by a black hole...')}"
-      xmlns:th="http://www.thymeleaf.org">
+      th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 
 </html>

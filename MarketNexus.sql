@@ -163,12 +163,12 @@ VALUES ('Smartphone', 599.99, 'High-end smartphone.', 1),
        ('Laptop', 999.99, 'Powerful laptop.', 1),
        ('Running Shoes', 79.99, 'Lightweight running shoes.', 2),
        ('Python Book', 39.99, 'Master Python programming.', 3),
-       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4),
-       ('Denim Jeans', 49.99, 'Classic denim jeans.', 2),
-       ('Fishing Rod', 39.99, 'Professional fishing rod.', 6),
-       ('Hair Dryer', 29.99, 'Ionic hair dryer.', 7),
-       ('Board Game', 19.99, 'Family board game.', 8),
-       ('Rice', 2.99, 'Long-grain white rice.', 9);
+       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4);
+--('Denim Jeans', 49.99, 'Classic denim jeans.', 2),
+--('Fishing Rod', 39.99, 'Professional fishing rod.', 6),
+--('Hair Dryer', 29.99, 'Ionic hair dryer.', 7),
+--('Board Game', 19.99, 'Family board game.', 8),
+--('Rice', 2.99, 'Long-grain white rice.', 9);
 
 
 CREATE OR REPLACE FUNCTION CHECK_ROLE_ROLES_ENUM_FUNCTION(role TEXT) RETURNS BOOLEAN AS
@@ -267,6 +267,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Sales
     _user       INTEGER                                                                              NOT NULL,
     product     INTEGER                                                                              NOT NULL,
     quantity    INTEGER                                                                              NOT NULL,
+    is_sold     BOOLEAN                                                                              NOT NULL DEFAULT FALSE,
     sale_price  FLOAT                                                                                NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
@@ -637,17 +638,18 @@ BEGIN
                                        FROM date_series
                                        WHERE date_series.date > (CURRENT_TIMESTAMP - INTERVAL '6 days'))
         SELECT TO_CHAR(date_series.date, 'yyyy-MM-dd') AS day,
-               COALESCE(COUNT(DISTINCT cli.id), 0)     AS numberOfSales
+               COALESCE(COUNT(DISTINCT s.id), 0)       AS numberOfSales
         FROM date_series
                  LEFT JOIN MarketNexus.Sales s
                            ON CAST(date_series.date AS DATE) = CAST(s.inserted_at AS DATE) AND s._user = user_id
-                 LEFT JOIN MarketNexus.cart_line_items cli ON cli.sale = s.id
-                 LEFT JOIN MarketNexus.Carts c ON cli.cart = c.id
-                 LEFT JOIN MarketNexus.Orders o ON o.cart = c.id
+                               AND s.is_sold = TRUE
         GROUP BY date_series.date
         ORDER BY date_series.date;
 END
 $$ LANGUAGE PLPGSQL;
+
+SELECT *
+FROM GET_USER_SALES_STATS(2);
 
 DROP FUNCTION IF EXISTS GET_USERS_SALES_STATS();
 
@@ -687,9 +689,13 @@ BEGIN
                        LEFT JOIN Sales s ON s._user = u.id
               GROUP BY c.username, s.inserted_at
               ORDER BY salesPublishedPerDay DESC) AS userAndDayToSalesPublished
-        GROUP BY userAndDayToSalesPublished.user_username;
+        GROUP BY userAndDayToSalesPublished.user_username
+        LIMIT 5;
 END
 $$ LANGUAGE PLPGSQL;
 
 SELECT *
 FROM GET_USERS_SALES_STATS();
+
+
+

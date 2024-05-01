@@ -32,14 +32,16 @@
             </div>
             <div class="col-2" th:if="${!isOrder}">
                <div class="mt-5">
-                  <a class="btn btn-danger delete-cart-button" role="button"
-                     th:href="@{'/dashboard/cart/delete/' + ${cartLineItem.id}}"
-                     title="Remove from cart">
+                  <button class="btn btn-danger delete-cart-button" data-bs-target="#confirm-delete-cartlineitem-modal"
+                          data-bs-toggle="modal"
+                          title="Remove from cart"
+                          type="button">
                      <i class="fas fa-trash"></i>
-                  </a>
+                  </button>
                </div>
             </div>
          </div>
       </div>
    </div>
+   <div th:replace="~{fragments/dashboard/cart/modal/confirmDeleteCartLineItemModal.html :: confirmDeleteCartLineItemModal(cartLineItem = ${cartLineItem})}"></div>
 </div>

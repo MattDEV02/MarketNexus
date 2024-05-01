@@ -7,8 +7,10 @@
                <h3 class="card-title" th:text="${(isOrder ? 'Order' : 'Cart') + ' total'}"></h3>
                <p class="card-text text-secondary fw-bold" id="cart-total-text"
                   th:text="'Total: ' + ${cart.cartPrice} + ' $'"></p>
-               <a class="btn btn-success" id="make-order-button" role="button"
-                  th:href="@{'/dashboard/order/' + ${cart.id}}" th:if="${!isOrder}"
+               <a class="btn btn-success" data-bs-target="#confirm-order-modal" data-bs-toggle="modal"
+                  id="make-order-button" role="button"
+                  th:href="@{'/dashboard/order/' + ${cart.id}}"
+                  th:if="${!isOrder}"
                   title="Proceed to pay all the products in your cart">
                   Proceed to Payment
                   <i class="fas fa-receipt ms-1"></i>

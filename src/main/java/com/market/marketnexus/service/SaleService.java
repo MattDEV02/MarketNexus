@@ -8,6 +8,7 @@ import com.market.marketnexus.model.User;
 import com.market.marketnexus.repository.ProductCategoryRepository;
 import com.market.marketnexus.repository.ProductRepository;
 import com.market.marketnexus.repository.SaleRepository;
+import com.market.marketnexus.repository.UserRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,11 +28,15 @@ public class SaleService {
    protected ProductRepository productRepository;
    @Autowired
    protected ProductCategoryRepository productCategoryRepository;
+   @Autowired
+   protected UserRepository userRepository;
 
    @Transactional
    public Sale saveSale(@NotNull Sale sale, User user, Product product) {
       sale.setUser(user);
       sale.setProduct(product);
+      Float salePrice = this.calculateSalePrice(sale);
+      sale.setSalePrice(salePrice);
       return this.saleRepository.save(sale);
    }
 
@@ -40,7 +45,6 @@ public class SaleService {
       Float salePrice = this.calculateSalePrice(sale);
       sale.setSalePrice(salePrice);
       Sale savedSale = this.saleRepository.save(sale);
-      savedSale.getUser().getSales().add(savedSale); //
       return savedSale;
    }
 
@@ -50,24 +54,27 @@ public class SaleService {
    }
 
    public Set<Sale> getAllSalesByUser(User user) {
-      return this.saleRepository.findAllByUser(user);
-   }
-
-   public Set<Sale> getAllSales() {
       Set<Sale> result = new HashSet<Sale>();
-      Iterable<Sale> iterable = this.saleRepository.findAllByOrderByUpdatedAt();
-      for (Sale sale : iterable) {
-         result.add(sale);
+      Set<Sale> sales = this.saleRepository.findAllByUser(user);
+      for (Sale sale : sales) {
+         if (!sale.getIsSold()) {
+            result.add(sale);
+         }
       }
       return result;
    }
 
+   public Set<Sale> getAllSales() {
+      Set<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
+      return sales;
+   }
+
    public Set<Sale> getAllSalesByProductName(String productName) {
       Set<Sale> result = new HashSet<Sale>();
-      Set<Sale> sales = this.getAllSales();
+      Set<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
       Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCase(productName);
       for (Sale sale : sales) {
-         if (products.contains(sale.getProduct())) {
+         if (!sale.getIsSold() && products.contains(sale.getProduct())) {
             result.add(sale);
          }
       }
@@ -76,11 +83,11 @@ public class SaleService {
 
    public Set<Sale> getAllSalesByProductCategoryId(Long productCategoryId) {
       Set<Sale> result = new HashSet<Sale>();
-      Set<Sale> sales = this.getAllSales();
+      Set<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
       ProductCategory productCategory = this.productCategoryRepository.findById(productCategoryId).orElse(null);
       Set<Product> products = this.productRepository.findAllByCategory(productCategory);
       for (Sale sale : sales) {
-         if (products.contains(sale.getProduct())) {
+         if (!sale.getIsSold() && products.contains(sale.getProduct())) {
             result.add(sale);
          }
       }
@@ -89,22 +96,29 @@ public class SaleService {
 
    public Set<Sale> getAllSalesByProductNameAndProductCategoryId(String productName, Long productCategoryId) {
       Set<Sale> result = new HashSet<Sale>();
-      Set<Sale> sales = this.getAllSales();
+      Set<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
       ProductCategory productCategory = this.productCategoryRepository.findById(productCategoryId).orElse(null);
       Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCaseAndCategory(productName, productCategory);
       for (Sale sale : sales) {
-         if (products.contains(sale.getProduct())) {
+         if (!sale.getIsSold() && products.contains(sale.getProduct())) {
             result.add(sale);
          }
       }
       return result;
    }
 
-   public void deleteSales(Set<Sale> sales) {
-      this.saleRepository.deleteAll(sales);
+   public Set<Sale> getAllUserSoldSales(User user) {
+      Set<Sale> result = new HashSet<Sale>();
+      Set<Sale> sales = this.saleRepository.findAllByUser(user);
+      for (Sale sale : sales) {
+         if (sale.getIsSold()) {
+            result.add(sale);
+         }
+      }
+      return result;
    }
 
-   public List<Object[]> countCurrentWeekUserSales(@NotNull Long userId) {
+   public List<Object[]> countCurrentWeekUserSoldSales(@NotNull Long userId) {
       return this.saleRepository.countCurrentWeekUserSales(userId);
    }
 

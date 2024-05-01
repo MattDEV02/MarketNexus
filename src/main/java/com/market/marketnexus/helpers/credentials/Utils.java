@@ -31,6 +31,8 @@ public class Utils {
    public static void updateUserCredentialsAuthentication(@NotNull Credentials credentials) {
       Authentication currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
       UserDetails currentUserDetails = (UserDetails) currentAuthentication.getPrincipal();
+      System.out.println(currentUserDetails.getAuthorities());
+      System.out.println(currentAuthentication.getAuthorities());
       UserDetails newPrincipal = new org.springframework.security.core.userdetails.User(credentials.getUsername(), credentials.getPassword(), currentUserDetails.getAuthorities());
       Authentication newAuthentication = new UsernamePasswordAuthenticationToken(
               newPrincipal,

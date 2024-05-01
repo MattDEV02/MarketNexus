@@ -1,5 +1,7 @@
 package com.market.marketnexus.controller;
 
+import com.market.marketnexus.controller.validator.CredentialsValidator;
+import com.market.marketnexus.controller.validator.UserValidator;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.credentials.Utils;
@@ -19,6 +21,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -41,17 +44,23 @@ public class AccountController {
    private UserService userService;
    @Autowired
    private StatsController statsController;
+   @Autowired
+   private UserValidator userValidator;
+   @Autowired
+   private CredentialsValidator credentialsValidator;
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showUserAccount(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION);
       if (loggedUser != null) {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
-         //Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(loggedUser);
+         Set<Sale> soldSaleProducts = this.saleService.getAllUserSoldSales(loggedUser);
+         Set<Sale> orderedProducts = this.orderService.getUserOrderedSales(loggedUser);
          modelAndView.addObject("user", loggedUser);
          modelAndView.addObject("credentials", loggedUser.getCredentials());
          modelAndView.addObject("saleProducts", saleProducts);
-         //  modelAndView.addObject("orderedProducts", orderedProducts);
+         modelAndView.addObject("soldSaleProducts", soldSaleProducts);
+         modelAndView.addObject("orderedProducts", orderedProducts);
          modelAndView.addObject("tableData", this.statsController.getTableData());
       }
       return modelAndView;
@@ -62,14 +71,15 @@ public class AccountController {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION);
       Credentials credentials = this.credentialsService.getCredentials(username);
       User user = this.userService.getUser(credentials);
-      System.out.println(user);
       modelAndView.addObject("user", user);
       modelAndView.addObject("searchedUsername", username);
       if (user != null) {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(user);
-         //  Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(user);
+         Set<Sale> soldSaleProducts = this.saleService.getAllUserSoldSales(user);
+         Set<Sale> orderedProducts = this.orderService.getUserOrderedSales(user);
          modelAndView.addObject("saleProducts", saleProducts);
-         //  modelAndView.addObject("orderedProducts", orderedProducts);
+         modelAndView.addObject("soldSaleProducts", soldSaleProducts);
+         modelAndView.addObject("orderedProducts", orderedProducts);
          modelAndView.addObject("credentials", user.getCredentials());
          if (user.equals(loggedUser)) {
             modelAndView.addObject("tableData", this.statsController.getTableData());
@@ -80,13 +90,17 @@ public class AccountController {
 
    @PostMapping(value = {"/updateAccount", "/updateAccount/"})
    public ModelAndView updateUserAccount(
-           @Valid @NonNull @ModelAttribute("loggedUser") User loggedUser,
+           @ModelAttribute("loggedUser") User loggedUser,
            @Valid @NonNull @ModelAttribute("user") User user,
            @NonNull BindingResult userBindingResult,
            @Valid @NonNull @ModelAttribute("credentials") Credentials credentials,
            @NonNull BindingResult credentialsBindingResult
    ) {
       ModelAndView modelAndView = new ModelAndView(AccountController.UPDATE_ERROR);
+      this.userValidator.setAccountUpdate(true);
+      this.credentialsValidator.setAccountUpdate(true);
+      this.userValidator.validate(user, userBindingResult);
+      this.credentialsValidator.validate(credentials, credentialsBindingResult);
       if (!userBindingResult.hasFieldErrors() && !credentialsBindingResult.hasFieldErrors()) {
          modelAndView.setViewName(AccountController.UPDATE_SUCCESSFUL);
          user.setCredentials(credentials);
@@ -94,11 +108,18 @@ public class AccountController {
          Utils.updateUserCredentialsAuthentication(updatedUser.getCredentials());
       } else {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
-         //Set<Order> orderedProducts = this.orderService.getAllOrdersByUser(loggedUser);
+         Set<Sale> soldSaleProducts = this.saleService.getAllUserSoldSales(loggedUser);
+         Set<Sale> orderedProducts = this.orderService.getUserOrderedSales(user);
+         modelAndView.addObject("user", user);
+         credentials.setInsertedAt(loggedUser.getCredentials().getInsertedAt());
+         credentials.setUpdatedAt(loggedUser.getCredentials().getUpdatedAt());
+         modelAndView.addObject("credentials", credentials);
          modelAndView.addObject("saleProducts", saleProducts);
-         //  modelAndView.addObject("orderedProducts", orderedProducts);
-         modelAndView.addObject("credentials", loggedUser.getCredentials());
-         for (ObjectError error : userBindingResult.getGlobalErrors()) {
+         modelAndView.addObject("soldSaleProducts", soldSaleProducts);
+         modelAndView.addObject("orderedProducts", orderedProducts);
+         modelAndView.addObject("tableData", this.statsController.getTableData());
+         List<ObjectError> userGlobalErrors = userBindingResult.getGlobalErrors();
+         for (ObjectError error : userGlobalErrors) {
             modelAndView.addObject(Objects.requireNonNull(error.getCode()), error.getDefaultMessage());
          }
       }

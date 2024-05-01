@@ -1,10 +1,12 @@
 package com.market.marketnexus.repository;
 
 import com.market.marketnexus.model.Order;
+import com.market.marketnexus.model.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Set;
 
 public interface OrderRepository extends CrudRepository<Order, Long> {
 
@@ -22,4 +24,6 @@ public interface OrderRepository extends CrudRepository<Order, Long> {
            """
    )
    public List<Object[]> findAllByUserId(Long userId);
+
+   public Set<Order> findAllByUser(User user);
 }

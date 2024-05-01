@@ -48,7 +48,7 @@ public class SaleController {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/index.html");
       Set<Sale> allSales = this.saleService.getAllSales();
       modelAndView.addObject("sales", allSales);
-      modelAndView.addObject("hasSearchedSales", false);//
+      modelAndView.addObject("hasSearchedSales", false);
       return modelAndView;
    }
 
@@ -102,9 +102,7 @@ public class SaleController {
       this.productValidator.validate(product, productBindingResult);
       if (!productBindingResult.hasErrors() && !saleBindingResult.hasErrors()) {
          Product savedProduct = this.productService.saveProduct(product);
-         sale.setUser(loggedUser);
-         sale.setProduct(savedProduct);
-         Sale savedSale = this.saleService.saveSale(sale);
+         Sale savedSale = this.saleService.saveSale(sale, loggedUser, savedProduct);
          if (Utils.storeProductImage(savedProduct, productImage)) {
             modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL + savedProduct.getId().toString());
             modelAndView.addObject("sale", savedSale);

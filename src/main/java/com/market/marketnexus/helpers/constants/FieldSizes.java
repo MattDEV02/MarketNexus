@@ -8,8 +8,9 @@ public class FieldSizes {
    public static final int SURNAME_MIN_LENGTH = 3;
    public static final int SURNAME_MAX_LENGTH = 30;
 
-   public static final int BALANCE_MIN_VALUE = 0;
-   public static final int BALANCE_MAX_VALUE = 10000;
+   public static final float BALANCE_MIN_VALUE = 0F;
+   public static final float BALANCE_MAX_VALUE = 10000F;
+   public static final float BALANCE_STEP_VALUE = 0.01F;
 
    public static final int EMAIL_MIN_LENGTH = 6;
    public static final int EMAIL_MAX_LENGTH = 50;
@@ -45,13 +46,13 @@ public class FieldSizes {
    public static final float CART_CARTPRICE_MIN_VALUE = 0.01F;
 
    public static final int NATION_NAME_MIN_LENGTH = 3;
-   public static final int NATION_NAME_MAX_LENGTH = 10;
+   public static final int NATION_NAME_MAX_LENGTH = 30;
 
    public static final int PRODUCT_CATEGORY_NAME_MIN_LENGTH = 3;
-   public static final int PRODUCT_CATEGORY_NAME_MAX_LENGTH = 10;
+   public static final int PRODUCT_CATEGORY_NAME_MAX_LENGTH = 30;
 
    public static final int PRODUCT_CATEGORY_DESCRIPTION_MIN_LENGTH = 3;
-   public static final int PRODUCT_CATEGORY_DESCRIPTION_MAX_LENGTH = 10;
+   public static final int PRODUCT_CATEGORY_DESCRIPTION_MAX_LENGTH = 60;
 
    public static final long ENTITY_ID_MIN_VALUE = 1L;
 

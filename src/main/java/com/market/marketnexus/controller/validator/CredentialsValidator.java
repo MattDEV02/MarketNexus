@@ -15,6 +15,15 @@ public class CredentialsValidator implements Validator {
    @Autowired
    private CredentialsRepository credentialsRepository;
    private String confirmPassword;
+   private Boolean isAccountUpdate = false;
+
+   public Boolean getIsAccountUpdate() {
+      return this.isAccountUpdate;
+   }
+
+   public void setAccountUpdate(Boolean isAccountUpdate) {
+      this.isAccountUpdate = isAccountUpdate;
+   }
 
    public String getConfirmPassword() {
       return this.confirmPassword;
@@ -27,18 +36,18 @@ public class CredentialsValidator implements Validator {
    @Override
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       Credentials credentials = (Credentials) object;
-      if (this.credentialsRepository.existsByUsername(credentials.getUsername())) {
+      if (!this.isAccountUpdate && this.credentialsRepository.existsByUsername(credentials.getUsername())) {
          //String[] errorArgs = {""};
-         errors.reject("usernameUniqueError", "Username " + credentials.getUsername() + " already used.");
+         errors.rejectValue("username", "credentials.username.unique");
       }
-      if (!FieldValidators.passwordValidator(credentials.getPassword())) {
-         errors.reject("passwordFormatError", "La password deve essere lunga 8 caratteri e..." + credentials.getPassword());
+      if (!this.isAccountUpdate && !FieldValidators.passwordValidator(credentials.getPassword())) {
+         errors.rejectValue("password", "credentials.password.invalidFormat");
       }
-      if (this.getConfirmPassword() != null && !this.getConfirmPassword().isEmpty() && !credentials.getPassword().equals(this.getConfirmPassword())) {
-         errors.reject("passwordDifferentFromConfirmPasswordError", "La password deve essere uguale alla confirm password.");
+      if (!this.isAccountUpdate && this.getConfirmPassword() != null && !this.getConfirmPassword().isEmpty() && !credentials.getPassword().equals(this.getConfirmPassword())) {
+         errors.reject("passwordDifferentFromConfirmPasswordError", "The password must be the same as the confirm password.");
       }
       if (!Utils.existsRole(credentials.getRole())) {
-         errors.reject("roleNotExistsError", "Selected Role not exists.");
+         errors.rejectValue("role", "credentials.role.notExists");
       }
 
    }

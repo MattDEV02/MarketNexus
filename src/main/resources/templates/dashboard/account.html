@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}"
       th:with="isLoggedUser = ${loggedUser == user}, isUserFound = ${user != null}"
-      xmlns:th="http://www.thymeleaf.org">
-
+      th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Account')}">
 
 </head>
@@ -42,6 +41,8 @@
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.name')}"></div>
                   <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.email')}"></div>
+                  <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.surname')}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.birthDate')}"></div>
@@ -49,6 +50,8 @@
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.balance')}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.username')}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.role')}"></div>
                   <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-5 col-xxl-5 text-center me-3 mt-lg-2 mt-xl-0"
@@ -63,26 +66,27 @@
                   <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-5 col-xxl-5 text-center mt-4 mt-xl-0 ms-xl-3"
                        th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account informations'">
                      <h2 class="mt-3 mb-5">Account informations</h2>
-                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'username', type = 'text', value = ${user.credentials.username}, isLoggedUser = ${isLoggedUser})}"></div>
-                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'role', type = 'text', value = ${user.credentials.role},  isSelect = true, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'username', type = 'text', value = ${credentials.username}, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'role', type = 'text', value = ${credentials.role},  isSelect = true, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'email', type = 'email', value = ${user.email}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
-                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'registered', type = 'date', value = ${#temporals.format(user.credentials.insertedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
-                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'updated', type = 'date', value = ${#temporals.format(user.credentials.updatedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'registered', type = 'date', value = ${#temporals.format(credentials.insertedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'updated', type = 'date', value = ${#temporals.format(credentials.updatedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
                      <input class="form-control visually-hidden disabled"
+                            id="password"
                             name="password"
                             placeholder=""
-                            th:id="password"
                             th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
                             th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
                             th:object="${credentials}"
                             th:value="${credentials.password}"
-                            type="text"
+                            type="password"
                      />
                   </div>
                   <div class="col-12 mt-5 mb-3" th:if="${isLoggedUser}">
-                     <div class="row justify-content-center ">
+                     <div class="row justify-content-center">
                         <div class="col-12 col-sm-10 col-md-9 col-lg-7 col-xl-3 col-xxl-3">
-                           <button class="btn btn-lg btn-outline-success form-control py-2" id="confirm-button"
+                           <button class="btn btn-lg btn-outline-success form-control py-2"
+                                   id="confirm-button"
                                    th:title="'Confirm your new ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' informations'"
                                    type="submit">
                               Confirm
@@ -98,23 +102,27 @@
                            </button>
                         </div>
                         <div class="col-12 col-sm-10 col-md-9 col-lg-7 col-xl-3 col-xxl-3 mt-4 mt-xl-0">
-                           <a class="btn btn-lg btn-outline-danger form-control py-2" id="delete-account-button"
-                              role="button"
-                              th:href="@{/dashboard/account/delete}"
-                              th:title="'Delete your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account with this email: ' + ${loggedUser.email}">
+                           <button class="btn btn-lg btn-outline-danger form-control py-2"
+                                   data-bs-target="#confirm-delete-account-modal"
+                                   data-bs-toggle="modal"
+                                   id="delete-account-button"
+                                   th:title="'Delete your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account with this email: ' + ${loggedUser.email}"
+                                   type="button">
                               Delete Account
                               <i class="fas fa-trash ms-1"></i>
-                           </a>
+                           </button>
+                           <div th:replace="~{fragments/dashboard/account/modal/confirmDeleteAccountModal.html :: confirmDeleteAccountModal(credentials = ${credentials})}"></div>
                         </div>
                      </div>
                   </div>
                </form>
             </div>
-            <div class="col-12 mt-5">
+            <div class="col-12 mt-5"
+                 th:with="areSaleProductsValid=${saleProducts != null && #sets.isEmpty(saleProducts)}">
                <div class="row text-center">
-                  <h1 th:if="${saleProducts != null && #sets.isEmpty(saleProducts)}">No sale products</h1>
+                  <h1 th:if="${areSaleProductsValid}">No sale products</h1>
                   <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' Sale products 🏖️'"
-                      th:unless="${saleProducts != null && #sets.isEmpty(saleProducts)}"></h1>
+                      th:unless="${areSaleProductsValid}"></h1>
                </div>
             </div>
             <div class="col-12">
@@ -125,25 +133,40 @@
                   </div>
                </div>
             </div>
-            <!-- ${#strings.contains(loggedUser.credentials.role, 'BUYER') -->
-            <div class="col-12 mt-5" id="ordered-products" th:if="${false}">
+            <div class="col-12 mt-5"
+                 th:with="areSoldSaleProductsValid=${soldSaleProducts != null && #sets.isEmpty(soldSaleProducts)}">
                <div class="row text-center">
-                  <h1 th:if="${orderedProducts != null && #sets.isEmpty(orderedProducts)}">No ordered products</h1>
-                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' ordered products 🗂️'"
-                      th:unless="${orderedProducts != null && #sets.isEmpty(orderedProducts)}"></h1>
+                  <h1 th:if="${areSoldSaleProductsValid}">No sold sale products</h1>
+                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' sold Sale products 🏖️'"
+                      th:unless="${areSoldSaleProductsValid}"></h1>
                </div>
             </div>
-            <!-- ${#strings.contains(loggedUser.credentials.role, 'BUYER') -->
-            <div class="col-12 mt-5">
+            <div class="col-12">
                <div class="row">
                   <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
-                       th:each="orderedProduct : ${orderedProducts}" th:if="${false}">
-                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${orderedProduct.cart.sale}, isLoggedUser = isLoggedUser)}"></div>
+                       th:each="soldSaleProduct : ${soldSaleProducts}">
+                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${soldSaleProduct}, isLoggedUser = ${isLoggedUser})}"></div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-12 mt-5" id="ordered-products"
+                 th:with="areOrderedProductsValid=${orderedProducts != null && #sets.isEmpty(orderedProducts)}">
+               <div class="row text-center">
+                  <h1 th:if="${areOrderedProductsValid}">No ordered products</h1>
+                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' ordered products 🗂️'"
+                      th:unless="${areOrderedProductsValid}"></h1>
+               </div>
+            </div>
+            <div th:class="'col-12' + ${isLoggedUser ? '' : ' mb-5'}">
+               <div class="row">
+                  <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
+                       th:each="orderedProduct : ${orderedProducts}">
+                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${orderedProduct}, isLoggedUser = ${isLoggedUser})}"></div>
                   </div>
                </div>
             </div>
             <div th:if="${isLoggedUser}">
-               <div class="col-12 mt-1">
+               <div class="col-12 mt-5">
                   <div class="row text-center">
                      <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' stats 📋'"></h1>
                   </div>
@@ -194,8 +217,6 @@
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
         th:src="@{'/js/' + ${API_PREFIXES_MAP.get('ACCOUNT')} + '/stats/index.js'}"
         type="text/javascript"></script>
-<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:if="${isUserFound}"
-        th:src="@{/js/shared/maxDateInputValue.js}" type="text/javascript"></script>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:if="${isUserFound}"
         th:src="@{/js/libraries/axios/axios.min.js}" type="text/javascript"></script>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:if="${isUserFound}"

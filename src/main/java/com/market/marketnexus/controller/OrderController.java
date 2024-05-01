@@ -45,7 +45,7 @@ public class OrderController {
          if (loggedUser.getBalance() < cart.getCartPrice()) {
             modelAndView.addObject("userBalanceLowerThanCartPriceError", true);
          } else {
-            Order order = this.orderService.makeOrder(loggedUser.getId(), cart);
+            Order order = this.orderService.makeOrder(loggedUser, cart);
             LocalDateTime orderInsertedAt = order.getInsertedAt();
             Cart orderCart = order.getCart();
             Set<CartLineItem> cartLineItems = this.cartService.getAllCartLineItems(orderCart.getId());

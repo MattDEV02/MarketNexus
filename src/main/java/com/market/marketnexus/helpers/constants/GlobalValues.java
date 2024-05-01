@@ -22,4 +22,6 @@ public class GlobalValues {
 
    public final static String TEMPLATES_EXTENSION = ".html";
 
+   public final static String TEMPLATES_XMLNS = "http://www.thymeleaf.org";
+
 }

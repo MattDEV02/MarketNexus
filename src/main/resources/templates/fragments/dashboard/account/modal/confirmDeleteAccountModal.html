@@ -1,0 +1,26 @@
+<div aria-hidden="true" aria-labelledby="confirm-delete-account-modal-label" class="modal fade"
+     id="confirm-delete-account-modal"
+     tabindex="-1" th:fragment="confirmDeleteAccountModal(credentials)">
+   <div class="modal-dialog">
+      <div class="modal-content text-center">
+         <div class="modal-header">
+            <h5 class="modal-title" id="confirm-delete-account-modal-label"
+                th:text="'Delete your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account'"></h5>
+            <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+         </div>
+         <div class="modal-body">
+            <p
+                  th:text="'Are you sure to delete your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account with this username: ' +  ${credentials.username} + ' ?'"></p>
+         </div>
+         <div class="modal-footer justify-content-center">
+            <a class="btn btn-primary me-2"
+               id="confirm-delete-account-button"
+               role="button"
+               th:href="@{'/dashboard/account/delete'}">
+               Confirm
+            </a>
+            <button class="btn btn-secondary ms-2" data-bs-dismiss="modal" type="button">No</button>
+         </div>
+      </div>
+   </div>
+</div>

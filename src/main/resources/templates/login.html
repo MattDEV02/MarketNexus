@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Login')}">
 </head>
@@ -26,7 +26,7 @@
                      <label class="form-label" for="username">Username:</label>
                      <input class="form-control py-2" id="username"
                             name="username"
-                            placeholder="Insert your username" required th:field="${credentials.username}"
+                            placeholder="Insert your username" required th:field="*{username}"
                             th:maxlength="${FIELD_SIZES_MAP.get('USERNAME_MAX_LENGTH')}"
                             th:minlength="${FIELD_SIZES_MAP.get('USERNAME_MIN_LENGTH')}"
                             th:title="'Insert your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' username'"
@@ -39,7 +39,7 @@
                                class="form-control py-2"
                                id="password" name="password" placeholder="Insert your password"
                                required
-                               th:field="${credentials.password}"
+                               th:field="*{password}"
                                th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
                                th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
                                th:title="'Insert your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' password'"
@@ -66,8 +66,9 @@
                            th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' home'">Home</a>
                         <a class="text-decoration-none ms-3" th:href="@{/registration}"
                            th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' registration'">Register</a>
-                        <a class="ms-3" th:href="@{/}"
-                           title="Forgot password?">Forgot password?</a>
+                        <a class="ms-3" data-bs-target="#forgot-username-modal"
+                           data-bs-toggle="modal" href=""
+                           title="Forgot username?">Forgot username?</a>
                      </p>
                   </div>
                </div>

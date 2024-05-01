@@ -1,0 +1,24 @@
+<div aria-hidden="true" aria-labelledby="confirm-order-modal-label" class="modal fade" id="confirm-order-modal"
+     tabindex="-1" th:fragment="confirmOrderModal(cart)">
+   <div class="modal-dialog">
+      <div class="modal-content text-center">
+         <div class="modal-header">
+            <h5 class="modal-title" id="confirm-order-modal-label">Confirm order</h5>
+            <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+         </div>
+         <div class="modal-body">
+            <p
+                  th:text="'Are you sure you want to make this order of ' +  ${cart.cartPrice} + ' $ ?'"></p>
+         </div>
+         <div class="modal-footer justify-content-center">
+            <a class="btn btn-primary me-2"
+               id="confirm-order-button"
+               role="button"
+               th:href="@{'/dashboard/order/' + ${cart.id}}">
+               Confirm
+            </a>
+            <button class="btn btn-secondary ms-2" data-bs-dismiss="modal" type="button">No</button>
+         </div>
+      </div>
+   </div>
+</div>

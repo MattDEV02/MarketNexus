@@ -3,12 +3,10 @@ package com.market.marketnexus.service;
 import com.market.marketnexus.helpers.sale.Utils;
 import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.Credentials;
-import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.repository.CartRepository;
 import com.market.marketnexus.repository.OrderRepository;
 import com.market.marketnexus.repository.UserRepository;
-import org.hibernate.Hibernate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -17,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -32,8 +29,18 @@ public class UserService {
       return this.userRepository.existsByEmail(email);
    }
 
+   public User getUser(Long userId) {
+      Optional<User> result = this.userRepository.findById(userId);
+      return result.orElse(null);
+   }
+
    public User getUser(Credentials credentials) {
       Optional<User> result = this.userRepository.findByCredentials(credentials);
+      return result.orElse(null);
+   }
+
+   public User getUser(String email) {
+      Optional<User> result = this.userRepository.findByEmail(email);
       return result.orElse(null);
    }
 
@@ -74,28 +81,6 @@ public class UserService {
 
    public List<Object[]> countUsersByNation() {
       return this.userRepository.countUsersByNation();
-   }
-
-   @Transactional
-   public Set<Sale> getAllSalesForUser(@NotNull Long userId) {
-      // Ottieni l'utente dal database
-      User user = this.userRepository.findById(userId).orElse(null);
-
-      // Verifica se l'utente è stato trovato
-      if (user != null) {
-         // Forza il caricamento delle vendite associato all'utente
-         Hibernate.initialize(user.getSales());
-         // Ottieni la lista delle vendite associate all'utente
-         Set<Sale> sales = user.getSales();
-         return sales;
-      } else {
-         // Se l'utente non è stato trovato, restituisci null o gestisci il caso di errore
-         return null;
-      }
-   }
-
-   public List<Object[]> getAllOrdersForUser(@NotNull Long userId) {
-      return this.orderRepository.findAllByUserId(userId);
    }
 
    public List<Object[]> usersPublishedSalesStats() {

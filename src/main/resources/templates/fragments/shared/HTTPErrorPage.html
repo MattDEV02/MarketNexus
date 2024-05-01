@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html th:fragment="HTTPErrorPage(statusCode, statusMessage, subTitle)"
-      th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" xmlns:th="http://www.thymeleaf.org">
+      th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Error ' + statusCode)}">
 </head>

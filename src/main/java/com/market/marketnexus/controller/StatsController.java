@@ -3,6 +3,7 @@ package com.market.marketnexus.controller;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
+import com.market.marketnexus.service.OrderService;
 import com.market.marketnexus.service.SaleService;
 import com.market.marketnexus.service.UserService;
 import jakarta.validation.Valid;
@@ -25,10 +26,12 @@ public class StatsController {
    private UserService userService;
    @Autowired
    private SaleService saleService;
+   @Autowired
+   private OrderService orderService;
 
    @GetMapping(value = {"/chartData", "/chartData/"})
    public List<Object[]> getChartData(@NotNull @Valid @ModelAttribute("loggedUser") User loggedUser) {
-      return this.saleService.countCurrentWeekUserSales(loggedUser.getId());
+      return this.saleService.countCurrentWeekUserSoldSales(loggedUser.getId());
    }
 
    @GetMapping(value = {"/mapData", "/mapData/"})
@@ -38,13 +41,13 @@ public class StatsController {
 
    @GetMapping(value = {"/calendarData/sales", "/calendarData/sales/"})
    public Set<Sale> getSalesCalendarData(@NotNull @Valid @ModelAttribute("loggedUser") User loggedUser) {
-      return this.userService.getAllSalesForUser(loggedUser.getId());
+      return this.saleService.getAllSalesByUser(loggedUser);
    }
 
 
    @GetMapping(value = {"/calendarData/orders", "/calendarData/orders/"})
    public List<Object[]> getOrdersCalendarData(@NotNull @Valid @ModelAttribute("loggedUser") User loggedUser) {
-      return this.userService.getAllOrdersForUser(loggedUser.getId());
+      return this.orderService.getAllOrdersForUser(loggedUser.getId());
    }
 
 

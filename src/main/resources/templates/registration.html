@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Registration')}">
 </head>
@@ -44,7 +44,6 @@
                   <div class="mb-3">
                      <label class="form-label" for="birth-date">Date of birth:</label>
                      <input class="form-control py-2" id="birth-date" name="birth-date"
-                            required
                             th:field="${user.birthDate}" th:fieldFormat="${TEMPORALS_MAP.get('DATE_FORMAT')}"
                             th:format="${TEMPORALS_MAP.get('DATE_FORMAT')}"
                             th:max="${TEMPORALS_MAP.get('BIRTHDATE_MAX_VALUE')}"
@@ -57,11 +56,12 @@
                   <div class="mb-3">
                      <label class="form-label" for="balance">Balance ($):</label>
                      <input class="form-control py-2" id="balance" name="balance" placeholder="Insert your balance ($)"
-                            required step="0.1"
-                            th:field="${user.balance}"
-                            th:max="${FIELD_SIZES_MAP.get('BALANCE_MAX_VALUE') *2}"
+                            required th:field="${user.balance}"
+                            th:max="${FIELD_SIZES_MAP.get('BALANCE_MAX_VALUE')}"
                             th:min="${FIELD_SIZES_MAP.get('BALANCE_MIN_VALUE')}"
-                            th:object="${user}" title="Insert your balance" type="number"/>
+                            th:object="${user}"
+                            th:step="${FIELD_SIZES_MAP.get('BALANCE_STEP_VALUE')}" title="Insert your balance"
+                            type="number"/>
                      <div
                            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.balance')}"></div>
                   
@@ -75,8 +75,6 @@
                             th:object="${user}" title="Insert your email" type="email"/>
                      <div
                            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.email')}"></div>
-                     <div
-                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${emailUniqueError}, condition = ${emailUniqueError != null})}"></div>
                   </div>
                   
                   <div class="mb-3">
@@ -90,8 +88,6 @@
                             type="text">
                      <div
                            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.username')}"></div>
-                     <div
-                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${usernameUniqueError}, condition = ${usernameUniqueError != null})}"></div>
                   </div>
                   
                   <div class="mb-3">
@@ -111,8 +107,6 @@
                      </div>
                      <div
                            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.password')}"></div>
-                     <div
-                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${passwordFormatError}, condition = ${passwordFormatError != null})}"></div>
                   </div>
                   <div class="mb-3">
                      <label class="form-label" for="confirm-password">Confirm Password:</label>
@@ -135,8 +129,6 @@
                                 th:name="${nationEntry.value.name + '#' + nationEntry.key}"
                                 th:text="${nationEntry.value.name}" th:value="${nationEntry.key}"></option>
                      </select>
-                     <div
-                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${nationNotExistsError}, condition = ${nationNotExistsError != null})}"></div>
                   </div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
@@ -153,7 +145,7 @@
                                 th:value="${roleEntry.value}"></option>
                      </select>
                      <div
-                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${roleNotExistsError}, condition = ${roleNotExistsError != null})}"></div>
+                           th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.role')}"></div>
                   </div>
                   <div class="my-4">
                      <button class="btn btn-primary form-control py-2 fw-bold mt-2" form="registration-form"
@@ -165,8 +157,6 @@
                         <i class="fas fa-registered mx-1"></i>
                      </button>
                   </div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
                </form>
                <div class="col-12">
                   <div class="row text-center" id="registration-footer">
@@ -186,8 +176,6 @@
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/maxDateInputValue.js}"
         type="text/javascript"></script>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/showPassword.js}"
-        type="text/javascript"></script>
-<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/registration/index.js}"
         type="text/javascript"></script>
 </body>
 

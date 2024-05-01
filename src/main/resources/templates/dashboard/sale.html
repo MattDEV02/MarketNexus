@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:with="areSaleValid = ${sale != null && sale.product != null}"
-      xmlns:th="http://www.thymeleaf.org">
+      th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = ${areSaleValid ? (sale.product.name  + ' in Sale') : 'Sale not found'} )}">
 

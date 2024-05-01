@@ -4,7 +4,7 @@ public class APIPrefixes {
 
    public static final String INDEX = "/";
 
-   public static final String DASHBOARD = "dashboard"; // sales
+   public static final String DASHBOARD = "dashboard";
 
    public static final String SALE = APIPrefixes.DASHBOARD + "/sale";
 

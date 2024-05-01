@@ -1,5 +1,6 @@
 package com.market.marketnexus.controller.validator;
 
+import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.validators.FieldValidators;
 import com.market.marketnexus.model.Product;
 import org.springframework.lang.NonNull;
@@ -26,13 +27,21 @@ public class ProductValidator implements Validator {
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       Product product = (Product) object;
       if (!FieldValidators.productNameValidator(product.getName())) {
-         errors.reject("productNameFormatError", "Invalid product name format." + product.getName());
+         errors.rejectValue("name", "product.name.invalidFormat");
+      }
+      if (product.getCategory() == null) {
+         errors.rejectValue("category", "product.category.notExists");
       }
       if (this.getProductImage() == null || this.getProductImage().isEmpty()) {
          errors.reject("productImageEmptyError", "Invalid or empty product image.");
-      }
-      if (product.getCategory() == null) {
-         errors.reject("productCategoryNotExistsError", "Selected Product Category not exists.");
+      } else {
+         if (this.getProductImage().getSize() > FieldSizes.PRODUCT_IMAGE_MAX_BYTE_SIZE) {
+            errors.reject("productImageSizeError", "File size exceeds the allowed limit of " + (FieldSizes.PRODUCT_IMAGE_MAX_BYTE_SIZE / 1000) + " KB.");
+         }
+         String originalFilename = this.getProductImage().getOriginalFilename();
+         if (originalFilename == null || (!originalFilename.endsWith(".jpg") && !originalFilename.endsWith(".png") && !originalFilename.endsWith(".jpeg"))) {
+            errors.reject("productImageExtensionError", "Unsupported file type. Please upload a .jpg, .jpeg or .png file.");
+         }
       }
    }
 

@@ -6,11 +6,11 @@ import com.market.marketnexus.helpers.constants.Temporals;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import jdk.jfr.Unsigned;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity(name = "Users")
 @Table(name = "Users", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "users_email_unique", columnNames = "email"), @UniqueConstraint(name = "users_credentials_unique", columnNames = "credentials")})
@@ -34,7 +34,7 @@ public class User {
    private String surname;
 
    @DateTimeFormat(pattern = Temporals.DATE_FORMAT)
-   @Past(message = "The birth date must be in the past.")
+   @Past
    @Column(name = "birthdate", nullable = true)
    @Temporal(TemporalType.DATE)
    private Date birthDate;
@@ -44,8 +44,8 @@ public class User {
    @Size(min = FieldSizes.EMAIL_MIN_LENGTH, max = FieldSizes.EMAIL_MAX_LENGTH)
    @Column(name = "email", unique = true, nullable = false)
    private String email;
-   @Min(FieldSizes.BALANCE_MIN_VALUE)
-   @Max(FieldSizes.BALANCE_MAX_VALUE)
+   @Min((long) FieldSizes.BALANCE_MIN_VALUE)
+   @Max((long) FieldSizes.BALANCE_MAX_VALUE)
    @Column(name = "balance", nullable = false)
    private Float balance;
 
@@ -57,17 +57,21 @@ public class User {
    @JoinColumn(name = "credentials", referencedColumnName = "id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "users_credentials_fk"))
    private Credentials credentials;
 
-   @OneToMany(cascade = {CascadeType.REMOVE}, targetEntity = Sale.class, mappedBy = "user", orphanRemoval = true)
-   private Set<Sale> sales;
-
-   @OneToMany(cascade = {CascadeType.REMOVE}, targetEntity = Order.class, mappedBy = "user", orphanRemoval = true)
-   private Set<Order> orders;
-
    @OneToOne(targetEntity = Cart.class, mappedBy = "user", optional = true)
    private Cart cart;
 
    public User() {
 
+   }
+
+   public User(@NotNull User user) {
+      this.name = user.getName();
+      this.surname = user.getSurname();
+      this.birthDate = user.getBirthDate();
+      this.email = user.getEmail();
+      this.balance = user.getBalance();
+      this.credentials = user.getCredentials();
+      this.nation = user.getNation();
    }
 
    public User(String name, String surname, String email, Float balance, Credentials credentials, Nation nation) {
@@ -153,22 +157,6 @@ public class User {
       this.nation = nation;
    }
 
-   public Set<Sale> getSales() {
-      return this.sales;
-   }
-
-   public void setSales(Set<Sale> sales) {
-      this.sales = sales;
-   }
-
-   public Set<Order> getOrders() {
-      return this.orders;
-   }
-
-   public void setOrders(Set<Order> orders) {
-      this.orders = orders;
-   }
-
    public Cart getCart() {
       return this.cart;
    }
@@ -205,8 +193,6 @@ public class User {
               ", balance = " + this.getBalance().toString() +
               ", credentials = " + this.getCredentials().toString() +
               ", nation = " + this.getNation().toString() +
-              // ", sales = " + this.getSales().toString() +
-              // ", orders = " + this.getOrders().toString() +
               // ", cart = " + this.getCart().toString() +
               " }";
    }

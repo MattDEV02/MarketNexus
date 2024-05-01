@@ -20,7 +20,7 @@
          <option th:each="nationEntry : ${nationsMap}" th:id="${nationEntry.value.name + '#' + nationEntry.key}"
                  th:if="${property == 'nation'}"
                  th:name="${nationEntry.value.name + '#' + nationEntry.key}"
-                 th:selected="${nationEntry.key == value.id}" th:text="${nationEntry.value.name}"
+                 th:selected="${value != null && nationEntry.key == value.id}" th:text="${nationEntry.value.name}"
                  th:value="${nationEntry.key}"></option>
          <option th:each="roleEntry : ${ALL_ROLES_MAP}" th:field="${credentials.role}"
                  th:id="${roleEntry.key + '#role' }"
@@ -42,7 +42,9 @@
              th:name="${property == 'birth date' ? 'birthDate' : property}"
              th:object="${object}"
              th:placeholder="'Update your ' + ${property}"
-             th:step="${property == 'balance' ? '0.01' : ''}" th:title="'User ' + ${property}"
+             th:required="${property == 'birth date' ? null : true}"
+             th:step="${property == 'balance' ? FIELD_SIZES_MAP.get('BALANCE_STEP_VALUE') : ''}"
+             th:title="'User ' + ${property}"
              th:type="${type}"
              th:value="${value}"
       />

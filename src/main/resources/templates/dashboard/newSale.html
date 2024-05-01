@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'new Sale')}">
 
@@ -35,8 +35,6 @@
                          type="text"/>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.name')}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productNameFormatError}, condition = ${productNameFormatError != null})}"></div>
                </div>
                <!-- Campo Descrizione -->
                <div class="mb-3">
@@ -87,19 +85,22 @@
                   </select>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.category')}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productCategoryNotExistsError}, condition = ${productCategoryNotExistsError != null})}"></div>
                </div>
                <div class="mb-1">
                   <label class="form-label" for="product-image">Product image</label>
                   <input accept="image/png, image/jpeg, image/jpg, image/" class="form-control py-2"
                          form="new-sale-form"
                          id="product-image"
-                         name="product-image" placeholder="Insert product image"
-                         required th:size="${FIELD_SIZES_MAP.get('PRODUCT_IMAGE_MAX_BYTE_SIZE')}"
+                         name="product-image"
+                         placeholder="Insert product image" required
+                         th:size="${FIELD_SIZES_MAP.get('PRODUCT_IMAGE_MAX_BYTE_SIZE')}"
                          type="file"/>
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productImageEmptyError}, condition = ${productImageEmptyError != null})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productImageSizeError}, condition = ${productImageSizeError != null})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productImageExtensionError}, condition = ${productImageExtensionError != null})}"></div>
                </div>
                <!-- Pulsante di invio -->
                <div class="mt-4">

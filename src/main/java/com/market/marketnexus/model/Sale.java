@@ -8,6 +8,7 @@ import com.market.marketnexus.helpers.constants.Temporals;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -26,32 +27,31 @@ public class Sale {
    private Long id;
 
    @JsonIgnore
+   @NotNull
    @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
    @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
    @Column(name = "quantity", nullable = false)
    private Integer quantity;
-
+   @Column(name = "isSold", nullable = false)
+   @NotNull
+   private Boolean isSold;
    @JsonIgnore
    @Min((long) FieldSizes.SALE_SALEPRICE_MIN_VALUE)
    @Max((long) FieldSizes.SALE_SALEPRICE_MAX_VALUE)
    @Column(name = "sale_price", nullable = false)
    private Float salePrice;
-
    @JsonIgnore
    @ManyToOne(targetEntity = User.class, optional = false)
    @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_users_fk"))
    private User user;
-
    @ManyToOne(targetEntity = Product.class, optional = false)
    @JoinColumn(name = "product", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_products_fk"))
    private Product product;
-
    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Temporals.DATE_FORMAT)
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    @Column(name = "inserted_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
-
    @JsonIgnore
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    @Column(name = "updated_at", nullable = false)
@@ -59,13 +59,14 @@ public class Sale {
    private LocalDateTime updatedAt;
 
    public Sale() {
-      //this.salePrice = this.calculateSalePrice(this.getProduct(), this.getQuantity());
+      this.isSold = false;
    }
 
    public Sale(Integer quantity, User user, Product product, Float salePrice) {
       this.quantity = quantity;
       this.user = user;
       this.product = product;
+      this.isSold = false;
       this.salePrice = salePrice;
    }
 
@@ -83,6 +84,14 @@ public class Sale {
 
    public void setQuantity(Integer quantity) {
       this.quantity = quantity;
+   }
+
+   public Boolean getIsSold() {
+      return this.isSold;
+   }
+
+   public void setIsSold(Boolean isSold) {
+      this.isSold = isSold;
    }
 
    public Float getSalePrice() {
@@ -162,6 +171,7 @@ public class Sale {
       return "Sale: {" +
               " id = " + this.getId().toString() +
               ", quantity = " + this.getQuantity().toString() +
+              ", isSold = " + this.getIsSold().toString() +
               ", salePrice = " + this.getSalePrice().toString() +
               ", user = " + this.getUser().getId().toString() +
               ", product = " + this.getProduct().getId().toString() +
