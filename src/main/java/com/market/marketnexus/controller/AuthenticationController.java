@@ -16,9 +16,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -28,7 +33,7 @@ public class AuthenticationController {
    public final static String REGISTRATION_ERROR = "registration.html";
    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
    @Autowired
-   protected PasswordEncoder passwordEncoder;
+   private PasswordEncoder passwordEncoder;
    @Autowired
    private UserService userService;
    @Autowired
@@ -68,11 +73,13 @@ public class AuthenticationController {
             modelAndView.addObject("userNotRegisteredError", "Server ERROR, User not registered.");
          }
       } else {
-         for (ObjectError userGlobalError : userBindingResult.getGlobalErrors()) {
+         List<ObjectError> userGlobalErrors = userBindingResult.getGlobalErrors();
+         List<ObjectError> credentialsGlobalErrors = credentialsBindingResult.getGlobalErrors();
+         for (ObjectError userGlobalError : userGlobalErrors) {
             modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
          }
-         for (ObjectError credentialsGlobalError : credentialsBindingResult.getGlobalErrors()) {
-            modelAndView.addObject(Objects.requireNonNull(credentialsGlobalError.getCode()), credentialsGlobalError.getDefaultMessage());
+         for (ObjectError credentialGlobalErrors : credentialsGlobalErrors) {
+            modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
          }
       }
       return modelAndView;
@@ -81,31 +88,36 @@ public class AuthenticationController {
    @GetMapping(value = {"/login", "/login/"})
    public ModelAndView showLoginForm() {
       ModelAndView modelAndView = new ModelAndView("login.html");
-      modelAndView.addObject("user", new User());
       modelAndView.addObject("credentials", new Credentials());
       return modelAndView;
    }
 
-   @ResponseBody
+   @GetMapping(value = {"/forgotUsername", "forgotUsername/"})
+   public ModelAndView showForgotUsernameForm() {
+      System.out.println("ffff");
+      ModelAndView modelAndView = new ModelAndView("forgotUsername.html");
+      modelAndView.addObject("user", new User());
+      return modelAndView;
+   }
+
    @PostMapping(value = {"/sendForgotUsernameEmail", "/sendForgotUsernameEmail/"})
-   public String sendForgotUsernameEmail(@RequestBody String email) {
-      // Gestisci la richiesta qui
-      System.out.println("Email ricevuta: " + email);
-
-      // Esempio di risposta
-      return "Email ricevuta correttamente!";
-      /*
-      if (this.userService.existsByEmail(email)) {
-         User u = this.userService.getUser(email);
-         try {
-            this.forgotUsernameEmailService.sendEmail("mailtrap@mailtrap.club", u.getEmail(),
-                    "You are awesome!", "Your " + GlobalValues.APP_NAME + " is " + u.getCredentials().getUsername(), "Integration Test");
-         } catch (IOException exception) {
-            exception.printStackTrace();
+   public ModelAndView sendForgotUsernameEmail(
+           @Valid @NonNull @ModelAttribute("user") User user,
+           @NonNull BindingResult userBindingResult, @RequestParam("email") String email) {
+      ModelAndView modelAndView = new ModelAndView("forgotUsername.html");
+      if (!userBindingResult.hasFieldErrors("email")) {
+         if (this.userService.existsByEmail(email)) {
+            User userByEmail = this.userService.getUser(email);
+            try {
+               this.forgotUsernameEmailService.sendEmail(userByEmail.getEmail(), userByEmail.getCredentials().getUsername());
+            } catch (IOException exception) {
+               LOGGER.error(exception.getMessage());
+            }
+         } else {
+            modelAndView.addObject("emailNotExistsError", true);
          }
-      } else {
-
+         modelAndView.addObject("emailSent", true);
       }
-      */
+      return modelAndView;
    }
 }

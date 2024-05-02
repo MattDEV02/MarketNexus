@@ -1,25 +1,29 @@
 package com.market.marketnexus.helpers.constants;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.FileSystemResource;
 
 public class Paths {
 
-   public final static String root = new FileSystemResource("").getFile().getAbsolutePath();
+   public final static String ROOT = new FileSystemResource("").getFile().getAbsolutePath();
 
-   public final static String src = "/src/main";
+   public final static String SRC = "/src/main";
 
-   public final static String resources = "/resources";
+   public final static String RESOURCES = "/resources";
 
-   public final static String _static = "/static";
+   public final static String _STATIC = "/static";
 
-   public final static String images = "/images";
+   public final static String IMAGES = "/images";
 
-   public static String getStaticPath() {
-      return Paths.root + Paths.src + Paths.resources + Paths._static;
+   @Contract(pure = true)
+   public static @NotNull String getStaticPath() {
+      return Paths.ROOT + Paths.SRC + Paths.RESOURCES + Paths._STATIC;
    }
 
-   public static String getImagesPath() {
-      return Paths.getStaticPath() + Paths.images;
+   @Contract(pure = true)
+   public static @NotNull String getImagesPath() {
+      return Paths.getStaticPath() + Paths.IMAGES;
    }
 
 }

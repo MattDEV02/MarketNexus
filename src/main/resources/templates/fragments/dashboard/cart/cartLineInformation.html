@@ -32,8 +32,9 @@
             </div>
             <div class="col-2" th:if="${!isOrder}">
                <div class="mt-5">
-                  <button class="btn btn-danger delete-cart-button" data-bs-target="#confirm-delete-cartlineitem-modal"
+                  <button class="btn btn-danger delete-cart-button"
                           data-bs-toggle="modal"
+                          th:data-bs-target="'#confirm-delete-cartlineitem-modal-' + ${cartLineItem.id}"
                           title="Remove from cart"
                           type="button">
                      <i class="fas fa-trash"></i>

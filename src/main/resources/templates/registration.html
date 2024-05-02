@@ -117,9 +117,8 @@
                             th:title="'Confirm your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' username'"
                             type="password"/>
                      <div
-                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${passwordDifferentFromConfirmPasswordError}, condition = ${passwordDifferentFromConfirmPasswordError != null})}"></div>
+                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${newPasswordDifferentFromOldPasswordError}, condition = ${newPasswordDifferentFromOldPasswordError != null})}"></div>
                   </div>
-                  
                   <div class="mb-3">
                      <label class="form-label" for="nation">Nation:</label>
                      <select class="form-control form-select py-2" id="nation" name="nation" required

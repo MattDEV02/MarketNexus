@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}"
+      th:replace="~{fragments/shared/HTTPErrorPage.html :: HTTPErrorPage(statusCode = 400, statusMessage = 'Bad Request', subTitle = 'The server cannot understand your bad request.')}"
+      th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
+
+</html>

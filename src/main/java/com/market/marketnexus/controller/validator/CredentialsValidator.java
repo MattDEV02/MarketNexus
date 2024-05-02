@@ -2,6 +2,7 @@ package com.market.marketnexus.controller.validator;
 
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.helpers.validators.FieldValidators;
+import com.market.marketnexus.helpers.validators.TypeValidators;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.repository.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,10 @@ public class CredentialsValidator implements Validator {
       }
       if (!this.isAccountUpdate && !FieldValidators.passwordValidator(credentials.getPassword())) {
          errors.rejectValue("password", "credentials.password.invalidFormat");
+      } else if (this.isAccountUpdate && TypeValidators.validateString(credentials.getPassword()) && !FieldValidators.passwordValidator(credentials.getPassword())) {
+         errors.rejectValue("password", "credentials.password.invalidFormat");
       }
-      if (!this.isAccountUpdate && this.getConfirmPassword() != null && !this.getConfirmPassword().isEmpty() && !credentials.getPassword().equals(this.getConfirmPassword())) {
+      if (this.getConfirmPassword() == null || !credentials.getPassword().equals(this.getConfirmPassword())) {
          errors.reject("passwordDifferentFromConfirmPasswordError", "The password must be the same as the confirm password.");
       }
       if (!Utils.existsRole(credentials.getRole())) {

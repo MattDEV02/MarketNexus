@@ -1,28 +1,23 @@
 package com.market.marketnexus.helpers.credentials;
 
 import com.market.marketnexus.model.Credentials;
-import com.market.marketnexus.model.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Utils {
-
-
-   public static boolean userIsLoggedIn(User user) {
-      return false;
-   }
-
-   public static boolean userIsLoggedIn(Credentials credentials) {
-      return false;
-   }
 
    public static boolean userIsLoggedIn(Authentication authentication) {
       return !(authentication instanceof AnonymousAuthenticationToken);
@@ -31,19 +26,21 @@ public class Utils {
    public static void updateUserCredentialsAuthentication(@NotNull Credentials credentials) {
       Authentication currentAuthentication = SecurityContextHolder.getContext().getAuthentication();
       UserDetails currentUserDetails = (UserDetails) currentAuthentication.getPrincipal();
-      System.out.println(currentUserDetails.getAuthorities());
-      System.out.println(currentAuthentication.getAuthorities());
-      UserDetails newPrincipal = new org.springframework.security.core.userdetails.User(credentials.getUsername(), credentials.getPassword(), currentUserDetails.getAuthorities());
+      Collection<GrantedAuthority> updatedAuthorities = new ArrayList<>(currentAuthentication.getAuthorities());
+      updatedAuthorities.clear();
+      updatedAuthorities.add(new SimpleGrantedAuthority(credentials.getRole()));
+      UserDetails newPrincipal = new User(credentials.getUsername(), credentials.getPassword(), currentUserDetails.getAuthorities());
       Authentication newAuthentication = new UsernamePasswordAuthenticationToken(
               newPrincipal,
-              null, // authentication.credentials
-              currentAuthentication.getAuthorities()
+              null, // credentials
+              updatedAuthorities
       );
       SecurityContextHolder.getContext().setAuthentication(newAuthentication);
    }
 
    public static void cryptAndSaveUserCredentialsPassword(@NotNull Credentials credentials, @NotNull PasswordEncoder passwordEncoder) {
-      credentials.setPassword(passwordEncoder.encode(credentials.getPassword()));
+      String encodedPassword = passwordEncoder.encode(credentials.getPassword());
+      credentials.setPassword(encodedPassword);
    }
 
    public static void saveUserCredentialsRole(@NotNull Credentials credentials, Roles role) {

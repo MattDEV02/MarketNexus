@@ -59,9 +59,37 @@ public class CartService {
    public Set<CartLineItem> getAllCartLineItems(Long cartId) {
       Cart cart = this.getCart(cartId);
       if (cart != null) {
+         Set<CartLineItem> result = new HashSet<CartLineItem>();
          Hibernate.initialize(cart.getCartLineItems());
          Set<CartLineItem> cartLineItems = cart.getCartLineItems();
-         return cartLineItems;
+         Sale sale = null;
+         for (CartLineItem cartLineItem : cartLineItems) {
+            sale = cartLineItem.getSale();
+            if (!sale.getIsSold()) {
+               result.add(cartLineItem);
+            }
+         }
+         return result;
+      } else {
+         return null;
+      }
+   }
+
+   @Transactional
+   public Set<CartLineItem> getAllSoldCartLineItems(Long cartId) {
+      Cart cart = this.getCart(cartId);
+      if (cart != null) {
+         Set<CartLineItem> result = new HashSet<CartLineItem>();
+         Hibernate.initialize(cart.getCartLineItems());
+         Set<CartLineItem> cartLineItems = cart.getCartLineItems();
+         Sale sale = null;
+         for (CartLineItem cartLineItem : cartLineItems) {
+            sale = cartLineItem.getSale();
+            if (sale.getIsSold()) {
+               result.add(cartLineItem);
+            }
+         }
+         return result;
       } else {
          return null;
       }
@@ -109,26 +137,6 @@ public class CartService {
       cart.setCartPrice(newCartPrice);
       this.cartRepository.save(cart);
       return !this.cartLineItemRepository.findAll().iterator().hasNext();
-   }
-
-   public Set<Sale> getAllCartLineItemsSales(@NotNull Long cartId) {
-      Set<Sale> result = new HashSet<Sale>();
-      Cart cart = this.getCart(cartId);
-      Hibernate.initialize(cart.getCartLineItems());
-      Set<CartLineItem> cartLineItems = cart.getCartLineItems();
-      for (CartLineItem cartLineItem : cartLineItems) {
-         result.add(cartLineItem.getSale());
-      }
-      return result;
-   }
-
-   public CartLineItem findCartLineItem(Long cartId, Long cartLineItemId) {
-      Cart cart = this.getCart(cartId);
-      return cart.getCartLineItems().stream().filter(cartLineItem -> cartLineItem.getId().equals(cartLineItemId)).findFirst().orElse(null);
-   }
-
-   public CartLineItem findCartLineItem(Long cartLineItemId) {
-      return this.cartLineItemRepository.findById(cartLineItemId).orElse(null);
    }
 
    public Float calculateCartPrice(@NotNull Cart cart) {

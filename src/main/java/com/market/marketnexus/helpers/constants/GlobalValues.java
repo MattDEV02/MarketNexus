@@ -18,7 +18,7 @@ public class GlobalValues {
 
    public final static String SQL_SCHEMA_NAME = "marketnexus";
 
-   public final static String ROOT_PATH = Paths.root;
+   public final static String ROOT_PATH = Paths.ROOT;
 
    public final static String TEMPLATES_EXTENSION = ".html";
 

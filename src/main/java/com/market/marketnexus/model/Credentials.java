@@ -32,7 +32,7 @@ public class Credentials {
    @Column(name = "username", unique = true, nullable = false)
    @NotBlank
    private String username;
-   @NotBlank
+   //@NotBlank
    @Column(name = "password", nullable = false)
    private String password;
 

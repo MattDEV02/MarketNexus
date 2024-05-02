@@ -1,7 +1,11 @@
-
 [type="submit"] {
    border: none;
    cursor: pointer;
+}
+
+.btn:disabled {
+   opacity: 1;
+!important;
 }
 
 @media (max-width: 767px) {

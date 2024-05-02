@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -102,14 +103,15 @@ public class SaleController {
       this.productValidator.validate(product, productBindingResult);
       if (!productBindingResult.hasErrors() && !saleBindingResult.hasErrors()) {
          Product savedProduct = this.productService.saveProduct(product);
-         Sale savedSale = this.saleService.saveSale(sale, loggedUser, savedProduct);
          if (Utils.storeProductImage(savedProduct, productImage)) {
+            Sale savedSale = this.saleService.saveSale(sale, loggedUser, savedProduct);
             modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL + savedProduct.getId().toString());
             modelAndView.addObject("sale", savedSale);
          }
       } else {
-         for (ObjectError error : productBindingResult.getGlobalErrors()) {
-            modelAndView.addObject(Objects.requireNonNull(error.getCode()), error.getDefaultMessage());
+         List<ObjectError> productGlobalErrors = productBindingResult.getGlobalErrors();
+         for (ObjectError productGlobalError : productGlobalErrors) {
+            modelAndView.addObject(Objects.requireNonNull(productGlobalError.getCode()), productGlobalError.getDefaultMessage());
          }
       }
       return modelAndView;

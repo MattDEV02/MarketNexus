@@ -66,8 +66,8 @@
                            th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' home'">Home</a>
                         <a class="text-decoration-none ms-3" th:href="@{/registration}"
                            th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' registration'">Register</a>
-                        <a class="ms-3" data-bs-target="#forgot-username-modal"
-                           data-bs-toggle="modal" href=""
+                        <a class="ms-3"
+                           th:href="@{/forgotUsername}"
                            title="Forgot username?">Forgot username?</a>
                      </p>
                   </div>

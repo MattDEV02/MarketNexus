@@ -53,7 +53,11 @@
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.username')}"></div>
                   <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.password')}"></div>
+                  <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.role')}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${passwordDifferentFromConfirmPasswordError}, condition = ${passwordDifferentFromConfirmPasswordError != null})}"></div>
                   <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-5 col-xxl-5 text-center me-3 mt-lg-2 mt-xl-0"
                        th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' user informations'">
                      <h2 class="mt-4 mt-md-3 mt-lg-3 mt-xl-3 mt-xxl-3 mb-5">User informations</h2>
@@ -62,25 +66,17 @@
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property ='birth date', type = 'date', value = ${#dates.format(user.birthDate, 'yyyy-MM-dd')}, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'balance', type = 'number', value = ${user.balance}, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'nation', value = ${user.nation}, isSelect = true, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'email', type = 'email', value = ${user.email}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
                   </div>
                   <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-5 col-xxl-5 text-center mt-4 mt-xl-0 ms-xl-3"
-                       th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account informations'">
-                     <h2 class="mt-3 mb-5">Account informations</h2>
+                       th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' credentials informations'">
+                     <h2 class="mt-3 mb-5">Credentials informations</h2>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'username', type = 'text', value = ${credentials.username}, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'role', type = 'text', value = ${credentials.role},  isSelect = true, isLoggedUser = ${isLoggedUser})}"></div>
-                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'email', type = 'email', value = ${user.email}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'password', type = 'password', value = '', isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${credentials}, property = 'confirm-password', type = 'password', value = '', isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'registered', type = 'date', value = ${#temporals.format(credentials.insertedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/dashboard/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'updated', type = 'date', value = ${#temporals.format(credentials.updatedAt, TEMPORALS_MAP.get('DATE_TIME_FORMAT'))}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
-                     <input class="form-control visually-hidden disabled"
-                            id="password"
-                            name="password"
-                            placeholder=""
-                            th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
-                            th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
-                            th:object="${credentials}"
-                            th:value="${credentials.password}"
-                            type="password"
-                     />
                   </div>
                   <div class="col-12 mt-5 mb-3" th:if="${isLoggedUser}">
                      <div class="row justify-content-center">
@@ -214,6 +210,8 @@
 </div>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/validators.js}"
         type="text/javascript"></script>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:if="${isLoggedUser}"
+        th:src="@{/js/shared/showPassword.js}" type="text/javascript"></script>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
         th:src="@{'/js/' + ${API_PREFIXES_MAP.get('ACCOUNT')} + '/stats/index.js'}"
         type="text/javascript"></script>

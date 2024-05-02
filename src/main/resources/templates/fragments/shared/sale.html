@@ -1,6 +1,6 @@
 <div class="card text-center shadow mt-5" th:fragment="sale(sale)"
-     th:title="${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' X' + ${sale.quantity} + ' at ' + ${sale.product.price} + ' $ in sale'"
-     th:with=" isLoggedUser=(${isLoggedUser} ?: false)">
+     th:title="${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' X' + ${sale.quantity} + ' at ' + ${sale.product.price} + ' ' + ${sale.isSold ? 'sold.' : 'in sale.'}"
+     th:with="isLoggedUser=(${isLoggedUser} ?: false), isAddedToCart=(${isAddedToCart} ?: false)">
    <a th:href="@{'/dashboard/sale/' + ${sale.id}}">
       <img class="card-img-top"
            th:alt="${sale.product.name}"
@@ -20,12 +20,19 @@
       >
       </a>
       <span class="text-secondary fs-5 ms-2 me-3" th:text="${sale.salePrice} + ' $'"></span>
-      <a role="button" th:class="'btn btn-primary ms-3 mb-2 ' + ${isLoggedUser ? 'disabled' : null}"
+      <a class="btn btn-primary ms-3 mb-2" role="button"
          th:href="@{'/dashboard/cart/' + ${sale.id} + '?quantity=' + ${sale.quantity}}"
-         th:if="${#strings.contains(loggedUser.credentials.role, 'BUYER') && !isLoggedUser}"
+         th:if="${#strings.contains(loggedUser.credentials.role, 'BUYER') && !isLoggedUser && !sale.isSold && !isAddedToCart}"
          th:title="'Add this ' + ${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' cart'"
       >
          <i class="fas fa-cart-plus"></i>
       </a>
+      <div class="ms-3 mb-2"
+           th:if="${(!#strings.contains(loggedUser.credentials.role, 'BUYER') || isLoggedUser) && !sale.isSold}"></div>
+      <button class="btn btn-danger ms-3 mb-2" disabled
+              th:if="${sale.isSold && #strings.contains(loggedUser.credentials.role, 'BUYER')}"
+              type="button">
+         <i class="fas fa-times-circle"></i>
+      </button>
    </div>
 </div>

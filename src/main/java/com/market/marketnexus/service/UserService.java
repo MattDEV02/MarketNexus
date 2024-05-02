@@ -1,6 +1,7 @@
 package com.market.marketnexus.service;
 
 import com.market.marketnexus.helpers.sale.Utils;
+import com.market.marketnexus.helpers.validators.TypeValidators;
 import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.User;
@@ -45,10 +46,11 @@ public class UserService {
    }
 
    @Transactional
-   public User saveUser(User user) {
+   public User saveUser(@NotNull User user) {
+      Cart cart = new Cart(user);
+      Cart savedCart = this.cartRepository.save(cart);
+      user.setCart(savedCart);
       User savedUser = this.userRepository.save(user);
-      Cart cart = new Cart();
-      this.cartRepository.save(cart);
       return savedUser;
    }
 
@@ -60,6 +62,9 @@ public class UserService {
          Credentials credentials = user.getCredentials();
          updatedCredentials.setInsertedAt(credentials.getInsertedAt());
          user.getCredentials().setUsername(updatedCredentials.getUsername());
+         if (TypeValidators.validateString(updatedCredentials.getPassword())) {
+            user.getCredentials().setPassword(updatedCredentials.getPassword());
+         }
          user.getCredentials().setRole(updatedCredentials.getRole());
          user.getCredentials().preUpdate();
          user.setName(updatedUser.getName());

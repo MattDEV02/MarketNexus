@@ -127,43 +127,14 @@ ALTER TABLE MarketNexus.Products
 
 COMMENT ON TABLE MarketNexus.Products IS 'MarketNexus Users Products.';
 
-CREATE OR REPLACE FUNCTION MarketNexus.GENERATE_PRODUCT_RELATIVEIMAGEPATH_FUNCTION(product_id INT, product_name TEXT)
-    RETURNS TEXT AS
-$$
-DECLARE
-    base_path CONSTANT TEXT := '/images/products/';
-    extension CONSTANT TEXT := '.jpeg';
-BEGIN
-    RETURN base_path || product_id || '/' || LOWER(product_name) || extension;
-END;
-$$
-    LANGUAGE PLPGSQL;
-
-CREATE
-    OR REPLACE FUNCTION MarketNexus.INSERT_PRODUCT_RELATIVEIMAGEPATH_FUNCTION()
-    RETURNS TRIGGER AS
-$$
-BEGIN
-    NEW.image_relative_path = MarketNexus.GENERATE_PRODUCT_RELATIVEIMAGEPATH_FUNCTION(NEW.ID, NEW.name);
-    RETURN NEW;
-END;
-$$ LANGUAGE PLPGSQL;
-
-CREATE OR REPLACE TRIGGER PRODUCTS_INSERT_IMAGERELATIVEIMAGEPATH_TRIGGER
-    BEFORE INSERT
-    ON MarketNexus.Products
-    FOR EACH ROW
-EXECUTE FUNCTION MarketNexus.INSERT_PRODUCT_RELATIVEIMAGEPATH_FUNCTION();
-
-
-INSERT INTO MarketNexus.Products (name, price, description, category)
-VALUES ('Smartphone', 599.99, 'High-end smartphone.', 1),
-       ('T-shirt', 29.99, 'Cotton T-shirt.', 2),
-       ('Java Programming Book', 49.99, 'Learn Java programming.', 3),
-       ('Laptop', 999.99, 'Powerful laptop.', 1),
-       ('Running Shoes', 79.99, 'Lightweight running shoes.', 2),
-       ('Python Book', 39.99, 'Master Python programming.', 3),
-       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4);
+INSERT INTO MarketNexus.Products (name, price, description, category, image_relative_path)
+VALUES ('Smartphone', 599.99, 'High-end smartphone.', 1, '/images/products/1/smartphone.jpeg'),
+       ('T-shirt', 29.99, 'Cotton T-shirt.', 2, '/images/products/2/t-shirt.jpeg'),
+       ('Java Programming Book', 49.99, 'Learn Java programming.', 3, '/images/products/3/java programming book.jpeg'),
+       ('Laptop', 999.99, 'Powerful laptop.', 1, '/images/products/4/laptop.jpeg'),
+       ('Running Shoes', 79.99, 'Lightweight running shoes.', 2, '/images/products/5/running shoes.jpeg'),
+       ('Python Book', 39.99, 'Master Python programming.', 3, '/images/products/6/python book.jpeg'),
+       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4, '/images/products/7/coffee maker.jpeg');
 --('Denim Jeans', 49.99, 'Classic denim jeans.', 2),
 --('Fishing Rod', 39.99, 'Professional fishing rod.', 6),
 --('Hair Dryer', 29.99, 'Ionic hair dryer.', 7),
@@ -256,7 +227,7 @@ ALTER TABLE MarketNexus.Users
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Users (name, surname, email, birthdate, balance, credentials, nation)
-VALUES ('Matteo', 'Lambertucci', 'matteolambertucci@gmail.com', '2024-03-14', 220, 1, 1),
+VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2024-03-14', 220, 1, 1),
        ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2, 2),
        ('Gabriel', 'Muscedere', 'gabrielmuscedere@gmail.com', '2002-03-27', 0.1, 3, 6);
 
@@ -372,7 +343,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Carts
     _user       INTEGER,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
-    CONSTRAINT carts_user_insertedat_insertedat_unique UNIQUE (_user, inserted_at),
+    CONSTRAINT carts_user_insertedat_unique UNIQUE (_user, inserted_at),
     CONSTRAINT carts_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
     CONSTRAINT carts_id_min_value_check CHECK (MarketNexus.Carts.id >= 1),
     CONSTRAINT carts_cartprice_min_value_check CHECK (MarketNexus.Carts.cart_price >= 0),
@@ -381,6 +352,9 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Carts
     CONSTRAINT carts_insertedat_updatedat_value_check CHECK (MarketNexus.Carts.inserted_at <=
                                                              MarketNexus.Carts.updated_at)
 );
+
+select username
+from credentials;
 
 CREATE
     OR REPLACE TRIGGER CARTLINEITEMS_UPDATEDAT_TRIGGER
@@ -696,6 +670,9 @@ $$ LANGUAGE PLPGSQL;
 
 SELECT *
 FROM GET_USERS_SALES_STATS();
+
+select image_relative_path
+from Products;
 
 
 

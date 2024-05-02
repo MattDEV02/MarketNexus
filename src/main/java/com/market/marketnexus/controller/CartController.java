@@ -3,7 +3,7 @@ package com.market.marketnexus.controller;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.credentials.Roles;
-import com.market.marketnexus.helpers.validators.DateValidators;
+import com.market.marketnexus.helpers.validators.TypeValidators;
 import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.CartLineItem;
 import com.market.marketnexus.model.Sale;
@@ -56,7 +56,7 @@ public class CartController {
       } else {
          CartLineItem savedCartLineItem = this.cartService.makeCartLineItem(cart.getId(), sale);
          modelAndView.addObject("sale", savedCartLineItem.getSale());
-         modelAndView.addObject("isAddedToCart", DateValidators.validateTimestamp(savedCartLineItem.getInsertedAt())); //
+         modelAndView.addObject("isAddedToCart", TypeValidators.validateTimestamp(savedCartLineItem.getInsertedAt())); //
       }
       return modelAndView;
    }

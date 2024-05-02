@@ -9,12 +9,11 @@ import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity(name = "Carts")
-@Table(name = "Carts", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(columnNames = {"_user", "inserted_at"})})
+@Table(name = "Carts", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "carts_user_insertedat_unique", columnNames = {"_user", "inserted_at"})})
 public class Cart {
    private final static Float CART_START_PRICE = 0.0F;
    @Id
@@ -47,13 +46,11 @@ public class Cart {
 
    public Cart() {
       this.cartPrice = Cart.CART_START_PRICE;
-      this.cartLineItems = Collections.emptySet();
    }
 
    public Cart(User user) {
       this.user = user;
       this.cartPrice = Cart.CART_START_PRICE;
-      this.cartLineItems = Collections.emptySet();
    }
 
    public Float getCartPrice() {

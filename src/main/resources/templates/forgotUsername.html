@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
+
+<head th:replace="~{fragments/shared/head.html :: head(title = 'Forgot username')}">
+</head>
+
+<body>
+<div class="container">
+   <div class="row justify-content-center">
+      <div class="col-12 mt-5">
+         <div class="row justify-content-center">
+            <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 col-xxl-5 shadow border rounded px-5 pt-4 pb-3 mt-3">
+               <div class="row text-center mt-2 mb-4">
+                  <h2 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Forgot username 🕵️‍♂️'"></h2>
+               </div>
+               <div
+                     th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Email Successfully sent, check your mailbox.', condition = ${emailSent})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Email not exists.', condition = ${emailNotExistsError})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.email')}"></div>
+               <form id="forgotusername-form" method="POST" name="forgotusername-form"
+                     th:action="@{/sendForgotUsernameEmail}"
+                     th:object="${user}">
+                  <div class="mb-3">
+                     <label class="form-label" for="email">Email:</label>
+                     <input class="form-control py-2" id="email"
+                            name="email"
+                            placeholder="Insert your email" required th:field="*{email}"
+                            
+                            th:title="'Insert your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' email'"
+                            type="text"/>
+                  </div>
+                  <div class="my-4">
+                     <button class="btn btn-primary form-control py-2 fw-bold mt-2" form="forgotusername-form"
+                             formmethod="POST"
+                             id="submit"
+                             name="submit"
+                             th:title="'Send email with your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' username.'}"
+                             type="submit">
+                        Send email
+                        <i class="fas fa-sign-in-alt mx-1"></i>
+                     </button>
+                  </div>
+               </form>
+               <div class="col-12">
+                  <div class="row text-center" id="forgotusername-footer">
+                     <p>
+                        <a class="text-decoration-none ms-3" th:href="@{/}"
+                           th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' home'">Home</a>
+                        <a class="text-decoration-none ms-3" th:href="@{/login}"
+                           th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' login'">Login</a>
+                        <a class="text-decoration-none ms-3" th:href="@{/registration}"
+                           th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' registration'">Register</a>
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+</body>
+
+</html>

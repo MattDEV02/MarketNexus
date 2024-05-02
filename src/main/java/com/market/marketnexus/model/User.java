@@ -6,7 +6,6 @@ import com.market.marketnexus.helpers.constants.Temporals;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import jdk.jfr.Unsigned;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -62,16 +61,6 @@ public class User {
 
    public User() {
 
-   }
-
-   public User(@NotNull User user) {
-      this.name = user.getName();
-      this.surname = user.getSurname();
-      this.birthDate = user.getBirthDate();
-      this.email = user.getEmail();
-      this.balance = user.getBalance();
-      this.credentials = user.getCredentials();
-      this.nation = user.getNation();
    }
 
    public User(String name, String surname, String email, Float balance, Credentials credentials, Nation nation) {

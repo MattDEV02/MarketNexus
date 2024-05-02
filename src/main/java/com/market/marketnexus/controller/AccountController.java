@@ -5,6 +5,7 @@ import com.market.marketnexus.controller.validator.UserValidator;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.credentials.Utils;
+import com.market.marketnexus.helpers.validators.TypeValidators;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
@@ -15,6 +16,7 @@ import com.market.marketnexus.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -33,7 +35,8 @@ public class AccountController {
    public final static String UPDATE_ERROR = "/" + APIPrefixes.ACCOUNT + ".html";
    public final static String ACCOUNT_DELETED_SUCCESSFULLY = "redirect:/logout";
    public final static String ACCOUNT_DELETED = APIPrefixes.ACCOUNT + ".html";
-
+   @Autowired
+   private PasswordEncoder passwordEncoder;
    @Autowired
    private SaleService saleService;
    @Autowired
@@ -94,22 +97,27 @@ public class AccountController {
            @Valid @NonNull @ModelAttribute("user") User user,
            @NonNull BindingResult userBindingResult,
            @Valid @NonNull @ModelAttribute("credentials") Credentials credentials,
-           @NonNull BindingResult credentialsBindingResult
+           @NonNull BindingResult credentialsBindingResult,
+           @RequestParam("confirm-password") String confirmPassword
    ) {
       ModelAndView modelAndView = new ModelAndView(AccountController.UPDATE_ERROR);
       this.userValidator.setAccountUpdate(true);
       this.credentialsValidator.setAccountUpdate(true);
+      this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
       this.credentialsValidator.validate(credentials, credentialsBindingResult);
-      if (!userBindingResult.hasFieldErrors() && !credentialsBindingResult.hasFieldErrors()) {
+      if (!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
          modelAndView.setViewName(AccountController.UPDATE_SUCCESSFUL);
+         if (TypeValidators.validateString(confirmPassword)) {
+            Utils.cryptAndSaveUserCredentialsPassword(credentials, passwordEncoder);
+         }
          user.setCredentials(credentials);
          User updatedUser = this.userService.updateUser(loggedUser.getId(), user);
          Utils.updateUserCredentialsAuthentication(updatedUser.getCredentials());
       } else {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
          Set<Sale> soldSaleProducts = this.saleService.getAllUserSoldSales(loggedUser);
-         Set<Sale> orderedProducts = this.orderService.getUserOrderedSales(user);
+         Set<Sale> orderedProducts = this.orderService.getUserOrderedSales(loggedUser);
          modelAndView.addObject("user", user);
          credentials.setInsertedAt(loggedUser.getCredentials().getInsertedAt());
          credentials.setUpdatedAt(loggedUser.getCredentials().getUpdatedAt());
@@ -119,8 +127,12 @@ public class AccountController {
          modelAndView.addObject("orderedProducts", orderedProducts);
          modelAndView.addObject("tableData", this.statsController.getTableData());
          List<ObjectError> userGlobalErrors = userBindingResult.getGlobalErrors();
-         for (ObjectError error : userGlobalErrors) {
-            modelAndView.addObject(Objects.requireNonNull(error.getCode()), error.getDefaultMessage());
+         List<ObjectError> credentialsGlobalErrors = credentialsBindingResult.getGlobalErrors();
+         for (ObjectError userGlobalError : userGlobalErrors) {
+            modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
+         }
+         for (ObjectError credentialGlobalErrors : credentialsGlobalErrors) {
+            modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
          }
       }
       return modelAndView;
