@@ -22,6 +22,11 @@ public class Paths {
    }
 
    @Contract(pure = true)
+   public static @NotNull String getResourcesPath() {
+      return Paths.getStaticPath() + Paths.IMAGES;
+   }
+
+   @Contract(pure = true)
    public static @NotNull String getImagesPath() {
       return Paths.getStaticPath() + Paths.IMAGES;
    }

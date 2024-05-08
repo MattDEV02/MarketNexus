@@ -27,14 +27,16 @@ import javax.sql.DataSource;
 //@EnableWebMvc
 public class AuthConfiguration implements WebMvcConfigurer {
 
-   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + Paths._STATIC + '/'};
+   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + Paths._STATIC + "/"};
    @Autowired
    private DataSource dataSource;
 
    @Override
    public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
       registry.addResourceHandler("/**")
-              .addResourceLocations(AuthConfiguration.CLASSPATH_RESOURCE_LOCATIONS);
+              .addResourceLocations(AuthConfiguration.CLASSPATH_RESOURCE_LOCATIONS)
+      //.setCachePeriod(0)
+      ;
    }
 
    @Autowired

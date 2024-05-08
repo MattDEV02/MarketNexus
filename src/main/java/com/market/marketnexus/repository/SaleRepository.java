@@ -23,7 +23,7 @@ public interface SaleRepository extends CrudRepository<Sale, Long> {
 
    @Query(value = """
            SELECT *
-           FROM GET_USER_SALES_STATS(:userId);
+           FROM GET_USER_SOLD_SALES_STATS(:userId);
            """,
            nativeQuery = true)
    public List<Object[]> countCurrentWeekUserSales(@Param("userId") Long userId);

@@ -57,6 +57,7 @@ public class SaleController {
    public ModelAndView searchSales(@NonNull HttpServletRequest request) {
       String productName = request.getParameter("product-name");
       String productCategoryId = request.getParameter("category");
+      LOGGER.info("Search {} ; {}", productName, productCategoryId);
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/index.html");
       Set<Sale> searchedSales = null;
       if (productName.isEmpty() && productCategoryId.isEmpty()) {
@@ -107,6 +108,9 @@ public class SaleController {
             Sale savedSale = this.saleService.saveSale(sale, loggedUser, savedProduct);
             modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL + savedProduct.getId().toString());
             modelAndView.addObject("sale", savedSale);
+            LOGGER.info("Published new Sale with ID: {}", savedSale.getId());
+         } else {
+            modelAndView.addObject("saleNotPublishedError", true);
          }
       } else {
          List<ObjectError> productGlobalErrors = productBindingResult.getGlobalErrors();

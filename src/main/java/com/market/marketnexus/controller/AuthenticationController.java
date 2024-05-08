@@ -68,6 +68,7 @@ public class AuthenticationController {
          user.setCredentials(credentials);
          User savedUser = this.userService.saveUser(user);
          if (savedUser != null) {
+            LOGGER.info("Registered account with User ID: {}", savedUser.getId());
             modelAndView.setViewName(AuthenticationController.REGISTRATION_SUCCESSFUL);
          } else {
             modelAndView.addObject("userNotRegisteredError", "Server ERROR, User not registered.");
@@ -94,7 +95,6 @@ public class AuthenticationController {
 
    @GetMapping(value = {"/forgotUsername", "forgotUsername/"})
    public ModelAndView showForgotUsernameForm() {
-      System.out.println("ffff");
       ModelAndView modelAndView = new ModelAndView("forgotUsername.html");
       modelAndView.addObject("user", new User());
       return modelAndView;

@@ -11,6 +11,8 @@ import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.CartService;
 import com.market.marketnexus.service.SaleService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ import java.util.Set;
 @RequestMapping(value = "/" + APIPrefixes.CART)
 public class CartController {
 
+   private static final Logger LOGGER = LoggerFactory.getLogger(CartController.class);
    @Autowired
    private SaleService saleService;
    @Autowired
@@ -45,13 +48,16 @@ public class CartController {
       modelAndView.addObject("sale", sale);
       modelAndView.addObject("isAddedToCart", false);
       if (!loggedUser.getCredentials().getRole().contains(Roles.BUYER_ROLE.toString())) {
+         LOGGER.error("userNotBuyerAddOwnSaleToCartError");
          modelAndView.addObject("userNotBuyerAddOwnSaleToCartError", true);
          return modelAndView;
       }
       Cart cart = loggedUser.getCart();
       if (loggedUser.equals(sale.getUser())) {
+         LOGGER.error("userAddOwnSaleToCartError");
          modelAndView.addObject("userAddOwnSaleToCartError", true);
       } else if (this.cartService.existsCartLineItemSale(cart.getId(), sale)) {
+         LOGGER.error("userAddExistingSaleToCartError");
          modelAndView.addObject("userAddExistingSaleToCartError", true);
       } else {
          CartLineItem savedCartLineItem = this.cartService.makeCartLineItem(cart.getId(), sale);
@@ -67,7 +73,9 @@ public class CartController {
       Cart cart = loggedUser.getCart();
       if (this.cartService.deleteCartLineItem(cart.getId(), cartLineItemId)) {
          modelAndView.addObject("cartDeletedSuccess", true);
+         LOGGER.info("Deleted CartLineItem with CartLineItem ID: {}", cartLineItemId);
       } else {
+         LOGGER.error("cartNotDeletedError");
          modelAndView.addObject("cartNotDeletedError", true);
       }
       return modelAndView;

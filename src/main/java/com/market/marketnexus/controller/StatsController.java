@@ -21,7 +21,6 @@ import java.util.Set;
 @RequestMapping(value = "/" + APIPrefixes.STATS)
 @RestController
 public class StatsController {
-
    @Autowired
    private UserService userService;
    @Autowired

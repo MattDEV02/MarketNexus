@@ -14,6 +14,8 @@ import com.market.marketnexus.service.OrderService;
 import com.market.marketnexus.service.SaleService;
 import com.market.marketnexus.service.UserService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +37,7 @@ public class AccountController {
    public final static String UPDATE_ERROR = "/" + APIPrefixes.ACCOUNT + ".html";
    public final static String ACCOUNT_DELETED_SUCCESSFULLY = "redirect:/logout";
    public final static String ACCOUNT_DELETED = APIPrefixes.ACCOUNT + ".html";
+   private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
    @Autowired
    private PasswordEncoder passwordEncoder;
    @Autowired
@@ -114,6 +117,7 @@ public class AccountController {
          user.setCredentials(credentials);
          User updatedUser = this.userService.updateUser(loggedUser.getId(), user);
          Utils.updateUserCredentialsAuthentication(updatedUser.getCredentials());
+         LOGGER.info("Updated account with User ID: {}", updatedUser.getId());
       } else {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
          Set<Sale> soldSaleProducts = this.saleService.getAllUserSoldSales(loggedUser);
@@ -143,6 +147,7 @@ public class AccountController {
       ModelAndView modelAndView = new ModelAndView(AccountController.ACCOUNT_DELETED);
       if (this.userService.deleteUser(loggedUser)) {
          modelAndView.setViewName(AccountController.ACCOUNT_DELETED_SUCCESSFULLY);
+         LOGGER.info("Deleted account with User ID: {}", loggedUser.getId());
       } else {
          modelAndView.addObject("accountNotDeletedError", true);
       }

@@ -1,8 +1,11 @@
 package com.market.marketnexus.service;
 
+import com.market.marketnexus.helpers.constants.Paths;
+import com.market.marketnexus.helpers.product.Utils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.repository.ProductCategoryRepository;
 import com.market.marketnexus.repository.ProductRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +27,10 @@ public class ProductService {
    }
 
    @Transactional
-   public Product saveProduct(Product product) {
-      return this.productRepository.save(product);
+   public Product saveProduct(@NotNull Product product) {
+      Product savedProduct = this.productRepository.save(product);
+      savedProduct.setImageRelativePath(Paths.IMAGES + Utils.getProductRelativeImageDirectory(savedProduct) + "/" + Utils.getProductRelativeImageFile(savedProduct));
+      return savedProduct;
    }
 
 }

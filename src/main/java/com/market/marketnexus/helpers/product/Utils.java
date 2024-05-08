@@ -25,13 +25,12 @@ public class Utils {
    public static @NotNull Boolean storeProductImage(Product product, @NonNull MultipartFile productImage) {
       if (!productImage.isEmpty()) {
          try {
-            String destinationDirectory = Paths.getImagesPath() + Utils.getProductRelativeImageDirectory(product);
+            String destinationDirectory = Paths.getStaticPath() + product.getImageRelativePath().replace(product.getName().toLowerCase(), "").replace(Utils.PRODUCT_IMAGE_EXTENSION, "");
+            System.out.println(destinationDirectory);
             File directory = new File(destinationDirectory);
             if (directory.mkdir()) {
-               String destinationFilePath = destinationDirectory + "/" + Utils.getProductRelativeImageFile(product);
-               File file = new File(destinationFilePath);
+               File file = new File(destinationDirectory + product.getName().toLowerCase() + Utils.PRODUCT_IMAGE_EXTENSION);
                productImage.transferTo(file);
-               product.setImageRelativePath(Paths.IMAGES + Utils.getProductRelativeImageDirectory(product) + "/" + Utils.getProductRelativeImageFile(product));
                return productImage.getResource().exists() && file.exists(); //
             } else {
                System.err.println("Directory for the new Product inserted (id = " + product.getId().toString() + ")" + " not created, file cannot be stored.");

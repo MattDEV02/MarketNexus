@@ -11,6 +11,8 @@ import com.market.marketnexus.service.CartService;
 import com.market.marketnexus.service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,7 @@ import java.util.Set;
 @RequestMapping(value = "/" + APIPrefixes.ORDER)
 public class OrderController {
 
+   private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
    @Autowired
    private OrderService orderService;
    @Autowired
@@ -42,17 +45,22 @@ public class OrderController {
          modelAndView.addObject("userNotBuyerAddOwnSaleToCartError", true);
       } else if (this.cartService.existsCartBtId(cartId)) {
          Cart cart = loggedUser.getCart();
-         if (loggedUser.getBalance() < cart.getCartPrice()) {
+         if (cart.getCartPrice() == 0) {
+            LOGGER.error("emptyCartError");
+            modelAndView.addObject("emptyCartError", true);
+         } else if (loggedUser.getBalance() < cart.getCartPrice()) {
+            LOGGER.error("userBalanceLowerThanCartPriceError");
             modelAndView.addObject("userBalanceLowerThanCartPriceError", true);
          } else {
-            Order order = this.orderService.makeOrder(loggedUser);
-            System.out.println(order.getInsertedAt());
-            LocalDateTime orderInsertedAt = order.getInsertedAt();
-            Cart orderCart = order.getCart();
+            Order savedOrder = this.orderService.makeOrder(loggedUser);
+            System.out.println(savedOrder.getInsertedAt());
+            LocalDateTime orderInsertedAt = savedOrder.getInsertedAt();
+            Cart orderCart = savedOrder.getCart();
             Set<CartLineItem> cartLineItems = this.cartService.getAllSoldCartLineItems(orderCart.getId());
             modelAndView.addObject("orderInsertedAt", orderInsertedAt);
             modelAndView.addObject("cart", orderCart);
             modelAndView.addObject("cartLineItems", cartLineItems);
+            LOGGER.info("New Order with ID: {}", savedOrder.getId());
             modelAndView.setViewName(APIPrefixes.ORDER + GlobalValues.TEMPLATES_EXTENSION);
          }
       } else {

@@ -48,7 +48,7 @@ public class OrderService {
          this.userRepository.save(user);
          this.cartService.updateCartLineItemsSalesIsSold(cart.getId());
          cart.setUser(null);
-         //this.cartRepository.save(cart);
+         this.cartRepository.save(cart);
          Order order = new Order(user, cart);
          Order savedOrder = this.orderRepository.save(order);
          user.setCart(null); //

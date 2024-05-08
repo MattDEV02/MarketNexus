@@ -29,6 +29,8 @@
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Buyer users cannot add sales at them cart.', condition = ${userNotBuyerAddOwnSaleToCartError})}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You have already added this product to your cart.', condition = ${userAddExistingSaleToCartError})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Sale not published.', condition = ${saleNotPublishedError})}"></div>
                </div>
             </div>
          </div>
