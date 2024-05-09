@@ -2,14 +2,15 @@ package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
-import com.market.marketnexus.helpers.credentials.Roles;
 import com.market.marketnexus.helpers.validators.TypeValidators;
 import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.CartLineItem;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.CartService;
+import com.market.marketnexus.service.CredentialsService;
 import com.market.marketnexus.service.SaleService;
+import com.market.marketnexus.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,10 @@ public class CartController {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(CartController.class);
    @Autowired
+   private UserService userService;
+   @Autowired
+   private CredentialsService credentialsService;
+   @Autowired
    private SaleService saleService;
    @Autowired
    private CartService cartService;
@@ -34,7 +39,7 @@ public class CartController {
    @GetMapping(value = {"", "/"})
    public ModelAndView showCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.CART + GlobalValues.TEMPLATES_EXTENSION);
-      Cart cart = loggedUser.getCart();
+      Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       Set<CartLineItem> cartLineItems = this.cartService.getAllCartLineItems(cart.getId());
       modelAndView.addObject("cart", cart);
       modelAndView.addObject("cartLineItems", cartLineItems);
@@ -47,12 +52,12 @@ public class CartController {
       Sale sale = this.saleService.getSale(saleId);
       modelAndView.addObject("sale", sale);
       modelAndView.addObject("isAddedToCart", false);
-      if (!loggedUser.getCredentials().getRole().contains(Roles.BUYER_ROLE.toString())) {
-         LOGGER.error("userNotBuyerAddOwnSaleToCartError");
+      if (!this.credentialsService.areBuyerCredentials(loggedUser.getCredentials())) {
+         LOGGER.error("userNotBuyerAddSaleToCartError");
          modelAndView.addObject("userNotBuyerAddOwnSaleToCartError", true);
          return modelAndView;
       }
-      Cart cart = loggedUser.getCart();
+      Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       if (loggedUser.equals(sale.getUser())) {
          LOGGER.error("userAddOwnSaleToCartError");
          modelAndView.addObject("userAddOwnSaleToCartError", true);
@@ -70,7 +75,7 @@ public class CartController {
    @GetMapping(value = {"/delete/{cartLineItemId}", "/delete/{cartLineItemId}/"})
    public ModelAndView deleteCartLineItemById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId) {
       ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.CART);
-      Cart cart = loggedUser.getCart();
+      Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       if (this.cartService.deleteCartLineItem(cart.getId(), cartLineItemId)) {
          modelAndView.addObject("cartDeletedSuccess", true);
          LOGGER.info("Deleted CartLineItem with CartLineItem ID: {}", cartLineItemId);

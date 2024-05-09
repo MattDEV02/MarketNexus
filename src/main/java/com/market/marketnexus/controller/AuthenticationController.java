@@ -77,10 +77,10 @@ public class AuthenticationController {
          }
       } else {
          List<ObjectError> userGlobalErrors = userBindingResult.getGlobalErrors();
-         List<ObjectError> credentialsGlobalErrors = credentialsBindingResult.getGlobalErrors();
          for (ObjectError userGlobalError : userGlobalErrors) {
             modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
          }
+         List<ObjectError> credentialsGlobalErrors = credentialsBindingResult.getGlobalErrors();
          for (ObjectError credentialGlobalErrors : credentialsGlobalErrors) {
             modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
          }

@@ -27,7 +27,7 @@ public class Cart {
    @Column(name = "cart_price", nullable = false)
    private Float cartPrice;
 
-   @OneToOne(targetEntity = User.class, optional = true)
+   @ManyToOne(targetEntity = User.class, optional = true)
    @JoinColumn(name = "_user", referencedColumnName = "id", nullable = true, foreignKey = @ForeignKey(name = "carts_users_fk"))
    private User user;
 

@@ -672,7 +672,7 @@ SELECT *
 FROM GET_USERS_SALES_STATS();
 
 select *
-from Products;
+from Carts;
 
 
 

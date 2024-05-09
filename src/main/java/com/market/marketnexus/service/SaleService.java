@@ -1,5 +1,6 @@
 package com.market.marketnexus.service;
 
+import com.market.marketnexus.exception.SaleNotFoundException;
 import com.market.marketnexus.helpers.sale.Utils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.ProductCategory;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -48,9 +48,8 @@ public class SaleService {
       return savedSale;
    }
 
-   public Sale getSale(Long id) {
-      Optional<Sale> result = this.saleRepository.findById(id);
-      return result.orElse(null);
+   public Sale getSale(Long saleId) {
+      return this.saleRepository.findById(saleId).orElseThrow(() -> new SaleNotFoundException("Sale with ID '" + saleId + "' was not found."));
    }
 
    public Set<Sale> getAllSalesByUser(User user) {

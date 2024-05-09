@@ -2,13 +2,14 @@ package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
-import com.market.marketnexus.helpers.credentials.Roles;
 import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.CartLineItem;
 import com.market.marketnexus.model.Order;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.CartService;
+import com.market.marketnexus.service.CredentialsService;
 import com.market.marketnexus.service.OrderService;
+import com.market.marketnexus.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -34,6 +35,10 @@ public class OrderController {
    private OrderService orderService;
    @Autowired
    private CartService cartService;
+   @Autowired
+   private UserService userService;
+   @Autowired
+   private CredentialsService credentialsService;
 
    @GetMapping(value = {"/{cartId}", "/{cartId}/"})
    public ModelAndView makeOrderFromCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartId") Long cartId, @NonNull HttpServletRequest request) {
@@ -41,10 +46,10 @@ public class OrderController {
       if (!request.getHeader("referer").contains(APIPrefixes.CART)) {
          return modelAndView;
       }
-      if (!loggedUser.getCredentials().getRole().contains(Roles.BUYER_ROLE.toString())) {
+      if (!this.credentialsService.areBuyerCredentials(loggedUser.getCredentials())) {
          modelAndView.addObject("userNotBuyerAddOwnSaleToCartError", true);
       } else if (this.cartService.existsCartBtId(cartId)) {
-         Cart cart = loggedUser.getCart();
+         Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
          if (cart.getCartPrice() == 0) {
             LOGGER.error("emptyCartError");
             modelAndView.addObject("emptyCartError", true);
@@ -52,8 +57,7 @@ public class OrderController {
             LOGGER.error("userBalanceLowerThanCartPriceError");
             modelAndView.addObject("userBalanceLowerThanCartPriceError", true);
          } else {
-            Order savedOrder = this.orderService.makeOrder(loggedUser);
-            System.out.println(savedOrder.getInsertedAt());
+            Order savedOrder = this.orderService.makeOrder(loggedUser.getId());
             LocalDateTime orderInsertedAt = savedOrder.getInsertedAt();
             Cart orderCart = savedOrder.getCart();
             Set<CartLineItem> cartLineItems = this.cartService.getAllSoldCartLineItems(orderCart.getId());

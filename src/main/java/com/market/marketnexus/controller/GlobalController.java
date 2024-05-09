@@ -15,8 +15,6 @@ import com.market.marketnexus.service.NationService;
 import com.market.marketnexus.service.ProductCategoryService;
 import com.market.marketnexus.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
@@ -33,7 +31,6 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalController {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(GlobalController.class);
    private static final Map<String, Object> GLOBAL_CONSTANTS_MAP = new HashMap<String, Object>();
    private static final Map<String, Object> FIELD_SIZES_MAP = new HashMap<String, Object>();
    private static final Map<String, Object> TEMPORALS_MAP = new HashMap<String, Object>();

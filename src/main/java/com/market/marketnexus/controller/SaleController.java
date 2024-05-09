@@ -1,12 +1,13 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.controller.validator.ProductValidator;
+import com.market.marketnexus.exception.SaleNotFoundException;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
-import com.market.marketnexus.helpers.credentials.Roles;
 import com.market.marketnexus.helpers.product.Utils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
+import com.market.marketnexus.service.CredentialsService;
 import com.market.marketnexus.service.ProductCategoryService;
 import com.market.marketnexus.service.ProductService;
 import com.market.marketnexus.service.SaleService;
@@ -43,6 +44,8 @@ public class SaleController {
    private ProductService productService;
    @Autowired
    private SaleService saleService;
+   @Autowired
+   private CredentialsService credentialsService;
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showAllSales() {
@@ -96,7 +99,7 @@ public class SaleController {
            BindingResult saleBindingResult,
            @RequestParam("product-image") MultipartFile productImage) {
       ModelAndView modelAndView = new ModelAndView(SaleController.PUBLISH_ERROR);
-      if (!loggedUser.getCredentials().getRole().contains(Roles.SELLER_ROLE.toString().replace("_ROLE", ""))) {
+      if (!this.credentialsService.areSellerCredentials(loggedUser.getCredentials())) {
          modelAndView.addObject("userNotSellerPublishedASaleError", true);
          return modelAndView;
       }
@@ -124,10 +127,14 @@ public class SaleController {
    @GetMapping(value = {"/sale/{saleId}", "/sale/{saleId}/"})
    public ModelAndView showSaleById(@PathVariable("saleId") Long saleId) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/sale.html");
-      Sale sale = this.saleService.getSale(saleId);
-      modelAndView.addObject("saleId", saleId);
-      modelAndView.addObject("sale", sale);
-      modelAndView.addObject("isAddedToCart", false);
+      try {
+         Sale sale = this.saleService.getSale(saleId);
+         modelAndView.addObject("saleId", saleId);
+         modelAndView.addObject("sale", sale);
+         modelAndView.addObject("isAddedToCart", false);
+      } catch (SaleNotFoundException saleNotFoundException) {
+         LOGGER.error(saleNotFoundException.getMessage());
+      }
       return modelAndView;
    }
 

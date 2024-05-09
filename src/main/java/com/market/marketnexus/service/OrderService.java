@@ -40,26 +40,25 @@ public class OrderService {
    }
 
    @Transactional
-   public Order makeOrder(User user) {
+   public Order makeOrder(Long userId) {
+      Order savedOrder = null;
+      User user = this.userRepository.findById(userId).orElse(null);
       if (user != null) {
-         Cart cart = user.getCart();
+         Cart cart = this.userService.getUserCurrentCart(user.getId());
          Float newUserOrderBalance = user.getBalance() - cart.getCartPrice();
          this.userService.updateUserBalance(user, newUserOrderBalance);
-         this.userRepository.save(user);
          this.cartService.updateCartLineItemsSalesIsSold(cart.getId());
-         cart.setUser(null);
-         this.cartRepository.save(cart);
+         //cart.setUser(null); //
          Order order = new Order(user, cart);
-         Order savedOrder = this.orderRepository.save(order);
-         user.setCart(null); //
+         savedOrder = this.orderRepository.save(order);
+         //  this.cartRepository.save(cart);
          Cart newCart = new Cart(user);
          Cart savedNewCart = this.cartRepository.save(newCart);
-         user.setCart(savedNewCart);
+         Hibernate.initialize(user.getCarts());
+         user.getCarts().add(savedNewCart);
          this.userRepository.save(user);
-         return savedOrder;
-      } else {
-         return null;
       }
+      return savedOrder;
    }
 
    @Transactional

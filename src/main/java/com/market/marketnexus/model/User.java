@@ -9,6 +9,7 @@ import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "Users")
@@ -56,8 +57,8 @@ public class User {
    @JoinColumn(name = "credentials", referencedColumnName = "id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "users_credentials_fk"))
    private Credentials credentials;
 
-   @OneToOne(targetEntity = Cart.class, mappedBy = "user", optional = true)
-   private Cart cart;
+   @OneToMany(targetEntity = Cart.class, mappedBy = "user")
+   private List<Cart> carts;
 
    public User() {
 
@@ -146,12 +147,12 @@ public class User {
       this.nation = nation;
    }
 
-   public Cart getCart() {
-      return this.cart;
+   public List<Cart> getCarts() {
+      return this.carts;
    }
 
-   public void setCart(Cart cart) {
-      this.cart = cart;
+   public void setCarts(List<Cart> carts) {
+      this.carts = carts;
    }
 
    @Override
@@ -182,7 +183,7 @@ public class User {
               ", balance = " + this.getBalance().toString() +
               ", credentials = " + this.getCredentials().toString() +
               ", nation = " + this.getNation().toString() +
-              // ", cart = " + this.getCart().toString() +
+              // ", carts = " + this.getCarts().toString() +
               " }";
    }
 }

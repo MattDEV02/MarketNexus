@@ -9,6 +9,7 @@ import com.market.marketnexus.model.User;
 import com.market.marketnexus.repository.CartRepository;
 import com.market.marketnexus.repository.OrderRepository;
 import com.market.marketnexus.repository.UserRepository;
+import org.hibernate.Hibernate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -46,10 +47,23 @@ public class UserService {
    }
 
    @Transactional
+   public Cart getUserCurrentCart(Long userId) {
+      Cart currentCart = null;
+      User user = this.userRepository.findById(userId).orElse(null);
+      if (user != null) {
+         Hibernate.initialize(user.getCarts());
+         List<Cart> carts = user.getCarts();
+         currentCart = carts.get(carts.size() - 1);
+      }
+      return currentCart;
+   }
+
+   @Transactional
    public User saveUser(@NotNull User user) {
       Cart cart = new Cart(user);
       Cart savedCart = this.cartRepository.save(cart);
-      user.setCart(savedCart);
+      Hibernate.initialize(user.getCarts());
+      user.getCarts().add(savedCart);
       User savedUser = this.userRepository.save(user);
       return savedUser;
    }

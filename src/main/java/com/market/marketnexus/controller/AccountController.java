@@ -135,10 +135,10 @@ public class AccountController {
          modelAndView.addObject("orderedProducts", orderedProducts);
          modelAndView.addObject("tableData", this.statsController.getTableData());
          List<ObjectError> userGlobalErrors = userBindingResult.getGlobalErrors();
-         List<ObjectError> credentialsGlobalErrors = credentialsBindingResult.getGlobalErrors();
          for (ObjectError userGlobalError : userGlobalErrors) {
             modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
          }
+         List<ObjectError> credentialsGlobalErrors = credentialsBindingResult.getGlobalErrors();
          for (ObjectError credentialGlobalErrors : credentialsGlobalErrors) {
             modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
          }
