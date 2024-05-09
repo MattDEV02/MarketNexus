@@ -2,6 +2,7 @@ package com.market.marketnexus.controller;
 
 import com.market.marketnexus.controller.validator.CredentialsValidator;
 import com.market.marketnexus.controller.validator.UserValidator;
+import com.market.marketnexus.exception.UserCredentialsUsernameNotExistsException;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.credentials.Utils;
@@ -75,11 +76,10 @@ public class AccountController {
    @GetMapping(value = {"/{username}", "/{username}/"})
    public ModelAndView showUserAccountByUsername(@Valid @ModelAttribute("loggedUser") @NonNull User loggedUser, @PathVariable("username") String username) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION);
-      Credentials credentials = this.credentialsService.getCredentials(username);
-      User user = this.userService.getUser(credentials);
-      modelAndView.addObject("user", user);
-      modelAndView.addObject("searchedUsername", username);
-      if (user != null) {
+      try {
+         Credentials credentials = this.credentialsService.getCredentials(username);
+         User user = this.userService.getUser(credentials);
+         modelAndView.addObject("user", user);
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(user);
          Set<Sale> soldSaleProducts = this.saleService.getAllUserSoldSales(user);
          Set<Sale> orderedProducts = this.orderService.getUserOrderedSales(user);
@@ -90,6 +90,10 @@ public class AccountController {
          if (user.equals(loggedUser)) {
             modelAndView.addObject("tableData", this.statsController.getTableData());
          }
+      } catch (UserCredentialsUsernameNotExistsException userCredentialsUsernameNotExistsException) {
+         LOGGER.error(userCredentialsUsernameNotExistsException.getMessage());
+      } finally {
+         modelAndView.addObject("searchedUsername", username);
       }
       return modelAndView;
    }

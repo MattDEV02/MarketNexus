@@ -54,10 +54,10 @@ public class SaleController {
    }
 
    @GetMapping(value = {"/searchProducts", "/searchProducts/"})
-   public ModelAndView searchSales(@NonNull HttpServletRequest request) {
+   public ModelAndView searchSales(@NonNull HttpServletRequest request, @Valid @ModelAttribute("loggedUser") User loggedUser) {
       String productName = request.getParameter("product-name");
       String productCategoryId = request.getParameter("category");
-      LOGGER.info("Search {} ; {}", productName, productCategoryId);
+      LOGGER.info("User username: {} has searched sale with product name: {} and product category ID: {}", loggedUser.getCredentials().getUsername(), productName, productCategoryId);
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/index.html");
       Set<Sale> searchedSales = null;
       if (productName.isEmpty() && productCategoryId.isEmpty()) {

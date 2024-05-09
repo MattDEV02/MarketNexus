@@ -1,5 +1,10 @@
 package com.market.marketnexus.helpers.constants;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.Field;
+import java.util.Map;
+
 public class GlobalValues {
 
    public final static String APP_NAME = "MarketNexus";
@@ -23,5 +28,18 @@ public class GlobalValues {
    public final static String TEMPLATES_EXTENSION = ".html";
 
    public final static String TEMPLATES_XMLNS = "http://www.thymeleaf.org";
+
+   public static void fillGlobalMap(@NotNull Class<?> _class, Map<String, Object> GLOBAL_MAP) {
+      Field[] fields = _class.getDeclaredFields();
+      for (Field field : fields) {
+         try {
+            String name = field.getName();
+            Object value = field.get(null);
+            GLOBAL_MAP.put(name, value);
+         } catch (IllegalAccessException | IllegalArgumentException illegalException) {
+            System.err.println("Impossible to access at this field: " + field.getName() + " in this class: " + _class.toString());
+         }
+      }
+   }
 
 }

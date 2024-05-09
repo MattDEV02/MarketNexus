@@ -1,5 +1,6 @@
 package com.market.marketnexus.service;
 
+import com.market.marketnexus.exception.UserEmailNotExistsException;
 import com.market.marketnexus.helpers.sale.Utils;
 import com.market.marketnexus.helpers.validators.TypeValidators;
 import com.market.marketnexus.model.Cart;
@@ -41,8 +42,7 @@ public class UserService {
    }
 
    public User getUser(String email) {
-      Optional<User> result = this.userRepository.findByEmail(email);
-      return result.orElse(null);
+      return this.userRepository.findByEmail(email).orElseThrow(() -> new UserEmailNotExistsException("User with email '" + email + "' does not exist."));
    }
 
    @Transactional

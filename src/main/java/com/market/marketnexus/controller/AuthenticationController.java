@@ -2,11 +2,13 @@ package com.market.marketnexus.controller;
 
 import com.market.marketnexus.controller.validator.CredentialsValidator;
 import com.market.marketnexus.controller.validator.UserValidator;
+import com.market.marketnexus.exception.UserEmailNotExistsException;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.UserService;
 import com.market.marketnexus.service.email.ForgotUsernameEmailService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,18 +108,19 @@ public class AuthenticationController {
            @NonNull BindingResult userBindingResult, @RequestParam("email") String email) {
       ModelAndView modelAndView = new ModelAndView("forgotUsername.html");
       if (!userBindingResult.hasFieldErrors("email")) {
-         if (this.userService.existsByEmail(email)) {
+         try {
             User userByEmail = this.userService.getUser(email);
-            try {
-               this.forgotUsernameEmailService.sendEmail(userByEmail.getEmail(), userByEmail.getCredentials().getUsername());
-            } catch (IOException exception) {
-               LOGGER.error(exception.getMessage());
-            }
-         } else {
+            this.forgotUsernameEmailService.sendEmail(userByEmail.getEmail(), userByEmail.getCredentials().getUsername());
+            modelAndView.addObject("emailSent", true);
+         } catch (IOException | MessagingException exception) {
+            LOGGER.error(exception.getMessage());
+            modelAndView.addObject("emailNotSentError", true);
+         } catch (UserEmailNotExistsException userEmailNotExistsException) {
+            LOGGER.error(userEmailNotExistsException.getMessage());
             modelAndView.addObject("emailNotExistsError", true);
          }
-         modelAndView.addObject("emailSent", true);
       }
+
       return modelAndView;
    }
 }

@@ -10,7 +10,6 @@ import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.Nation;
 import com.market.marketnexus.model.ProductCategory;
 import com.market.marketnexus.model.User;
-import com.market.marketnexus.repository.UserRepository;
 import com.market.marketnexus.service.CredentialsService;
 import com.market.marketnexus.service.NationService;
 import com.market.marketnexus.service.ProductCategoryService;
@@ -27,7 +26,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,55 +41,19 @@ public class GlobalController {
    private static final Map<String, Roles> ALL_ROLES_MAP = Utils.getAllRoles();
 
    static {
-      Field[] fields = GlobalValues.class.getDeclaredFields();
-      for (Field field : fields) {
-         try {
-            String name = field.getName();
-            Object value = field.get(null);
-            GlobalController.GLOBAL_CONSTANTS_MAP.put(name, value);
-         } catch (IllegalAccessException | IllegalArgumentException illegalException) {
-            LOGGER.warn("Impossible to access at this field: {}", field.getName(), illegalException);
-         }
-      }
+      GlobalValues.fillGlobalMap(GlobalValues.class, GlobalController.GLOBAL_CONSTANTS_MAP);
    }
 
    static {
-      Field[] fields = FieldSizes.class.getDeclaredFields();
-      for (Field field : fields) {
-         try {
-            String name = field.getName();
-            Object value = field.get(null);
-            GlobalController.FIELD_SIZES_MAP.put(name, value);
-         } catch (IllegalAccessException | IllegalArgumentException illegalException) {
-            LOGGER.warn("Impossible to access at this field: {}", field.getName(), illegalException);
-         }
-      }
+      GlobalValues.fillGlobalMap(FieldSizes.class, GlobalController.FIELD_SIZES_MAP);
    }
 
    static {
-      Field[] fields = Temporals.class.getDeclaredFields();
-      for (Field field : fields) {
-         try {
-            String name = field.getName();
-            Object value = field.get(null);
-            GlobalController.TEMPORALS_MAP.put(name, value);
-         } catch (IllegalAccessException | IllegalArgumentException illegalException) {
-            LOGGER.warn("Impossible to access at this field: {}", field.getName(), illegalException);
-         }
-      }
+      GlobalValues.fillGlobalMap(Temporals.class, GlobalController.TEMPORALS_MAP);
    }
 
    static {
-      Field[] fields = APIPrefixes.class.getDeclaredFields();
-      for (Field field : fields) {
-         try {
-            String name = field.getName();
-            Object value = field.get(null);
-            GlobalController.API_PREFIXES_MAP.put(name, value);
-         } catch (IllegalAccessException | IllegalArgumentException illegalException) {
-            LOGGER.warn("Impossible to access at this field: {}", field.getName(), illegalException);
-         }
-      }
+      GlobalValues.fillGlobalMap(APIPrefixes.class, GlobalController.API_PREFIXES_MAP);
    }
 
    @Autowired
@@ -102,8 +64,6 @@ public class GlobalController {
    private CredentialsService credentialsService;
    @Autowired
    private ProductCategoryService productCategoryService;
-   @Autowired
-   private UserRepository userRepository;
 
    @ModelAttribute("GLOBAL_CONSTANTS_MAP")
    public Map<String, Object> getGlobalConstantsMap() {
