@@ -8,6 +8,7 @@ import jakarta.validation.constraints.*;
 import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +62,9 @@ public class User {
    private List<Cart> carts;
 
    public User() {
-
+      this.carts = new ArrayList<Cart>();
+      this.nation = null;
+      this.credentials = null;
    }
 
    public User(String name, String surname, String email, Float balance, Credentials credentials, Nation nation) {

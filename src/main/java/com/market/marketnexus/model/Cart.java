@@ -9,8 +9,10 @@ import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity(name = "Carts")
 @Table(name = "Carts", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "carts_user_insertedat_unique", columnNames = {"_user", "inserted_at"})})
@@ -42,15 +44,18 @@ public class Cart {
    private LocalDateTime updatedAt;
 
    @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-   private Set<CartLineItem> cartLineItems;
+   private List<CartLineItem> cartLineItems;
 
    public Cart() {
       this.cartPrice = Cart.CART_START_PRICE;
+      this.user = null;
+      this.cartLineItems = new ArrayList<CartLineItem>();
    }
 
    public Cart(User user) {
       this.user = user;
       this.cartPrice = Cart.CART_START_PRICE;
+      this.cartLineItems = new ArrayList<CartLineItem>();
    }
 
    public Float getCartPrice() {
@@ -93,11 +98,11 @@ public class Cart {
       this.updatedAt = updatedAt;
    }
 
-   public Set<CartLineItem> getCartLineItems() {
+   public List<CartLineItem> getCartLineItems() {
       return this.cartLineItems;
    }
 
-   public void setCartLineItems(Set<CartLineItem> cartLineItems) {
+   public void setCartLineItems(List<CartLineItem> cartLineItems) {
       this.cartLineItems = cartLineItems;
    }
 
@@ -142,6 +147,10 @@ public class Cart {
               ", insertedAt = " + this.getInsertedAt().toString() +
               ", updatedAt = " + this.getUpdatedAt().toString() +
               " }";
+   }
+
+   public void sortCartLineItemsByInsertedAt() {
+      this.cartLineItems.sort(Comparator.comparing(CartLineItem::getInsertedAt));
    }
 
 }

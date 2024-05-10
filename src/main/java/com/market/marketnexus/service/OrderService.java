@@ -66,7 +66,7 @@ public class OrderService {
       Set<Sale> result = new HashSet<Sale>();
       Set<Order> orders = this.getAllOrdersByUser(user);
       Cart cart = null;
-      Set<CartLineItem> cartLineItems = null;
+      List<CartLineItem> cartLineItems = null;
       Sale sale = null;
       for (Order order : orders) {
          cart = order.getCart();

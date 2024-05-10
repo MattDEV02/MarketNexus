@@ -27,7 +27,7 @@
                target="_blank"
                th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' Author Linkedin profile'}"
             >
-               Matteo
+               <span th:text="${#strings.substring(GLOBAL_CONSTANTS_MAP.get('AUTHORS')[0], 0, #strings.indexOf(GLOBAL_CONSTANTS_MAP.get('AUTHORS')[0], ' L') )}"></span>
                <i class="fab fa-linkedin"></i>
             </a>
          </li>
@@ -36,7 +36,7 @@
                target="_blank"
                th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' Author Linkedin profile'}"
             >
-               Gabriel
+               <span th:text="${#strings.substring(GLOBAL_CONSTANTS_MAP.get('AUTHORS')[1], 0, #strings.indexOf(GLOBAL_CONSTANTS_MAP.get('AUTHORS')[1], ' M') )}"></span>
                <i class="fab fa-linkedin"></i>
             </a>
          </li>

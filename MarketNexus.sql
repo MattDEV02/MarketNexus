@@ -162,10 +162,9 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Credentials
     CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(MarketNexus.Credentials.role) >= 10),
     CONSTRAINT credentials_role_valid_check CHECK (MarketNexus.CHECK_ROLE_ROLES_ENUM_FUNCTION(role)),
     CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(MarketNexus.Credentials.username) >= 3),
-    --CONSTRAINT credentials_username_valid__check CHECK (MarketNexus.Credentials.username ~ ''::TEXT),
     CONSTRAINT credentials_password_min_check CHECK (LENGTH(MarketNexus.Credentials.password) >= 60),
     CONSTRAINT credentials_id_min_value_check CHECK (MarketNexus.Credentials.id >= 1),
-    --CONSTRAINT credentials_insertedat_min_value_check CHECK (MarketNexus.Users.inserted_at >= CURRENT_TIMESTAMP - INTERVAL '1 minutes'),
+    --CONSTRAINT credentials_insertedat_min_value_check CHECK (MarketNexus.Credentials.inserted_at <= CURRENT_TIMESTAMP),
     CONSTRAINT credentials_insertedat_updatedat_value_check CHECK (MarketNexus.Credentials.inserted_at <=
                                                                    MarketNexus.Credentials.updated_at)
 );
@@ -252,7 +251,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Sales
     CONSTRAINT sale_quantity_max_value_check CHECK (MarketNexus.Sales.quantity <= 10),
     CONSTRAINT sale_saleprice_min_value_check CHECK (MarketNexus.Sales.quantity > 0),
     CONSTRAINT sale_saleprice_max_value_check CHECK (MarketNexus.Sales.quantity <= 10000),
-    -- CONSTRAINT sale_insertedat_min_value_check CHECK (MarketNexus.Sales.inserted_at >= CURRENT_TIMESTAMP),
+    --CONSTRAINT sale_insertedat_min_value_check CHECK (MarketNexus.Sales.inserted_at <= CURRENT_TIMESTAMP),
     CONSTRAINT sale_insertedat_updatedat_value_check CHECK (MarketNexus.Sales.inserted_at <=
                                                             MarketNexus.Sales.updated_at)
 );
@@ -277,7 +276,7 @@ BEGIN
          WHERE s.id = NEW.ID) = TRUE) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'Sale sale_price error with this Sale ID: % .' , NEW.ID;
+        RAISE EXCEPTION 'Sale sale_price error with this Sale ID: % and this sale_price: %.' , NEW.ID, NEW.sale_price;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
@@ -335,7 +334,6 @@ VALUES (1, 2, 2, 59.98),
 INSERT INTO MarketNexus.Sales(_user, product, quantity, sale_price, inserted_at)
 VALUES (1, 1, 1, 599.99, CURRENT_TIMESTAMP - INTERVAL '1 days');
 
-
 CREATE TABLE IF NOT EXISTS MarketNexus.Carts
 (
     id          SERIAL                                                                               NOT NULL PRIMARY KEY,
@@ -348,7 +346,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Carts
     CONSTRAINT carts_id_min_value_check CHECK (MarketNexus.Carts.id >= 1),
     CONSTRAINT carts_cartprice_min_value_check CHECK (MarketNexus.Carts.cart_price >= 0),
     CONSTRAINT carts_user_min_value_check CHECK (MarketNexus.Carts._user >= 1),
-    -- CONSTRAINT carts_insertedat_min_value_check CHECK (MarketNexus.cart_line_items.inserted_at >= CURRENT_TIMESTAMP),
+    --CONSTRAINT carts_insertedat_min_value_check CHECK (MarketNexus.Carts.inserted_at <= CURRENT_TIMESTAMP),
     CONSTRAINT carts_insertedat_updatedat_value_check CHECK (MarketNexus.Carts.inserted_at <=
                                                              MarketNexus.Carts.updated_at)
 );
@@ -388,7 +386,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
     CONSTRAINT cartlineitems_id_min_value_check CHECK (MarketNexus.cart_line_items.id >= 1),
     CONSTRAINT cartlineitems_cart_min_value_check CHECK (MarketNexus.cart_line_items.cart >= 1),
     CONSTRAINT cartlineitems_sale_min_value_check CHECK (MarketNexus.cart_line_items.sale >= 1),
-    -- CONSTRAINT cartlineitems_insertedat_min_value_check CHECK (MarketNexus.cart_line_items.inserted_at >= CURRENT_TIMESTAMP),
+    --CONSTRAINT cartlineitems_insertedat_min_value_check CHECK (MarketNexus.cart_line_items.inserted_at <= CURRENT_TIMESTAMP),
     CONSTRAINT cartlineitems_insertedat_updatedat_value_check CHECK (MarketNexus.cart_line_items.inserted_at <=
                                                                      MarketNexus.cart_line_items.updated_at)
 );
@@ -481,39 +479,38 @@ END;
 $$ LANGUAGE PLPGSQL;
 
 SELECT *
-from GET_CARTLINEITEMS_COUNT_FROM_CARTID(4);
+FROM GET_CARTLINEITEMS_COUNT_FROM_CARTID(1);
 
 
-/*
 CREATE
     OR REPLACE FUNCTION CHECK_CART_CARTPRICE_VALUE_FUNCTION()
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF ((SELECT CASE
-                    WHEN (c.cart_price = (s.sale_price * (SELECT getCartLineItemsNumberFromCartId(NEW.id)))) THEN TRUE
-                    ELSE FALSE END AS are_equals
-         FROM MarketNexus.Carts c
-                  JOIN MarketNexus.cart_line_items cli ON cli.cart = c.id
-                  JOIN MarketNexus.Sales s ON cli.sale = s.id
-                  JOIN MarketNexus.Products p ON s.product = p.id
-         WHERE c.id = NEW.id) = TRUE) THEN
+
+    IF (SELECT DISTINCT (c.cart_price::FLOAT <
+                         (s.sale_price * MarketNexus.GET_CARTLINEITEMS_COUNT_FROM_CARTID(NEW.cart))::FLOAT)::BOOLEAN
+                            AS are_equals
+        FROM MarketNexus.Carts c
+                 JOIN MarketNexus.cart_line_items cli ON cli.cart = NEW.cart
+                 JOIN MarketNexus.Sales s ON cli.sale = NEW.sale
+        LIMIT 1) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'Cart cart_price error with this Cart ID: % .' , NEW.ID;
+        RAISE EXCEPTION 'Cart cart_price error with this Cart ID: % and this cart_line_item ID: %' , NEW.cart, NEW.id;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
 
+/*
 CREATE
     OR REPLACE TRIGGER CART_CARTPRICE_VALUE_TRIGGER
-    AFTER
+    BEFORE
         INSERT
-    ON MarketNexus.Carts
+    ON MarketNexus.cart_line_items
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.CHECK_CART_CARTPRICE_VALUE_FUNCTION();
-
 */
 
 COMMENT ON TABLE MarketNexus.cart_line_items IS 'MarketNexus User who puts a Sale Product in his Cart.';
@@ -538,7 +535,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Orders
     CONSTRAINT orders_id_min_value_check CHECK (MarketNexus.Orders.id >= 1),
     CONSTRAINT orders_user_min_value_check CHECK (MarketNexus.Orders._user >= 1),
     CONSTRAINT orders_cart_min_value_check CHECK (MarketNexus.Orders.cart >= 1),
-    --CONSTRAINT orders_insertedat_min_value_check CHECK (MarketNexus.Orders.inserted_at >= CURRENT_TIMESTAMP),
+    --CONSTRAINT orders_insertedat_min_value_check CHECK (MarketNexus.Orders.inserted_at <= CURRENT_TIMESTAMP),
     CONSTRAINT orders_insertedat_updatedat_value_check CHECK (MarketNexus.Orders.inserted_at <=
                                                               MarketNexus.Orders.updated_at)
 );
@@ -553,31 +550,33 @@ EXECUTE
     FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
 
-/*
 CREATE
     OR REPLACE FUNCTION CHECK_ORDER_USER_SALE_FUNCTION()
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF ((SELECT CASE
-                    WHEN (o._user = s._user)
-                        THEN TRUE
-                    ELSE FALSE END AS are_equals
+    IF ((SELECT DISTINCT CASE
+                             WHEN (o._user != s._user)::BOOLEAN
+                                 THEN TRUE
+                             ELSE FALSE END AS are_equals
          FROM MarketNexus.Orders o
                   JOIN MarketNexus.Carts c ON o.cart = c.id
                   JOIN MarketNexus.cart_line_items cli ON cli.cart = c.id
                   JOIN MarketNexus.Sales s ON cli.sale = s.id
-         WHERE o.id = NEW.ID) = TRUE) THEN
+         WHERE o.id = NEW.ID
+         LIMIT 1) = TRUE) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'User that Order his Sale error, with this Order ID: % .' , NEW.ID;
+        RAISE EXCEPTION 'User that Order his Sale error, with this Order ID: % and this User ID: %.' , NEW.ID, NEW._user;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
 
+
+/*
 CREATE
     OR REPLACE TRIGGER ORDER_USER_SALE_FUNCTION_TRIGGER
-    AFTER
+    BEFORE
         INSERT
     ON MarketNexus.Orders
     FOR EACH ROW
@@ -670,9 +669,4 @@ $$ LANGUAGE PLPGSQL;
 
 SELECT *
 FROM GET_USERS_SALES_STATS();
-
-select *
-from Carts;
-
-
 

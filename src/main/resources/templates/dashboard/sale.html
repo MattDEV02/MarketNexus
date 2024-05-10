@@ -5,7 +5,7 @@
 <head th:replace="~{fragments/shared/head.html :: head(title = ${areSaleValid ? (sale.product.name  + ' in Sale') : 'Sale not found'} )}">
 
 </head>
-<link rel="stylesheet" th:href="@{/css/dashboard/shared/style.css}"/>
+<link rel="stylesheet" th:href="@{'/css/' + ${API_PREFIXES_MAP.get('DASHBOARD')} + '/shared/style.css'}"/>
 <body>
 <div th:replace="~{fragments/shared/pagination/header/dashboardHeader.html :: dashboardHeader()}">
 </div>

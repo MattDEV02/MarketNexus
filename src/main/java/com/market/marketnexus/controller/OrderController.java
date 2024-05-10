@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/" + APIPrefixes.ORDER)
@@ -60,7 +60,7 @@ public class OrderController {
             Order savedOrder = this.orderService.makeOrder(loggedUser.getId());
             LocalDateTime orderInsertedAt = savedOrder.getInsertedAt();
             Cart orderCart = savedOrder.getCart();
-            Set<CartLineItem> cartLineItems = this.cartService.getAllSoldCartLineItems(orderCart.getId());
+            List<CartLineItem> cartLineItems = this.cartService.getAllSoldCartLineItems(orderCart.getId());
             modelAndView.addObject("orderInsertedAt", orderInsertedAt);
             modelAndView.addObject("cart", orderCart);
             modelAndView.addObject("cartLineItems", cartLineItems);

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Set;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/" + APIPrefixes.CART)
@@ -40,7 +40,7 @@ public class CartController {
    public ModelAndView showCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.CART + GlobalValues.TEMPLATES_EXTENSION);
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
-      Set<CartLineItem> cartLineItems = this.cartService.getAllCartLineItems(cart.getId());
+      List<CartLineItem> cartLineItems = this.cartService.getAllCartLineItems(cart.getId());
       modelAndView.addObject("cart", cart);
       modelAndView.addObject("cartLineItems", cartLineItems);
       return modelAndView;

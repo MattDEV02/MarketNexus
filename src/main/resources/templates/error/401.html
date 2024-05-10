@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}"
+      th:replace="~{fragments/shared/HTTPErrorPage.html :: HTTPErrorPage(statusCode = 401, statusMessage = 'Unauthorized', subTitle = 'You are not authorized to access at this resource.')}"
+      th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
+
+</html>

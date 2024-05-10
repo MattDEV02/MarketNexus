@@ -7,6 +7,4 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface CartLineItemRepository extends CrudRepository<CartLineItem, Long> {
    public Boolean existsByCartAndSale(Cart cart, Sale sale);
-
-
 }

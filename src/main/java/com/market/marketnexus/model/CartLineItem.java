@@ -41,7 +41,8 @@ public class CartLineItem {
    private LocalDateTime updatedAt;
 
    public CartLineItem() {
-
+      this.cart = null;
+      this.sale = null;
    }
 
    public CartLineItem(Cart cart, Sale sale) {

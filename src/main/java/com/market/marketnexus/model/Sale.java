@@ -32,7 +32,7 @@ public class Sale {
    @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
    @Column(name = "quantity", nullable = false)
    private Integer quantity;
-   @Column(name = "isSold", nullable = false)
+   @Column(name = "is_sold", nullable = false)
    @NotNull
    private Boolean isSold;
    @JsonIgnore
@@ -59,7 +59,8 @@ public class Sale {
    private LocalDateTime updatedAt;
 
    public Sale() {
-      this.isSold = false;
+      this.user = null;
+      this.product = null;
    }
 
    public Sale(Integer quantity, User user, Product product, Float salePrice) {

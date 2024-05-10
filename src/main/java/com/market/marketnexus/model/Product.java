@@ -45,7 +45,7 @@ public class Product {
    private ProductCategory category;
 
    public Product() {
-
+      this.category = null;
    }
 
    public Product(String name, String description, Float price, ProductCategory category) {

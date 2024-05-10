@@ -46,7 +46,8 @@ public class Order {
    private LocalDateTime updatedAt;
 
    public Order() {
-
+      this.user = null;
+      this.cart = null;
    }
 
    public Order(User user, Cart cart) {
