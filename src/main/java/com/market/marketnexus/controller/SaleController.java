@@ -3,6 +3,7 @@ package com.market.marketnexus.controller;
 import com.market.marketnexus.controller.validator.ProductValidator;
 import com.market.marketnexus.exception.SaleNotFoundException;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.product.Utils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.Sale;
@@ -60,7 +61,7 @@ public class SaleController {
    public ModelAndView searchSales(@NonNull HttpServletRequest request, @Valid @ModelAttribute("loggedUser") User loggedUser) {
       String productName = request.getParameter("product-name");
       String productCategoryId = request.getParameter("category");
-      LOGGER.info("User username: {} has searched sale with product name: {} and product category ID: {}", loggedUser.getCredentials().getUsername(), productName, productCategoryId);
+      SaleController.LOGGER.info("User username: {} has searched sale with product name: {} and product category ID: {}", loggedUser.getCredentials().getUsername(), productName, productCategoryId);
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/index.html");
       Set<Sale> searchedSales = null;
       if (productName.isEmpty() && productCategoryId.isEmpty()) {
@@ -101,6 +102,7 @@ public class SaleController {
       ModelAndView modelAndView = new ModelAndView(SaleController.PUBLISH_ERROR);
       if (!this.credentialsService.areSellerCredentials(loggedUser.getCredentials())) {
          modelAndView.addObject("userNotSellerPublishedASaleError", true);
+         SaleController.LOGGER.error(GlobalErrorsMessages.USER_NOT_SELLER_PUBLISHED_A_SALE_ERROR);
          return modelAndView;
       }
       this.productValidator.setProductImage(productImage);
@@ -111,8 +113,9 @@ public class SaleController {
             Sale savedSale = this.saleService.saveSale(sale, loggedUser, savedProduct);
             modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL + savedProduct.getId().toString());
             modelAndView.addObject("sale", savedSale);
-            LOGGER.info("Published new Sale with ID: {}", savedSale.getId());
+            SaleController.LOGGER.info("Published new Sale with ID: {}", savedSale.getId());
          } else {
+            SaleController.LOGGER.error(GlobalErrorsMessages.SALE_NOT_PUBLISHED_ERROR);
             modelAndView.addObject("saleNotPublishedError", true);
          }
       } else {
@@ -133,7 +136,7 @@ public class SaleController {
          modelAndView.addObject("sale", sale);
          modelAndView.addObject("isAddedToCart", false);
       } catch (SaleNotFoundException saleNotFoundException) {
-         LOGGER.error(saleNotFoundException.getMessage());
+         SaleController.LOGGER.error(saleNotFoundException.getMessage());
       }
       return modelAndView;
    }

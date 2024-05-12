@@ -37,7 +37,7 @@
                   <div
                         th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Account updated successfully.', condition = ${accountUpdatedSuccessful != null})}"></div>
                   <div
-                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'ERROR Account not deleted.', condition = ${accountNotDeletedError != null})}"></div>
+                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Server ERROR, account not deleted.', condition = ${accountNotDeletedError != null})}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.name')}"></div>
                   <div

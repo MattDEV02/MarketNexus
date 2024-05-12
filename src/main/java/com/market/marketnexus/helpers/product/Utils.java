@@ -1,6 +1,6 @@
 package com.market.marketnexus.helpers.product;
 
-import com.market.marketnexus.helpers.constants.Paths;
+import com.market.marketnexus.helpers.constants.ProjectPaths;
 import com.market.marketnexus.model.Product;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
@@ -25,7 +25,7 @@ public class Utils {
    public static @NotNull Boolean storeProductImage(Product product, @NonNull MultipartFile productImage) {
       if (!productImage.isEmpty()) {
          try {
-            String destinationDirectory = Paths.getStaticPath() + product.getImageRelativePath().replace(product.getName().toLowerCase(), "").replace(Utils.PRODUCT_IMAGE_EXTENSION, "");
+            String destinationDirectory = ProjectPaths.getStaticPath() + product.getImageRelativePath().replace(product.getName().toLowerCase(), "").replace(Utils.PRODUCT_IMAGE_EXTENSION, "");
             System.out.println(destinationDirectory);
             File directory = new File(destinationDirectory);
             if (directory.mkdir()) {

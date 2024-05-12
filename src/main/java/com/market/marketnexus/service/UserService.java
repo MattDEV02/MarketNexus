@@ -28,13 +28,8 @@ public class UserService {
    @Autowired
    protected OrderRepository orderRepository;
 
-   public Boolean existsByEmail(String email) {
+   public Boolean userExistsByEmail(String email) {
       return this.userRepository.existsByEmail(email);
-   }
-
-   public User getUser(Long userId) {
-      Optional<User> result = this.userRepository.findById(userId);
-      return result.orElse(null);
    }
 
    public User getUser(Credentials credentials) {

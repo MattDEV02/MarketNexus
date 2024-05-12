@@ -1,7 +1,7 @@
 package com.market.marketnexus.authentication;
 
 import com.market.marketnexus.helpers.constants.APIPrefixes;
-import com.market.marketnexus.helpers.constants.Paths;
+import com.market.marketnexus.helpers.constants.ProjectPaths;
 import com.market.marketnexus.helpers.credentials.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +27,7 @@ import javax.sql.DataSource;
 //@EnableWebMvc
 public class AuthConfiguration implements WebMvcConfigurer {
 
-   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + Paths._STATIC + "/"};
+   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + ProjectPaths._STATIC + "/"};
    @Autowired
    private DataSource dataSource;
 

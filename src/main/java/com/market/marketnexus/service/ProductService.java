@@ -1,6 +1,6 @@
 package com.market.marketnexus.service;
 
-import com.market.marketnexus.helpers.constants.Paths;
+import com.market.marketnexus.helpers.constants.ProjectPaths;
 import com.market.marketnexus.helpers.product.Utils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.repository.ProductCategoryRepository;
@@ -29,7 +29,7 @@ public class ProductService {
    @Transactional
    public Product saveProduct(@NotNull Product product) {
       Product savedProduct = this.productRepository.save(product);
-      savedProduct.setImageRelativePath(Paths.IMAGES + Utils.getProductRelativeImageDirectory(savedProduct) + "/" + Utils.getProductRelativeImageFile(savedProduct));
+      savedProduct.setImageRelativePath(ProjectPaths.IMAGES + Utils.getProductRelativeImageDirectory(savedProduct) + "/" + Utils.getProductRelativeImageFile(savedProduct));
       return savedProduct;
    }
 

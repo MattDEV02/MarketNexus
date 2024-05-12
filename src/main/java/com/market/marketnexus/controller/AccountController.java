@@ -4,6 +4,7 @@ import com.market.marketnexus.controller.validator.CredentialsValidator;
 import com.market.marketnexus.controller.validator.UserValidator;
 import com.market.marketnexus.exception.UserCredentialsUsernameNotExistsException;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.helpers.validators.TypeValidators;
@@ -91,7 +92,7 @@ public class AccountController {
             modelAndView.addObject("tableData", this.statsController.getTableData());
          }
       } catch (UserCredentialsUsernameNotExistsException userCredentialsUsernameNotExistsException) {
-         LOGGER.error(userCredentialsUsernameNotExistsException.getMessage());
+         AccountController.LOGGER.error(userCredentialsUsernameNotExistsException.getMessage());
       } finally {
          modelAndView.addObject("searchedUsername", username);
       }
@@ -121,7 +122,7 @@ public class AccountController {
          user.setCredentials(credentials);
          User updatedUser = this.userService.updateUser(loggedUser.getId(), user);
          Utils.updateUserCredentialsAuthentication(updatedUser.getCredentials());
-         LOGGER.info("Updated account with User ID: {}", updatedUser.getId());
+         AccountController.LOGGER.info("Updated account with User ID: {}", updatedUser.getId());
       } else {
          Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
          Set<Sale> soldSaleProducts = this.saleService.getAllUserSoldSales(loggedUser);
@@ -151,9 +152,10 @@ public class AccountController {
       ModelAndView modelAndView = new ModelAndView(AccountController.ACCOUNT_DELETED);
       if (this.userService.deleteUser(loggedUser)) {
          modelAndView.setViewName(AccountController.ACCOUNT_DELETED_SUCCESSFULLY);
-         LOGGER.info("Deleted account with User ID: {}", loggedUser.getId());
+         AccountController.LOGGER.info("Deleted account with User ID: {}", loggedUser.getId());
       } else {
          modelAndView.addObject("accountNotDeletedError", true);
+         AccountController.LOGGER.error(GlobalErrorsMessages.ACCOUNT_NOT_DELETED_ERROR);
       }
       return modelAndView;
    }

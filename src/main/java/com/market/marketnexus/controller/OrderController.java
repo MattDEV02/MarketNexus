@@ -1,6 +1,7 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.CartLineItem;
@@ -47,14 +48,15 @@ public class OrderController {
          return modelAndView;
       }
       if (!this.credentialsService.areBuyerCredentials(loggedUser.getCredentials())) {
-         modelAndView.addObject("userNotBuyerAddOwnSaleToCartError", true);
+         modelAndView.addObject("userNotBuyerAddSaleToCartError", true);
+         OrderController.LOGGER.error(GlobalErrorsMessages.USER_NOT_BUYER_ADD_SALE_TO_CART_ERROR);
       } else if (this.cartService.existsCartBtId(cartId)) {
          Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
          if (cart.getCartPrice() == 0) {
-            LOGGER.error("emptyCartError");
+            OrderController.LOGGER.error(GlobalErrorsMessages.EMPTY_CART_ERROR);
             modelAndView.addObject("emptyCartError", true);
          } else if (loggedUser.getBalance() < cart.getCartPrice()) {
-            LOGGER.error("userBalanceLowerThanCartPriceError");
+            OrderController.LOGGER.error(GlobalErrorsMessages.USER_BALANCE_LOWER_THAN_CART_PRICE_ERROR);
             modelAndView.addObject("userBalanceLowerThanCartPriceError", true);
          } else {
             Order savedOrder = this.orderService.makeOrder(loggedUser.getId());
@@ -64,10 +66,11 @@ public class OrderController {
             modelAndView.addObject("orderInsertedAt", orderInsertedAt);
             modelAndView.addObject("cart", orderCart);
             modelAndView.addObject("cartLineItems", cartLineItems);
-            LOGGER.info("New Order with ID: {}", savedOrder.getId());
+            OrderController.LOGGER.info("New Order with ID: {}", savedOrder.getId());
             modelAndView.setViewName(APIPrefixes.ORDER + GlobalValues.TEMPLATES_EXTENSION);
          }
       } else {
+         OrderController.LOGGER.error(GlobalErrorsMessages.USER_CART_NOT_EXISTS_ERROR);
          modelAndView.addObject("userCartNotExistsError", true);
       }
       return modelAndView;

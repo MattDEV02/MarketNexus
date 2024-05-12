@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jdk.jfr.Unsigned;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -55,7 +56,13 @@ public class Credentials {
       this.role = Credentials.DEFAULT_ROLE.toString();
    }
 
-   public Credentials(String username, String password, Roles role) {
+   public Credentials(String username, String password) {
+      this.username = username;
+      this.password = password;
+      this.role = Credentials.DEFAULT_ROLE.toString();
+   }
+
+   public Credentials(String username, String password, @NotNull Roles role) {
       this.username = username;
       this.password = password;
       this.role = role.toString();

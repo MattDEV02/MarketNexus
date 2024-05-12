@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.FileSystemResource;
 
-public class Paths {
+public class ProjectPaths {
 
    public final static String ROOT = new FileSystemResource("").getFile().getAbsolutePath();
 
@@ -18,17 +18,17 @@ public class Paths {
 
    @Contract(pure = true)
    public static @NotNull String getStaticPath() {
-      return Paths.ROOT + Paths.SRC + Paths.RESOURCES + Paths._STATIC;
+      return ProjectPaths.ROOT + ProjectPaths.SRC + ProjectPaths.RESOURCES + ProjectPaths._STATIC;
    }
 
    @Contract(pure = true)
    public static @NotNull String getResourcesPath() {
-      return Paths.getStaticPath() + Paths.IMAGES;
+      return ProjectPaths.getStaticPath() + ProjectPaths.IMAGES;
    }
 
    @Contract(pure = true)
    public static @NotNull String getImagesPath() {
-      return Paths.getStaticPath() + Paths.IMAGES;
+      return ProjectPaths.getStaticPath() + ProjectPaths.IMAGES;
    }
 
 }

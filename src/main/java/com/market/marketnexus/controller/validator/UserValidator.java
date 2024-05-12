@@ -29,7 +29,7 @@ public class UserValidator implements Validator {
    @Override
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       User user = (User) object;
-      if (!this.isAccountUpdate && this.userService.existsByEmail(user.getEmail())) {
+      if (!this.isAccountUpdate && this.userService.userExistsByEmail(user.getEmail())) {
          //String[] errorArgs = {""};
          errors.rejectValue("email", "user.email.unique");
       }

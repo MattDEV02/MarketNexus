@@ -3,6 +3,7 @@ package com.market.marketnexus.controller;
 import com.market.marketnexus.controller.validator.CredentialsValidator;
 import com.market.marketnexus.controller.validator.UserValidator;
 import com.market.marketnexus.exception.UserEmailNotExistsException;
+import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.User;
@@ -70,9 +71,10 @@ public class AuthenticationController {
          user.setCredentials(credentials);
          User savedUser = this.userService.saveUser(user);
          if (savedUser != null) {
-            LOGGER.info("Registered account with User ID: {}", savedUser.getId());
+            AuthenticationController.LOGGER.info("Registered account with User ID: {}", savedUser.getId());
             modelAndView.setViewName(AuthenticationController.REGISTRATION_SUCCESSFUL);
          } else {
+            AuthenticationController.LOGGER.error(GlobalErrorsMessages.USER_NOT_REGISTERED_ERROR);
             modelAndView.addObject("userNotRegisteredError", "Server ERROR, User not registered.");
          }
       } else {
@@ -113,10 +115,10 @@ public class AuthenticationController {
             this.forgotUsernameEmailService.sendEmail(userByEmail.getEmail(), userByEmail.getCredentials().getUsername());
             modelAndView.addObject("emailSent", true);
          } catch (IOException | MessagingException exception) {
-            LOGGER.error(exception.getMessage());
+            AuthenticationController.LOGGER.error(exception.getMessage());
             modelAndView.addObject("emailNotSentError", true);
          } catch (UserEmailNotExistsException userEmailNotExistsException) {
-            LOGGER.error(userEmailNotExistsException.getMessage());
+            AuthenticationController.LOGGER.error(userEmailNotExistsException.getMessage());
             modelAndView.addObject("emailNotExistsError", true);
          }
       }

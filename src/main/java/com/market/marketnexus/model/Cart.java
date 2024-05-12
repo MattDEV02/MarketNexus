@@ -29,8 +29,8 @@ public class Cart {
    @Column(name = "cart_price", nullable = false)
    private Float cartPrice;
 
-   @ManyToOne(targetEntity = User.class, optional = true)
-   @JoinColumn(name = "_user", referencedColumnName = "id", nullable = true, foreignKey = @ForeignKey(name = "carts_users_fk"))
+   @ManyToOne(targetEntity = User.class, optional = false)
+   @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "carts_users_fk"))
    private User user;
 
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)

@@ -165,7 +165,7 @@ public class MarketNexusApplication {
 package com.market.marketnexus.authentication;
 
 import com.market.marketnexus.helpers.constants.APIPrefixes;
-import com.market.marketnexus.helpers.constants.Paths;
+import com.market.marketnexus.helpers.constants.ProjectPaths;
 import com.market.marketnexus.helpers.credentials.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -191,7 +191,7 @@ import javax.sql.DataSource;
 //@EnableWebMvc
 public class AuthConfiguration implements WebMvcConfigurer {
 
-   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + Paths._STATIC + "/"};
+   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + ProjectPaths._STATIC + "/"};
    @Autowired
    private DataSource dataSource;
 
@@ -968,6 +968,7 @@ I am the only author of this beautiful site 😉
 |  Spring boot  |   3.2.5   |  
 |     Maven     |   3.9.6   |
 |   Hibernate   |  4.3.11   |
+|     Junit     |     4     |
 |  PostgreSQL   |   16.0    |
 |   thymeleaf   |  3.0.14   |
 |      XML      |    1.1    |
@@ -1006,11 +1007,18 @@ I am the only author of this beautiful site 😉
     - **`src/main/java/com/market/marketnexus/MarketNexusApplication.java**`**:: The main entry point of your Spring
       Boot application. This Java file typically contains the main method to start the Spring application context.
     - **`src/main/java/com/market/marketnexus/authentication**`**:
-    - **`src/main/java/com/market/marketnexus/exception**`**:
-    - **`src/main/java/com/market/marketnexus/helpers**`**:
-    - **`src/main/java/com/market/marketnexus/model**`**:
-    - **`src/main/java/com/market/marketnexus/repository**`**:
-    - **`src/main/java/com/market/marketnexus/service**`**:
+    - **`src/main/java/com/market/marketnexus/controller**`**: A directory (package) where there are Site Controllers
+      classes.
+    - **`src/main/java/com/market/marketnexus/exception**`**: A directory (package) where there are project custom
+      Exceptions classes.
+    - **`src/main/java/com/market/marketnexus/helpers**`**: A directory (package) where there are project useful helpers
+      with many static methods.
+    - **`src/main/java/com/market/marketnexus/model**`**: A directory (package) where there are project Entity Models
+      classes.
+    - **`src/main/java/com/market/marketnexus/repository**`**: A directory (package) where there are project
+      Repositories interface.
+    - **`src/main/java/com/market/marketnexus/service**`**:  A directory (package) where there are project Services
+      classes.
 
 - **`target/`**: This directory is a standard directory created by build tools like Maven or Gradle during the build
   process. It's not typically part of your source code repository and is generated dynamically
@@ -1025,7 +1033,7 @@ I am the only author of this beautiful site 😉
 
 - **`README.md`**: Markdown documentation for this project.
 
-## Sources ispirations 🤝
+## Sources of inspiration 🤝
 
 - [Vinted](https://www.vinted.it/)
 

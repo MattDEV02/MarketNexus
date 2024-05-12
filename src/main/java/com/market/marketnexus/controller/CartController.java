@@ -1,6 +1,7 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.validators.TypeValidators;
 import com.market.marketnexus.model.Cart;
@@ -53,16 +54,16 @@ public class CartController {
       modelAndView.addObject("sale", sale);
       modelAndView.addObject("isAddedToCart", false);
       if (!this.credentialsService.areBuyerCredentials(loggedUser.getCredentials())) {
-         LOGGER.error("userNotBuyerAddSaleToCartError");
-         modelAndView.addObject("userNotBuyerAddOwnSaleToCartError", true);
+         CartController.LOGGER.error(GlobalErrorsMessages.USER_NOT_BUYER_ADD_SALE_TO_CART_ERROR);
+         modelAndView.addObject("userNotBuyerAddSaleToCartError", true);
          return modelAndView;
       }
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       if (loggedUser.equals(sale.getUser())) {
-         LOGGER.error("userAddOwnSaleToCartError");
+         CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_OWN_SALE_TO_CART_ERROR);
          modelAndView.addObject("userAddOwnSaleToCartError", true);
       } else if (this.cartService.existsCartLineItemSale(cart.getId(), sale)) {
-         LOGGER.error("userAddExistingSaleToCartError");
+         CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_OWN_SALE_TO_CART_ERROR);
          modelAndView.addObject("userAddExistingSaleToCartError", true);
       } else {
          CartLineItem savedCartLineItem = this.cartService.makeCartLineItem(cart.getId(), sale);
@@ -78,9 +79,9 @@ public class CartController {
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       if (this.cartService.deleteCartLineItem(cart.getId(), cartLineItemId)) {
          modelAndView.addObject("cartDeletedSuccess", true);
-         LOGGER.info("Deleted CartLineItem with CartLineItem ID: {}", cartLineItemId);
+         CartController.LOGGER.info("Deleted CartLineItem with CartLineItem ID: {}", cartLineItemId);
       } else {
-         LOGGER.error("cartNotDeletedError");
+         CartController.LOGGER.error(GlobalErrorsMessages.CART_LINE_NOT_DELETED_ERROR);
          modelAndView.addObject("cartNotDeletedError", true);
       }
       return modelAndView;

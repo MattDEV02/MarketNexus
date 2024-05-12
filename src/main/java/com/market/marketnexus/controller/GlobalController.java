@@ -1,9 +1,6 @@
 package com.market.marketnexus.controller;
 
-import com.market.marketnexus.helpers.constants.APIPrefixes;
-import com.market.marketnexus.helpers.constants.FieldSizes;
-import com.market.marketnexus.helpers.constants.GlobalValues;
-import com.market.marketnexus.helpers.constants.Temporals;
+import com.market.marketnexus.helpers.constants.*;
 import com.market.marketnexus.helpers.credentials.Roles;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
@@ -32,6 +29,8 @@ import java.util.Map;
 public class GlobalController {
 
    private static final Map<String, Object> GLOBAL_CONSTANTS_MAP = new HashMap<String, Object>();
+   private static final Map<String, Object> GLOBAL_ERRORS_MESSAGES_MAP = new HashMap<String, Object>();
+   private static final Map<String, Object> GLOBAL_SUCCESS_MESSAGES_MAP = new HashMap<String, Object>();
    private static final Map<String, Object> FIELD_SIZES_MAP = new HashMap<String, Object>();
    private static final Map<String, Object> TEMPORALS_MAP = new HashMap<String, Object>();
    private static final Map<String, Object> API_PREFIXES_MAP = new HashMap<String, Object>();
@@ -39,6 +38,14 @@ public class GlobalController {
 
    static {
       GlobalValues.fillGlobalMap(GlobalValues.class, GlobalController.GLOBAL_CONSTANTS_MAP);
+   }
+
+   static {
+      GlobalValues.fillGlobalMap(GlobalErrorsMessages.class, GlobalController.GLOBAL_ERRORS_MESSAGES_MAP);
+   }
+
+   static {
+      GlobalValues.fillGlobalMap(GlobalSuccessMessages.class, GlobalController.GLOBAL_SUCCESS_MESSAGES_MAP);
    }
 
    static {

@@ -338,7 +338,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Carts
 (
     id          SERIAL                                                                               NOT NULL PRIMARY KEY,
     cart_price  FLOAT                                                                                NOT NULL,
-    _user       INTEGER,
+    _user       INTEGER                                                                              NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT carts_user_insertedat_unique UNIQUE (_user, inserted_at),
