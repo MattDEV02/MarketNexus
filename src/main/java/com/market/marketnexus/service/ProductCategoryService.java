@@ -19,8 +19,7 @@ public class ProductCategoryService {
    }
 
    public Set<ProductCategory> getAllProductCategories() {
-      Set<ProductCategory> allProductCategoriesOrderByName = this.productCategoryRepository.findAllByOrderByName();
-      return allProductCategoriesOrderByName;
+      return this.productCategoryRepository.findAllByOrderByName();
    }
 
    public Map<Long, ProductCategory> getAllProductCategoriesMap() {

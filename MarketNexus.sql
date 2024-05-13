@@ -93,7 +93,7 @@ INSERT INTO MarketNexus.product_categories (name, description)
 VALUES ('Electronics', 'Electronics products.'),
        ('Clothing', 'Clothing products.'),
        ('Books', 'Books products.'),
-       ('Home Appliances', 'Home Appliances products.'),
+       ('Appliances', 'Home Appliances products.'),
        ('Footwear', 'Footwear products.'),
        ('Sports', 'Sports products.'),
        ('Beauty', 'Beauty products.'),
@@ -598,8 +598,8 @@ DROP FUNCTION IF EXISTS GET_USER_SOLD_SALES_STATS();
 CREATE OR REPLACE FUNCTION GET_USER_SOLD_SALES_STATS(user_id BIGINT)
     RETURNS TABLE
             (
-                day           TEXT,
-                numberOfSales BIGINT
+                day               TEXT,
+                numberOfSoldSales BIGINT
             )
 AS
 $$
@@ -611,7 +611,7 @@ BEGIN
                                        FROM date_series
                                        WHERE date_series.date > (CURRENT_TIMESTAMP - INTERVAL '6 days'))
         SELECT TO_CHAR(date_series.date, 'yyyy-MM-dd') AS day,
-               COALESCE(COUNT(DISTINCT s.id), 0)       AS numberOfSales
+               COALESCE(COUNT(DISTINCT s.id), 0)       AS numberOfSoldSales
         FROM date_series
                  LEFT JOIN MarketNexus.Sales s
                            ON CAST(date_series.date AS DATE) = CAST(s.inserted_at AS DATE) AND s._user = user_id
@@ -649,18 +649,18 @@ BEGIN
                              CAST(
                                      (
                                          CAST(SUM(salesPublishedPerDay) AS FLOAT) /
-                                         (SELECT COUNT(DISTINCT id) FROM Sales)
+                                         (SELECT COUNT(id) FROM Sales)
                                          ) AS NUMERIC
                              ),
                              2
                      ) * 100) AS TEXT) || ' %'     AS "%"
         FROM (SELECT c.username           AS user_username,
-                     s.inserted_at,
+                     s.inserted_at::DATE,
                      COUNT(DISTINCT s.id) AS salesPublishedPerDay
               FROM Users u
                        JOIN Credentials c ON u.credentials = c.id
                        LEFT JOIN Sales s ON s._user = u.id
-              GROUP BY c.username, s.inserted_at
+              GROUP BY c.username, s.inserted_at::DATE
               ORDER BY salesPublishedPerDay DESC) AS userAndDayToSalesPublished
         GROUP BY userAndDayToSalesPublished.user_username
         LIMIT 5;

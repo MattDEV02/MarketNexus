@@ -39,7 +39,6 @@ public class Credentials {
 
    @Column(name = "role", nullable = false)
    @NotBlank
-   @Size(min = FieldSizes.ROLE_MIN_LENGTH, max = FieldSizes.ROLE_MAX_LENGTH)
    private String role;
 
    @Column(name = "inserted_at", nullable = false)

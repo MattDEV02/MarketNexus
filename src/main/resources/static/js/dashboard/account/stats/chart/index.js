@@ -29,7 +29,7 @@ const chartTypeSelect = document.getElementById("chart-type-select");
 
 const weekDaysXToNumberOfSalesY = [];
 
-let weekDaysX = null, numberOfSalesY = null;
+let weekDaysX = null, numberOfSoldSalesY = null;
 
 const ctx = document.getElementById("chart").getContext("2d");
 
@@ -44,17 +44,17 @@ document.addEventListener("DOMContentLoaded", () => {
             chartData.forEach(chartDataRow => {
                weekDaysXToNumberOfSalesY.push({
                   weekDay: chartDataRow[0],
-                  numberOfSales: chartDataRow[1],
+                  numberOfSoldSales: chartDataRow[1],
                });
             });
             weekDaysX = weekDaysXToNumberOfSalesY.map(productCategoryToNumberOfSales => productCategoryToNumberOfSales.weekDay);
-            numberOfSalesY = weekDaysXToNumberOfSalesY.map(productCategoryToNumberOfSales => productCategoryToNumberOfSales.numberOfSales);
+            numberOfSoldSalesY = weekDaysXToNumberOfSalesY.map(productCategoryToNumberOfSales => productCategoryToNumberOfSales.numberOfSoldSales);
             type = CHART_TYPES.bar;
             data = {
                labels: weekDaysX,
                datasets: [{
                   label: " Number of Sales in this day",
-                  data: numberOfSalesY,
+                  data: numberOfSoldSalesY,
                   borderWidth: 2,
                   backgroundColor: "#1D86BA",
                   borderColor: "#000000",

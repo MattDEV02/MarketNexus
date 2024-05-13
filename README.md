@@ -412,7 +412,6 @@ import com.market.marketnexus.model.User;
 import com.market.marketnexus.repository.CartRepository;
 import com.market.marketnexus.repository.OrderRepository;
 import com.market.marketnexus.repository.UserRepository;
-import org.hibernate.Hibernate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -431,13 +430,8 @@ public class UserService {
    @Autowired
    protected OrderRepository orderRepository;
 
-   public Boolean existsByEmail(String email) {
+   public Boolean userExistsByEmail(String email) {
       return this.userRepository.existsByEmail(email);
-   }
-
-   public User getUser(Long userId) {
-      Optional<User> result = this.userRepository.findById(userId);
-      return result.orElse(null);
    }
 
    public User getUser(Credentials credentials) {
@@ -454,7 +448,7 @@ public class UserService {
       Cart currentCart = null;
       User user = this.userRepository.findById(userId).orElse(null);
       if (user != null) {
-         Hibernate.initialize(user.getCarts());
+         // Hibernate.initialize(user.getCarts());
          List<Cart> carts = user.getCarts();
          currentCart = carts.get(carts.size() - 1);
       }
@@ -463,11 +457,11 @@ public class UserService {
 
    @Transactional
    public User saveUser(@NotNull User user) {
+      User savedUser = this.userRepository.save(user);
       Cart cart = new Cart(user);
       Cart savedCart = this.cartRepository.save(cart);
-      Hibernate.initialize(user.getCarts());
-      user.getCarts().add(savedCart);
-      User savedUser = this.userRepository.save(user);
+      //  Hibernate.initialize(savedUser.getCarts());
+      savedUser.getCarts().add(savedCart);
       return savedUser;
    }
 
@@ -566,9 +560,7 @@ import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity(name = "Carts")
 @Table(name = "Carts", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "carts_user_insertedat_unique", columnNames = {"_user", "inserted_at"})})
@@ -586,7 +578,7 @@ public class Cart {
    private Float cartPrice;
 
    @ManyToOne(targetEntity = User.class, optional = true)
-   @JoinColumn(name = "_user", referencedColumnName = "id", nullable = true, foreignKey = @ForeignKey(name = "carts_users_fk"))
+   @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "carts_users_fk"))
    private User user;
 
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
@@ -706,9 +698,16 @@ public class Cart {
    }
 
    public void sortCartLineItemsByInsertedAt() {
-      this.cartLineItems.sort(Comparator.comparing(CartLineItem::getInsertedAt));
+      Collections.sort(this.cartLineItems, new Comparator<CartLineItem>() {
+         @Override
+         public int compare(CartLineItem cartLineItem1, CartLineItem cartLineItem2) {
+            return cartLineItem2.getInsertedAt().compareTo(cartLineItem1.getInsertedAt());
+         }
+      });
    }
+
 }
+
 ```
 
 ### `SaleNotFoundException.java` -> `com.market.marketnexus.exception.SaleNotFoundException`
@@ -848,7 +847,7 @@ const chartTypeSelect = document.getElementById("chart-type-select");
 
 const weekDaysXToNumberOfSalesY = [];
 
-let weekDaysX = null, numberOfSalesY = null;
+let weekDaysX = null, numberOfSoldSalesY = null;
 
 const ctx = document.getElementById("chart").getContext("2d");
 
@@ -863,17 +862,17 @@ document.addEventListener("DOMContentLoaded", () => {
             chartData.forEach(chartDataRow => {
                weekDaysXToNumberOfSalesY.push({
                   weekDay: chartDataRow[0],
-                  numberOfSales: chartDataRow[1],
+                  numberOfSoldSales: chartDataRow[1],
                });
             });
             weekDaysX = weekDaysXToNumberOfSalesY.map(productCategoryToNumberOfSales => productCategoryToNumberOfSales.weekDay);
-            numberOfSalesY = weekDaysXToNumberOfSalesY.map(productCategoryToNumberOfSales => productCategoryToNumberOfSales.numberOfSales);
+            numberOfSoldSalesY = weekDaysXToNumberOfSalesY.map(productCategoryToNumberOfSales => productCategoryToNumberOfSales.numberOfSoldSales);
             type = CHART_TYPES.bar;
             data = {
                labels: weekDaysX,
                datasets: [{
                   label: " Number of Sales in this day",
-                  data: numberOfSalesY,
+                  data: numberOfSoldSalesY,
                   borderWidth: 2,
                   backgroundColor: "#1D86BA",
                   borderColor: "#000000",

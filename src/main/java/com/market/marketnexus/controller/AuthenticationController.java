@@ -117,6 +117,7 @@ public class AuthenticationController {
          } catch (IOException | MessagingException exception) {
             AuthenticationController.LOGGER.error(exception.getMessage());
             modelAndView.addObject("emailNotSentError", true);
+            AuthenticationController.LOGGER.error(GlobalErrorsMessages.EMAIL_NOT_SENT_ERROR);
          } catch (UserEmailNotExistsException userEmailNotExistsException) {
             AuthenticationController.LOGGER.error(userEmailNotExistsException.getMessage());
             modelAndView.addObject("emailNotExistsError", true);

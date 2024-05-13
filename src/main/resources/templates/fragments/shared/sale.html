@@ -1,5 +1,5 @@
 <div class="card text-center shadow mt-5" th:fragment="sale(sale)"
-     th:title="${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' X' + ${sale.quantity} + ' at ' + ${sale.product.price} + ' ' + ${sale.isSold ? 'sold.' : 'in sale.'}"
+     th:title="${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' X' + ${sale.quantity} + ' at ' + ${sale.product.price} + ' $ ' + ${sale.isSold ? 'sold.' : 'in sale.'}"
      th:with="isLoggedUser=(${isLoggedUser} ?: false), isAddedToCart=(${isAddedToCart} ?: false)">
    <a th:href="@{'/dashboard/sale/' + ${sale.id}}">
       <img class="card-img-top"

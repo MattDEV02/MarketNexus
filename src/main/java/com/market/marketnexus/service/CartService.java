@@ -4,10 +4,8 @@ import com.market.marketnexus.helpers.sale.Utils;
 import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.CartLineItem;
 import com.market.marketnexus.model.Sale;
-import com.market.marketnexus.model.User;
 import com.market.marketnexus.repository.CartLineItemRepository;
 import com.market.marketnexus.repository.CartRepository;
-import org.hibernate.Hibernate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,14 +25,6 @@ public class CartService {
       return this.cartRepository.existsById(cartId);
    }
 
-   @Transactional
-   public Cart saveCart(Cart cart, User user) {
-      Float cartPrice = this.calculateCartPrice(cart);
-      cart.setCartPrice(cartPrice);
-      cart.setUser(user);
-      return this.cartRepository.save(cart);
-   }
-
    public Cart getCart(Long cartId) {
       return this.cartRepository.findById(cartId).orElse(null);
    }
@@ -42,7 +32,7 @@ public class CartService {
    @Transactional
    public void updateCartLineItemsSalesIsSold(Long cartId) {
       Cart cart = this.getCart(cartId);
-      Hibernate.initialize(cart.getCartLineItems());
+      //Hibernate.initialize(cart.getCartLineItems());
       List<CartLineItem> cartLineItems = cart.getCartLineItems();
       Sale sale = null;
       for (CartLineItem cartLineItem : cartLineItems) {
@@ -59,6 +49,7 @@ public class CartService {
          result = new ArrayList<CartLineItem>();
          //Hibernate.initialize(cart.getCartLineItems());
          List<CartLineItem> cartLineItems = cart.getCartLineItems();
+         cart.sortCartLineItemsByInsertedAt();
          Sale sale = null;
          for (CartLineItem cartLineItem : cartLineItems) {
             sale = cartLineItem.getSale();
@@ -73,8 +64,8 @@ public class CartService {
    @Transactional
    public List<CartLineItem> getAllSoldCartLineItems(Long cartId) {
       Cart cart = this.getCart(cartId);
+      List<CartLineItem> result = new ArrayList<CartLineItem>();
       if (cart != null) {
-         List<CartLineItem> result = new ArrayList<CartLineItem>();
          //Hibernate.initialize(cart.getCartLineItems());
          List<CartLineItem> cartLineItems = cart.getCartLineItems();
          Sale sale = null;
@@ -84,10 +75,8 @@ public class CartService {
                result.add(cartLineItem);
             }
          }
-         return result;
-      } else {
-         return null;
       }
+      return result;
    }
 
    public Boolean existsCartLineItemSale(Long cartId, Sale sale) {
@@ -102,11 +91,9 @@ public class CartService {
       CartLineItem cartLineItemSaved = this.cartLineItemRepository.save(cartLineItem); //
       //Hibernate.initialize(cart.getCartLineItems());
       cart.getCartLineItems().add(cartLineItemSaved);
-      cart.sortCartLineItemsByInsertedAt();
       Float newCartPrice = this.calculateCartPrice(cart);
       cart.setCartPrice(newCartPrice);
       this.cartRepository.save(cart);
-      //this.cartLineItemRepository.save(cartLineItem);
       return cartLineItemSaved;
    }
 
@@ -118,7 +105,6 @@ public class CartService {
               .filter(cartLineItem -> cartLineItem.getId().equals(cartLineItemId))
               .findFirst().orElse(null);
       cart.getCartLineItems().remove(cartLineItemToRemove);
-      cart.sortCartLineItemsByInsertedAt();
       Float newCartPrice = this.calculateCartPrice(cart);
       cart.setCartPrice(newCartPrice);
       this.cartRepository.save(cart);

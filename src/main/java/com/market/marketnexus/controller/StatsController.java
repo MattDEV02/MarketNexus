@@ -43,7 +43,6 @@ public class StatsController {
       return this.saleService.getAllSalesByUser(loggedUser);
    }
 
-
    @GetMapping(value = {"/calendarData/orders", "/calendarData/orders/"})
    public List<Object[]> getOrdersCalendarData(@NotNull @Valid @ModelAttribute("loggedUser") User loggedUser) {
       return this.orderService.getAllOrdersForUser(loggedUser.getId());

@@ -63,7 +63,7 @@ public class CartController {
          CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_OWN_SALE_TO_CART_ERROR);
          modelAndView.addObject("userAddOwnSaleToCartError", true);
       } else if (this.cartService.existsCartLineItemSale(cart.getId(), sale)) {
-         CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_OWN_SALE_TO_CART_ERROR);
+         CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_EXISTING_SALE_TO_CART_ERROR);
          modelAndView.addObject("userAddExistingSaleToCartError", true);
       } else {
          CartLineItem savedCartLineItem = this.cartService.makeCartLineItem(cart.getId(), sale);
@@ -78,11 +78,11 @@ public class CartController {
       ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.CART);
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       if (this.cartService.deleteCartLineItem(cart.getId(), cartLineItemId)) {
-         modelAndView.addObject("cartDeletedSuccess", true);
+         modelAndView.addObject("cartLineItemDeletedSuccess", true);
          CartController.LOGGER.info("Deleted CartLineItem with CartLineItem ID: {}", cartLineItemId);
       } else {
          CartController.LOGGER.error(GlobalErrorsMessages.CART_LINE_NOT_DELETED_ERROR);
-         modelAndView.addObject("cartNotDeletedError", true);
+         modelAndView.addObject("cartLineItemNotDeletedError", true);
       }
       return modelAndView;
    }

@@ -21,7 +21,6 @@ import java.util.Set;
 
 @Service
 public class SaleService {
-   // TODO: ASSOCIAZIONE USER E SALE BIDIREZIONALE E CASCADE TRA SALE E PRODUCT
    @Autowired
    protected SaleRepository saleRepository;
    @Autowired
@@ -40,32 +39,16 @@ public class SaleService {
       return this.saleRepository.save(sale);
    }
 
-   @Transactional
-   public Sale saveSale(Sale sale) {
-      Float salePrice = this.calculateSalePrice(sale);
-      sale.setSalePrice(salePrice);
-      Sale savedSale = this.saleRepository.save(sale);
-      return savedSale;
-   }
-
    public Sale getSale(Long saleId) {
       return this.saleRepository.findById(saleId).orElseThrow(() -> new SaleNotFoundException("Sale with ID '" + saleId + "' was not found."));
    }
 
    public Set<Sale> getAllSalesByUser(User user) {
-      Set<Sale> result = new HashSet<Sale>();
-      Set<Sale> sales = this.saleRepository.findAllByUser(user);
-      for (Sale sale : sales) {
-         if (!sale.getIsSold()) {
-            result.add(sale);
-         }
-      }
-      return result;
+      return this.saleRepository.findAllByUser(user);
    }
 
    public Set<Sale> getAllSales() {
-      Set<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
-      return sales;
+      return this.saleRepository.findAllByOrderByUpdatedAt();
    }
 
    public Set<Sale> getAllSalesByProductName(String productName) {
@@ -73,7 +56,7 @@ public class SaleService {
       Set<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
       Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCase(productName);
       for (Sale sale : sales) {
-         if (!sale.getIsSold() && products.contains(sale.getProduct())) {
+         if (products.contains(sale.getProduct())) {
             result.add(sale);
          }
       }
@@ -86,7 +69,7 @@ public class SaleService {
       ProductCategory productCategory = this.productCategoryRepository.findById(productCategoryId).orElse(null);
       Set<Product> products = this.productRepository.findAllByCategory(productCategory);
       for (Sale sale : sales) {
-         if (!sale.getIsSold() && products.contains(sale.getProduct())) {
+         if (products.contains(sale.getProduct())) {
             result.add(sale);
          }
       }
@@ -99,7 +82,7 @@ public class SaleService {
       ProductCategory productCategory = this.productCategoryRepository.findById(productCategoryId).orElse(null);
       Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCaseAndCategory(productName, productCategory);
       for (Sale sale : sales) {
-         if (!sale.getIsSold() && products.contains(sale.getProduct())) {
+         if (products.contains(sale.getProduct())) {
             result.add(sale);
          }
       }

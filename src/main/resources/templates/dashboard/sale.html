@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:with="areSaleValid = ${sale != null && sale.product != null}"
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:with="isValidSale = ${sale != null && sale.product != null}"
       th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
-<head th:replace="~{fragments/shared/head.html :: head(title = ${areSaleValid ? (sale.product.name  + ' in Sale') : 'Sale not found'} )}">
+<head th:replace="~{fragments/shared/head.html :: head(title = ${isValidSale ? (sale.product.name  + ' in Sale') : 'Sale not found'} )}">
 
 </head>
 <link rel="stylesheet" th:href="@{'/css/' + ${API_PREFIXES_MAP.get('DASHBOARD')} + '/shared/style.css'}"/>
@@ -14,7 +14,7 @@
       <div class="row justify-content-center">
          <div class="col-12 mt-5">
             <div class="row text-center">
-               <h1 th:if="${areSaleValid && !isAddedToCart}"
+               <h1 th:if="${isValidSale && !isAddedToCart}"
                    th:text="${sale.product.name} + ' in sale'"></h1>
                <div th:if="${isAddedToCart}">
                   <h1 class="text-success"
@@ -23,6 +23,8 @@
                </div>
                <div class="mt-5"
                     th:if="${userAddOwnSaleToCartError != null || userNotBuyerAddOwnSaleToCartError != null || userAddExistingSaleToCartError != null}">
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You are a not seller User.', condition = ${userNotSellerPublishedASaleError})}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You cannot add your own sale to your cart.', condition = ${userAddOwnSaleToCartError})}"></div>
                   <div
@@ -34,19 +36,19 @@
                </div>
             </div>
          </div>
-         <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 mb-5" th:if="${areSaleValid}">
+         <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 mb-5" th:if="${isValidSale}">
             <div class="row justify-content-center">
-               <div th:if="${sale != null && sale.product != null}">
+               <div th:if="${isValidSale}">
                   <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${sale}, isLoggedUser = ${loggedUser == sale.user}, isAddedToCart = ${isAddedToCart})}"></div>
                </div>
             </div>
          </div>
-         <div th:unless="${areSaleValid}">
+         <div th:unless="${isValidSale}">
             <div
                   th:replace="~{fragments/dashboard/home/saleNotFound.html :: saleNotFound(${saleId})}"></div>
          </div>
          <div class="col-12 mt-3 mb-4"
-              th:if="${#strings.contains(loggedUser.credentials.role, 'BUYER') && isAddedToCart}">
+              th:if="${isValidSale && #strings.contains(loggedUser.credentials.role, 'BUYER') && isAddedToCart}">
             <div class="row justify-content-center">
                <div class="col-12 col-sm-8 col-md-5 col-lg-4 col-xl-3">
                   <a class="btn btn-lg btn-outline-warning form-control fw-bold" role="button" th:href="@{/dashboard}">

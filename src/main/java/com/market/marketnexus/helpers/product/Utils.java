@@ -26,12 +26,11 @@ public class Utils {
       if (!productImage.isEmpty()) {
          try {
             String destinationDirectory = ProjectPaths.getStaticPath() + product.getImageRelativePath().replace(product.getName().toLowerCase(), "").replace(Utils.PRODUCT_IMAGE_EXTENSION, "");
-            System.out.println(destinationDirectory);
             File directory = new File(destinationDirectory);
             if (directory.mkdir()) {
                File file = new File(destinationDirectory + product.getName().toLowerCase() + Utils.PRODUCT_IMAGE_EXTENSION);
                productImage.transferTo(file);
-               return productImage.getResource().exists() && file.exists(); //
+               return productImage.getResource().exists() && file.exists();
             } else {
                System.err.println("Directory for the new Product inserted (id = " + product.getId().toString() + ")" + " not created, file cannot be stored.");
                return false;

@@ -20,8 +20,7 @@ public class NationService {
    }
 
    public Set<Nation> getAllNations() {
-      Set<Nation> allNationsOrderByName = this.nationRepository.findAllByOrderByName();
-      return allNationsOrderByName;
+      return this.nationRepository.findAllByOrderByName();
    }
 
    public Map<Long, Nation> getAllNationsMap() {

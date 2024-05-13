@@ -9,10 +9,7 @@ import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity(name = "Carts")
 @Table(name = "Carts", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "carts_user_insertedat_unique", columnNames = {"_user", "inserted_at"})})
@@ -29,7 +26,7 @@ public class Cart {
    @Column(name = "cart_price", nullable = false)
    private Float cartPrice;
 
-   @ManyToOne(targetEntity = User.class, optional = false)
+   @ManyToOne(targetEntity = User.class, optional = true)
    @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "carts_users_fk"))
    private User user;
 
@@ -150,7 +147,12 @@ public class Cart {
    }
 
    public void sortCartLineItemsByInsertedAt() {
-      this.cartLineItems.sort(Comparator.comparing(CartLineItem::getInsertedAt));
+      Collections.sort(this.cartLineItems, new Comparator<CartLineItem>() {
+         @Override
+         public int compare(CartLineItem cartLineItem1, CartLineItem cartLineItem2) {
+            return cartLineItem2.getInsertedAt().compareTo(cartLineItem1.getInsertedAt());
+         }
+      });
    }
 
 }

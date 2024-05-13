@@ -19,15 +19,23 @@
             </div>
          </div>
          <div class="col-12 my-5"
-              th:with="cartNotDeletedError = ${param.cartNotDeletedError != null}, cartDeletedSuccess = ${param.cartDeletedSuccess != null}, userBalanceLowerThanCartPriceError = ${param.userBalanceLowerThanCartPriceError != null}">
+              th:with="cartLineItemNotDeletedError = ${param.cartLineItemNotDeletedError != null}, cartLineItemDeletedSuccess = ${param.cartLineItemDeletedSuccess != null}, userBalanceLowerThanCartPriceError = ${param.userBalanceLowerThanCartPriceError != null}">
             <div
-                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartNotDeletedError})}"></div>
+                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartLineItemNotDeletedError})}"></div>
+            <div
+                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You are a not buyer User.', condition = ${userNotBuyerAddSaleToCartError})}"></div>
+            <div
+                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Users cannot add them Sale to them Cart.', condition = ${userAddOwnSaleToCartError})}"></div>
+            <div
+                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Order not possible, your Cart is empty.', condition = ${emptyCartError})}"></div>
+            <div
+                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart not exists error.', condition = ${userCartNotExistsError})}"></div>
             <div
                   th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Your balance is not sufficient to complete the order.', condition = ${userBalanceLowerThanCartPriceError})}"></div>
             <div
                   th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Your cart is empty.', condition = ${emptyCart})}"></div>
             <div
-                  th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Cart line deleted.', condition = ${cartDeletedSuccess})}"></div>
+                  th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Cart line deleted.', condition = ${cartLineItemDeletedSuccess})}"></div>
             <div th:replace="~{fragments/dashboard/cart/modal/confirmOrderModal.html :: confirmOrderModal(cart = ${cart})}"></div>
             <div class="row justify-content-center" th:each="cartLineItem : ${cartLineItems}">
                <div th:replace="~{fragments/dashboard/cart/cartLineInformation.html :: cartLineInformation(cartLineItem = ${cartLineItem})}"></div>

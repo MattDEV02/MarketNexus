@@ -181,7 +181,7 @@ public class User {
               "id = " + this.getId().toString() +
               ", name = '" + this.getName() + '\'' +
               ", surname = '" + this.getSurname() + '\'' +
-              ", birthDate = " + this.getBirthDate().toString() +
+              //", birthDate = " + this.getBirthDate().toString() +
               ", email = '" + this.getEmail() + '\'' +
               ", balance = " + this.getBalance().toString() +
               ", credentials = " + this.getCredentials().toString() +

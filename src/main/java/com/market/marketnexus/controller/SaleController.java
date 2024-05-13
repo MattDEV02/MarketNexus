@@ -93,7 +93,7 @@ public class SaleController {
 
    @PostMapping(value = {"/publishNewSale", "/publishNewSale/"})
    public ModelAndView publishNewSale(
-           @Valid @ModelAttribute("loggedUser") User loggedUser,
+           @ModelAttribute("loggedUser") User loggedUser,
            @Valid @ModelAttribute("product") Product product,
            BindingResult productBindingResult,
            @Valid @ModelAttribute("sale") Sale sale,
@@ -122,6 +122,10 @@ public class SaleController {
          List<ObjectError> productGlobalErrors = productBindingResult.getGlobalErrors();
          for (ObjectError productGlobalError : productGlobalErrors) {
             modelAndView.addObject(Objects.requireNonNull(productGlobalError.getCode()), productGlobalError.getDefaultMessage());
+         }
+         List<ObjectError> saleGlobalErrors = saleBindingResult.getGlobalErrors();
+         for (ObjectError saleGlobalError : saleGlobalErrors) {
+            modelAndView.addObject(Objects.requireNonNull(saleGlobalError.getCode()), saleGlobalError.getDefaultMessage());
          }
       }
       return modelAndView;

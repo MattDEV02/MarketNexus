@@ -4,7 +4,6 @@ import com.market.marketnexus.model.*;
 import com.market.marketnexus.repository.CartRepository;
 import com.market.marketnexus.repository.OrderRepository;
 import com.market.marketnexus.repository.UserRepository;
-import org.hibernate.Hibernate;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,14 +26,6 @@ public class OrderService {
    @Autowired
    private CartService cartService;
 
-   public Order getOrder(Long orderId) {
-      return this.orderRepository.findById(orderId).orElse(null);
-   }
-
-   public List<Object[]> getAllOrdersByUserId(@NotNull Long userId) {
-      return this.orderRepository.findAllByUserId(userId);
-   }
-
    public Set<Order> getAllOrdersByUser(@NotNull User user) {
       return this.orderRepository.findAllByUser(user);
    }
@@ -48,13 +39,11 @@ public class OrderService {
          Float newUserOrderBalance = user.getBalance() - cart.getCartPrice();
          this.userService.updateUserBalance(user, newUserOrderBalance);
          this.cartService.updateCartLineItemsSalesIsSold(cart.getId());
-         //cart.setUser(null); //
          Order order = new Order(user, cart);
          savedOrder = this.orderRepository.save(order);
-         //  this.cartRepository.save(cart);
          Cart newCart = new Cart(user);
          Cart savedNewCart = this.cartRepository.save(newCart);
-         Hibernate.initialize(user.getCarts());
+         //  Hibernate.initialize(user.getCarts());
          user.getCarts().add(savedNewCart);
          this.userRepository.save(user);
       }
@@ -70,7 +59,7 @@ public class OrderService {
       Sale sale = null;
       for (Order order : orders) {
          cart = order.getCart();
-         Hibernate.initialize(cart.getCartLineItems());
+         //   Hibernate.initialize(cart.getCartLineItems());
          cartLineItems = cart.getCartLineItems();
          for (CartLineItem cartLineItem : cartLineItems) {
             sale = cartLineItem.getSale();

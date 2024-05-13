@@ -53,9 +53,10 @@
                <div class="mb-3">
                   <label class="form-label" for="price">Price ($)</label>
                   <input class="form-control py-2" id="price" name="price"
-                         placeholder="Insert product price ($)" required step="0.01"
-                         th:field="${product.price}" th:max="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MAX_VALUE')}"
-                         th:min="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MIN_VALUE')}" th:object="${product}"
+                         placeholder="Insert product price ($)" required
+                         th:field="${product.price}"
+                         th:max="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MAX_VALUE')}" th:min="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MIN_VALUE')}"
+                         th:object="${product}" th:step="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_STEP_VALUE')}"
                          type="number"/>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.price')}"></div>
@@ -65,9 +66,10 @@
                   <label class="form-label" for="quantity">Quantity</label>
                   <input class="form-control py-2" id="quantity" name="quantity"
                          placeholder="Insert product quantity" required
-                         step="1" th:field="${sale.quantity}" th:max="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MAX_VALUE')}"
+                         th:field="${sale.quantity}" th:max="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MAX_VALUE')}"
                          th:min="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MIN_VALUE')}"
-                         th:object="${sale}" type="number"/>
+                         th:object="${sale}"
+                         th:step="${FIELD_SIZES_MAP.get('SALE_QUANTITY_STEP_VALUE')}" type="number"/>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'sale.quantity')}"></div>
                </div>
