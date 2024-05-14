@@ -13,7 +13,7 @@ public class GlobalValues {
 
    public final static String LANG = "en-uS";
 
-   public final static String[] AUTHORS = {"Matteo Lambertucci, matteolambertucci3@gmail.com, mat.lambertucci@stud.uniroma3.it", "Gabriel Muscedere, gabrielmuscedere@gmail.com, gab.muscedere@stud.uniroma3.it"};
+   public final static String[] AUTHORS = {"Matteo Lambertucci, matteolambertucci3@gmail.com, mat.lambertucci@stud.uniroma3.it"};
 
    public final static String APP_REPO = "https://github.com/MattDEV02/MarketNexus.git";
 

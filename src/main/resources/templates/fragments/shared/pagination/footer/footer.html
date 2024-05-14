@@ -27,16 +27,7 @@
                target="_blank"
                th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' Author Linkedin profile'}"
             >
-               <span th:text="${#strings.substring(GLOBAL_CONSTANTS_MAP.get('AUTHORS')[0], 0, #strings.indexOf(GLOBAL_CONSTANTS_MAP.get('AUTHORS')[0], ' L') )}"></span>
-               <i class="fab fa-linkedin"></i>
-            </a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link px-2 text-body-secondary" href="https://www.linkedin.com/in/gabriel-muscedere-563742140/"
-               target="_blank"
-               th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' Author Linkedin profile'}"
-            >
-               <span th:text="${#strings.substring(GLOBAL_CONSTANTS_MAP.get('AUTHORS')[1], 0, #strings.indexOf(GLOBAL_CONSTANTS_MAP.get('AUTHORS')[1], ' M') )}"></span>
+               <span th:text="${#strings.substring(GLOBAL_CONSTANTS_MAP.get('AUTHORS')[0], 0, #strings.indexOf(GLOBAL_CONSTANTS_MAP.get('AUTHORS')[0], ',') )}"></span>
                <i class="fab fa-linkedin"></i>
             </a>
          </li>

@@ -6,7 +6,7 @@
 
 MarketNexus is marketplace mada in Spring boot.
 
-#### P.S. = Go to Releases section and download the JAR.
+#### P.S. = Go to Releases section and download the JAR (latest release).
 
 ## Key Features ✨
 
@@ -91,8 +91,9 @@ MarketNexus is marketplace mada in Spring boot.
 
 ### Requirements
 
-- Java 17
-- Maven
+- Java 17.
+- Maven.
+- PostgreSQL.
 
 ### Installation Instructions
 
@@ -111,7 +112,7 @@ cd MarketNexus
 3. Install dependencies:
 
 ```bash
-mvn install
+mvnw install
 
 # or using gradle
 
@@ -121,19 +122,19 @@ mvn install
 4. Build Java code:
 
 ```bash
-mvn compile
+mvnw compile
 ```
 
 5. Packaging the code up in a JAR file:
 
 ```bash
-mvn package
+mvnw package
 ```
 
 6. Execute the JAR file:
 
 ```bash
-java -jar target/gs-maven-0.1.0.jar
+java -jar target/MarketNexus-0.0.1-SNAPSHOT.jar
 ```
 
 ## Some code examples 🤖
@@ -971,7 +972,6 @@ I am the only author of this beautiful site 😉
 |  PostgreSQL   |   16.0    |
 |   thymeleaf   |  3.0.14   |
 |      XML      |    1.1    |
-|  Altervista   |    //     |
 |   Bootstrap   |   5.3.3   |
 |  FontAwesome  |  5.15.4   |
 |    Leaflet    |   1.9.4   |
@@ -983,7 +983,10 @@ I am the only author of this beautiful site 😉
 | FullCalendar  |  6.1.11   |
 |   Markdown    |    3.6    |
 |    Windows    |    11     |
+|      GIT      |  2.43.0   |
+|    GITHUB     |  3.12.3   |
 | IntelliJ IDEA |  2024.1   |
+|  Altervista   |    //     |
 
 ## Project structure 🏠
 
