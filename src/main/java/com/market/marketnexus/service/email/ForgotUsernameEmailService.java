@@ -289,7 +289,7 @@ public class ForgotUsernameEmailService {
    }
 
    public void sendEmail(String email, String username) throws IOException, MessagingException {
-      String to = email;
+      final String to = email;
       MimeMessage message = emailSender.createMimeMessage();
       MimeMessageHelper helper = new MimeMessageHelper(message, true, GlobalValues.CHARSET);
       helper.setFrom(ForgotUsernameEmailService.FROM);

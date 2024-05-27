@@ -32,8 +32,8 @@ import java.util.Objects;
 @Controller
 public class AuthenticationController {
 
-   public final static String REGISTRATION_SUCCESSFUL = "redirect:/login?registrationSuccessful=true";
-   public final static String REGISTRATION_ERROR = "registration.html";
+   public final static String REGISTRATION_SUCCESSFUL_VIEW = "redirect:/login?registrationSuccessful=true";
+   public final static String REGISTRATION_ERROR_VIEW = "registration.html";
    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
    @Autowired
    private PasswordEncoder passwordEncoder;
@@ -60,7 +60,7 @@ public class AuthenticationController {
                                     @Valid @NonNull @ModelAttribute("credentials") Credentials credentials,
                                     @NonNull BindingResult credentialsBindingResult,
                                     @NonNull @RequestParam("confirm-password") String confirmPassword) {
-      ModelAndView modelAndView = new ModelAndView(AuthenticationController.REGISTRATION_ERROR);
+      ModelAndView modelAndView = new ModelAndView(AuthenticationController.REGISTRATION_ERROR_VIEW);
       this.userValidator.setAccountUpdate(false);
       this.credentialsValidator.setAccountUpdate(false);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
@@ -72,18 +72,18 @@ public class AuthenticationController {
          User savedUser = this.userService.saveUser(user);
          if (savedUser != null) {
             AuthenticationController.LOGGER.info("Registered account with User ID: {}", savedUser.getId());
-            modelAndView.setViewName(AuthenticationController.REGISTRATION_SUCCESSFUL);
+            modelAndView.setViewName(AuthenticationController.REGISTRATION_SUCCESSFUL_VIEW);
          } else {
             AuthenticationController.LOGGER.error(GlobalErrorsMessages.USER_NOT_REGISTERED_ERROR);
             modelAndView.addObject("userNotRegisteredError", "Server ERROR, User not registered.");
          }
       } else {
-         List<ObjectError> userGlobalErrors = userBindingResult.getGlobalErrors();
-         for (ObjectError userGlobalError : userGlobalErrors) {
+         List<ObjectError> userErrors = userBindingResult.getAllErrors();
+         for (ObjectError userGlobalError : userErrors) {
             modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
          }
-         List<ObjectError> credentialsGlobalErrors = credentialsBindingResult.getGlobalErrors();
-         for (ObjectError credentialGlobalErrors : credentialsGlobalErrors) {
+         List<ObjectError> credentialsErrors = credentialsBindingResult.getAllErrors();
+         for (ObjectError credentialGlobalErrors : credentialsErrors) {
             modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
          }
       }
@@ -107,13 +107,14 @@ public class AuthenticationController {
    @PostMapping(value = {"/sendForgotUsernameEmail", "/sendForgotUsernameEmail/"})
    public ModelAndView sendForgotUsernameEmail(
            @Valid @NonNull @ModelAttribute("user") User user,
-           @NonNull BindingResult userBindingResult, @RequestParam("email") String email) {
+           @NonNull BindingResult userBindingResult,
+           @RequestParam("email") String email) {
       ModelAndView modelAndView = new ModelAndView("forgotUsername.html");
       if (!userBindingResult.hasFieldErrors("email")) {
          try {
             User userByEmail = this.userService.getUser(email);
             this.forgotUsernameEmailService.sendEmail(userByEmail.getEmail(), userByEmail.getCredentials().getUsername());
-            modelAndView.addObject("emailSent", true);
+            modelAndView.addObject("emailSentSuccess", true);
          } catch (IOException | MessagingException exception) {
             AuthenticationController.LOGGER.error(exception.getMessage());
             modelAndView.addObject("emailNotSentError", true);
@@ -123,7 +124,6 @@ public class AuthenticationController {
             modelAndView.addObject("emailNotExistsError", true);
          }
       }
-
       return modelAndView;
    }
 }

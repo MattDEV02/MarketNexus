@@ -35,9 +35,9 @@
                      name="update-account-form"
                      th:action="@{/dashboard/account/updateAccount}">
                   <div
-                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Account updated successfully.', condition = ${accountUpdatedSuccessful != null})}"></div>
+                        th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Account updated successfully.', condition = ${accountUpdatedSuccessful != null})}"></div>
                   <div
-                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Server ERROR, account not deleted.', condition = ${accountNotDeletedError != null})}"></div>
+                        th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Server ERROR, account not deleted.', condition = ${accountNotDeletedError != null})}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.name')}"></div>
                   <div
@@ -114,50 +114,50 @@
                </form>
             </div>
             <div class="col-12 mt-5"
-                 th:with="areSaleProductsValid=${saleProducts != null && #sets.isEmpty(saleProducts)}">
+                 th:with="areSaleProductsValid=${sales != null && !#lists.isEmpty(sales)}">
                <div class="row text-center">
-                  <h1 th:if="${areSaleProductsValid}">No sale products</h1>
-                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' Sale products 🏖️'"
-                      th:unless="${areSaleProductsValid}"></h1>
+                  <h1 th:if="${areSaleProductsValid}"
+                      th:text="${isLoggedUser ? 'Your' : 'His'} + ' Sale products 🏖️'"></h1>
+                  <h1 th:unless="${areSaleProductsValid}">No sale products</h1>
                </div>
             </div>
             <div class="col-12">
                <div class="row">
                   <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
-                       th:each="saleProduct : ${saleProducts}">
-                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${saleProduct}, isLoggedUser = ${isLoggedUser})}"></div>
+                       th:each="sale : ${sales}">
+                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${sale}, isLoggedUser = ${isLoggedUser})}"></div>
                   </div>
                </div>
             </div>
             <div class="col-12 mt-5"
-                 th:with="areSoldSaleProductsValid=${soldSaleProducts != null && #sets.isEmpty(soldSaleProducts)}">
+                 th:with="areSoldSaleProductsValid=${soldSales != null && !#lists.isEmpty(soldSale)}">
                <div class="row text-center">
-                  <h1 th:if="${areSoldSaleProductsValid}">No sold sale products</h1>
-                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' sold Sale products 🏖️'"
-                      th:unless="${areSoldSaleProductsValid}"></h1>
+                  <h1 th:if="${areSoldSaleProductsValid}"
+                      th:text="${isLoggedUser ? 'Your' : 'His'} + ' sold Sale products 🏖️'"></h1>
+                  <h1 th:unless="${areSoldSaleProductsValid}">No sold sale products</h1>
                </div>
             </div>
             <div class="col-12">
                <div class="row">
                   <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
-                       th:each="soldSaleProduct : ${soldSaleProducts}">
-                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${soldSaleProduct}, isLoggedUser = ${isLoggedUser})}"></div>
+                       th:each="soldSale : ${soldSales}">
+                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${soldSale}, isLoggedUser = ${isLoggedUser})}"></div>
                   </div>
                </div>
             </div>
             <div class="col-12 mt-5" id="ordered-products"
-                 th:with="areOrderedProductsValid=${orderedProducts != null && #sets.isEmpty(orderedProducts)}">
+                 th:with="areOrderedProductsValid=${orderedSales != null && !#lists.isEmpty(orderedSales)}">
                <div class="row text-center">
-                  <h1 th:if="${areOrderedProductsValid}">No ordered products</h1>
-                  <h1 th:text="${isLoggedUser ? 'Your' : 'His'} + ' ordered products 🗂️'"
-                      th:unless="${areOrderedProductsValid}"></h1>
+                  <h1 th:if="${areOrderedProductsValid}"
+                      th:text="${isLoggedUser ? 'Your' : 'His'} + ' ordered products 🗂️'"></h1>
+                  <h1 th:unless="${areOrderedProductsValid}">No ordered sale products</h1>
                </div>
             </div>
             <div th:class="'col-12' + ${isLoggedUser ? '' : ' mb-5'}">
                <div class="row">
                   <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
-                       th:each="orderedProduct : ${orderedProducts}">
-                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${orderedProduct}, isLoggedUser = ${isLoggedUser})}"></div>
+                       th:each="orderedSale : ${orderedSales}">
+                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${orderedSale}, isLoggedUser = ${isLoggedUser})}"></div>
                   </div>
                </div>
             </div>

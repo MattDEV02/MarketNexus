@@ -31,6 +31,11 @@ public class UserService {
       return this.userRepository.existsByEmail(email);
    }
 
+   public User getUser(Long userId) {
+      Optional<User> result = this.userRepository.findById(userId);
+      return result.orElse(null);
+   }
+
    public User getUser(Credentials credentials) {
       Optional<User> result = this.userRepository.findByCredentials(credentials);
       return result.orElse(null);
@@ -43,9 +48,8 @@ public class UserService {
    @Transactional
    public Cart getUserCurrentCart(Long userId) {
       Cart currentCart = null;
-      User user = this.userRepository.findById(userId).orElse(null);
+      User user = this.getUser(userId);
       if (user != null) {
-         // Hibernate.initialize(user.getCarts());
          List<Cart> carts = user.getCarts();
          currentCart = carts.get(carts.size() - 1);
       }
@@ -57,7 +61,6 @@ public class UserService {
       User savedUser = this.userRepository.save(user);
       Cart cart = new Cart(user);
       Cart savedCart = this.cartRepository.save(cart);
-      //  Hibernate.initialize(savedUser.getCarts());
       savedUser.getCarts().add(savedCart);
       return savedUser;
    }
@@ -87,7 +90,7 @@ public class UserService {
 
    @Transactional
    public Boolean deleteUser(User user) {
-      this.cartRepository.deleteByUser(user);
+      //this.cartRepository.deleteByUser(user);
       this.userRepository.delete(user);
       return !this.userRepository.existsById(user.getId());
    }
@@ -102,6 +105,7 @@ public class UserService {
 
    @Transactional
    public void updateUserBalance(@NotNull User user, Float newBalance) {
-      user.setBalance(Utils.roundNumberTo2Decimals(newBalance));
+      Float roundedNewBalance = Utils.roundNumberTo2Decimals(newBalance);
+      user.setBalance(roundedNewBalance);
    }
 }

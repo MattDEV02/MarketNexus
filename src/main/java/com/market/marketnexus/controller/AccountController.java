@@ -29,16 +29,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/" + APIPrefixes.ACCOUNT)
 public class AccountController {
 
-   public final static String UPDATE_SUCCESSFUL = "redirect:/" + APIPrefixes.ACCOUNT + "?accountUpdatedSuccessful=true#update-account-form";
-   public final static String UPDATE_ERROR = "/" + APIPrefixes.ACCOUNT + ".html";
-   public final static String ACCOUNT_DELETED_SUCCESSFULLY = "redirect:/logout";
-   public final static String ACCOUNT_DELETED = APIPrefixes.ACCOUNT + ".html";
+   public final static String UPDATE_SUCCESSFUL_VIEW = "redirect:/" + APIPrefixes.ACCOUNT + "?accountUpdatedSuccessful=true#update-account-form";
+   public final static String UPDATE_ERROR_VIEW = "/" + APIPrefixes.ACCOUNT + ".html";
+   public final static String DELETE_SUCCESSFUL_VIEW = "redirect:/logout";
+   public final static String DELETE_ERROR_VIEWD = APIPrefixes.ACCOUNT + ".html";
    private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
    @Autowired
    private PasswordEncoder passwordEncoder;
@@ -61,14 +60,14 @@ public class AccountController {
    public ModelAndView showUserAccount(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION);
       if (loggedUser != null) {
-         Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
-         Set<Sale> soldSaleProducts = this.saleService.getAllUserSoldSales(loggedUser);
-         Set<Sale> orderedProducts = this.orderService.getUserOrderedSales(loggedUser);
+         Iterable<Sale> sales = this.saleService.getAllSalesByUser(loggedUser);
+         Iterable<Sale> soldSales = this.saleService.getAllUserSoldSales(loggedUser);
+         Iterable<Sale> orderedSales = this.orderService.getUserOrderedSales(loggedUser);
          modelAndView.addObject("user", loggedUser);
          modelAndView.addObject("credentials", loggedUser.getCredentials());
-         modelAndView.addObject("saleProducts", saleProducts);
-         modelAndView.addObject("soldSaleProducts", soldSaleProducts);
-         modelAndView.addObject("orderedProducts", orderedProducts);
+         modelAndView.addObject("sales", sales);
+         modelAndView.addObject("soldSale", soldSales);
+         modelAndView.addObject("orderedSales", orderedSales);
          modelAndView.addObject("tableData", this.statsController.getTableData());
       }
       return modelAndView;
@@ -80,14 +79,14 @@ public class AccountController {
       try {
          Credentials credentials = this.credentialsService.getCredentials(username);
          User user = this.userService.getUser(credentials);
+         Iterable<Sale> sales = this.saleService.getAllSalesByUser(user);
+         Iterable<Sale> soldSales = this.saleService.getAllUserSoldSales(user);
+         Iterable<Sale> orderedSales = this.orderService.getUserOrderedSales(user);
          modelAndView.addObject("user", user);
-         Set<Sale> saleProducts = this.saleService.getAllSalesByUser(user);
-         Set<Sale> soldSaleProducts = this.saleService.getAllUserSoldSales(user);
-         Set<Sale> orderedProducts = this.orderService.getUserOrderedSales(user);
-         modelAndView.addObject("saleProducts", saleProducts);
-         modelAndView.addObject("soldSaleProducts", soldSaleProducts);
-         modelAndView.addObject("orderedProducts", orderedProducts);
          modelAndView.addObject("credentials", user.getCredentials());
+         modelAndView.addObject("sales", sales);
+         modelAndView.addObject("soldSale", soldSales);
+         modelAndView.addObject("orderedSales", orderedSales);
          if (user.equals(loggedUser)) {
             modelAndView.addObject("tableData", this.statsController.getTableData());
          }
@@ -108,14 +107,14 @@ public class AccountController {
            @NonNull BindingResult credentialsBindingResult,
            @RequestParam("confirm-password") String confirmPassword
    ) {
-      ModelAndView modelAndView = new ModelAndView(AccountController.UPDATE_ERROR);
+      ModelAndView modelAndView = new ModelAndView(AccountController.UPDATE_ERROR_VIEW);
       this.userValidator.setAccountUpdate(true);
       this.credentialsValidator.setAccountUpdate(true);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
       this.credentialsValidator.validate(credentials, credentialsBindingResult);
       if (!userBindingResult.hasErrors() && !credentialsBindingResult.hasErrors()) {
-         modelAndView.setViewName(AccountController.UPDATE_SUCCESSFUL);
+         modelAndView.setViewName(AccountController.UPDATE_SUCCESSFUL_VIEW);
          if (TypeValidators.validateString(confirmPassword)) {
             Utils.cryptAndSaveUserCredentialsPassword(credentials, passwordEncoder);
          }
@@ -124,23 +123,23 @@ public class AccountController {
          Utils.updateUserCredentialsAuthentication(updatedUser.getCredentials());
          AccountController.LOGGER.info("Updated account with User ID: {}", updatedUser.getId());
       } else {
-         Set<Sale> saleProducts = this.saleService.getAllSalesByUser(loggedUser);
-         Set<Sale> soldSaleProducts = this.saleService.getAllUserSoldSales(loggedUser);
-         Set<Sale> orderedProducts = this.orderService.getUserOrderedSales(loggedUser);
-         modelAndView.addObject("user", user);
+         Iterable<Sale> sales = this.saleService.getAllSalesByUser(loggedUser);
+         Iterable<Sale> soldSales = this.saleService.getAllUserSoldSales(loggedUser);
+         Iterable<Sale> orderedSales = this.orderService.getUserOrderedSales(loggedUser);
          credentials.setInsertedAt(loggedUser.getCredentials().getInsertedAt());
          credentials.setUpdatedAt(loggedUser.getCredentials().getUpdatedAt());
+         modelAndView.addObject("user", user);
          modelAndView.addObject("credentials", credentials);
-         modelAndView.addObject("saleProducts", saleProducts);
-         modelAndView.addObject("soldSaleProducts", soldSaleProducts);
-         modelAndView.addObject("orderedProducts", orderedProducts);
+         modelAndView.addObject("sales", sales);
+         modelAndView.addObject("soldSale", soldSales);
+         modelAndView.addObject("orderedSales", orderedSales);
          modelAndView.addObject("tableData", this.statsController.getTableData());
-         List<ObjectError> userGlobalErrors = userBindingResult.getGlobalErrors();
-         for (ObjectError userGlobalError : userGlobalErrors) {
+         List<ObjectError> userErrors = userBindingResult.getAllErrors();
+         for (ObjectError userGlobalError : userErrors) {
             modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
          }
-         List<ObjectError> credentialsGlobalErrors = credentialsBindingResult.getGlobalErrors();
-         for (ObjectError credentialGlobalErrors : credentialsGlobalErrors) {
+         List<ObjectError> credentialsErrors = credentialsBindingResult.getAllErrors();
+         for (ObjectError credentialGlobalErrors : credentialsErrors) {
             modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
          }
       }
@@ -148,10 +147,10 @@ public class AccountController {
    }
 
    @GetMapping(value = {"/delete", "/delete/"})
-   public ModelAndView deleteUserAccountByUsername(@Valid @ModelAttribute("loggedUser") @NonNull User loggedUser) {
-      ModelAndView modelAndView = new ModelAndView(AccountController.ACCOUNT_DELETED);
+   public ModelAndView deleteUserAccountByUsername(@Valid @NonNull @ModelAttribute("loggedUser") User loggedUser) {
+      ModelAndView modelAndView = new ModelAndView(AccountController.DELETE_ERROR_VIEWD);
       if (this.userService.deleteUser(loggedUser)) {
-         modelAndView.setViewName(AccountController.ACCOUNT_DELETED_SUCCESSFULLY);
+         modelAndView.setViewName(AccountController.DELETE_SUCCESSFUL_VIEW);
          AccountController.LOGGER.info("Deleted account with User ID: {}", loggedUser.getId());
       } else {
          modelAndView.addObject("accountNotDeletedError", true);

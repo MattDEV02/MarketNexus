@@ -31,73 +31,74 @@ public class SaleService {
    protected UserRepository userRepository;
 
    @Transactional
-   public Sale saveSale(@NotNull Sale sale, User user, Product product) {
+   public Sale saveSale(@NotNull Sale sale, @NotNull User user, @NotNull Product product) {
       sale.setUser(user);
       sale.setProduct(product);
       Float salePrice = this.calculateSalePrice(sale);
       sale.setSalePrice(salePrice);
-      return this.saleRepository.save(sale);
+      Sale savedSale = this.saleRepository.save(sale);
+      return savedSale;
    }
 
    public Sale getSale(Long saleId) {
       return this.saleRepository.findById(saleId).orElseThrow(() -> new SaleNotFoundException("Sale with ID '" + saleId + "' was not found."));
    }
 
-   public Set<Sale> getAllSalesByUser(User user) {
+   public Iterable<Sale> getAllSalesByUser(@NotNull User user) {
       return this.saleRepository.findAllByUser(user);
    }
 
-   public Set<Sale> getAllSales() {
+   public Iterable<Sale> getAllSales() {
       return this.saleRepository.findAllByOrderByUpdatedAt();
    }
 
    public Set<Sale> getAllSalesByProductName(String productName) {
-      Set<Sale> result = new HashSet<Sale>();
-      Set<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
+      Set<Sale> salesByProductName = new HashSet<Sale>();
+      Iterable<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
       Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCase(productName);
       for (Sale sale : sales) {
          if (products.contains(sale.getProduct())) {
-            result.add(sale);
+            salesByProductName.add(sale);
          }
       }
-      return result;
+      return salesByProductName;
    }
 
    public Set<Sale> getAllSalesByProductCategoryId(Long productCategoryId) {
-      Set<Sale> result = new HashSet<Sale>();
-      Set<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
+      Set<Sale> salesByProductCategoryId = new HashSet<Sale>();
+      Iterable<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
       ProductCategory productCategory = this.productCategoryRepository.findById(productCategoryId).orElse(null);
       Set<Product> products = this.productRepository.findAllByCategory(productCategory);
       for (Sale sale : sales) {
          if (products.contains(sale.getProduct())) {
-            result.add(sale);
+            salesByProductCategoryId.add(sale);
          }
       }
-      return result;
+      return salesByProductCategoryId;
    }
 
    public Set<Sale> getAllSalesByProductNameAndProductCategoryId(String productName, Long productCategoryId) {
-      Set<Sale> result = new HashSet<Sale>();
-      Set<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
+      Set<Sale> salesByProductNameAndProductCategoryId = new HashSet<Sale>();
+      Iterable<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
       ProductCategory productCategory = this.productCategoryRepository.findById(productCategoryId).orElse(null);
       Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCaseAndCategory(productName, productCategory);
       for (Sale sale : sales) {
          if (products.contains(sale.getProduct())) {
-            result.add(sale);
+            salesByProductNameAndProductCategoryId.add(sale);
          }
       }
-      return result;
+      return salesByProductNameAndProductCategoryId;
    }
 
    public Set<Sale> getAllUserSoldSales(User user) {
-      Set<Sale> result = new HashSet<Sale>();
-      Set<Sale> sales = this.saleRepository.findAllByUser(user);
+      Set<Sale> soldSales = new HashSet<Sale>();
+      Iterable<Sale> sales = this.saleRepository.findAllByUser(user);
       for (Sale sale : sales) {
-         if (sale.getIsSold()) {
-            result.add(sale);
+         if (sale != null && sale.getIsSold()) {
+            soldSales.add(sale);
          }
       }
-      return result;
+      return soldSales;
    }
 
    public List<Object[]> countCurrentWeekUserSoldSales(@NotNull Long userId) {
@@ -105,6 +106,6 @@ public class SaleService {
    }
 
    public Float calculateSalePrice(@NotNull Sale sale) {
-      return Utils.roundNumberTo2Decimals(sale.getProduct().getPrice() * sale.getQuantity());
+      return Utils.calculateSalePrice(sale);
    }
 }

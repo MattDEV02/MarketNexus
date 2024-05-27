@@ -41,7 +41,7 @@ public class CartController {
    public ModelAndView showCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.CART + GlobalValues.TEMPLATES_EXTENSION);
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
-      List<CartLineItem> cartLineItems = this.cartService.getAllCartLineItems(cart.getId());
+      List<CartLineItem> cartLineItems = cart.getCartLineItems();
       modelAndView.addObject("cart", cart);
       modelAndView.addObject("cartLineItems", cartLineItems);
       return modelAndView;
@@ -62,11 +62,11 @@ public class CartController {
       if (loggedUser.equals(sale.getUser())) {
          CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_OWN_SALE_TO_CART_ERROR);
          modelAndView.addObject("userAddOwnSaleToCartError", true);
-      } else if (this.cartService.existsCartLineItemSale(cart.getId(), sale)) {
+      } else if (this.cartService.existsCartLineItemSale(cart, sale)) {
          CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_EXISTING_SALE_TO_CART_ERROR);
          modelAndView.addObject("userAddExistingSaleToCartError", true);
       } else {
-         CartLineItem savedCartLineItem = this.cartService.makeCartLineItem(cart.getId(), sale);
+         CartLineItem savedCartLineItem = this.cartService.makeCartLineItem(cart, sale);
          modelAndView.addObject("sale", savedCartLineItem.getSale());
          modelAndView.addObject("isAddedToCart", TypeValidators.validateTimestamp(savedCartLineItem.getInsertedAt())); //
       }
@@ -77,7 +77,7 @@ public class CartController {
    public ModelAndView deleteCartLineItemById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId) {
       ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.CART);
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
-      if (this.cartService.deleteCartLineItem(cart.getId(), cartLineItemId)) {
+      if (this.cartService.deleteCartLineItem(cart, cartLineItemId)) {
          modelAndView.addObject("cartLineItemDeletedSuccess", true);
          CartController.LOGGER.info("Deleted CartLineItem with CartLineItem ID: {}", cartLineItemId);
       } else {

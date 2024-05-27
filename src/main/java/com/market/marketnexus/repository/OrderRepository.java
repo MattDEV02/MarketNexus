@@ -7,7 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface OrderRepository extends CrudRepository<Order, Long> {
@@ -27,5 +26,5 @@ public interface OrderRepository extends CrudRepository<Order, Long> {
    )
    public List<Object[]> findAllByUserId(Long userId);
 
-   public Set<Order> findAllByUser(User user);
+   public Iterable<Order> findAllByUser(User user);
 }

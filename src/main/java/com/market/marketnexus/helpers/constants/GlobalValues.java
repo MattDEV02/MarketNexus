@@ -11,7 +11,7 @@ public class GlobalValues {
 
    public final static String CHARSET = "UTF-8";
 
-   public final static String LANG = "en-uS";
+   public final static String LANG = "en-US";
 
    public final static String[] AUTHORS = {"Matteo Lambertucci, matteolambertucci3@gmail.com, mat.lambertucci@stud.uniroma3.it"};
 

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Service
 public class ProductCategoryService {
@@ -18,13 +17,13 @@ public class ProductCategoryService {
       return this.productCategoryRepository.findById(productCategoryId).orElse(null);
    }
 
-   public Set<ProductCategory> getAllProductCategories() {
+   public Iterable<ProductCategory> getAllProductCategories() {
       return this.productCategoryRepository.findAllByOrderByName();
    }
 
    public Map<Long, ProductCategory> getAllProductCategoriesMap() {
       Map<Long, ProductCategory> allProductCategoriesMap = new HashMap<Long, ProductCategory>();
-      Set<ProductCategory> allProductCategoriesOrderByName = this.getAllProductCategories();
+      Iterable<ProductCategory> allProductCategoriesOrderByName = this.getAllProductCategories();
       for (ProductCategory productCategory : allProductCategoriesOrderByName) {
          allProductCategoriesMap.put(productCategory.getId(), productCategory);
       }

@@ -14,7 +14,7 @@ import java.util.*;
 @Entity(name = "Carts")
 @Table(name = "Carts", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "carts_user_insertedat_unique", columnNames = {"_user", "inserted_at"})})
 public class Cart {
-   private final static Float CART_START_PRICE = 0.0F;
+   public final static Float CART_START_PRICE = 0.0F;
    @Id
    @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,12 +35,7 @@ public class Cart {
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
 
-   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
-   @Column(name = "updated_at", nullable = false)
-   @Temporal(TemporalType.TIMESTAMP)
-   private LocalDateTime updatedAt;
-
-   @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+   @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER, orphanRemoval = true)
    private List<CartLineItem> cartLineItems;
 
    public Cart() {
@@ -87,14 +82,6 @@ public class Cart {
       this.insertedAt = insertedAt;
    }
 
-   public LocalDateTime getUpdatedAt() {
-      return this.updatedAt;
-   }
-
-   public void setUpdatedAt(LocalDateTime updatedAt) {
-      this.updatedAt = updatedAt;
-   }
-
    public List<CartLineItem> getCartLineItems() {
       return this.cartLineItems;
    }
@@ -108,14 +95,6 @@ public class Cart {
       if (this.insertedAt == null) {
          this.insertedAt = LocalDateTime.now();
       }
-      if (this.updatedAt == null) {
-         this.updatedAt = this.insertedAt;
-      }
-   }
-
-   @PreUpdate
-   public void preUpdate() {
-      this.updatedAt = LocalDateTime.now();
    }
 
    @Override
@@ -140,9 +119,9 @@ public class Cart {
       return "Cart: {" +
               "id = " + this.getId().toString() +
               ", user = " + this.getUser().toString() +
-              ", cart_price = " + this.getCartPrice().toString() +
+              ", cartPrice = " + this.getCartPrice().toString() +
+              ", cartLineItems = " + this.getCartLineItems().toString() +
               ", insertedAt = " + this.getInsertedAt().toString() +
-              ", updatedAt = " + this.getUpdatedAt().toString() +
               " }";
    }
 

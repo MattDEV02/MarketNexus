@@ -43,10 +43,6 @@ public class Utils {
       credentials.setPassword(encodedPassword);
    }
 
-   public static void saveUserCredentialsRole(@NotNull Credentials credentials, Roles role) {
-
-   }
-
    public static @NotNull Map<String, Roles> getAllRoles() {
       Map<String, Roles> result = new HashMap<String, Roles>();
       Roles[] allRoles = Roles.values();
@@ -56,15 +52,13 @@ public class Utils {
       return result;
    }
 
-   public static Boolean existsRole(String stringRole) {
-      Boolean exists = false;
+   public static @NotNull Boolean existsRole(String stringRole) {
       Roles[] roles = Roles.values();
       for (Roles role : roles) {
          if (role.toString().equals(stringRole)) {
-            exists = true;
-            break;
+            return true;
          }
       }
-      return exists;
+      return false;
    }
 }

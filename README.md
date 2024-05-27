@@ -22,7 +22,8 @@ MarketNexus is marketplace mada in Spring boot.
 
 - **Modularity:** The project is divided in many logic modules, packages, fragments and directories.
 
-- **Tooltips guide Display:** There are many tooltips that guide the User in the site. There is also a FAQs page.
+- **Tooltips guide Display:** There are many tooltips and popups that guide the User in the site. There is also a FAQs
+  page.
 
 - **Language:** There is only the English language.
 
@@ -348,11 +349,11 @@ public class AuthenticationController {
             modelAndView.addObject("userNotRegisteredError", "Server ERROR, User not registered.");
          }
       } else {
-         List<ObjectError> userGlobalErrors = userBindingResult.getGlobalErrors();
+         List<ObjectError> userErrors = userBindingResult.getAllErrors();
          for (ObjectError userGlobalError : userGlobalErrors) {
             modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
          }
-         List<ObjectError> credentialsGlobalErrors = credentialsBindingResult.getGlobalErrors();
+         List<ObjectError> credentialsErrors = credentialsBindingResult.getAllErrors();
          for (ObjectError credentialGlobalErrors : credentialsGlobalErrors) {
             modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
          }
@@ -746,7 +747,7 @@ public class SaleNotFoundException extends RuntimeException {
         <div class="row justify-content-center">
             <div class="col-12 mt-5">
                 <div class="row text-center">
-                    <h1 th:text="${cartLineItems != null && !#sets.isEmpty(cartLineItems) ? 'Your' : 'No'} + ' Cart Products 👀'">
+                    <h1 th:text="${cartLineItems != null && !#lists.isEmpty(cartLineItems) ? 'Your' : 'No'} + ' Cart Products 👀'">
                     </h1>
                 </div>
             </div>
@@ -759,7 +760,7 @@ public class SaleNotFoundException extends RuntimeException {
                 <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Your cart is empty.', condition = ${emptyCart})}"></div>
                 <div
-                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Cart line deleted.', condition = ${cartDeletedSuccess})}"></div>
+                        th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Cart line deleted.', condition = ${cartDeletedSuccess})}"></div>
                 <div th:replace="~{fragments/dashboard/cart/modal/confirmOrderModal.html :: confirmOrderModal(cart = ${cart})}"></div>
                 <div class="row justify-content-center" th:each="cartLineItem : ${cartLineItems}">
                     <div th:replace="~{fragments/dashboard/cart/cartLineInformation.html :: cartLineInformation(cartLineItem = ${cartLineItem})}"></div>
@@ -962,31 +963,33 @@ I am the only author of this beautiful site 😉
 
 ## Technologies and languages used 🧑‍💻
 
-|    *Name*     | *Version* |
-|:-------------:|:---------:|
-|     Java      |    17     |
-|  Spring boot  |   3.2.5   |  
-|     Maven     |   3.9.6   |
-|   Hibernate   |  4.3.11   |
-|     Junit     |     4     |
-|  PostgreSQL   |   16.0    |
-|   thymeleaf   |  3.0.14   |
-|      XML      |    1.1    |
-|   Bootstrap   |   5.3.3   |
-|  FontAwesome  |  5.15.4   |
-|    Leaflet    |   1.9.4   |
-|     HTML      |     5     |
-|      CSS      |   4.15    |
-|  Javascript   |    ES6    |
-|     Axios     |   1.6.8   |
-|    ChartJS    |   4.4.2   |
-| FullCalendar  |  6.1.11   |
-|   Markdown    |    3.6    |
-|    Windows    |    11     |
-|      GIT      |  2.43.0   |
-|    GITHUB     |  3.12.3   |
-| IntelliJ IDEA |  2024.1   |
-|  Altervista   |    //     |
+|     *Name*     |   *Version*    |
+|:--------------:|:--------------:|
+|      Java      |       17       |
+|  Spring boot   |     3.2.5      |  
+|     Maven      |     3.9.6      |
+|   Hibernate    |     4.3.11     |
+|     Junit      |       4        |
+|   PostgreSQL   |      16.0      |
+|   thymeleaf    |     3.0.14     |
+|      XML       |      1.1       |
+|   Bootstrap    |     5.3.3      |
+|  FontAwesome   |     5.15.4     |
+|    Leaflet     |     1.9.4      |
+|      HTML      |       5        |
+|      CSS       |      4.15      |
+|   Javascript   |      ES6       |
+|     Axios      |     1.6.8      |
+|    ChartJS     |     4.4.2      |
+|  FullCalendar  |     6.1.11     |
+|    Markdown    |      3.6       |
+|    Windows     |       11       |
+|      GIT       |     2.43.0     |
+|     GITHUB     |     3.12.3     |
+| IntelliJ IDEA  |     2024.1     |
+|     Chrome     | 124.0.6367.201 |
+| Microsoft EDGE | 123.0.2420.65  |
+|   Altervista   |       //       |
 
 ## Project structure 🏠
 
@@ -1045,13 +1048,9 @@ I am the only author of this beautiful site 😉
 
 <img title="MarketNexus ER model" alt="MarketNexus ER model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/ER_model3.jpeg" width="100%">
 
-## UML Domain Model 🔣
+## UML Domain Model ‍🎓
 
-<img title="MarketNexus Relational model" alt="MarketNexus Relational model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/relational_model3.jpeg" width="100%">
-
-## UML DCD 👨‍🎓
-
-<img title="MarketNexus Functional dependencies BCNF" alt="MarketNexus Relational model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/functional_dependencies.jpeg" width="100%">
+<img title="MarketNexus Domain Model" alt="MarketNexus Domain model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/relational_model3.jpeg" width="100%">
 
 ## License 🗒️
 

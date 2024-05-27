@@ -14,23 +14,25 @@ public class Utils {
    public final static String PRODUCT_IMAGES_DIRECTORY = "/products";
    public final static String PRODUCT_IMAGE_EXTENSION = ".jpeg";
 
-   public static @NonNull String getProductRelativeImageDirectory(@NonNull Product product) {
+   public static @NonNull String getProductImageDirectoryName(@NonNull Product product) {
       return Utils.PRODUCT_IMAGES_DIRECTORY + '/' + product.getId().toString();
    }
 
-   public static @NonNull String getProductRelativeImageFile(@NonNull Product product) {
+   public static @NonNull String getProductImageFileName(@NonNull Product product) {
       return product.getName().toLowerCase() + Utils.PRODUCT_IMAGE_EXTENSION;
    }
 
    public static @NotNull Boolean storeProductImage(Product product, @NonNull MultipartFile productImage) {
       if (!productImage.isEmpty()) {
          try {
-            String destinationDirectory = ProjectPaths.getStaticPath() + product.getImageRelativePath().replace(product.getName().toLowerCase(), "").replace(Utils.PRODUCT_IMAGE_EXTENSION, "");
-            File directory = new File(destinationDirectory);
-            if (directory.mkdir()) {
-               File file = new File(destinationDirectory + product.getName().toLowerCase() + Utils.PRODUCT_IMAGE_EXTENSION);
+            String productImageRelativePath = product.getImageRelativePath();
+            String productImageRelativePathDirectory = productImageRelativePath.replace(Utils.getProductImageFileName(product), "");
+            String destinationDirectoryName = ProjectPaths.getStaticPath() + productImageRelativePathDirectory;
+            File destinationDirectory = new File(destinationDirectoryName);
+            if (destinationDirectory.isDirectory() && destinationDirectory.mkdir()) {
+               File file = new File(destinationDirectory + Utils.getProductImageFileName(product));
                productImage.transferTo(file);
-               return productImage.getResource().exists() && file.exists();
+               return file.exists() && file.isFile();
             } else {
                System.err.println("Directory for the new Product inserted (id = " + product.getId().toString() + ")" + " not created, file cannot be stored.");
                return false;

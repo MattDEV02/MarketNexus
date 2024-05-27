@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Service
 public class NationService {
@@ -15,17 +14,17 @@ public class NationService {
    @Autowired
    protected NationRepository nationRepository;
 
-   public Boolean existsById(Long id) {
+   public Boolean nationExistsById(Long id) {
       return this.nationRepository.existsById(id);
    }
 
-   public Set<Nation> getAllNations() {
+   public Iterable<Nation> getAllNations() {
       return this.nationRepository.findAllByOrderByName();
    }
 
    public Map<Long, Nation> getAllNationsMap() {
       Map<Long, Nation> allNationsOrderByNameMap = new HashMap<Long, Nation>();
-      Set<Nation> allNationsOrderByName = this.getAllNations();
+      Iterable<Nation> allNationsOrderByName = this.getAllNations();
       for (Nation nation : allNationsOrderByName) {
          allNationsOrderByNameMap.put(nation.getId(), nation);
       }

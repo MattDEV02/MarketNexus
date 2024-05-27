@@ -15,9 +15,9 @@
                </div>
                <div th:with="registrationSuccessful = ${param.registrationSuccessful != null}, logoutSuccessful = ${param.logoutSuccessful != null}, invalidCredentials = ${param.invalidCredentials != null}">
                   <div
-                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Successfully registered.', condition = ${registrationSuccessful})}"></div>
+                        th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Successfully registered.', condition = ${registrationSuccessful})}"></div>
                   <div
-                        th:replace="~{fragments/shared/message/successMessage.html :: successMessage(text = 'Successfully logged out.', condition = ${logoutSuccessful})}"></div>
+                        th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Successfully logged out.', condition = ${logoutSuccessful})}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Incorrect username or password.', condition = ${invalidCredentials})}"></div>
                </div>

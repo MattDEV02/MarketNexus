@@ -340,28 +340,13 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Carts
     cart_price  FLOAT                                                                                NOT NULL,
     _user       INTEGER                                                                              NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT carts_user_insertedat_unique UNIQUE (_user, inserted_at),
     CONSTRAINT carts_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
     CONSTRAINT carts_id_min_value_check CHECK (MarketNexus.Carts.id >= 1),
     CONSTRAINT carts_cartprice_min_value_check CHECK (MarketNexus.Carts.cart_price >= 0),
-    CONSTRAINT carts_user_min_value_check CHECK (MarketNexus.Carts._user >= 1),
+    CONSTRAINT carts_user_min_value_check CHECK (MarketNexus.Carts._user >= 1)
     --CONSTRAINT carts_insertedat_min_value_check CHECK (MarketNexus.Carts.inserted_at <= CURRENT_TIMESTAMP),
-    CONSTRAINT carts_insertedat_updatedat_value_check CHECK (MarketNexus.Carts.inserted_at <=
-                                                             MarketNexus.Carts.updated_at)
 );
-
-select username
-from credentials;
-
-CREATE
-    OR REPLACE TRIGGER CARTLINEITEMS_UPDATEDAT_TRIGGER
-    BEFORE
-        UPDATE
-    ON MarketNexus.Carts
-    FOR EACH ROW
-EXECUTE
-    FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
 COMMENT ON TABLE MarketNexus.Carts IS 'MarketNexus User Cart.';
 
@@ -379,26 +364,15 @@ CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
     cart        INTEGER                                                                              NOT NULL,
     sale        INTEGER                                                                              NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT cartlineitems_cart_sale_insertedat_unique UNIQUE (cart, sale, inserted_at),
     CONSTRAINT cartlineitems_carts_fk FOREIGN KEY (cart) REFERENCES MarketNexus.Carts (id) ON DELETE CASCADE,
     CONSTRAINT cartlineitems_sale_fk FOREIGN KEY (sale) REFERENCES MarketNexus.Sales (id) ON DELETE CASCADE,
     CONSTRAINT cartlineitems_id_min_value_check CHECK (MarketNexus.cart_line_items.id >= 1),
     CONSTRAINT cartlineitems_cart_min_value_check CHECK (MarketNexus.cart_line_items.cart >= 1),
-    CONSTRAINT cartlineitems_sale_min_value_check CHECK (MarketNexus.cart_line_items.sale >= 1),
+    CONSTRAINT cartlineitems_sale_min_value_check CHECK (MarketNexus.cart_line_items.sale >= 1)
     --CONSTRAINT cartlineitems_insertedat_min_value_check CHECK (MarketNexus.cart_line_items.inserted_at <= CURRENT_TIMESTAMP),
-    CONSTRAINT cartlineitems_insertedat_updatedat_value_check CHECK (MarketNexus.cart_line_items.inserted_at <=
-                                                                     MarketNexus.cart_line_items.updated_at)
-);
 
-CREATE
-    OR REPLACE TRIGGER CARTLINEITEMS_UPDATEDAT_TRIGGER
-    BEFORE
-        UPDATE
-    ON MarketNexus.cart_line_items
-    FOR EACH ROW
-EXECUTE
-    FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
+);
 
 CREATE
     OR REPLACE FUNCTION CHECK_CART_USER_CREDENTIALS_ROLE_FUNCTION()
@@ -528,26 +502,14 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Orders
     _user       INTEGER                                                                              NOT NULL,
     cart        INTEGER                                                                              NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT orders_user_cart_insertedat_unique UNIQUE (_user, cart, inserted_at),
     CONSTRAINT orders_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
     CONSTRAINT orders_carts_fk FOREIGN KEY (cart) REFERENCES MarketNexus.Carts (id) ON DELETE CASCADE,
     CONSTRAINT orders_id_min_value_check CHECK (MarketNexus.Orders.id >= 1),
     CONSTRAINT orders_user_min_value_check CHECK (MarketNexus.Orders._user >= 1),
-    CONSTRAINT orders_cart_min_value_check CHECK (MarketNexus.Orders.cart >= 1),
+    CONSTRAINT orders_cart_min_value_check CHECK (MarketNexus.Orders.cart >= 1)
     --CONSTRAINT orders_insertedat_min_value_check CHECK (MarketNexus.Orders.inserted_at <= CURRENT_TIMESTAMP),
-    CONSTRAINT orders_insertedat_updatedat_value_check CHECK (MarketNexus.Orders.inserted_at <=
-                                                              MarketNexus.Orders.updated_at)
 );
-
-CREATE
-    OR REPLACE TRIGGER ORDERS_UPDATED_AT_TRIGGER
-    BEFORE
-        UPDATE
-    ON MarketNexus.Orders
-    FOR EACH ROW
-EXECUTE
-    FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
 
 CREATE
@@ -613,9 +575,10 @@ BEGIN
         SELECT TO_CHAR(date_series.date, 'yyyy-MM-dd') AS day,
                COALESCE(COUNT(DISTINCT s.id), 0)       AS numberOfSoldSales
         FROM date_series
-                 LEFT JOIN MarketNexus.Sales s
-                           ON CAST(date_series.date AS DATE) = CAST(s.inserted_at AS DATE) AND s._user = user_id
-                               AND s.is_sold = TRUE
+                 LEFT JOIN MarketNexus.Orders o ON CAST(date_series.date AS DATE) = CAST(o.inserted_at AS DATE)
+                 LEFT JOIN MarketNexus.Carts c ON o.cart = c.id
+                 LEFT JOIN MarketNexus.cart_line_items cli ON cli.cart = c.id
+                 LEFT JOIN MarketNexus.Sales s ON cli.sale = s.id AND s._user = user_id
         GROUP BY date_series.date
         ORDER BY date_series.date;
 END

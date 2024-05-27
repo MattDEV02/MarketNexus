@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.constants.Temporals;
+import com.market.marketnexus.helpers.sale.Utils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -61,6 +62,16 @@ public class Sale {
       this.user = null;
       this.product = null;
       this.isSold = false;
+      this.quantity = 0;
+      this.salePrice = 0.0F;
+   }
+
+   public Sale(Integer quantity, User user, Product product) {
+      this.quantity = quantity;
+      this.user = user;
+      this.product = product;
+      this.isSold = false;
+      this.salePrice = Utils.calculateSalePrice(this);
    }
 
    public Sale(Integer quantity, User user, Product product, Float salePrice) {

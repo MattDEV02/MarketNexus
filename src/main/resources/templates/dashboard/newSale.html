@@ -9,7 +9,7 @@
 <div th:replace="~{fragments/shared/pagination/header/dashboardHeader.html :: dashboardHeader()}">
 </div>
 <main>
-   <div class="container">
+   <div class="container" th:with="userNotSellerPublishedASaleError = ${param.userNotSellerPublishedASaleError}">
       <div class="row justify-content-center">
          <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 py-4 mt-5 mb-4">
             <form enctype="multipart/form-data" id="new-sale-form" method="POST"
@@ -55,7 +55,8 @@
                   <input class="form-control py-2" id="price" name="price"
                          placeholder="Insert product price ($)" required
                          th:field="${product.price}"
-                         th:max="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MAX_VALUE')}" th:min="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MIN_VALUE')}"
+                         th:max="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MAX_VALUE')}"
+                         th:min="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MIN_VALUE')}"
                          th:object="${product}" th:step="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_STEP_VALUE')}"
                          type="number"/>
                   <div

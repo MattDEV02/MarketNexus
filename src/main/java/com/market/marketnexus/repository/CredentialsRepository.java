@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface CredentialsRepository extends CrudRepository<Credentials, Long> {
 
-   public boolean existsByUsername(String username);
+   public Boolean existsByUsername(String username);
 
    public Optional<Credentials> findByUsername(String username);
 }

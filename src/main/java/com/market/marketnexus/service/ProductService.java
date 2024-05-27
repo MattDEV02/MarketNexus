@@ -22,7 +22,7 @@ public class ProductService {
    @Transactional
    public Product saveProduct(@NotNull Product product) {
       Product savedProduct = this.productRepository.save(product);
-      savedProduct.setImageRelativePath(ProjectPaths.IMAGES + Utils.getProductRelativeImageDirectory(savedProduct) + "/" + Utils.getProductRelativeImageFile(savedProduct));
+      savedProduct.setImageRelativePath(ProjectPaths.IMAGES + Utils.getProductImageDirectoryName(savedProduct) + "/" + Utils.getProductImageFileName(savedProduct));
       return savedProduct;
    }
 

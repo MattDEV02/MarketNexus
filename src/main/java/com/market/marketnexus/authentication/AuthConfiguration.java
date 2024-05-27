@@ -32,25 +32,24 @@ public class AuthConfiguration implements WebMvcConfigurer {
    private DataSource dataSource;
 
    @Override
-   public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-      registry.addResourceHandler("/**")
+   public void addResourceHandlers(@NonNull ResourceHandlerRegistry resourceHandlerRegistry) {
+      resourceHandlerRegistry.addResourceHandler("/**")
               .addResourceLocations(AuthConfiguration.CLASSPATH_RESOURCE_LOCATIONS)
       //.setCachePeriod(0)
       ;
    }
 
    @Autowired
-   public void configureGlobal(@NonNull AuthenticationManagerBuilder auth)
+   public void configureGlobal(@NonNull AuthenticationManagerBuilder authenticationManagerBuilder)
            throws Exception {
-      auth.jdbcAuthentication()
+      authenticationManagerBuilder.jdbcAuthentication()
               //use the autowired datasource to access the saved credentials
               .dataSource(this.dataSource)
               //retrieve username and role
-              .authoritiesByUsernameQuery("SELECT username, role FROM credentials WHERE username = ?")
+              .authoritiesByUsernameQuery("SELECT username, role FROM Credentials WHERE username = ?")
               //retrieve username, password and a boolean flag specifying whether the user is enabled or not (always enabled in our case)
-              .usersByUsernameQuery("SELECT username, password, TRUE AS enabled FROM credentials WHERE username = ?");
+              .usersByUsernameQuery("SELECT username, password, TRUE AS enabled FROM Credentials WHERE username = ?");
    }
-
 
    @Bean
    public PasswordEncoder passwordEncoder() { // Bcrypt algorithm
@@ -68,8 +67,10 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .cors(AbstractHttpConfigurer::disable)
               .csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(
-                      auth -> auth
-                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
+                      authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
+                              .requestMatchers(HttpMethod.GET,
+                                      "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs",
+                                      "/css/**", "/js/**", "/images/**", "/webfonts/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail").permitAll()
                               .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.SELLER_ROLE.toString())
                               .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.BUYER_ROLE.toString())
@@ -81,7 +82,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               )
               .formLogin(formLogin -> formLogin
                       .loginPage("/login")
-                      .defaultSuccessUrl("/dashboard", true)
+                      .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
                       .failureUrl("/login?invalidCredentials=true")
                       .usernameParameter("username")
                       .passwordParameter("password")
@@ -90,11 +91,10 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .logout(logout -> logout
                       .logoutUrl("/logout")
                       .logoutSuccessUrl("/login?logoutSuccessful=true")
+                      .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                       .invalidateHttpSession(true)
                       .clearAuthentication(true)
                       .deleteCookies("JSESSIONID")
-                      .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                      .clearAuthentication(true)
                       .permitAll());
       return httpSecurity.build();
    }

@@ -34,12 +34,6 @@ public class ProductCategory {
 
    }
 
-   public ProductCategory(Long id, String name, String description) {
-      this.id = id;
-      this.name = name;
-      this.description = description;
-   }
-
    public ProductCategory(String name, String description) {
       this.name = name;
       this.description = description;

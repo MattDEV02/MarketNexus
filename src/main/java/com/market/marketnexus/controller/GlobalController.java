@@ -88,7 +88,7 @@ public class GlobalController {
    }
 
    @ModelAttribute("loggedUser")
-   public User getUser(Model model) {
+   public User getLoggedUser(@NonNull Model model) {
       UserDetails userDetails = null;
       Credentials credentials = null;
       User loggedUser = null;

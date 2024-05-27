@@ -33,7 +33,7 @@ public class UserValidator implements Validator {
          //String[] errorArgs = {""};
          errors.rejectValue("email", "user.email.unique");
       }
-      if (user.getNation() == null || !this.nationService.existsById(user.getNation().getId())) {
+      if (user.getNation() == null || !this.nationService.nationExistsById(user.getNation().getId())) {
          errors.rejectValue("nation", "user.nation.notExists");
       }
    }

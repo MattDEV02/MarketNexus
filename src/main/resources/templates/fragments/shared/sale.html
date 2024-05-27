@@ -12,7 +12,7 @@
       <p class="card-text" th:text="${sale.quantity} + 'X ' + ${sale.product.description}"></p>
       <p class="card-text fw-bold" th:text="${sale.product.category.name}"></p>
    </div>
-   <div th:class="'card-footer' + ${!isLoggedUser ? ' pb-2 pt-3' : ' py-3'}">
+   <div class="card-footer">
       <a class="card-link link-primary text-decoration-underline fs-5 ms-1 me-3"
          th:href="@{'/dashboard/account/' + ${sale.user.credentials.username}}"
          th:text="${sale.user.credentials.username}"
@@ -21,14 +21,18 @@
       </a>
       <span class="text-secondary fs-5 ms-2 me-3" th:text="${sale.salePrice} + ' $'"></span>
       <a class="btn btn-primary ms-3 mb-2" role="button"
-         th:href="@{'/dashboard/cart/' + ${sale.id} + '?quantity=' + ${sale.quantity}}"
+         th:href="@{'/' + ${API_PREFIXES_MAP.get('CART')} + '/' + ${sale.id} + '?quantity=' + ${sale.quantity}}"
          th:if="${#strings.contains(loggedUser.credentials.role, 'BUYER') && !isLoggedUser && !sale.isSold && !isAddedToCart}"
          th:title="'Add this ' + ${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' cart'"
       >
          <i class="fas fa-cart-plus"></i>
       </a>
-      <div class="ms-3 mb-2"
-           th:if="${(!#strings.contains(loggedUser.credentials.role, 'BUYER') || isLoggedUser) && !sale.isSold}"></div>
+      <a class="btn btn-warning ms-3 mb-2" role="button"
+         th:href="@{'/' + ${API_PREFIXES_MAP.get('DASHBOARD')} + '/updateSale/' + ${sale.id}}"
+         th:if="${!sale.isSold && #strings.contains(loggedUser.credentials.role, 'SELLER') && isLoggedUser}"
+         title="Modify this Sale.">
+         <i class="fas fa-edit"></i>
+      </a>
       <button class="btn btn-danger ms-3 mb-2" disabled
               th:if="${sale.isSold && #strings.contains(loggedUser.credentials.role, 'BUYER')}"
               type="button">

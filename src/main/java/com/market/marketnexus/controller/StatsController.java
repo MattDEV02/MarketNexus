@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 
 @RequestMapping(value = "/" + APIPrefixes.STATS)
@@ -39,7 +38,7 @@ public class StatsController {
    }
 
    @GetMapping(value = {"/calendarData/sales", "/calendarData/sales/"})
-   public Set<Sale> getSalesCalendarData(@NotNull @Valid @ModelAttribute("loggedUser") User loggedUser) {
+   public Iterable<Sale> getSalesCalendarData(@NotNull @Valid @ModelAttribute("loggedUser") User loggedUser) {
       return this.saleService.getAllSalesByUser(loggedUser);
    }
 
@@ -47,7 +46,6 @@ public class StatsController {
    public List<Object[]> getOrdersCalendarData(@NotNull @Valid @ModelAttribute("loggedUser") User loggedUser) {
       return this.orderService.getAllOrdersForUser(loggedUser.getId());
    }
-
 
    @GetMapping(value = {"/tableData", "/tableData/"})
    public List<Object[]> getTableData() {

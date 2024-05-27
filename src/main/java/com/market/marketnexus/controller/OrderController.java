@@ -42,7 +42,11 @@ public class OrderController {
    private CredentialsService credentialsService;
 
    @GetMapping(value = {"/{cartId}", "/{cartId}/"})
-   public ModelAndView makeOrderFromCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartId") Long cartId, @NonNull HttpServletRequest request) {
+   public ModelAndView makeOrderFromCartLineItem(
+           @Valid @ModelAttribute("loggedUser") User loggedUser,
+           @PathVariable("cartId") Long cartId,
+           @NonNull HttpServletRequest request
+   ) {
       ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.CART);
       if (!request.getHeader("referer").contains(APIPrefixes.CART)) {
          return modelAndView;
@@ -61,12 +65,12 @@ public class OrderController {
          } else {
             Order savedOrder = this.orderService.makeOrder(loggedUser.getId());
             LocalDateTime orderInsertedAt = savedOrder.getInsertedAt();
-            Cart orderCart = savedOrder.getCart();
-            List<CartLineItem> cartLineItems = this.cartService.getAllSoldCartLineItems(orderCart.getId());
-            modelAndView.addObject("orderInsertedAt", orderInsertedAt);
-            modelAndView.addObject("cart", orderCart);
-            modelAndView.addObject("cartLineItems", cartLineItems);
+            Cart orderedCart = savedOrder.getCart();
+            List<CartLineItem> cartLineItems = this.cartService.getAllSoldCartLineItems(orderedCart);
             OrderController.LOGGER.info("New Order with ID: {}", savedOrder.getId());
+            modelAndView.addObject("orderInsertedAt", orderInsertedAt);
+            modelAndView.addObject("cart", orderedCart);
+            modelAndView.addObject("cartLineItems", cartLineItems);
             modelAndView.setViewName(APIPrefixes.ORDER + GlobalValues.TEMPLATES_EXTENSION);
          }
       } else {

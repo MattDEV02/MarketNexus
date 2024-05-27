@@ -5,7 +5,7 @@
          <div class="card-body">
             <div class="row">
                <h3 class="card-title" th:text="${(isOrder ? 'Order' : 'Cart') + ' total'}"></h3>
-               <p class="card-text text-secondary fw-bold" id="cart-total-text"
+               <p id="cart-total-text" th:class="'card-text text-secondary fw-bold ' + ${isOrder ? 'mt-2 mb-1' : ''}"
                   th:text="'Total: ' + ${cart.cartPrice} + ' $'"></p>
                <button data-bs-target="#confirm-order-modal"
                        data-bs-toggle="modal" id="make-order-button"

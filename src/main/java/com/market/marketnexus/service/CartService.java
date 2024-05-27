@@ -25,14 +25,8 @@ public class CartService {
       return this.cartRepository.existsById(cartId);
    }
 
-   public Cart getCart(Long cartId) {
-      return this.cartRepository.findById(cartId).orElse(null);
-   }
-
    @Transactional
-   public void updateCartLineItemsSalesIsSold(Long cartId) {
-      Cart cart = this.getCart(cartId);
-      //Hibernate.initialize(cart.getCartLineItems());
+   public void updateCartLineItemsSalesIsSold(@NotNull Cart cart) {
       List<CartLineItem> cartLineItems = cart.getCartLineItems();
       Sale sale = null;
       for (CartLineItem cartLineItem : cartLineItems) {
@@ -41,55 +35,27 @@ public class CartService {
       }
    }
 
-   @Transactional
-   public List<CartLineItem> getAllCartLineItems(Long cartId) {
-      List<CartLineItem> result = new ArrayList<CartLineItem>();
-      Cart cart = this.getCart(cartId);
-      if (cart != null) {
-         result = new ArrayList<CartLineItem>();
-         //Hibernate.initialize(cart.getCartLineItems());
-         List<CartLineItem> cartLineItems = cart.getCartLineItems();
-         cart.sortCartLineItemsByInsertedAt();
-         Sale sale = null;
-         for (CartLineItem cartLineItem : cartLineItems) {
-            sale = cartLineItem.getSale();
-            if (!sale.getIsSold()) {
-               result.add(cartLineItem);
-            }
+   public List<CartLineItem> getAllSoldCartLineItems(@NotNull Cart cart) {
+      List<CartLineItem> soldSalesCartLineItems = new ArrayList<CartLineItem>();
+      List<CartLineItem> cartLineItems = cart.getCartLineItems();
+      Sale sale = null;
+      for (CartLineItem cartLineItem : cartLineItems) {
+         sale = cartLineItem.getSale();
+         if (sale != null && sale.getIsSold()) {
+            soldSalesCartLineItems.add(cartLineItem);
          }
       }
-      return result;
+      return soldSalesCartLineItems;
    }
 
-   @Transactional
-   public List<CartLineItem> getAllSoldCartLineItems(Long cartId) {
-      Cart cart = this.getCart(cartId);
-      List<CartLineItem> result = new ArrayList<CartLineItem>();
-      if (cart != null) {
-         //Hibernate.initialize(cart.getCartLineItems());
-         List<CartLineItem> cartLineItems = cart.getCartLineItems();
-         Sale sale = null;
-         for (CartLineItem cartLineItem : cartLineItems) {
-            sale = cartLineItem.getSale();
-            if (sale.getIsSold()) {
-               result.add(cartLineItem);
-            }
-         }
-      }
-      return result;
-   }
-
-   public Boolean existsCartLineItemSale(Long cartId, Sale sale) {
-      Cart cart = this.getCart(cartId);
+   public Boolean existsCartLineItemSale(@NotNull Cart cart, @NotNull Sale sale) {
       return this.cartLineItemRepository.existsByCartAndSale(cart, sale);
    }
 
    @Transactional
-   public CartLineItem makeCartLineItem(Long cartId, Sale sale) {
-      Cart cart = this.getCart(cartId);
+   public CartLineItem makeCartLineItem(@NotNull Cart cart, @NotNull Sale sale) {
       CartLineItem cartLineItem = new CartLineItem(cart, sale);
-      CartLineItem cartLineItemSaved = this.cartLineItemRepository.save(cartLineItem); //
-      //Hibernate.initialize(cart.getCartLineItems());
+      CartLineItem cartLineItemSaved = this.cartLineItemRepository.save(cartLineItem);
       cart.getCartLineItems().add(cartLineItemSaved);
       Float newCartPrice = this.calculateCartPrice(cart);
       cart.setCartPrice(newCartPrice);
@@ -98,9 +64,7 @@ public class CartService {
    }
 
    @Transactional
-   public Boolean deleteCartLineItem(@NotNull Long cartId, Long cartLineItemId) {
-      Cart cart = this.getCart(cartId);
-      // Hibernate.initialize(cart.getCartLineItems());
+   public Boolean deleteCartLineItem(@NotNull Cart cart, @NotNull Long cartLineItemId) {
       CartLineItem cartLineItemToRemove = cart.getCartLineItems().stream()
               .filter(cartLineItem -> cartLineItem.getId().equals(cartLineItemId))
               .findFirst().orElse(null);
@@ -112,11 +76,13 @@ public class CartService {
    }
 
    public Float calculateCartPrice(@NotNull Cart cart) {
-      Float result = 0F;
+      Float cartPrice = 0.0F;
       List<CartLineItem> cartLineItems = cart.getCartLineItems();
+      Sale sale = null;
       for (CartLineItem cartLineItem : cartLineItems) {
-         result += cartLineItem.getSale().getSalePrice();
+         sale = cartLineItem.getSale();
+         cartPrice += sale.getSalePrice();
       }
-      return Utils.roundNumberTo2Decimals(result);
+      return Utils.roundNumberTo2Decimals(cartPrice);
    }
 }

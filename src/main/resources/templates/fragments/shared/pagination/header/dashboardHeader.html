@@ -47,10 +47,10 @@
                </li>
             </ul>
             <form class="d-flex ms-5 mt-4 mt-xl-0" id="search-product-form" method="GET"
-                  name="search-product-form" th:action="@{/dashboard/searchProducts}">
+                  name="search-product-form" th:action="@{/dashboard/searchSales}">
                <label class="form-label visually-hidden" for="product-name"></label>
                <input class="form-control p-2 mx-3" id="product-name"
-                      name="product-name" placeholder="Search products"
+                      name="product-name" placeholder="Product name"
                       th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
                       th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MIN_LENGTH')}"
                       th:value="${param != null ? param.get('product-name') : null}"

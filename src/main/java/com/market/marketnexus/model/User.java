@@ -58,7 +58,7 @@ public class User {
    @JoinColumn(name = "credentials", referencedColumnName = "id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "users_credentials_fk"))
    private Credentials credentials;
 
-   @OneToMany(targetEntity = Cart.class, mappedBy = "user")
+   @OneToMany(targetEntity = Cart.class, orphanRemoval = false, mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.REMOVE})
    private List<Cart> carts;
 
    public User() {
@@ -179,10 +179,10 @@ public class User {
    public String toString() {
       return "User: {" +
               "id = " + this.getId().toString() +
-              ", name = '" + this.getName() + '\'' +
-              ", surname = '" + this.getSurname() + '\'' +
-              //", birthDate = " + this.getBirthDate().toString() +
-              ", email = '" + this.getEmail() + '\'' +
+              ", name = '" + this.getName() +
+              ", surname = '" + this.getSurname() +
+              ", birthDate = " + (this.getBirthDate() != null ? this.getBirthDate().toString() : "Not-present") +
+              ", email = '" + this.getEmail() +
               ", balance = " + this.getBalance().toString() +
               ", credentials = " + this.getCredentials().toString() +
               ", nation = " + this.getNation().toString() +
