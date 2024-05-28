@@ -89,9 +89,10 @@ public class SaleController {
 
    @GetMapping(value = {"/newSale", "/newSale/"})
    public ModelAndView showNewSaleForm() {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/newSale.html");
+      ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/newSale" + GlobalValues.TEMPLATES_EXTENSION);
       modelAndView.addObject("sale", new Sale());
       modelAndView.addObject("product", new Product());
+      modelAndView.addObject("isUpdate", false);
       return modelAndView;
    }
 
@@ -114,10 +115,13 @@ public class SaleController {
       if (!productBindingResult.hasErrors() && !saleBindingResult.hasErrors()) {
          Product savedProduct = this.productService.saveProduct(product);
          if (Utils.storeProductImage(savedProduct, productImage)) {
-            Sale savedSale = this.saleService.saveSale(sale, loggedUser, savedProduct);
+            sale.setUser(loggedUser);
+            sale.setProduct(product);
+            Sale savedSale = this.saleService.saveSale(sale);
             SaleController.LOGGER.info("Published new Sale with ID: {}", savedSale.getId());
             modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL_VIEW + savedProduct.getId().toString());
             modelAndView.addObject("sale", savedSale);
+            modelAndView.addObject("salePublishedSuccess", true);
          } else {
             SaleController.LOGGER.error(GlobalErrorsMessages.SALE_NOT_PUBLISHED_ERROR);
             modelAndView.addObject("saleNotPublishedError", true);
@@ -131,6 +135,62 @@ public class SaleController {
          for (ObjectError saleGlobalError : saleErrors) {
             modelAndView.addObject(Objects.requireNonNull(saleGlobalError.getCode()), saleGlobalError.getDefaultMessage());
          }
+         modelAndView.addObject("isUpdate", false);
+      }
+      return modelAndView;
+   }
+
+   @GetMapping(value = {"/updateSale/{saleId}", "/updateSale/{saleId}"})
+   public ModelAndView showUpdateSaleForm(@PathVariable("saleId") Long saleId) {
+      ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/newSale" + GlobalValues.TEMPLATES_EXTENSION);
+      Sale sale = this.saleService.getSale(saleId);
+      modelAndView.addObject("sale", sale);
+      modelAndView.addObject("product", sale.getProduct());
+      modelAndView.addObject("isUpdate", true);
+      return modelAndView;
+   }
+
+   @PostMapping(value = {"/publishUpdatedSale", "/publishUpdatedSale/"})
+   public ModelAndView updateSale(
+           @Valid @ModelAttribute("loggedUser") User loggedUser,
+           @Valid @ModelAttribute("product") Product product,
+           @NonNull BindingResult productBindingResult,
+           @Valid @ModelAttribute("sale") Sale sale,
+           @NonNull BindingResult saleBindingResult,
+           @RequestParam(name = "product-image", required = false) MultipartFile productImage) {
+      ModelAndView modelAndView = new ModelAndView(SaleController.PUBLISH_ERROR_VIEW);
+      if (!this.credentialsService.areSellerCredentials(loggedUser.getCredentials())) {
+         modelAndView.addObject("userNotSellerPublishedASaleError", true);
+         SaleController.LOGGER.error(GlobalErrorsMessages.USER_NOT_SELLER_PUBLISHED_A_SALE_ERROR);
+         return modelAndView;
+      }
+      this.productValidator.setIsUpdate(true);
+      this.productValidator.setProductImage(productImage);
+      this.productValidator.validate(product, productBindingResult);
+      if (!productBindingResult.hasErrors() && !saleBindingResult.hasErrors()) {
+         Product savedProduct = this.productService.saveProduct(product);
+         if (productImage != null && Utils.deleteProductImage(savedProduct) && Utils.storeProductImage(savedProduct, productImage)) {
+            sale.setUser(loggedUser);
+            sale.setProduct(product);
+            Sale savedSale = this.saleService.saveSale(sale);
+            SaleController.LOGGER.info("Updated Sale with ID: {}", savedSale.getId());
+            modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL_VIEW + savedProduct.getId().toString());
+            modelAndView.addObject("sale", savedSale);
+            modelAndView.addObject("saleUpdatedSuccess", true);
+         } else {
+            SaleController.LOGGER.error(GlobalErrorsMessages.SALE_NOT_PUBLISHED_ERROR);
+            modelAndView.addObject("saleNotPublishedError", this.productValidator.getIsUpdate());
+         }
+      } else {
+         List<ObjectError> productErrors = productBindingResult.getAllErrors();
+         for (ObjectError productGlobalError : productErrors) {
+            modelAndView.addObject(Objects.requireNonNull(productGlobalError.getCode()), productGlobalError.getDefaultMessage());
+         }
+         List<ObjectError> saleErrors = saleBindingResult.getAllErrors();
+         for (ObjectError saleGlobalError : saleErrors) {
+            modelAndView.addObject(Objects.requireNonNull(saleGlobalError.getCode()), saleGlobalError.getDefaultMessage());
+         }
+         modelAndView.addObject("isUpdate", true);
       }
       return modelAndView;
    }
@@ -140,8 +200,8 @@ public class SaleController {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/sale.html");
       try {
          Sale sale = this.saleService.getSale(saleId);
-         modelAndView.addObject("saleId", saleId);
          modelAndView.addObject("sale", sale);
+         modelAndView.addObject("saleId", saleId);
          modelAndView.addObject("isAddedToCart", false);
       } catch (SaleNotFoundException saleNotFoundException) {
          SaleController.LOGGER.error(saleNotFoundException.getMessage());

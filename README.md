@@ -32,60 +32,51 @@ MarketNexus is marketplace mada in Spring boot.
 ## `Sign Up page`
 
 <p align="center">
-<img  title="MarketNexus RegScreen screenshoot 1"  alt="MarketNexus RegScreen screenshoot 1"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/signup/signupscreen11.jpeg"  width="35%">
-<img  title="MarketNexus RegScreen screenshoot 2"  alt="MarketNexus RegScreen screenshoot 2"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/signup/signupscreen22.jpeg"  width="35%">
-<img  title="MarketNexus RegScreen screenshoot 3"  alt="MarketNexus RegScreen screenshoot 3"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/signup/signupscreen333.jpeg"  width="35%">
-<img  title="MarketNexus RegScreen screenshoot 3"  alt="MarketNexus RegScreen screenshoot 4"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/signup/signupscreen44.jpeg"  width="35%">
+<img  title="MarketNexus RegScreen screenshoot 1"  alt="MarketNexus RegScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/registration/1.png"  width="100%">
 </p>
 
 ## `Sign In page`
 
 <p align="center">
-	<img  title="MarketNexus LoginScreen screenshoot 1"  alt="MarketNexus LoginScreen screenshoot 1"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/signin/signinscreen11.jpeg"  width="32.75%">
-	<img  title="MarketNexus LoginScreen screenshoot 2"  alt="MarketNexus LoginScreen screenshoot 2"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/signin/signinscreen22.jpeg"  width="32.75%">
-	<img  title="MarketNexus LoginScreen screenshoot 3"  alt="MarketNexus LoginScreen screenshoot 3"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/signin/signinscreen33.jpeg"  width="32.75%">
+	<img  title="MarketNexus LoginScreen screenshoot 1"  alt="MarketNexus LoginScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/login/1.png"  width="100%">
 </p>
 
 ## `Home page`
 
 <p align="center">
-	<img  title="MarketNexus HomeScreen screenshoot 1"  alt="MarketNexus HomeScreen screenshoot 1"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/home/homescreen1.jpeg"  width="32.75%">
-	<img  title="MarketNexus HomeScreen screenshoot 2"  alt="MarketNexus HomeScreen screenshoot 2"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/home/homescreen2.jpeg"  width="32.75%">
-	<img  title="MarketNexus HomeScreen screenshoot 3"  alt="MarketNexus HomeScreen screenshoot 3"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/home/homescreen3.jpeg"  width="32.75%">
+	<img  title="MarketNexus HomeScreen screenshoot 1"  alt="MarketNexus HomeScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/home/1.png"  width="100%">
 </p>
 
 ## `Dashboard page`
 
 <p align="center">
-	<img  title="MarketNexus PlayQuizScreen screenshoot 1"  alt="MarketNexus PlayQuizScreen screenshoot 1"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/playquiz/playquizscreen11.jpeg"  width="32.75%">
-<img  title="MarketNexus PlayQuizScreen screenshoot 2"  alt="MarketNexus PlayQuizScreen screenshoot 2"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/playquiz/playquizscreen222.jpeg"  width="32.75%">
-<img  title="MarketNexus PlayQuizScreen screenshoot 3"  alt="MarketNexus PlayQuizScreen screenshoot 3"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/playquiz/playquizscreen333.jpeg"  width="32.75%">
-
+	<img  title="MarketNexus DashboardScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/playquiz/playquizscreen11.jpeg"  width="49%">
+    <img  title="MarketNexus DashboardScreen screenshoot 2"  alt="MarketNexus DashboardScreen screenshoot 2"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/playquiz/playquizscreen222.jpeg"  width="49%">
+    <img  title="MarketNexus DashboardScreen screenshoot 3"  alt="MarketNexus DashboardScreen screenshoot 3"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/playquiz/playquizscreen333.jpeg"  width="49%">
 </p>
 
 ## `Account page`
 
 <p align="center"> 
-<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus AccountScreen screenshoot 1"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/account/accountscreen1.jpeg"  width="35%">
-<img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus AccountScreen screenshoot 2"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/account/accountscreen22.jpeg"  width="35%">
-<img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus AccountScreen screenshoot 3"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/account/accountscreen3.jpeg"  width="35%">
-<img  title="MarketNexus AccountScreen screenshoot 4"  alt="MarketNexus AccountScreen screenshoot 4"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/account/accountscreen4.jpeg"  width="35%">
+<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus AccountScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="49%">
+<img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus AccountScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="49%">
+<img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus AccountScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="49%">
+<img  title="MarketNexus AccountScreen screenshoot 4"  alt="MarketNexus AccountScreen screenshoot 4"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="49%">
 </p>
 
 ## `FAQs page`
 
 <p align="center">
-	<img  title="MarketNexus FAQsScreen screenshoot 1"  alt="MarketNexus HelpScreen screenshoot 1"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/help/helpscreen1.jpeg"  width="35%">
-<img  title="MarketNexus FAQsScreen screenshoot 2"  alt="MarketNexus HelpScreen screenshoot 2"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/help/helpscreen2.jpeg"  width="35%">
+	<img  title="MarketNexus FAQsScreen screenshoot 1"  alt="MarketNexus HelpScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/FAQs/1.png"  width="100%">
 </p>
 
 ## `Cart page`
 
 <p align="center"> 
-	<img  title="MarketNexus CartScreen screenshoot 1"  alt="MarketNexus StatsScreen screenshoot 1"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/stats/statsscreen11.gif"  width="35%">
-	<img  title="MarketNexus CartScreen screenshoot 2"  alt="MarketNexus StatsScreen screenshoot 2"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/stats/statsscreen22.jpeg"  width="35%">
-	<img  title="MarketNexus CartScreen screenshoot 3"  alt="MarketNexus StatsScreen screenshoot 3"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/stats/statscreen33.jpeg"  width="35%">
-	<img  title="MarketNexus CartScreen screenshoot 4"  alt="MarketNexus StatsScreen screenshoot 4"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/stats/statsscreen44.jpeg"  width="35%">
+	<img  title="MarketNexus CartScreen screenshoot 1"  alt="MarketNexus StatsScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/cart/1.png"  width="49%">
+	<img  title="MarketNexus CartScreen screenshoot 2"  alt="MarketNexus StatsScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/cart/2.png"  width="49%">
+	<img  title="MarketNexus CartScreen screenshoot 3"  alt="MarketNexus StatsScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/cart/3.png"  width="49%">
+	<img  title="MarketNexus CartScreen screenshoot 4"  alt="MarketNexus StatsScreen screenshoot 4"  src="/src/main/resources/static/images/README/screenshots/cart/4.png"  width="49%">
 </p>
 
 ## Installation 🚀 and usage⚡
@@ -333,7 +324,7 @@ public class AuthenticationController {
                                     @NonNull BindingResult credentialsBindingResult,
                                     @NonNull @RequestParam("confirm-password") String confirmPassword) {
       ModelAndView modelAndView = new ModelAndView(AuthenticationController.REGISTRATION_ERROR);
-      this.userValidator.setAccountUpdate(false);
+      this.userValidator.setIsAccountUpdate(false);
       this.credentialsValidator.setAccountUpdate(false);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
@@ -691,11 +682,11 @@ public class Cart {
    @Override
    public String toString() {
       return "Cart: {" +
-              "id = " + this.getId().toString() +
+              "id = " + this.getId() != null ? this.getId().toString() : "null" +
               ", user = " + this.getUser().toString() +
               ", cart_price = " + this.getCartPrice().toString() +
-              ", insertedAt = " + this.getInsertedAt().toString() +
-              ", updatedAt = " + this.getUpdatedAt().toString() +
+              ", insertedAt = " + this.getInsertedAt() != null ? this.getInsertedAt().toString() : "null" +
+              ", updatedAt = " + this.getUpdatedAt() != null ? this.getUpdatedAt().toString() : "null" +
               " }";
    }
 
@@ -1050,7 +1041,7 @@ I am the only author of this beautiful site 😉
 
 ## UML Domain Model ‍🎓
 
-<img title="MarketNexus Domain Model" alt="MarketNexus Domain model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/relational_model3.jpeg" width="100%">
+<img title="MarketNexus Domain Model" alt="MarketNexus Domainu model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/relational_model3.jpeg" width="100%">
 
 ## License 🗒️
 

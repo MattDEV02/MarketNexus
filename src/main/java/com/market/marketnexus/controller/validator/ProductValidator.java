@@ -1,6 +1,7 @@
 package com.market.marketnexus.controller.validator;
 
 import com.market.marketnexus.helpers.constants.FieldSizes;
+import com.market.marketnexus.helpers.product.Utils;
 import com.market.marketnexus.helpers.validators.FieldValidators;
 import com.market.marketnexus.model.Product;
 import org.springframework.lang.NonNull;
@@ -12,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class ProductValidator implements Validator {
 
-
    private MultipartFile productImage;
+   private Boolean isUpdate = false;
 
    public MultipartFile getProductImage() {
       return this.productImage;
@@ -21,6 +22,14 @@ public class ProductValidator implements Validator {
 
    public void setProductImage(MultipartFile productImage) {
       this.productImage = productImage;
+   }
+
+   public Boolean getIsUpdate() {
+      return this.isUpdate;
+   }
+
+   public void setIsUpdate(Boolean isUpdate) {
+      this.isUpdate = isUpdate;
    }
 
    @Override
@@ -32,14 +41,14 @@ public class ProductValidator implements Validator {
       if (product.getCategory() == null) {
          errors.rejectValue("category", "product.category.notExists");
       }
-      if (this.getProductImage() == null || this.getProductImage().isEmpty()) {
+      if ((!this.getIsUpdate() && this.getProductImage() == null || this.getProductImage().isEmpty()) || (this.getIsUpdate() && this.getProductImage() != null || this.getProductImage().isEmpty())) {
          errors.reject("productImageEmptyError", "Invalid or empty product image.");
       } else {
          if (this.getProductImage().getSize() > FieldSizes.PRODUCT_IMAGE_MAX_BYTE_SIZE) {
-            errors.reject("productImageSizeError", "File size exceeds the allowed limit of " + (FieldSizes.PRODUCT_IMAGE_MAX_BYTE_SIZE / 1000) + " KB.");
+            errors.reject("productImageSizeError", "File size exceeds the allowed limit of " + (FieldSizes.PRODUCT_IMAGE_MAX_BYTE_SIZE / 1000) + " MB.");
          }
          String originalFilename = this.getProductImage().getOriginalFilename();
-         if (originalFilename == null || (!originalFilename.endsWith(".jpg") && !originalFilename.endsWith(".png") && !originalFilename.endsWith(".jpeg"))) {
+         if (originalFilename == null || (!originalFilename.endsWith(".jpg") && !originalFilename.endsWith(".png") && !originalFilename.endsWith(Utils.PRODUCT_IMAGE_EXTENSION))) {
             errors.reject("productImageExtensionError", "Unsupported file type. Please upload a .jpg, .jpeg or .png file.");
          }
       }

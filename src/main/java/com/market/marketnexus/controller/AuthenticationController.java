@@ -61,8 +61,6 @@ public class AuthenticationController {
                                     @NonNull BindingResult credentialsBindingResult,
                                     @NonNull @RequestParam("confirm-password") String confirmPassword) {
       ModelAndView modelAndView = new ModelAndView(AuthenticationController.REGISTRATION_ERROR_VIEW);
-      this.userValidator.setAccountUpdate(false);
-      this.credentialsValidator.setAccountUpdate(false);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
       this.credentialsValidator.validate(credentials, credentialsBindingResult);

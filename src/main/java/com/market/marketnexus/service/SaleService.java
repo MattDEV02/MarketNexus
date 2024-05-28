@@ -31,9 +31,7 @@ public class SaleService {
    protected UserRepository userRepository;
 
    @Transactional
-   public Sale saveSale(@NotNull Sale sale, @NotNull User user, @NotNull Product product) {
-      sale.setUser(user);
-      sale.setProduct(product);
+   public Sale saveSale(@NotNull Sale sale) {
       Float salePrice = this.calculateSalePrice(sale);
       sale.setSalePrice(salePrice);
       Sale savedSale = this.saleRepository.save(sale);

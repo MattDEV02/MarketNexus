@@ -181,14 +181,14 @@ public class Sale {
    @Override
    public String toString() {
       return "Sale: {" +
-              " id = " + this.getId().toString() +
+              //" id = " + this.getId() != null ? this.getId().toString() : "null" +
               ", quantity = " + this.getQuantity().toString() +
               ", isSold = " + this.getIsSold().toString() +
               ", salePrice = " + this.getSalePrice().toString() +
-              ", user = " + this.getUser().getId().toString() +
-              ", product = " + this.getProduct().getId().toString() +
-              ", insertedAt = " + this.getInsertedAt().toString() +
-              ", updatedAt = " + this.getUpdatedAt().toString() +
+              ", user = " + this.getUser().toString() +
+              ", product = " + this.getProduct().toString() +
+              //  ", insertedAt = " + this.getInsertedAt() != null ? this.getInsertedAt().toString() : "null" +
+              //", updatedAt = " + this.getUpdatedAt() != null ? this.getUpdatedAt().toString() : "null" +
               " }";
    }
 }

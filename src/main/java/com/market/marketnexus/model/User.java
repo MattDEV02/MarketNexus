@@ -178,7 +178,7 @@ public class User {
    @Override
    public String toString() {
       return "User: {" +
-              "id = " + this.getId().toString() +
+              //"id = " + this.getId() != null ? this.getId().toString() : "null" +
               ", name = '" + this.getName() +
               ", surname = '" + this.getSurname() +
               ", birthDate = " + (this.getBirthDate() != null ? this.getBirthDate().toString() : "Not-present") +

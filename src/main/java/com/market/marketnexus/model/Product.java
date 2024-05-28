@@ -129,9 +129,9 @@ public class Product {
    @Override
    public String toString() {
       return "Product: {" +
-              "id = " + this.getId().toString() +
-              ", name = '" + this.getName() + '\'' +
-              ", description = '" + this.getDescription() + '\'' +
+              //   "id = " + this.getId().toString() +
+              ", name = '" + this.getName() +
+              ", description = '" + this.getDescription() +
               ", price = " + this.getPrice().toString() +
               ", imageRelativePath = " + this.getImageRelativePath() +
               ", category = " + this.getCategory().toString() +

@@ -21,19 +21,20 @@
                       th:text="'The product ' + ${sale.product.name} + ' has been added to the cart'"></h1>
                   <h3 class="text-dark mt-4" th:text="'Cart Subtotal: ' + ${sale.salePrice} + ' $'"></h3>
                </div>
-               <div class="mt-5"
-                    th:if="${userAddOwnSaleToCartError != null || userNotBuyerAddSaleToCartError != null || userAddExistingSaleToCartError != null}">
-                  <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You are a not seller User.', condition = ${userNotSellerPublishedASaleError})}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You cannot add your own sale to your cart.', condition = ${userAddOwnSaleToCartError})}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Buyer users cannot add sales at them cart.', condition = ${userNotBuyerAddSaleToCartError})}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You have already added this product to your cart.', condition = ${userAddExistingSaleToCartError})}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Sale not published.', condition = ${saleNotPublishedError})}"></div>
-               </div>
+               <div
+                     th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Sale published.', condition = ${salePublishedSuccess})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Sale updated.', condition = ${saleUpdatedSuccess})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You are a not seller User.', condition = ${userNotSellerPublishedASaleError})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You cannot add your own sale to your cart.', condition = ${userAddOwnSaleToCartError})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Buyer users cannot add sales at them cart.', condition = ${userNotBuyerAddSaleToCartError})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You have already added this product to your cart.', condition = ${userAddExistingSaleToCartError})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Sale not published.', condition = ${saleNotPublishedError})}"></div>
             </div>
          </div>
          <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 mb-5" th:if="${isValidSale}">

@@ -82,8 +82,8 @@ public class ProductCategory {
    public String toString() {
       return "ProductCategory: {" +
               " id = " + this.getId().toString() +
-              ", name = '" + this.getName() + '\'' +
-              ", description = '" + this.getDescription() + '\'' +
+              ", name = '" + this.getName() +
+              ", description = '" + this.getDescription() +
               " }";
    }
 }

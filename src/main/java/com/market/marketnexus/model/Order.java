@@ -109,10 +109,10 @@ public class Order {
    @Override
    public String toString() {
       return "Order: {" +
-              " id = " + this.getId().toString() +
+              //" id = " + this.getId() != null ? this.getId().toString() : "null" +
               ", user = " + this.getUser().toString() +
               ", cart = " + this.getCart().toString() +
-              ", insertedAt = " + this.getInsertedAt().toString() +
+              // ", insertedAt = " + this.getInsertedAt() != null ? this.getInsertedAt().toString() : "null" +
               " }";
    }
 }

@@ -108,8 +108,8 @@ public class AccountController {
            @RequestParam("confirm-password") String confirmPassword
    ) {
       ModelAndView modelAndView = new ModelAndView(AccountController.UPDATE_ERROR_VIEW);
-      this.userValidator.setAccountUpdate(true);
-      this.credentialsValidator.setAccountUpdate(true);
+      this.userValidator.setIsAccountUpdate(true);
+      this.credentialsValidator.setIsAccountUpdate(true);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
       this.credentialsValidator.validate(credentials, credentialsBindingResult);

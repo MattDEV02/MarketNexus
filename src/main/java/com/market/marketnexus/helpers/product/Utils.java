@@ -8,6 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Utils {
 
@@ -22,8 +26,13 @@ public class Utils {
       return product.getName().toLowerCase() + Utils.PRODUCT_IMAGE_EXTENSION;
    }
 
-   public static @NotNull Boolean storeProductImage(Product product, @NonNull MultipartFile productImage) {
-      if (!productImage.isEmpty()) {
+   public static @NonNull String getProductImagePath(@NonNull Product product) {
+      return ProjectPaths.IMAGES + Utils.getProductImageDirectoryName(product) + "/" + Utils.getProductImageFileName(product);
+   }
+
+   public static @NotNull Boolean storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage) {
+      // /images/products/{productId}/{productName}.jpeg
+      if (!productImage.isEmpty()) { //
          try {
             String productImageRelativePath = product.getImageRelativePath();
             String productImageRelativePathDirectory = productImageRelativePath.replace(Utils.getProductImageFileName(product), "");
@@ -43,6 +52,23 @@ public class Utils {
          }
       } else {
          System.err.println("The file " + productImage.getName() + " is empty and it cannot be stored.");
+         return false;
+      }
+   }
+
+   public static @NonNull Boolean deleteProductImage(@NotNull Product product) {
+      String productImageDirectoryName = Utils.getProductImageDirectoryName(product);
+      Path directoryPath = Paths.get(ProjectPaths.getStaticPath() + productImageDirectoryName);
+      try (DirectoryStream<Path> stream = Files.newDirectoryStream(directoryPath)) {
+         for (Path filePath : stream) {
+            if (Files.exists(filePath)) {
+               Files.delete(filePath);
+            }
+            return false;
+         }
+         return true;
+      } catch (IOException iOException) {
+         iOException.printStackTrace();
          return false;
       }
    }

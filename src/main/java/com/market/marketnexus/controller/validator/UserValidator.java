@@ -22,15 +22,14 @@ public class UserValidator implements Validator {
       return this.isAccountUpdate;
    }
 
-   public void setAccountUpdate(Boolean isAccountUpdate) {
+   public void setIsAccountUpdate(Boolean isAccountUpdate) {
       this.isAccountUpdate = isAccountUpdate;
    }
 
    @Override
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       User user = (User) object;
-      if (!this.isAccountUpdate && this.userService.userExistsByEmail(user.getEmail())) {
-         //String[] errorArgs = {""};
+      if (!this.getIsAccountUpdate() && this.userService.userExistsByEmail(user.getEmail())) {
          errors.rejectValue("email", "user.email.unique");
       }
       if (user.getNation() == null || !this.nationService.nationExistsById(user.getNation().getId())) {

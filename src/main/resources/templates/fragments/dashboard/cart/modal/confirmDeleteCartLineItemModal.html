@@ -11,12 +11,12 @@
          </div>
          <div class="modal-body">
             <p
-                  th:text="'Are you sure to delete this Cart line item corresponding to' + ${cartLineItem.sale.product.name} + ' with a Sale price of ' +  ${cartLineItem.sale.salePrice} + ' $ ?'"></p>
+                  th:text="'Are you sure to delete this Cart line item corresponding to ' + ${cartLineItem.sale.product.name} + ' with a Sale price of ' +  ${cartLineItem.sale.salePrice} + ' $ ?'"></p>
          </div>
          <div class="modal-footer justify-content-center">
             <a class="btn btn-primary me-2"
                role="button"
-               th:href="@{'/dashboard/cart/delete/' + ${cartLineItem.id}}"
+               th:href="@{${'/' + API_PREFIXES_MAP.get('CART') + '/delete/' + cartLineItem.id}}"
                th:id="'confirm-confirm-delete-cartlineitem-button-' + ${cartLineItem.id}">
                Confirm
             </a>

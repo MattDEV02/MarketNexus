@@ -80,7 +80,10 @@ public class CartsTests {
       assertEquals(cartLineItems.size(), 2);
       cartLineItems.add(cartLineItem3);
       assertEquals(cartLineItems.size(), 3);
+      assertTrue(LocalDateTime.MAX.isAfter(LocalDateTime.now()));
+      assertTrue(LocalDateTime.MAX.compareTo(LocalDateTime.now()) > 0);
       assertEquals(cartLineItems, Lists.newArrayList(cartLineItem2, cartLineItem1, cartLineItem3));
+      assertThrows(IndexOutOfBoundsException.class, () -> cartLineItems.get(4));
       assertEquals(cart.getCartPrice(), Cart.CART_START_PRICE);
    }
 

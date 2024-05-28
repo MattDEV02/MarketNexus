@@ -14,7 +14,7 @@
    </div>
    <div class="card-footer">
       <a class="card-link link-primary text-decoration-underline fs-5 ms-1 me-3"
-         th:href="@{'/dashboard/account/' + ${sale.user.credentials.username}}"
+         th:href="@{${'/' + API_PREFIXES_MAP.get('ACCOUNT') + '/' + sale.user.credentials.username}}"
          th:text="${sale.user.credentials.username}"
          th:title="'Go to ' + ${sale.user.credentials.username} + ' ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account'"
       >

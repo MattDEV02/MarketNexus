@@ -22,7 +22,7 @@ public class CredentialsValidator implements Validator {
       return this.isAccountUpdate;
    }
 
-   public void setAccountUpdate(Boolean isAccountUpdate) {
+   public void setIsAccountUpdate(Boolean isAccountUpdate) {
       this.isAccountUpdate = isAccountUpdate;
    }
 
@@ -37,11 +37,10 @@ public class CredentialsValidator implements Validator {
    @Override
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       Credentials credentials = (Credentials) object;
-      if (!this.isAccountUpdate && this.credentialsRepository.existsByUsername(credentials.getUsername())) {
-         //String[] errorArgs = {""};
+      if (!this.getIsAccountUpdate() && this.credentialsRepository.existsByUsername(credentials.getUsername())) {
          errors.rejectValue("username", "credentials.username.unique");
       }
-      if (!this.isAccountUpdate && !FieldValidators.passwordValidator(credentials.getPassword())) {
+      if (!this.getIsAccountUpdate() && !FieldValidators.passwordValidator(credentials.getPassword())) {
          errors.rejectValue("password", "credentials.password.invalidFormat");
       } else if (this.isAccountUpdate && TypeValidators.validateString(credentials.getPassword()) && !FieldValidators.passwordValidator(credentials.getPassword())) {
          errors.rejectValue("password", "credentials.password.invalidFormat");

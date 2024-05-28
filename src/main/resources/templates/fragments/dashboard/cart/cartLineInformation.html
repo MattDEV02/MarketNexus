@@ -6,7 +6,7 @@
          <div class="row">
             <div th:class="'col-' + ${isOrder ? '4' : '3'}">
                <div th:class="'ms-' + ${isOrder ? '4' : '2'}">
-                  <a th:href="@{'/dashboard/sale/' + ${cartLineItem.sale.id}}">
+                  <a th:href="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/sale/' + ${cartLineItem.sale.id}}}">
                      <img class="img-fluid product-image" th:alt="${cartLineItem.sale.product.name}"
                           th:src="@{${cartLineItem.sale.product.imageRelativePath}}"
                           th:title="${cartLineItem.sale.product.name}"/>
@@ -21,7 +21,7 @@
                       <span class="card-text"
                             th:text="${cartLineItem.sale.product.description}">
                      </span>
-                     <a th:href="@{'/dashboard/account/' + ${cartLineItem.sale.user.credentials.username}}"
+                     <a th:href="@{${'/' + API_PREFIXES_MAP.get('ACCOUNT') + '/' + cartLineItem.sale.user.credentials.username}}"
                         th:text="${cartLineItem.sale.user.credentials.username}"
                         th:title="'The ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' User who made the Sale.'"></a>
                   </p>

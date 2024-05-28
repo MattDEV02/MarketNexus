@@ -103,10 +103,10 @@ public class CartLineItem {
    @Override
    public String toString() {
       return "CartLineItem: {" +
-              "id = " + this.getId().toString() +
+              //"id = " + this.getId().toString() +
               ", cart = " + this.getCart().toString() +
               ", sale = " + this.getSale().toString() +
-              ", insertedAt = " + this.getInsertedAt().toString() +
+              // ", insertedAt = " + this.getInsertedAt().toString() +
               " }";
    }
 }

@@ -13,7 +13,9 @@
       <div class="row justify-content-center">
          <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 py-4 mt-5 mb-4">
             <form enctype="multipart/form-data" id="new-sale-form" method="POST"
-                  name="new-sale-form" th:action="@{/dashboard/publishNewSale}" title="Publish a new Sale">
+                  name="new-sale-form"
+                  th:action="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/' + isUpdate ? 'publishUpdatedSale' : 'publishNewSale'}"
+                  title="Publish a new Sale">
                <div
                      th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${userNotSellerPublishedASaleError}, condition = ${userNotSellerPublishedASaleError})}"></div>
                <div class="col-12 mt-2 mb-4">
@@ -95,7 +97,7 @@
                          form="new-sale-form"
                          id="product-image"
                          name="product-image"
-                         placeholder="Insert product image" required
+                         placeholder="Insert product image" th:required="${!isUpdate}"
                          th:size="${FIELD_SIZES_MAP.get('PRODUCT_IMAGE_MAX_BYTE_SIZE')}"
                          type="file"/>
                   <div

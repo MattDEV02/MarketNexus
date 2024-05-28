@@ -117,11 +117,11 @@ public class Cart {
    @Override
    public String toString() {
       return "Cart: {" +
-              "id = " + this.getId().toString() +
+              // "id = " + this.getId() != null ? this.getId().toString() : "null" +
               ", user = " + this.getUser().toString() +
               ", cartPrice = " + this.getCartPrice().toString() +
               ", cartLineItems = " + this.getCartLineItems().toString() +
-              ", insertedAt = " + this.getInsertedAt().toString() +
+              //", insertedAt = " + this.getInsertedAt() != null ? this.getInsertedAt().toString() : "null" +
               " }";
    }
 

@@ -5,11 +5,13 @@
        th:text="${hasSearchedSales ? 'Sales not found' : 'There are not Sales in this moment'}"></h1>
    <h5 class="text-muted mt-5"
        th:text="${hasSearchedSales ? 'The searched Sales with product name ' + productName + ' and product category ' + productCategory + ' were not found...' : 'Come back when there are sales!'}"></h5>
-   <a class="btn btn-outline-dark mt-5" role="button" th:href="@{/dashboard}" th:if="${hasSearchedSales}">
+   <a class="btn btn-outline-dark mt-5" role="button" th:href="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD')}}"
+      th:if="${hasSearchedSales}">
       Back to your Home
       <i class="fas fa-home mx-1"></i>
    </a>
-   <a class="btn btn-outline-dark mt-5" role="button" th:href="@{/account}" th:unless="${hasSearchedSales}">
+   <a class="btn btn-outline-dark mt-5" role="button" th:href="@{${'/' + API_PREFIXES_MAP.get('ACCOUNT')}}"
+      th:unless="${hasSearchedSales}">
       Go to your Account
       <i class="fas fa-user-alt mx-1"></i>
    </a>

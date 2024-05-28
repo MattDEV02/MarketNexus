@@ -139,12 +139,12 @@ public class Credentials {
    @Override
    public String toString() {
       return "Credentials: {" +
-              " id = " + this.getId().toString() +
+              // " id = " + this.getId() != null ? this.getId().toString() : "null" +
               ", username = '" + this.getUsername() + '\'' +
               ", role = " + this.getRole() +
               ", password = '" + this.getPassword() + '\'' +
-              ", insertedAt = " + this.getInsertedAt().toString() +
-              ", updatedAt = " + this.getUpdatedAt().toString() +
+              //", insertedAt = " + this.getInsertedAt() != null ? this.getInsertedAt().toString() : "null" +
+              //", updatedAt = " + this.getUpdatedAt() != null ? this.getUpdatedAt().toString() : "null" +
               " }";
    }
 
