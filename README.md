@@ -1031,13 +1031,13 @@ I am the only author of this beautiful site 😉
 
 - [Decathlon](https://www.decathlon.it/)
 
-## ER Model 🔢
-
-<img title="MarketNexus ER model" alt="MarketNexus ER model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/ER_model3.jpeg" width="100%">
-
 ## UML Domain Model ‍🎓
 
 <img title="MarketNexus Domain Model" alt="MarketNexus Domain model" src="/src/main/resources/static/images/README/design/Domain_Model.png" width="100%">
+
+## ER Model 🔢
+
+<img title="MarketNexus ER model" alt="MarketNexus ER model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/ER_model3.jpeg" width="100%">
 
 ## License 🗒️
 

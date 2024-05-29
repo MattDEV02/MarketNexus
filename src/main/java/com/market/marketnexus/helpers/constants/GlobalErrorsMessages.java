@@ -13,6 +13,7 @@ public class GlobalErrorsMessages {
    public final static String USER_BALANCE_LOWER_THAN_CART_PRICE_ERROR = "Your balance is not sufficient to complete the order.";
    public final static String USER_CART_NOT_EXISTS_ERROR = "Cart not exists error.";
    public final static String SALE_NOT_PUBLISHED_ERROR = "Server ERROR, Sale not published.";
+   public final static String SALE_NOT_DELETED_ERROR = "Sale not deleted.";
    public final static String ACCOUNT_NOT_DELETED_ERROR = "Server ERROR, account not deleted.";
    //  public final static String INVALID_CREDENTIALS = "Incorrect username or password.";
 }

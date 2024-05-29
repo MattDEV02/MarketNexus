@@ -211,7 +211,7 @@ public class SaleController {
          modelAndView.addObject("saleDeletedSuccess", true);
          SaleController.LOGGER.info("Deleted Sale with Sale ID: {}", saleId);
       } else {
-         SaleController.LOGGER.error(GlobalErrorsMessages.CART_LINE_NOT_DELETED_ERROR);
+         SaleController.LOGGER.error(GlobalErrorsMessages.SALE_NOT_DELETED_ERROR);
          modelAndView.addObject("saleDeletedError", true);
       }
       return modelAndView;
