@@ -980,7 +980,6 @@ I am the only author of this beautiful site 😉
 | IntelliJ IDEA  |     2024.1     |
 |     Chrome     | 124.0.6367.201 |
 | Microsoft EDGE | 123.0.2420.65  |
-|   Altervista   |       //       |
 
 ## Project structure 🏠
 

@@ -150,8 +150,9 @@ public class SaleController {
       return modelAndView;
    }
 
-   @PostMapping(value = {"/publishUpdatedSale", "/publishUpdatedSale/"})
+   @PostMapping(value = {"/publishUpdatedSale/{saleId}", "/publishUpdatedSale/{saleId}/"})
    public ModelAndView updateSale(
+           @PathVariable("saleId") Long saleId,
            @Valid @ModelAttribute("loggedUser") User loggedUser,
            @Valid @ModelAttribute("product") Product product,
            @NonNull BindingResult productBindingResult,
@@ -168,14 +169,21 @@ public class SaleController {
       this.productValidator.setProductImage(productImage);
       this.productValidator.validate(product, productBindingResult);
       if (!productBindingResult.hasErrors() && !saleBindingResult.hasErrors()) {
-         Product savedProduct = this.productService.saveProduct(product);
-         if (productImage != null && Utils.deleteProductImage(savedProduct) && Utils.storeProductImage(savedProduct, productImage)) {
+         final Boolean isProductImageUpdated = !productImage.isEmpty();
+         Sale saleToUpdate = this.saleService.getSale(saleId);
+         Product productToUpdate = this.productService.getProduct(saleToUpdate.getProduct().getId());
+         Product updatedProduct = this.productService.updateProduct(productToUpdate, product, isProductImageUpdated);
+         if (updatedProduct != null) {
+            if (isProductImageUpdated) {
+               Utils.deleteProductImage(updatedProduct);
+               Utils.storeProductImage(updatedProduct, productImage);
+            }
             sale.setUser(loggedUser);
-            sale.setProduct(product);
-            Sale savedSale = this.saleService.saveSale(sale);
-            SaleController.LOGGER.info("Updated Sale with ID: {}", savedSale.getId());
-            modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL_VIEW + savedProduct.getId().toString());
-            modelAndView.addObject("sale", savedSale);
+            sale.setProduct(updatedProduct);
+            Sale updatededSale = this.saleService.updateSale(saleToUpdate, sale);
+            SaleController.LOGGER.info("Updated Sale with ID: {}", updatededSale.getId());
+            modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL_VIEW + updatededSale.getId().toString());
+            modelAndView.addObject("sale", updatededSale);
             modelAndView.addObject("saleUpdatedSuccess", true);
          } else {
             SaleController.LOGGER.error(GlobalErrorsMessages.SALE_NOT_PUBLISHED_ERROR);

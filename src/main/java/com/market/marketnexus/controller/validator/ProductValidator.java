@@ -41,9 +41,12 @@ public class ProductValidator implements Validator {
       if (product.getCategory() == null) {
          errors.rejectValue("category", "product.category.notExists");
       }
-      if ((!this.getIsUpdate() && this.getProductImage() == null || this.getProductImage().isEmpty()) || (this.getIsUpdate() && this.getProductImage() != null || this.getProductImage().isEmpty())) {
+      if (!this.getIsUpdate() && (this.getProductImage() == null || this.getProductImage().isEmpty())) {
+         System.out.println(this.getIsUpdate());
+         System.out.println(this.getProductImage() == null);
+         System.out.println(this.getProductImage().isEmpty());
          errors.reject("productImageEmptyError", "Invalid or empty product image.");
-      } else {
+      } else if (!this.getIsUpdate()) {
          if (this.getProductImage().getSize() > FieldSizes.PRODUCT_IMAGE_MAX_BYTE_SIZE) {
             errors.reject("productImageSizeError", "File size exceeds the allowed limit of " + (FieldSizes.PRODUCT_IMAGE_MAX_BYTE_SIZE / 1000) + " MB.");
          }

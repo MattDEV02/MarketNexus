@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:with="isValidSale = ${sale != null && sale.product != null}"
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}"
+      th:with="isValidSale = ${sale != null && sale.product != null}, salePublishedSuccess = ${param.salePublishedSuccess}, saleUpdatedSuccess = ${param.saleUpdatedSuccess}"
       th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = ${isValidSale ? (sale.product.name  + ' in Sale') : 'Sale not found'} )}">
@@ -49,7 +50,7 @@
                   th:replace="~{fragments/dashboard/home/saleNotFound.html :: saleNotFound(${saleId})}"></div>
          </div>
          <div class="col-12 mt-3 mb-4"
-              th:if="${isValidSale && #strings.contains(loggedUser.credentials.role, 'BUYER') && isAddedToCart}">
+              th:if="${isValidSale && #strings.contains(loggedUser.credentials.role, 'BUYER') && (isAddedToCart || userAddExistingSaleToCartError)}">
             <div class="row justify-content-center">
                <div class="col-12 col-sm-8 col-md-5 col-lg-4 col-xl-3">
                   <a class="btn btn-lg btn-outline-warning form-control fw-bold" role="button" th:href="@{/dashboard}">

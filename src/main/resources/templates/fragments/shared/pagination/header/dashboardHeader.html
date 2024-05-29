@@ -47,17 +47,19 @@
                </li>
             </ul>
             <form class="d-flex ms-5 mt-4 mt-xl-0" id="search-product-form" method="GET"
-                  name="search-product-form" th:action="@{/dashboard/searchSales}">
+                  name="search-product-form" th:action="@{/dashboard/searchSales}"
+                  th:title="'Search Sales in ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')}">
                <label class="form-label visually-hidden" for="product-name"></label>
                <input class="form-control p-2 mx-3" id="product-name"
                       name="product-name" placeholder="Product name"
                       th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
                       th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MIN_LENGTH')}"
                       th:value="${param != null ? param.get('product-name') : null}"
-                      title="Search products by them name"
+                      title="Search Sales by them product names"
                       type="text"/>
                <label class="form-label visually-hidden" for="category">Product Category:</label>
-               <select class="form-select p-2" id="category" name="category" title="Search products by them category">
+               <select class="form-select p-2" id="category" name="category"
+                       title="Search Sales by them product categories">
                   <option th:value="${null}">All categories</option>
                   <option th:each="productCategoriesEntry : ${productCategoriesMap}"
                           th:id="${productCategoriesEntry.value.name + '#' + productCategoriesEntry.key}"

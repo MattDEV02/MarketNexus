@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public class TypeValidators {
 
    public static @NotNull Boolean validateTimestamp(LocalDateTime timestamp) {
-      return timestamp != null && timestamp.isBefore(LocalDateTime.now());
+      return timestamp != null && (timestamp.isBefore(LocalDateTime.now()) || timestamp.isEqual(LocalDateTime.now()));
    }
 
    public static @NotNull Boolean validateString(String string) {

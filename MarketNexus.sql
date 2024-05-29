@@ -128,13 +128,13 @@ ALTER TABLE MarketNexus.Products
 COMMENT ON TABLE MarketNexus.Products IS 'MarketNexus Users Products.';
 
 INSERT INTO MarketNexus.Products (name, price, description, category, image_relative_path)
-VALUES ('Smartphone', 599.99, 'High-end smartphone.', 1, '/images/products/1/smartphone.jpeg'),
-       ('T-shirt', 29.99, 'Cotton T-shirt.', 2, '/images/products/2/t-shirt.jpeg'),
-       ('Java Programming Book', 49.99, 'Learn Java programming.', 3, '/images/products/3/java programming book.jpeg'),
-       ('Laptop', 999.99, 'Powerful laptop.', 1, '/images/products/4/laptop.jpeg'),
-       ('Running Shoes', 79.99, 'Lightweight running shoes.', 2, '/images/products/5/running shoes.jpeg'),
-       ('Python Book', 39.99, 'Master Python programming.', 3, '/images/products/6/python book.jpeg'),
-       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4, '/images/products/7/coffee maker.jpeg');
+VALUES ('Smartphone', 599.99, 'High-end smartphone.', 1, '/images/products/1/1.jpeg'),
+       ('T-shirt', 29.99, 'Cotton T-shirt.', 2, '/images/products/2/2.jpeg'),
+       ('Java Programming Book', 49.99, 'Learn Java programming.', 3, '/images/products/3/3.jpeg'),
+       ('Laptop', 999.99, 'Powerful laptop.', 1, '/images/products/4/4.jpeg'),
+       ('Running Shoes', 79.99, 'Lightweight running shoes.', 2, '/images/products/5/5.jpeg'),
+       ('Python Book', 39.99, 'Master Python programming.', 3, '/images/products/6/6.jpeg'),
+       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4, '/images/products/7/7.jpeg');
 --('Denim Jeans', 49.99, 'Classic denim jeans.', 2),
 --('Fishing Rod', 39.99, 'Professional fishing rod.', 6),
 --('Hair Dryer', 29.99, 'Ionic hair dryer.', 7),
@@ -281,6 +281,7 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
+/*
 CREATE
     OR REPLACE TRIGGER SALE_SALEPRICE_VALUE_TRIGGER
     AFTER
@@ -289,6 +290,7 @@ CREATE
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.CHECK_SALE_SALEPRICE_VALUE_FUNCTION();
+ */
 
 CREATE
     OR REPLACE FUNCTION CHECK_SALE_USER_CREDENTIALS_ROLE_FUNCTION()

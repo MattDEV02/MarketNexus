@@ -14,15 +14,13 @@
          <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 py-4 mt-5 mb-4">
             <form enctype="multipart/form-data" id="new-sale-form" method="POST"
                   name="new-sale-form"
-                  th:action="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/' + isUpdate ? 'publishUpdatedSale' : 'publishNewSale'}"
-                  title="Publish a new Sale">
+                  th:action="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/'} + ${isUpdate ? ('publishUpdatedSale/' + sale.id) : 'publishNewSale'}}"
+                  th:title="${isUpdate ? 'Update this' : 'Publish a new'}  + ' Sale'">
                <div
                      th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${userNotSellerPublishedASaleError}, condition = ${userNotSellerPublishedASaleError})}"></div>
                <div class="col-12 mt-2 mb-4">
                   <div class="row text-center">
-                     <h1>
-                        New Sale
-                        🚀
+                     <h1 th:text="${isUpdate ? 'Update' : 'New'} + ' Sale 🚀'">
                      </h1>
                   </div>
                </div>

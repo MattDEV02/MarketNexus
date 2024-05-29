@@ -25,4 +25,20 @@ public class ProductService {
       return savedProduct;
    }
 
+   @Transactional
+   public Product updateProduct(@NotNull Product productToUpdate, @NotNull Product product, @NotNull Boolean isProductImageUpdated) {
+      productToUpdate.setName(product.getName());
+      productToUpdate.setDescription(product.getDescription());
+      productToUpdate.setPrice(product.getPrice());
+      productToUpdate.setCategory(product.getCategory());
+      Product updatedProduct = this.productRepository.save(productToUpdate);
+      if (isProductImageUpdated) {
+         updatedProduct.setImageRelativePath(Utils.getProductImagePath(updatedProduct));
+      }
+      return updatedProduct;
+   }
+
+   public Product getProduct(Long productId) {
+      return this.productRepository.findById(productId).orElse(null);
+   }
 }

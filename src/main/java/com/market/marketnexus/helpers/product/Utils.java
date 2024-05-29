@@ -2,6 +2,7 @@ package com.market.marketnexus.helpers.product;
 
 import com.market.marketnexus.helpers.constants.ProjectPaths;
 import com.market.marketnexus.model.Product;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,39 +20,32 @@ public class Utils {
    public final static String PRODUCT_IMAGE_EXTENSION = ".jpeg";
 
    public static @NonNull String getProductImageDirectoryName(@NonNull Product product) {
-      return Utils.PRODUCT_IMAGES_DIRECTORY + '/' + product.getId().toString();
+      return ProjectPaths.IMAGES + Utils.PRODUCT_IMAGES_DIRECTORY + "/" + product.getId().toString();
    }
 
    public static @NonNull String getProductImageFileName(@NonNull Product product) {
-      return product.getName().toLowerCase() + Utils.PRODUCT_IMAGE_EXTENSION;
+      return product.getId().toString() + Utils.PRODUCT_IMAGE_EXTENSION;
    }
 
    public static @NonNull String getProductImagePath(@NonNull Product product) {
-      return ProjectPaths.IMAGES + Utils.getProductImageDirectoryName(product) + "/" + Utils.getProductImageFileName(product);
+      return Utils.getProductImageDirectoryName(product) + "/" + Utils.getProductImageFileName(product);
    }
 
    public static @NotNull Boolean storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage) {
       // /images/products/{productId}/{productName}.jpeg
-      if (!productImage.isEmpty()) { //
-         try {
-            String productImageRelativePath = product.getImageRelativePath();
-            String productImageRelativePathDirectory = productImageRelativePath.replace(Utils.getProductImageFileName(product), "");
-            String destinationDirectoryName = ProjectPaths.getStaticPath() + productImageRelativePathDirectory;
-            File destinationDirectory = new File(destinationDirectoryName);
-            if (destinationDirectory.isDirectory() && destinationDirectory.mkdir()) {
-               File file = new File(destinationDirectory + Utils.getProductImageFileName(product));
-               productImage.transferTo(file);
-               return file.exists() && file.isFile();
-            } else {
-               System.err.println("Directory for the new Product inserted (id = " + product.getId().toString() + ")" + " not created, file cannot be stored.");
-               return false;
-            }
-         } catch (IOException iOException) {
-            iOException.printStackTrace();
-            return false;
-         }
-      } else {
-         System.err.println("The file " + productImage.getName() + " is empty and it cannot be stored.");
+      try {
+         String productImageRelativePath = product.getImageRelativePath();
+         Integer indexOfProductImageFileName = productImageRelativePath.indexOf(Utils.getProductImageFileName(product));
+         String productImageRelativePathDirectory = productImageRelativePath.substring(0, indexOfProductImageFileName);
+         String destinationDirectoryName = ProjectPaths.getStaticPath() + productImageRelativePathDirectory;
+         File destinationDirectory = new File(destinationDirectoryName);
+         FileUtils.forceMkdir(destinationDirectory);
+         String destinationFileName = productImageRelativePath.substring(indexOfProductImageFileName);
+         File fileOutput = new File(destinationDirectoryName + destinationFileName);
+         productImage.transferTo(fileOutput);
+         return fileOutput.exists() && fileOutput.isFile();
+      } catch (IOException iOException) {
+         iOException.printStackTrace();
          return false;
       }
    }

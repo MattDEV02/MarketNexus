@@ -38,6 +38,15 @@ public class SaleService {
       return savedSale;
    }
 
+   @Transactional
+   public Sale updateSale(@NotNull Sale saleToUpdate, @NotNull Sale sale) {
+      saleToUpdate.setQuantity(sale.getQuantity());
+      Float newSalePrice = this.calculateSalePrice(sale);
+      saleToUpdate.setSalePrice(newSalePrice);
+      Sale updatedSale = this.saleRepository.save(saleToUpdate);
+      return updatedSale;
+   }
+
    public Sale getSale(Long saleId) {
       return this.saleRepository.findById(saleId).orElseThrow(() -> new SaleNotFoundException("Sale with ID '" + saleId + "' was not found."));
    }

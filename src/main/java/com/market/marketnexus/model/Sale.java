@@ -62,7 +62,7 @@ public class Sale {
       this.user = null;
       this.product = null;
       this.isSold = false;
-      this.quantity = 0;
+      //this.quantity = 0;
       this.salePrice = 0.0F;
    }
 
