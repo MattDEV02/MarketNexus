@@ -54,8 +54,8 @@ public class Utils {
 
    public static @NonNull Boolean deleteProductImage(@NotNull Product product) {
       String productImageDirectoryName = Utils.getProductImageDirectoryName(product);
-      Path directoryPath = Paths.get(ProjectPaths.getStaticPath() + productImageDirectoryName);
-      try (DirectoryStream<Path> stream = Files.newDirectoryStream(directoryPath)) {
+      Path productImageDirectoryPath = Paths.get(ProjectPaths.getStaticPath() + productImageDirectoryName);
+      try (DirectoryStream<Path> stream = Files.newDirectoryStream(productImageDirectoryPath)) {
          for (Path filePath : stream) {
             if (Files.exists(filePath)) {
                Files.delete(filePath);
@@ -70,10 +70,10 @@ public class Utils {
    }
 
    public static @NotNull Boolean deleteProductImageDirectory(@NotNull Product product) {
-      String ricettaImmagineDirectoryName = Utils.getProductImageDirectoryName(product);
-      File directory = new File(ProjectPaths.getStaticPath() + ricettaImmagineDirectoryName);
+      String productImageDirectoryName = Utils.getProductImageDirectoryName(product);
+      File productImageDirectory = new File(ProjectPaths.getStaticPath() + productImageDirectoryName);
       try {
-         FileUtils.deleteDirectory(directory);
+         FileUtils.deleteDirectory(productImageDirectory);
          return true;
       } catch (IOException e) {
          e.printStackTrace();

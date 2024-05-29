@@ -1,6 +1,4 @@
-const
-   saleBaseURI = baseURI + "sale/",
-   orderBaseURI = baseURI + "order/";
+const saleBaseURI = baseURI + "sale/";
 
 const sales = [], orders = [];
 

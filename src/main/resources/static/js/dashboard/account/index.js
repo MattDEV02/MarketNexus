@@ -1,5 +1,4 @@
 const
-   deleteAccountButton = document.getElementById("delete-account-button"),
    cancelButton = document.getElementById("cancel-button"),
    updateAccountForm = document.getElementById("update-account-form");
 
