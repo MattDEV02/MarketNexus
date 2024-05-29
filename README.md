@@ -56,10 +56,11 @@ MarketNexus is marketplace mada in Spring boot.
 ## `Account page`
 
 <p align="center">
-	<img  title="MarketNexus DashboardScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="49%">
-    <img  title="MarketNexus DashboardScreen screenshoot 2"  alt="MarketNexus DashboardScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="49%">
-    <img  title="MarketNexus DashboardScreen screenshoot 3"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="49%">
-    <img  title="MarketNexus DashboardScreen screenshoot 4"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="49%">
+	<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="49%">
+    <img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus DashboardScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="49%">
+    <img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="49%">
+    <img  title="MarketNexus AccountScreen screenshoot 4"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="49%">
+    <img  title="MarketNexus AccountScreen screenshoot 5"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/5.png"  width="49%">
 </p>
 
 ## `FAQs page`
@@ -995,7 +996,8 @@ I am the only author of this beautiful site 😉
       port, logging configuration, etc.
     - **`src/main/java/com/market/marketnexus/MarketNexusApplication.java**`**:: The main entry point of your Spring
       Boot application. This Java file typically contains the main method to start the Spring application context.
-    - **`src/main/java/com/market/marketnexus/authentication**`**:
+    - **`src/main/java/com/market/marketnexus/authentication**`**: A directory (package) where there is the site auth
+      configuration.
     - **`src/main/java/com/market/marketnexus/controller**`**: A directory (package) where there are Site Controllers
       classes.
     - **`src/main/java/com/market/marketnexus/exception**`**: A directory (package) where there are project custom
@@ -1010,7 +1012,8 @@ I am the only author of this beautiful site 😉
       classes.
 
 - **`target/`**: This directory is a standard directory created by build tools like Maven or Gradle during the build
-  process. It's not typically part of your source code repository and is generated dynamically
+  process. It's not typically part of your source code repository and is generated dynamically. It contains the project
+  JAR and HTML documentation.
 
 - **`MarketNexus.sql`**: A SQL (PostGreSQL) script file that allows to create the database that I used for this App.
 
@@ -1034,7 +1037,7 @@ I am the only author of this beautiful site 😉
 
 ## UML Domain Model ‍🎓
 
-<img title="MarketNexus Domain Model" alt="MarketNexus Domainu model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/relational_model3.jpeg" width="100%">
+<img title="MarketNexus Domain Model" alt="MarketNexus Domain model" src="/src/main/resources/static/images/README/design/Domain_Model.png" width="100%">
 
 ## License 🗒️
 

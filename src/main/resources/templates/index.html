@@ -17,7 +17,9 @@
                reliable
                sellers, and embark on a journey to discover an array of amazing offerings.
             </p>
-            <a class="btn btn-primary mt-2" role="button" target="_blank" th:href="@{/registration}">Sign up for
+            <a class="btn btn-primary mt-2" data-bs-toggle="tooltip"
+               role="button" target="_blank"
+               th:href="@{/registration}" th:title="${'Register on ' + GLOBAL_CONSTANTS_MAP.get('APP_NAME')}">Sign up for
                free</a>
          </div>
       </div>

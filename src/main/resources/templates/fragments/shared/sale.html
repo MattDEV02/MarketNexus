@@ -20,14 +20,16 @@
       >
       </a>
       <span class="text-secondary fs-5 ms-2 me-3" th:text="${sale.salePrice} + ' $'"></span>
-      <a class="btn btn-primary ms-3 mb-2" role="button"
+      <a class="btn btn-primary ms-3 mb-2" data-bs-toggle="tooltip"
+         role="button"
          th:href="@{'/' + ${API_PREFIXES_MAP.get('CART')} + '/' + ${sale.id} + '?quantity=' + ${sale.quantity}}"
          th:if="${#strings.contains(loggedUser.credentials.role, 'BUYER') && !isLoggedUser && !sale.isSold && !isAddedToCart}"
          th:title="'Add this ' + ${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' cart'"
       >
          <i class="fas fa-cart-plus"></i>
       </a>
-      <a class="btn btn-warning ms-3 mb-2" role="button"
+      <a class="btn btn-warning ms-3 mb-2" data-bs-toggle="tooltip"
+         role="button"
          th:href="@{'/' + ${API_PREFIXES_MAP.get('DASHBOARD')} + '/updateSale/' + ${sale.id}}"
          th:if="${!sale.isSold && #strings.contains(loggedUser.credentials.role, 'SELLER') && isLoggedUser}"
          title="Modify this Sale.">

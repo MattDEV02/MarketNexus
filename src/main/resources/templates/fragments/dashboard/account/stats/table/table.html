@@ -1,4 +1,5 @@
-<table class="table table-light table-bordered table-hover text-center" th:fragment="table(tableData)"
+<table class="table table-light table-bordered table-hover text-center" data-bs-toggle="tooltip"
+       th:fragment="table(tableData)"
        th:title="'A table with the better 5 ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' Users in published Sales stats, ordered by Users with more published Sales.'}">
    <thead th:replace="~{fragments/dashboard/account/stats/table/tableComponent/tableHead.html :: tableHead()}"></thead>
    <tbody

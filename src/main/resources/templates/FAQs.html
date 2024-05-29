@@ -15,7 +15,8 @@
                <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' FAQs'"></h1>
             </div>
          </div>
-         <div class="col-12 mt-5 mb-3">
+         <div class="col-12 mt-5 mb-3" data-bs-toggle="tooltip"
+              th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' FAQs'">
             <div class="row justify-content-center">
                <div class="accordion" th:each="accordion, iterStat : ${accordions}"
                     th:id="'faq-accordion' + ${iterStat.count}">

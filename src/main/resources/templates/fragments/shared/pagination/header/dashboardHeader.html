@@ -46,8 +46,9 @@
                   </a>
                </li>
             </ul>
-            <form class="d-flex ms-5 mt-4 mt-xl-0" id="search-product-form" method="GET"
-                  name="search-product-form" th:action="@{/dashboard/searchSales}"
+            <form class="d-flex ms-5 mt-4 mt-xl-0" data-bs-toggle="tooltip" id="search-product-form"
+                  method="GET" name="search-product-form"
+                  th:action="@{/dashboard/searchSales}"
                   th:title="'Search Sales in ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')}">
                <label class="form-label visually-hidden" for="product-name"></label>
                <input class="form-control p-2 mx-3" id="product-name"

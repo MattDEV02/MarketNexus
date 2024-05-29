@@ -31,3 +31,27 @@
       height: 18rem;
    }
 }
+
+/* CSS personalizzato */
+.tooltip {
+   color: #FFFFFF;
+!important /* Cambia il colore del testo */
+border-radius: 10 px;
+!important /* Arrotonda i bordi */
+box-shadow: 0 0 10 px rgba(0, 0, 0, 0.5);
+!important /* Aggiungi ombreggiatura */
+font-size: 16 px;
+!important /* Cambia la dimensione del testo */
+}
+
+.tooltip .tooltip-arrow {
+
+}
+
+.tooltip-inner {
+   padding: 10px 13px;
+!important /* Aggiungi spaziatura interna */
+}
+
+/* tooltip bs-tooltip-auto fade show tooltip-arrow tooltip-inner */
+

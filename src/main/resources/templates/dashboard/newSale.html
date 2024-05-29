@@ -12,7 +12,8 @@
    <div class="container" th:with="userNotSellerPublishedASaleError = ${param.userNotSellerPublishedASaleError}">
       <div class="row justify-content-center">
          <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 py-4 mt-5 mb-4">
-            <form enctype="multipart/form-data" id="new-sale-form" method="POST"
+            <form data-bs-toggle="tooltip" enctype="multipart/form-data" id="new-sale-form"
+                  method="POST"
                   name="new-sale-form"
                   th:action="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/'} + ${isUpdate ? ('publishUpdatedSale/' + sale.id) : 'publishNewSale'}}"
                   th:title="${isUpdate ? 'Update this' : 'Publish a new'}  + ' Sale'">
@@ -108,7 +109,7 @@
                <!-- Pulsante di invio -->
                <div class="mt-4">
                   <button class="btn btn-primary form-control py-2" type="submit">
-                     Publish new Sale
+                     Register Sale
                      <i class="fas fa-plus-square mx-1"></i>
                   </button>
                </div>

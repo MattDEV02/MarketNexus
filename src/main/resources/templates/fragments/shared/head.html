@@ -23,11 +23,13 @@
    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/images/logo/logo.png}">
    <!-- FontAwesome 5 -->
    <link rel="stylesheet" th:href="@{/css/libraries/fontawesome/all.css}"/>
+   <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/libraries/fontawesome/all.min.js}"
+           type="text/javascript"></script>
    <!-- Bootstrap 5 -->
    <link rel="stylesheet" th:href="@{/css/libraries/bootstrap/bootstrap.min.css}"/>
    <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/libraries/bootstrap/bootstrap.bundle.js}"
            type="text/javascript"></script>
-   <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/libraries/fontawesome/all.min.js}"
-           type="text/javascript"></script>
    <link rel="stylesheet" th:href="@{/css/shared/style.css}"/>
+   <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/tooltip.js}"
+           type="text/javascript"></script>
 </head>

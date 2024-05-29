@@ -148,10 +148,11 @@
                            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.role')}"></div>
                   </div>
                   <div class="my-4">
-                     <button class="btn btn-primary form-control py-2 fw-bold mt-2" form="registration-form"
+                     <button class="btn btn-primary form-control py-2 fw-bold mt-2" data-bs-toggle="tooltip"
+                             form="registration-form"
                              formmethod="POST"
                              id="submit"
-                             name="submit" th:title="'Register in ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')}"
+                             name="submit" th:title="'Register on ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')}"
                              type="submit">
                         Register
                         <i class="fas fa-registered mx-1"></i>

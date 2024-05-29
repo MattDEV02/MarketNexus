@@ -44,7 +44,7 @@ public class Sale {
    @ManyToOne(targetEntity = User.class, optional = false)
    @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_users_fk"))
    private User user;
-   @ManyToOne(targetEntity = Product.class, optional = false)
+   @ManyToOne(targetEntity = Product.class, optional = false, cascade = {CascadeType.DETACH, CascadeType.REMOVE})
    @JoinColumn(name = "product", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_products_fk"))
    private Product product;
    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Temporals.DATE_FORMAT)
