@@ -13,19 +13,19 @@ MarketNexus is marketplace mada in Spring boot.
 - **Usage:** Users can publish their products, put product in their cart, buy other products, search products of a
   wide range of categories and more.
 
-- **Responsive:** The is responsive and user-friendly.
+- **Responsive:** The site is responsive and user-friendly.
 
 - **Security and user errors control:** The user's sensitive data, such as their password, are encrypted and stored in a
   very robust database. There are also errors control in in client-side and server-side
 
-- **Tested:** The project is tested with Junit tests based on...
+- **Tested:** The project is tested with Junit tests.
 
 - **Modularity:** The project is divided in many logic modules, packages, fragments and directories.
 
 - **Tooltips guide Display:** There are many tooltips and popups that guide the User in the site. There is also a FAQs
   page.
 
-- **Language:** There is only the English language.
+- **Language:** There is only the English language at the moment.
 
 ## Screenshots 📸
 
@@ -50,18 +50,16 @@ MarketNexus is marketplace mada in Spring boot.
 ## `Dashboard page`
 
 <p align="center">
-	<img  title="MarketNexus DashboardScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/playquiz/playquizscreen11.jpeg"  width="49%">
-    <img  title="MarketNexus DashboardScreen screenshoot 2"  alt="MarketNexus DashboardScreen screenshoot 2"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/playquiz/playquizscreen222.jpeg"  width="49%">
-    <img  title="MarketNexus DashboardScreen screenshoot 3"  alt="MarketNexus DashboardScreen screenshoot 3"  src="https://matteolambertucci.altervista.org/MarketNexus/screenshoots/playquiz/playquizscreen333.jpeg"  width="49%">
+	<img  title="MarketNexus DashboardScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/dashboard/1.png"  width="100%">
 </p>
 
 ## `Account page`
 
-<p align="center"> 
-<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus AccountScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="49%">
-<img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus AccountScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="49%">
-<img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus AccountScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="49%">
-<img  title="MarketNexus AccountScreen screenshoot 4"  alt="MarketNexus AccountScreen screenshoot 4"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="49%">
+<p align="center">
+	<img  title="MarketNexus DashboardScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="49%">
+    <img  title="MarketNexus DashboardScreen screenshoot 2"  alt="MarketNexus DashboardScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="49%">
+    <img  title="MarketNexus DashboardScreen screenshoot 3"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="49%">
+    <img  title="MarketNexus DashboardScreen screenshoot 4"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="49%">
 </p>
 
 ## `FAQs page`
@@ -83,9 +81,9 @@ MarketNexus is marketplace mada in Spring boot.
 
 ### Requirements
 
-- Java 17.
-- Maven.
-- PostgreSQL.
+- Java 17
+- Maven 3.9
+- PostgreSQL 16.0
 
 ### Installation Instructions
 
@@ -115,12 +113,20 @@ mvnw install
 
 ```bash
 mvnw compile
+
+# or using gradle
+
+# gradle compileJava
 ```
 
 5. Packaging the code up in a JAR file:
 
 ```bash
 mvnw package
+
+# or using gradle
+
+# gradle assemble
 ```
 
 6. Execute the JAR file:
@@ -189,25 +195,24 @@ public class AuthConfiguration implements WebMvcConfigurer {
    private DataSource dataSource;
 
    @Override
-   public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-      registry.addResourceHandler("/**")
+   public void addResourceHandlers(@NonNull ResourceHandlerRegistry resourceHandlerRegistry) {
+      resourceHandlerRegistry.addResourceHandler("/**")
               .addResourceLocations(AuthConfiguration.CLASSPATH_RESOURCE_LOCATIONS)
       //.setCachePeriod(0)
       ;
    }
 
    @Autowired
-   public void configureGlobal(@NonNull AuthenticationManagerBuilder auth)
+   public void configureGlobal(@NonNull AuthenticationManagerBuilder authenticationManagerBuilder)
            throws Exception {
-      auth.jdbcAuthentication()
+      authenticationManagerBuilder.jdbcAuthentication()
               //use the autowired datasource to access the saved credentials
               .dataSource(this.dataSource)
               //retrieve username and role
-              .authoritiesByUsernameQuery("SELECT username, role FROM credentials WHERE username = ?")
+              .authoritiesByUsernameQuery("SELECT username, role FROM Credentials WHERE username = ?")
               //retrieve username, password and a boolean flag specifying whether the user is enabled or not (always enabled in our case)
-              .usersByUsernameQuery("SELECT username, password, TRUE AS enabled FROM credentials WHERE username = ?");
+              .usersByUsernameQuery("SELECT username, password, TRUE AS enabled FROM Credentials WHERE username = ?");
    }
-
 
    @Bean
    public PasswordEncoder passwordEncoder() { // Bcrypt algorithm
@@ -225,8 +230,10 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .cors(AbstractHttpConfigurer::disable)
               .csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(
-                      auth -> auth
-                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
+                      authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
+                              .requestMatchers(HttpMethod.GET,
+                                      "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs",
+                                      "/css/**", "/js/**", "/images/**", "/webfonts/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail").permitAll()
                               .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.SELLER_ROLE.toString())
                               .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.BUYER_ROLE.toString())
@@ -238,7 +245,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               )
               .formLogin(formLogin -> formLogin
                       .loginPage("/login")
-                      .defaultSuccessUrl("/dashboard", true)
+                      .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
                       .failureUrl("/login?invalidCredentials=true")
                       .usernameParameter("username")
                       .passwordParameter("password")
@@ -247,11 +254,10 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .logout(logout -> logout
                       .logoutUrl("/logout")
                       .logoutSuccessUrl("/login?logoutSuccessful=true")
+                      .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                       .invalidateHttpSession(true)
                       .clearAuthentication(true)
                       .deleteCookies("JSESSIONID")
-                      .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                      .clearAuthentication(true)
                       .permitAll());
       return httpSecurity.build();
    }
@@ -267,6 +273,7 @@ package com.market.marketnexus.controller;
 import com.market.marketnexus.controller.validator.CredentialsValidator;
 import com.market.marketnexus.controller.validator.UserValidator;
 import com.market.marketnexus.exception.UserEmailNotExistsException;
+import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.User;
@@ -295,8 +302,8 @@ import java.util.Objects;
 @Controller
 public class AuthenticationController {
 
-   public final static String REGISTRATION_SUCCESSFUL = "redirect:/login?registrationSuccessful=true";
-   public final static String REGISTRATION_ERROR = "registration.html";
+   public final static String REGISTRATION_SUCCESSFUL_VIEW = "redirect:/login?registrationSuccessful=true";
+   public final static String REGISTRATION_ERROR_VIEW = "registration.html";
    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
    @Autowired
    private PasswordEncoder passwordEncoder;
@@ -323,9 +330,7 @@ public class AuthenticationController {
                                     @Valid @NonNull @ModelAttribute("credentials") Credentials credentials,
                                     @NonNull BindingResult credentialsBindingResult,
                                     @NonNull @RequestParam("confirm-password") String confirmPassword) {
-      ModelAndView modelAndView = new ModelAndView(AuthenticationController.REGISTRATION_ERROR);
-      this.userValidator.setIsAccountUpdate(false);
-      this.credentialsValidator.setAccountUpdate(false);
+      ModelAndView modelAndView = new ModelAndView(AuthenticationController.REGISTRATION_ERROR_VIEW);
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
       this.credentialsValidator.validate(credentials, credentialsBindingResult);
@@ -334,18 +339,19 @@ public class AuthenticationController {
          user.setCredentials(credentials);
          User savedUser = this.userService.saveUser(user);
          if (savedUser != null) {
-            LOGGER.info("Registered account with User ID: {}", savedUser.getId());
-            modelAndView.setViewName(AuthenticationController.REGISTRATION_SUCCESSFUL);
+            AuthenticationController.LOGGER.info("Registered account with User ID: {}", savedUser.getId());
+            modelAndView.setViewName(AuthenticationController.REGISTRATION_SUCCESSFUL_VIEW);
          } else {
+            AuthenticationController.LOGGER.error(GlobalErrorsMessages.USER_NOT_REGISTERED_ERROR);
             modelAndView.addObject("userNotRegisteredError", "Server ERROR, User not registered.");
          }
       } else {
          List<ObjectError> userErrors = userBindingResult.getAllErrors();
-         for (ObjectError userGlobalError : userGlobalErrors) {
+         for (ObjectError userGlobalError : userErrors) {
             modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
          }
          List<ObjectError> credentialsErrors = credentialsBindingResult.getAllErrors();
-         for (ObjectError credentialGlobalErrors : credentialsGlobalErrors) {
+         for (ObjectError credentialGlobalErrors : credentialsErrors) {
             modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
          }
       }
@@ -369,22 +375,23 @@ public class AuthenticationController {
    @PostMapping(value = {"/sendForgotUsernameEmail", "/sendForgotUsernameEmail/"})
    public ModelAndView sendForgotUsernameEmail(
            @Valid @NonNull @ModelAttribute("user") User user,
-           @NonNull BindingResult userBindingResult, @RequestParam("email") String email) {
+           @NonNull BindingResult userBindingResult,
+           @RequestParam("email") String email) {
       ModelAndView modelAndView = new ModelAndView("forgotUsername.html");
       if (!userBindingResult.hasFieldErrors("email")) {
          try {
             User userByEmail = this.userService.getUser(email);
             this.forgotUsernameEmailService.sendEmail(userByEmail.getEmail(), userByEmail.getCredentials().getUsername());
-            modelAndView.addObject("emailSent", true);
+            modelAndView.addObject("emailSentSuccess", true);
          } catch (IOException | MessagingException exception) {
-            LOGGER.error(exception.getMessage());
+            AuthenticationController.LOGGER.error(exception.getMessage());
             modelAndView.addObject("emailNotSentError", true);
+            AuthenticationController.LOGGER.error(GlobalErrorsMessages.EMAIL_NOT_SENT_ERROR);
          } catch (UserEmailNotExistsException userEmailNotExistsException) {
-            LOGGER.error(userEmailNotExistsException.getMessage());
+            AuthenticationController.LOGGER.error(userEmailNotExistsException.getMessage());
             modelAndView.addObject("emailNotExistsError", true);
          }
       }
-
       return modelAndView;
    }
 }
@@ -427,6 +434,11 @@ public class UserService {
       return this.userRepository.existsByEmail(email);
    }
 
+   public User getUser(Long userId) {
+      Optional<User> result = this.userRepository.findById(userId);
+      return result.orElse(null);
+   }
+
    public User getUser(Credentials credentials) {
       Optional<User> result = this.userRepository.findByCredentials(credentials);
       return result.orElse(null);
@@ -439,9 +451,8 @@ public class UserService {
    @Transactional
    public Cart getUserCurrentCart(Long userId) {
       Cart currentCart = null;
-      User user = this.userRepository.findById(userId).orElse(null);
+      User user = this.getUser(userId);
       if (user != null) {
-         // Hibernate.initialize(user.getCarts());
          List<Cart> carts = user.getCarts();
          currentCart = carts.get(carts.size() - 1);
       }
@@ -453,7 +464,6 @@ public class UserService {
       User savedUser = this.userRepository.save(user);
       Cart cart = new Cart(user);
       Cart savedCart = this.cartRepository.save(cart);
-      //  Hibernate.initialize(savedUser.getCarts());
       savedUser.getCarts().add(savedCart);
       return savedUser;
    }
@@ -483,7 +493,7 @@ public class UserService {
 
    @Transactional
    public Boolean deleteUser(User user) {
-      this.cartRepository.deleteByUser(user);
+      //this.cartRepository.deleteByUser(user);
       this.userRepository.delete(user);
       return !this.userRepository.existsById(user.getId());
    }
@@ -498,9 +508,11 @@ public class UserService {
 
    @Transactional
    public void updateUserBalance(@NotNull User user, Float newBalance) {
-      user.setBalance(Utils.roundNumberTo2Decimals(newBalance));
+      Float roundedNewBalance = Utils.roundNumberTo2Decimals(newBalance);
+      user.setBalance(roundedNewBalance);
    }
 }
+
 ```
 
 ### `SaleRepository.java` -> `com.market.marketnexus.repository.SaleRepository`
@@ -508,26 +520,21 @@ public class UserService {
 ```java
 package com.market.marketnexus.repository;
 
-import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
+@Repository
 public interface SaleRepository extends CrudRepository<Sale, Long> {
-   public Optional<Sale> findByUserAndProductAndInsertedAt(User user, Product product, LocalDateTime insertedAt);
 
-   public Set<Sale> findAllByOrderByUpdatedAt();
+   public Iterable<Sale> findAllByOrderByUpdatedAt();
 
-   public Set<Sale> findAllByUser(User user);
-
-   public Set<Sale> findAllByUserAndProduct(User user, Product product);
+   public Iterable<Sale> findAllByUser(User user);
 
    @Query(value = """
            SELECT *
@@ -537,6 +544,7 @@ public interface SaleRepository extends CrudRepository<Sale, Long> {
    public List<Object[]> countCurrentWeekUserSales(@Param("userId") Long userId);
 
 }
+
 ```
 
 ### `Cart.java` -> `com.market.marketnexus.model.Cart`
@@ -558,7 +566,7 @@ import java.util.*;
 @Entity(name = "Carts")
 @Table(name = "Carts", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "carts_user_insertedat_unique", columnNames = {"_user", "inserted_at"})})
 public class Cart {
-   private final static Float CART_START_PRICE = 0.0F;
+   public final static Float CART_START_PRICE = 0.0F;
    @Id
    @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -579,12 +587,7 @@ public class Cart {
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
 
-   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
-   @Column(name = "updated_at", nullable = false)
-   @Temporal(TemporalType.TIMESTAMP)
-   private LocalDateTime updatedAt;
-
-   @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+   @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER, orphanRemoval = true)
    private List<CartLineItem> cartLineItems;
 
    public Cart() {
@@ -631,14 +634,6 @@ public class Cart {
       this.insertedAt = insertedAt;
    }
 
-   public LocalDateTime getUpdatedAt() {
-      return this.updatedAt;
-   }
-
-   public void setUpdatedAt(LocalDateTime updatedAt) {
-      this.updatedAt = updatedAt;
-   }
-
    public List<CartLineItem> getCartLineItems() {
       return this.cartLineItems;
    }
@@ -652,14 +647,6 @@ public class Cart {
       if (this.insertedAt == null) {
          this.insertedAt = LocalDateTime.now();
       }
-      if (this.updatedAt == null) {
-         this.updatedAt = this.insertedAt;
-      }
-   }
-
-   @PreUpdate
-   public void preUpdate() {
-      this.updatedAt = LocalDateTime.now();
    }
 
    @Override
@@ -682,11 +669,11 @@ public class Cart {
    @Override
    public String toString() {
       return "Cart: {" +
-              "id = " + this.getId() != null ? this.getId().toString() : "null" +
+              // "id = " + this.getId() != null ? this.getId().toString() : "null" +
               ", user = " + this.getUser().toString() +
-              ", cart_price = " + this.getCartPrice().toString() +
-              ", insertedAt = " + this.getInsertedAt() != null ? this.getInsertedAt().toString() : "null" +
-              ", updatedAt = " + this.getUpdatedAt() != null ? this.getUpdatedAt().toString() : "null" +
+              ", cartPrice = " + this.getCartPrice().toString() +
+              ", cartLineItems = " + this.getCartLineItems().toString() +
+              //", insertedAt = " + this.getInsertedAt() != null ? this.getInsertedAt().toString() : "null" +
               " }";
    }
 
@@ -717,6 +704,7 @@ public class SaleNotFoundException extends RuntimeException {
       super(message);
    }
 }
+
 ```
 
 ### `/dashboard/cart.html`
@@ -728,8 +716,8 @@ public class SaleNotFoundException extends RuntimeException {
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Cart')}">
 
 </head>
-<link rel="stylesheet" th:href="@{/css/dashboard/shared/style.css}"/>
-<link rel="stylesheet" th:href="@{/css/dashboard/cart/style.css}"/>
+<link rel="stylesheet" th:href="@{'/css/' + ${API_PREFIXES_MAP.get('DASHBOARD')} + '/shared/style.css'}"/>
+<link rel="stylesheet" th:href="@{'/css/' + ${API_PREFIXES_MAP.get('CART')} + '/style.css'}"/>
 <body>
 <div th:replace="~{fragments/shared/pagination/header/dashboardHeader.html :: dashboardHeader()}">
 </div>
@@ -743,15 +731,21 @@ public class SaleNotFoundException extends RuntimeException {
                 </div>
             </div>
             <div class="col-12 my-5"
-                 th:with="cartNotDeletedError = ${param.cartNotDeletedError != null}, cartDeletedSuccess = ${param.cartDeletedSuccess != null}, userBalanceLowerThanCartPriceError = ${param.userBalanceLowerThanCartPriceError != null}">
+                 th:with="cartLineItemNotDeletedError = ${param.cartLineItemNotDeletedError != null}, cartLineItemDeletedSuccess = ${param.cartLineItemDeletedSuccess != null}, userBalanceLowerThanCartPriceError = ${param.userBalanceLowerThanCartPriceError != null}, userNotBuyerAddSaleToCartError = ${param.userNotBuyerAddSaleToCartError != null}, userAddOwnSaleToCartError = ${param.userAddOwnSaleToCartError != null}, emptyCartError = ${param.emptyCartError != null}, userCartNotExistsError = ${param.userCartNotExistsError != null}">
                 <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartNotDeletedError})}"></div>
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartLineItemNotDeletedError})}"></div>
+                <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You are a not buyer User.', condition = ${userNotBuyerAddSaleToCartError})}"></div>
+                <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Users cannot add them Sale to them Cart.', condition = ${userAddOwnSaleToCartError})}"></div>
+                <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Order not possible, your Cart is empty.', condition = ${emptyCartError})}"></div>
+                <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart not exists error.', condition = ${userCartNotExistsError})}"></div>
                 <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Your balance is not sufficient to complete the order.', condition = ${userBalanceLowerThanCartPriceError})}"></div>
                 <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Your cart is empty.', condition = ${emptyCart})}"></div>
-                <div
-                        th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Cart line deleted.', condition = ${cartDeletedSuccess})}"></div>
+                        th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Cart line deleted.', condition = ${cartLineItemDeletedSuccess})}"></div>
                 <div th:replace="~{fragments/dashboard/cart/modal/confirmOrderModal.html :: confirmOrderModal(cart = ${cart})}"></div>
                 <div class="row justify-content-center" th:each="cartLineItem : ${cartLineItems}">
                     <div th:replace="~{fragments/dashboard/cart/cartLineInformation.html :: cartLineInformation(cartLineItem = ${cartLineItem})}"></div>
