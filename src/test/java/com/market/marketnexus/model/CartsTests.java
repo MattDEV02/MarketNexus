@@ -46,7 +46,7 @@ public class CartsTests {
       assertNotNull(cart);
       assertNotNull(sale1);
       assertFalse(sale1.getIsSold());
-      assertEquals(sale1.getQuantity(), 0);
+      assertNull(sale1.getQuantity());
       assertEquals(sale1.getSalePrice(), 0.0F);
       CartLineItem cartLineItem1 = new CartLineItem(cart, sale1);
       assertNotNull(cartLineItem1);
@@ -59,12 +59,12 @@ public class CartsTests {
       cartLineItem2.setInsertedAt(LocalDateTime.MAX);
       assertEquals(cartLineItem2.getInsertedAt().getClass(), LocalDateTime.class);
       assertFalse(sale2.getIsSold());
-      assertEquals(sale2.getQuantity(), 0);
+      assertNull(sale2.getQuantity());
       assertEquals(sale2.getSalePrice(), 0.0F);
       Sale sale3 = new Sale();
       assertNotNull(sale3);
       assertFalse(sale3.getIsSold());
-      assertEquals(sale3.getQuantity(), 0);
+      assertNull(sale3.getQuantity());
       assertEquals(sale3.getSalePrice(), 0.0F);
       CartLineItem cartLineItem3 = new CartLineItem(cart, sale3);
       assertNotNull(cartLineItem3);

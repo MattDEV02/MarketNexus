@@ -203,6 +203,20 @@ public class SaleController {
       return modelAndView;
    }
 
+   @GetMapping(value = {"/deleteSale/{saleId}", "/deleteSale/{saleId}"})
+   public ModelAndView deleteSale(@PathVariable("saleId") Long saleId) {
+      ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.ACCOUNT + "#sales");
+      Sale sale = this.saleService.getSale(saleId);
+      if (this.saleService.deleteSale(sale)) {
+         modelAndView.addObject("saleDeletedSuccess", true);
+         SaleController.LOGGER.info("Deleted Sale with Sale ID: {}", saleId);
+      } else {
+         SaleController.LOGGER.error(GlobalErrorsMessages.CART_LINE_NOT_DELETED_ERROR);
+         modelAndView.addObject("saleDeletedError", true);
+      }
+      return modelAndView;
+   }
+
    @GetMapping(value = {"/sale/{saleId}", "/sale/{saleId}/"})
    public ModelAndView showSaleById(@PathVariable("saleId") Long saleId) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/sale.html");

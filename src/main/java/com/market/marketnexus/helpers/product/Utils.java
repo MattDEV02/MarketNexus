@@ -39,7 +39,9 @@ public class Utils {
          String productImageRelativePathDirectory = productImageRelativePath.substring(0, indexOfProductImageFileName);
          String destinationDirectoryName = ProjectPaths.getStaticPath() + productImageRelativePathDirectory;
          File destinationDirectory = new File(destinationDirectoryName);
-         FileUtils.forceMkdir(destinationDirectory);
+         if (!destinationDirectory.mkdirs()) {
+            FileUtils.forceMkdir(destinationDirectory);
+         }
          String destinationFileName = productImageRelativePath.substring(indexOfProductImageFileName);
          File fileOutput = new File(destinationDirectoryName + destinationFileName);
          productImage.transferTo(fileOutput);
@@ -63,6 +65,18 @@ public class Utils {
          return true;
       } catch (IOException iOException) {
          iOException.printStackTrace();
+         return false;
+      }
+   }
+
+   public static @NotNull Boolean deleteProductImageDirectory(@NotNull Product product) {
+      String ricettaImmagineDirectoryName = Utils.getProductImageDirectoryName(product);
+      File directory = new File(ProjectPaths.getStaticPath() + ricettaImmagineDirectoryName);
+      try {
+         FileUtils.deleteDirectory(directory);
+         return true;
+      } catch (IOException e) {
+         e.printStackTrace();
          return false;
       }
    }

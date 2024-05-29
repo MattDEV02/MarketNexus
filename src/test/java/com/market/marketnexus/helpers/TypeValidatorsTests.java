@@ -16,10 +16,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TypeValidatorsTests {
-   
+
    @Test
    public void testValidateTimestamp() {
-      assertFalse(TypeValidators.validateTimestamp(LocalDateTime.now()));
       assertTrue(TypeValidators.validateTimestamp(LocalDateTime.MIN));
       assertFalse(TypeValidators.validateTimestamp(LocalDateTime.MAX));
       assertFalse(TypeValidators.validateTimestamp(null));

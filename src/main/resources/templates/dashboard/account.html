@@ -121,11 +121,16 @@
                   <h1 th:unless="${areSaleProductsValid}">No sale products</h1>
                </div>
             </div>
-            <div class="col-12">
+            <div class="col-12" id="sales"
+                 th:with="saleDeletedSuccess = ${param.saleDeletedSuccess}, saleDeletedError = ${param.saleDeletedError}">
                <div class="row">
+                  <div
+                        th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Sale deleted successfully.', condition = ${saleDeletedSuccess})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Server ERROR, Sale not deleted.', condition = ${saleDeletedError})}"></div>
                   <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
                        th:each="sale : ${sales}">
-                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${sale}, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${sale}, isLoggedUser = ${isLoggedUser}, isAccountPage = true)}"></div>
                   </div>
                </div>
             </div>

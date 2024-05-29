@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.market.marketnexus.helpers.product.Utils.deleteProductImageDirectory;
+
 @Service
 public class SaleService {
    @Autowired
@@ -114,5 +116,14 @@ public class SaleService {
 
    public Float calculateSalePrice(@NotNull Sale sale) {
       return Utils.calculateSalePrice(sale);
+   }
+
+   public Boolean deleteSale(@NotNull Sale sale) {
+      Product product = sale.getProduct();
+      Long saleId = sale.getId();
+      if (deleteProductImageDirectory(product)) {
+         this.saleRepository.deleteById(saleId);
+      }
+      return !this.saleRepository.existsById(saleId);
    }
 }
