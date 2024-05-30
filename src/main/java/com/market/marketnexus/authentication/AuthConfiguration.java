@@ -27,7 +27,7 @@ import javax.sql.DataSource;
 //@EnableWebMvc
 public class AuthConfiguration implements WebMvcConfigurer {
 
-   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + ProjectPaths._STATIC + "/"};
+   private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + ProjectPaths.STATIC + "/"};
    @Autowired
    private DataSource dataSource;
 

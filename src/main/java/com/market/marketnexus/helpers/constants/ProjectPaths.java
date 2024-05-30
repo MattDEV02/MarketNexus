@@ -14,18 +14,18 @@ public class ProjectPaths {
 
    public final static String RESOURCES = "/resources";
 
-   public final static String _STATIC = "/static";
+   public final static String STATIC = "/static";
 
    public final static String IMAGES = "/images";
 
    @Contract(pure = true)
    public static @NotNull String getStaticPath() {
-      return ProjectPaths.ROOT + ProjectPaths.SRC + ProjectPaths.RESOURCES + ProjectPaths._STATIC;
+      return ProjectPaths.ROOT + ProjectPaths.SRC + ProjectPaths.RESOURCES + ProjectPaths.STATIC;
    }
 
    @Contract(pure = true)
    public static @NotNull String getTargetStaticPath() {
-      return ProjectPaths.ROOT + ProjectPaths.TARGET + ProjectPaths._STATIC;
+      return ProjectPaths.ROOT + ProjectPaths.TARGET + ProjectPaths.STATIC;
    }
 
    @Contract(pure = true)

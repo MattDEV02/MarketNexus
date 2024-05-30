@@ -21,7 +21,8 @@ class StatsControllerTests {
 
    @Test
    public void testTableData() throws Exception {
-      this.mockMvc.perform(MockMvcRequestBuilders.get("/" + APIPrefixes.STATS + "/tableData")
+      this.mockMvc.perform(MockMvcRequestBuilders
+                      .get("/" + APIPrefixes.STATS + "/tableData")
                       .contentType(MediaType.APPLICATION_JSON))
               .andExpect(MockMvcResultMatchers.status().isOk());
    }
