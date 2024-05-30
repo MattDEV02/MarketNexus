@@ -4,9 +4,17 @@
 <img  title="MarketNexus Logo"  alt="MarketNexus Logo"  width="19.5%"  src="/src/main/resources/static/images/logo/logo.png">
 </p>
 
-MarketNexus is marketplace mada in Spring boot.
+MarketNexus is marketplace made in Spring boot.
 
 #### P.S. = Go to Releases section and download the JAR (latest release).
+
+## UML Domain Model ‍🎓
+
+<img title="MarketNexus Domain Model" alt="MarketNexus Domain model" src="/src/main/resources/static/images/README/design/Domain_Model.png" width="100%">
+
+## ER Model 🔢
+
+<img title="MarketNexus ER model" alt="MarketNexus ER model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/ER_model3.jpeg" width="100%">
 
 ## Key Features ✨
 
@@ -29,16 +37,22 @@ MarketNexus is marketplace mada in Spring boot.
 
 ## Screenshots 📸
 
-## `Sign Up page`
+## `Registration page`
 
 <p align="center">
 <img  title="MarketNexus RegScreen screenshoot 1"  alt="MarketNexus RegScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/registration/1.png"  width="100%">
 </p>
 
-## `Sign In page`
+## `Login page`
 
 <p align="center">
 	<img  title="MarketNexus LoginScreen screenshoot 1"  alt="MarketNexus LoginScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/login/1.png"  width="100%">
+</p>
+
+## `Forgot username page`
+
+<p align="center">
+	<img  title="MarketNexus ForgotusernameScreen screenshoot 1"  alt="MarketNexus ForgotusernameScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/forgotUsername/1.png"  width="100%">
 </p>
 
 ## `Home page`
@@ -1030,14 +1044,6 @@ I am the only author of this beautiful site 😉
 - [Vinted](https://www.vinted.it/)
 
 - [Decathlon](https://www.decathlon.it/)
-
-## UML Domain Model ‍🎓
-
-<img title="MarketNexus Domain Model" alt="MarketNexus Domain model" src="/src/main/resources/static/images/README/design/Domain_Model.png" width="100%">
-
-## ER Model 🔢
-
-<img title="MarketNexus ER model" alt="MarketNexus ER model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/ER_model3.jpeg" width="100%">
 
 ## License 🗒️
 

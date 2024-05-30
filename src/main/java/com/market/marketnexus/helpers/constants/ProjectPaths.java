@@ -8,6 +8,8 @@ public class ProjectPaths {
 
    public final static String ROOT = new FileSystemResource("").getFile().getAbsolutePath();
 
+   public final static String TARGET = "/target/classes";
+
    public final static String SRC = "/src/main";
 
    public final static String RESOURCES = "/resources";
@@ -22,13 +24,18 @@ public class ProjectPaths {
    }
 
    @Contract(pure = true)
+   public static @NotNull String getTargetStaticPath() {
+      return ProjectPaths.ROOT + ProjectPaths.TARGET + ProjectPaths._STATIC;
+   }
+
+   @Contract(pure = true)
    public static @NotNull String getResourcesPath() {
       return ProjectPaths.getStaticPath() + ProjectPaths.IMAGES;
    }
 
    @Contract(pure = true)
    public static @NotNull String getImagesPath() {
-      return ProjectPaths.getStaticPath() + ProjectPaths.IMAGES;
+      return ProjectPaths.getTargetStaticPath() + ProjectPaths.IMAGES;
    }
 
 }

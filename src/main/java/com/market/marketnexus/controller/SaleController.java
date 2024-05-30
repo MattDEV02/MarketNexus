@@ -114,19 +114,16 @@ public class SaleController {
       this.productValidator.validate(product, productBindingResult);
       if (!productBindingResult.hasErrors() && !saleBindingResult.hasErrors()) {
          Product savedProduct = this.productService.saveProduct(product);
-         if (Utils.storeProductImage(savedProduct, productImage)) {
-            sale.setUser(loggedUser);
-            sale.setProduct(product);
-            Sale savedSale = this.saleService.saveSale(sale);
-            SaleController.LOGGER.info("Published new Sale with ID: {}", savedSale.getId());
-            modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL_VIEW + savedProduct.getId().toString());
-            modelAndView.addObject("sale", savedSale);
-            modelAndView.addObject("salePublishedSuccess", true);
-         } else {
-            SaleController.LOGGER.error(GlobalErrorsMessages.SALE_NOT_PUBLISHED_ERROR);
-            modelAndView.addObject("saleNotPublishedError", true);
-         }
+         Utils.storeProductImage(savedProduct, productImage);
+         sale.setUser(loggedUser);
+         sale.setProduct(product);
+         Sale savedSale = this.saleService.saveSale(sale);
+         SaleController.LOGGER.info("Published new Sale with ID: {}", savedSale.getId());
+         modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL_VIEW + savedProduct.getId().toString());
+         modelAndView.addObject("sale", savedSale);
+         modelAndView.addObject("salePublishedSuccess", true);
       } else {
+         SaleController.LOGGER.error(GlobalErrorsMessages.SALE_NOT_PUBLISHED_ERROR);
          List<ObjectError> productErrors = productBindingResult.getAllErrors();
          for (ObjectError productGlobalError : productErrors) {
             modelAndView.addObject(Objects.requireNonNull(productGlobalError.getCode()), productGlobalError.getDefaultMessage());
@@ -175,7 +172,7 @@ public class SaleController {
          Product updatedProduct = this.productService.updateProduct(productToUpdate, product, isProductImageUpdated);
          if (updatedProduct != null) {
             if (isProductImageUpdated) {
-               Utils.deleteProductImage(updatedProduct);
+               //  Utils.deleteProductImage(updatedProduct);
                Utils.storeProductImage(updatedProduct, productImage);
             }
             sale.setUser(loggedUser);

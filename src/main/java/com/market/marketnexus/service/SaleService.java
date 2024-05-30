@@ -121,9 +121,8 @@ public class SaleService {
    public Boolean deleteSale(@NotNull Sale sale) {
       Product product = sale.getProduct();
       Long saleId = sale.getId();
-      if (deleteProductImageDirectory(product)) {
-         this.saleRepository.deleteById(saleId);
-      }
+      deleteProductImageDirectory(product);
+      this.saleRepository.deleteById(saleId);
       return !this.saleRepository.existsById(saleId);
    }
 }

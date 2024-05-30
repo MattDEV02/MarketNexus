@@ -72,6 +72,22 @@
 </main>
 <div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
 </div>
+<script type="text/javascript">
+   // Ottieni l'elemento HTML dell'immagine
+   var imageElements = document.getElementsByClassName('card-img-top');
+   
+   // Genera un timestamp Unix per aggiungere come parametro
+   imageElements.map(imageElement => {
+      var timestamp = new Date().getTime();
+      
+      // Costruisci il nuovo URL dell'immagine con il parametro univoco
+      var newImageUrl = imageElement.src + '?version=' + timestamp;
+      
+      // Assegna il nuovo URL dell'immagine all'attributo src
+      imageElement.src = newImageUrl;
+   });
+
+</script>
 </body>
 
 </html>

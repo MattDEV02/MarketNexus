@@ -2,9 +2,9 @@
      th:title="${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' X' + ${sale.quantity} + ' at ' + ${sale.product.price} + ' $ ' + ${sale.isSold ? 'sold.' : 'in sale.'}"
      th:with="isLoggedUser=(${isLoggedUser} ?: false), isAddedToCart=(${isAddedToCart} ?: false), isAccountPage=(${isAccountPage} ?: false)">
    <a th:href="@{'/dashboard/sale/' + ${sale.id}}">
-      <img class="card-img-top"
+      <img class="card-img-top d-block w-100"
            th:alt="${sale.product.name}"
-           th:src="@{${sale.product.imageRelativePath}}"
+           th:src="@{${sale.product.imageRelativePath} + '?version=' + ${#dates.createNow().time}}"
            th:title="${sale.product.name}"/>
    </a>
    <div class="card-body border">

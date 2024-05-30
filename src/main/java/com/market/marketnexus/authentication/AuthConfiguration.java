@@ -35,7 +35,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
    public void addResourceHandlers(@NonNull ResourceHandlerRegistry resourceHandlerRegistry) {
       resourceHandlerRegistry.addResourceHandler("/**")
               .addResourceLocations(AuthConfiguration.CLASSPATH_RESOURCE_LOCATIONS)
-      //.setCachePeriod(0)
+      //  .setCachePeriod(0)
       ;
    }
 
@@ -69,7 +69,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .authorizeHttpRequests(
                       authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
                               .requestMatchers(HttpMethod.GET,
-                                      "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs",
+                                      "/**", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs",
                                       "/css/**", "/js/**", "/images/**", "/webfonts/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail").permitAll()
                               .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.SELLER_ROLE.toString())

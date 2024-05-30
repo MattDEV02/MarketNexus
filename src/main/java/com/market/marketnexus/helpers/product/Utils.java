@@ -9,10 +9,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class Utils {
 
@@ -31,53 +31,37 @@ public class Utils {
       return Utils.getProductImageDirectoryName(product) + "/" + Utils.getProductImageFileName(product);
    }
 
-   public static @NotNull Boolean storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage) {
-      // /images/products/{productId}/{productName}.jpeg
+   public static void storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage, Boolean targetFlag) {
       try {
          String productImageRelativePath = product.getImageRelativePath();
          Integer indexOfProductImageFileName = productImageRelativePath.indexOf(Utils.getProductImageFileName(product));
          String productImageRelativePathDirectory = productImageRelativePath.substring(0, indexOfProductImageFileName);
-         String destinationDirectoryName = ProjectPaths.getStaticPath() + productImageRelativePathDirectory;
+         String destinationDirectoryName = targetFlag ? ProjectPaths.getTargetStaticPath() : ProjectPaths.getStaticPath() + productImageRelativePathDirectory;
          File destinationDirectory = new File(destinationDirectoryName);
-         if (!destinationDirectory.mkdirs()) {
-            FileUtils.forceMkdir(destinationDirectory);
-         }
+         FileUtils.forceMkdir(destinationDirectory);
          String destinationFileName = productImageRelativePath.substring(indexOfProductImageFileName);
-         File fileOutput = new File(destinationDirectoryName + destinationFileName);
-         productImage.transferTo(fileOutput);
-         return fileOutput.exists() && fileOutput.isFile();
+         Path fileOutput = Paths.get(destinationDirectoryName + destinationFileName);
+         Files.copy(productImage.getInputStream(), fileOutput, StandardCopyOption.REPLACE_EXISTING);
       } catch (IOException iOException) {
          iOException.printStackTrace();
-         return false;
       }
    }
 
-   public static @NonNull Boolean deleteProductImage(@NotNull Product product) {
-      String productImageDirectoryName = Utils.getProductImageDirectoryName(product);
-      Path productImageDirectoryPath = Paths.get(ProjectPaths.getStaticPath() + productImageDirectoryName);
-      try (DirectoryStream<Path> stream = Files.newDirectoryStream(productImageDirectoryPath)) {
-         for (Path filePath : stream) {
-            if (Files.exists(filePath)) {
-               Files.delete(filePath);
-            }
-            return false;
-         }
-         return true;
-      } catch (IOException iOException) {
-         iOException.printStackTrace();
-         return false;
-      }
+   public static void storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage) {
+      // /images/products/{productId}/{productName}.jpeg
+      Utils.storeProductImage(product, productImage, false);
+      Utils.storeProductImage(product, productImage, true);
    }
 
-   public static @NotNull Boolean deleteProductImageDirectory(@NotNull Product product) {
+   public static void deleteProductImageDirectory(@NotNull Product product) {
       String productImageDirectoryName = Utils.getProductImageDirectoryName(product);
       File productImageDirectory = new File(ProjectPaths.getStaticPath() + productImageDirectoryName);
+      File productImageDirectoryTarget = new File(ProjectPaths.getTargetStaticPath() + productImageDirectoryName);
       try {
          FileUtils.deleteDirectory(productImageDirectory);
-         return true;
-      } catch (IOException e) {
-         e.printStackTrace();
-         return false;
+         FileUtils.deleteDirectory(productImageDirectoryTarget);
+      } catch (IOException iOException) {
+         iOException.printStackTrace();
       }
    }
 }

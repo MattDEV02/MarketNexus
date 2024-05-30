@@ -18,7 +18,7 @@
                <div
                      th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Server ERROR, email not sent.', condition = ${emailNotSentError})}"></div>
                <div
-                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Inserted Email not exists.', condition = ${emailNotExistsError})}"></div>
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Inserted Email does not exists.', condition = ${emailNotExistsError})}"></div>
                <div
                      th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.email')}"></div>
                <form id="forgotusername-form" method="POST" name="forgotusername-form"

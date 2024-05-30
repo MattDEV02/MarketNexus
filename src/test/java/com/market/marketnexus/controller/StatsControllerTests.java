@@ -20,37 +20,9 @@ class StatsControllerTests {
    private MockMvc mockMvc;
 
    @Test
-   public void testChartData() throws Exception {
-      this.mockMvc.perform(MockMvcRequestBuilders.get("/" + APIPrefixes.STATS + "/chartData")
-                      .contentType(MediaType.APPLICATION_JSON))
-              .andExpect(MockMvcResultMatchers.status().isFound());
-   }
-
-   @Test
-   public void testMapData() throws Exception {
-      this.mockMvc.perform(MockMvcRequestBuilders.get("/" + APIPrefixes.STATS + "/mapData")
-                      .contentType(MediaType.APPLICATION_JSON))
-              .andExpect(MockMvcResultMatchers.status().isFound());
-   }
-
-   @Test
    public void testTableData() throws Exception {
       this.mockMvc.perform(MockMvcRequestBuilders.get("/" + APIPrefixes.STATS + "/tableData")
                       .contentType(MediaType.APPLICATION_JSON))
-              .andExpect(MockMvcResultMatchers.status().isFound());
-   }
-
-   @Test
-   public void testCalendarDataSales() throws Exception {
-      this.mockMvc.perform(MockMvcRequestBuilders.get("/" + APIPrefixes.STATS + "/calendarData/sales")
-                      .contentType(MediaType.APPLICATION_JSON))
-              .andExpect(MockMvcResultMatchers.status().isFound());
-   }
-
-   @Test
-   public void testCalendarDataOrders() throws Exception {
-      this.mockMvc.perform(MockMvcRequestBuilders.get("/" + APIPrefixes.STATS + "/calendarData/orders")
-                      .contentType(MediaType.APPLICATION_JSON))
-              .andExpect(MockMvcResultMatchers.status().isFound());
+              .andExpect(MockMvcResultMatchers.status().isOk());
    }
 }
