@@ -4,12 +4,13 @@
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Home')}">
 </head>
 <link rel="stylesheet" th:href="@{/css/home/style.css}"/>
-<body class="fade-in">
+<body>
 <div th:replace="~{fragments/shared/pagination/header/baseHeader.html :: baseHeader()}">
 </div>
 <main>
    <div class="container-fluid py-5">
       <div class="row justify-content-start">
+         <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
          <div class="col-8 col-sm-3 col-md-3 col-lg-4 col-xl-5 col-xxl-5 mt-5 ms-5">
             <h1 th:text="${'Welcome to ' + GLOBAL_CONSTANTS_MAP.get('APP_NAME')}"></h1>
             <p class="lead mt-3">
@@ -19,7 +20,8 @@
             </p>
             <a class="btn btn-primary mt-2" data-bs-toggle="tooltip"
                role="button" target="_blank"
-               th:href="@{/registration}" th:title="${'Register on ' + GLOBAL_CONSTANTS_MAP.get('APP_NAME')}">Sign up for
+               th:href="@{/registration}" th:title="${'Register on ' + GLOBAL_CONSTANTS_MAP.get('APP_NAME')}">Sign up
+               for
                free</a>
          </div>
       </div>

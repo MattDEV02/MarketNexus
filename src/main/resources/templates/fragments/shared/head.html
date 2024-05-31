@@ -21,6 +21,9 @@
    <title th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' ' + ${title}"></title>
    <link rel="icon" sizes="64x64" th:href="@{/images/logo/logo.png}" type="image/x-icon"/>
    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/images/logo/logo.png}">
+   <!-- JQuery 3.16.0 -->
+   <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/libraries/jquery/jquery.min.js}"
+           type="text/javascript"></script>
    <!-- FontAwesome 5 -->
    <link rel="stylesheet" th:href="@{/css/libraries/fontawesome/all.css}"/>
    <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/libraries/fontawesome/all.min.js}"

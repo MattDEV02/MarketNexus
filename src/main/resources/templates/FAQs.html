@@ -10,6 +10,7 @@
 <main>
    <div class="container py-3">
       <div class="row justify-content-center">
+         <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
          <div class="col-12">
             <div class="row text-center">
                <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' FAQs'"></h1>

@@ -103,13 +103,12 @@ VALUES ('Electronics', 'Electronics products.'),
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Products
 (
-    id                  SERIAL      NOT NULL PRIMARY KEY,
-    name                VARCHAR(30) NOT NULL,
-    description         VARCHAR(60) NOT NULL,
-    price               FLOAT       NOT NULL,
-    image_relative_path TEXT,
-    category            INTEGER     NOT NULL,
-    CONSTRAINT products_name_description_price_imagerelvepath_category_unique UNIQUE (name, description, price, image_relative_path, category),
+    id                   SERIAL      NOT NULL PRIMARY KEY,
+    name                 VARCHAR(30) NOT NULL,
+    description          VARCHAR(60) NOT NULL,
+    price                FLOAT       NOT NULL,
+    image_relative_paths TEXT[]      NOT NULL,
+    category             INTEGER     NOT NULL,
     CONSTRAINT products_productcategories_fk FOREIGN KEY (category) REFERENCES MarketNexus.product_categories (id) ON DELETE CASCADE,
     CONSTRAINT products_id_min_value_check CHECK (MarketNexus.Products.id >= 1),
     CONSTRAINT products_name_min_length_check CHECK (LENGTH(MarketNexus.Products.name) >= 3),
@@ -117,8 +116,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Products
     CONSTRAINT products_price_min_value_check CHECK (MarketNexus.Products.price > 0),
     CONSTRAINT products_price_max_value_check CHECK (MarketNexus.Products.price <= 1000),
     CONSTRAINT products_description_min_length_check CHECK (LENGTH(MarketNexus.Products.description) >= 3),
-    CONSTRAINT products_imagerelativepath_min_length_check CHECK (LENGTH(MarketNexus.Products.image_relative_path) >= 3),
-    CONSTRAINT products_imagerelativepath_min_valid_check CHECK (POSITION('/' IN MarketNexus.Products.image_relative_path) > 0),
+    CONSTRAINT products_imagerelativepath_min_valid_check CHECK (POSITION('/' IN MarketNexus.Products.image_relative_paths[0]) > 0),
     CONSTRAINT products_category_min_value_check CHECK (MarketNexus.Products.category >= 1)
 );
 
@@ -127,19 +125,17 @@ ALTER TABLE MarketNexus.Products
 
 COMMENT ON TABLE MarketNexus.Products IS 'MarketNexus Users Products.';
 
-INSERT INTO MarketNexus.Products (name, price, description, category, image_relative_path)
-VALUES ('Smartphone', 599.99, 'High-end smartphone.', 1, '/images/products/1/1.jpeg'),
-       ('T-shirt', 29.99, 'Cotton T-shirt.', 2, '/images/products/2/2.jpeg'),
-       ('Java Programming Book', 49.99, 'Learn Java programming.', 3, '/images/products/3/3.jpeg'),
-       ('Laptop', 999.99, 'Powerful laptop.', 1, '/images/products/4/4.jpeg'),
-       ('Running Shoes', 79.99, 'Lightweight running shoes.', 2, '/images/products/5/5.jpeg'),
-       ('Python Book', 39.99, 'Master Python programming.', 3, '/images/products/6/6.jpeg'),
-       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4, '/images/products/7/7.jpeg');
---('Denim Jeans', 49.99, 'Classic denim jeans.', 2),
---('Fishing Rod', 39.99, 'Professional fishing rod.', 6),
---('Hair Dryer', 29.99, 'Ionic hair dryer.', 7),
---('Board Game', 19.99, 'Family board game.', 8),
---('Rice', 2.99, 'Long-grain white rice.', 9);
+INSERT INTO MarketNexus.Products (name, price, description, category, image_relative_paths)
+VALUES ('Smartphone', 599.99, 'High-end smartphone.', 1,
+        '{/images/products/1/1.jpeg, /images/products/1/2.jpeg, /images/products/1/3.jpeg}'),
+       ('T-shirt', 29.99, 'Cotton T-shirt.', 2, '{/images/products/2/1.jpeg, /images/products/2/2.jpeg}'),
+       ('Java Programming Book', 49.99, 'Learn Java programming.', 3, '{/images/products/3/1.jpeg}'),
+       ('Laptop', 999.99, 'Powerful laptop.', 1, '{/images/products/4/1.jpeg, /images/products/4/2.jpeg}'),
+       ('Running Shoes', 79.99, 'Lightweight running shoes.', 2,
+        '{/images/products/5/1.jpeg, /images/products/5/2.jpeg}'),
+       ('Python Book', 39.99, 'Master Python programming.', 3,
+        '{/images/products/6/1.jpeg, /images/products/6/2.jpeg}'),
+       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4, '{/images/products/7/1.jpeg}');
 
 
 CREATE OR REPLACE FUNCTION CHECK_ROLE_ROLES_ENUM_FUNCTION(role TEXT) RETURNS BOOLEAN AS
@@ -241,7 +237,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Sales
     sale_price  FLOAT                                                                                NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
-    CONSTRAINT sales_user_product_insertedat_unique UNIQUE (_user, product, inserted_at),
+    CONSTRAINT sales_user_product_unique UNIQUE (_user, product),
     CONSTRAINT sale_users_fk FOREIGN KEY (_user) REFERENCES MarketNexus.Users (id) ON DELETE CASCADE,
     CONSTRAINT sale_products_fk FOREIGN KEY (product) REFERENCES MarketNexus.Products (id) ON DELETE CASCADE,
     CONSTRAINT sale_id_min_value_check CHECK (MarketNexus.Sales.id >= 1),

@@ -9,8 +9,9 @@
 <div th:replace="~{fragments/shared/pagination/header/dashboardHeader.html :: dashboardHeader()}">
 </div>
 <main>
-   <div class="container" th:with="userNotSellerPublishedASaleError = ${param.userNotSellerPublishedASaleError}">
+   <div class="container">
       <div class="row justify-content-center">
+         <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
          <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 py-4 mt-5 mb-4">
             <form enctype="multipart/form-data" id="new-sale-form"
                   method="POST"
@@ -19,6 +20,8 @@
                   th:title="${isUpdate ? 'Update this' : 'Publish a new'}  + ' Sale'">
                <div
                      th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${userNotSellerPublishedASaleError}, condition = ${userNotSellerPublishedASaleError})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${saleAlreadyPublishedError}, condition = ${saleAlreadyPublishedError != null})}"></div>
                <div class="col-12 mt-2 mb-4">
                   <div class="row text-center">
                      <h1 th:text="${isUpdate ? 'Update' : 'New'} + ' Sale 🚀'">
@@ -91,13 +94,15 @@
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.category')}"></div>
                </div>
                <div class="mb-1">
-                  <label class="form-label" for="product-image">Product image</label>
+                  <label class="form-label" for="product-images">Product images</label>
                   <input accept="image/png, image/jpeg, image/jpg, image/" class="form-control py-2"
                          form="new-sale-form"
-                         id="product-image"
-                         name="product-image"
-                         placeholder="Insert product image" th:required="${!isUpdate}"
-                         th:size="${FIELD_SIZES_MAP.get('PRODUCT_IMAGE_MAX_BYTE_SIZE')}"
+                         id="product-images"
+                         multiple
+                         name="product-images"
+                         placeholder="Insert product image"
+                         th:required="${!isUpdate}" th:size="${FIELD_SIZES_MAP.get('PRODUCT_IMAGE_MAX_BYTE_SIZE')}"
+                         title="Insert your product images"
                          type="file"/>
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productImageEmptyError}, condition = ${productImageEmptyError != null})}"></div>

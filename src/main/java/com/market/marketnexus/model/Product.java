@@ -9,10 +9,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jdk.jfr.Unsigned;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "Products")
-@Table(name = "Products", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "products_name_description_price_imagerelvepath_category_unique", columnNames = {"name", "description", "price", "image_relative_path", "category"}))
+@Table(name = "Products", schema = GlobalValues.SQL_SCHEMA_NAME)
 public class Product {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +38,8 @@ public class Product {
    @Column(name = "price", nullable = false)
    private Float price;
 
-   @Column(name = "image_relative_path", nullable = true)
-   @Size(min = (FieldSizes.PRODUCT_IMAGERELATIVEPATH_MIN_LENGTH))
-   private String imageRelativePath;
+   @Column(name = "image_relative_paths", nullable = false, columnDefinition = "TEXT[] NOT NULL")
+   private List<String> imageRelativePaths;
 
    @ManyToOne(targetEntity = ProductCategory.class, optional = false)
    @JoinColumn(name = "category", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "products_productcategories_fk"))
@@ -46,6 +47,7 @@ public class Product {
 
    public Product() {
       this.category = null;
+      this.imageRelativePaths = new ArrayList<String>();
    }
 
    public Product(String name, String description, Float price, ProductCategory category) {
@@ -53,14 +55,15 @@ public class Product {
       this.description = description;
       this.price = price;
       this.category = category;
+      this.imageRelativePaths = new ArrayList<String>();
    }
 
    public Product(String name, String description, Float price, ProductCategory category, String imageRelativePath) {
       this.name = name;
       this.description = description;
       this.price = price;
-      this.imageRelativePath = imageRelativePath;
       this.category = category;
+      this.imageRelativePaths = new ArrayList<String>();
    }
 
    public Long getId() {
@@ -95,12 +98,12 @@ public class Product {
       this.category = category;
    }
 
-   public String getImageRelativePath() {
-      return this.imageRelativePath;
+   public List<String> getImageRelativePaths() {
+      return this.imageRelativePaths;
    }
 
-   public void setImageRelativePath(String imageRelativePath) {
-      this.imageRelativePath = imageRelativePath;
+   public void setImageRelativePaths(List<String> imageRelativePaths) {
+      this.imageRelativePaths = imageRelativePaths;
    }
 
    public Float getPrice() {
@@ -118,12 +121,12 @@ public class Product {
          return false;
       }
       Product product = (Product) object;
-      return Objects.equals(this.getId(), product.getId());
+      return Objects.equals(this.getId(), product.getId()) || (Objects.equals(this.getName(), product.getName()) && Objects.equals(this.getDescription(), product.getDescription()) && Objects.equals(this.getPrice(), product.getPrice()) && Objects.equals(this.getCategory(), product.getCategory()));
    }
 
    @Override
    public int hashCode() {
-      return Objects.hash(this.getId());
+      return Objects.hash(this.getId(), this.getName(), this.getDescription(), this.getPrice(), this.getCategory());
    }
 
    @Override
@@ -133,7 +136,7 @@ public class Product {
               ", name = '" + this.getName() +
               ", description = '" + this.getDescription() +
               ", price = " + this.getPrice().toString() +
-              ", imageRelativePath = " + this.getImageRelativePath() +
+              ", imageRelativePaths = " + this.getImageRelativePaths().toString() +
               ", category = " + this.getCategory().toString() +
               " }";
    }

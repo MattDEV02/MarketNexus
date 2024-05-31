@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity(name = "Sales")
-@Table(name = "Sales", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "sales_user_product_insertedat_unique", columnNames = {"_user", "product", "inserted_at"}))
+@Table(name = "Sales", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "sales_user_product_unique", columnNames = {"_user", "product"}))
 public class Sale {
 
    @Id

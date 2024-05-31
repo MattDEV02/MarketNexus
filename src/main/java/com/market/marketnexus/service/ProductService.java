@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import static com.market.marketnexus.helpers.sale.Utils.roundNumberTo2Decimals;
+
 @Service
 public class ProductService {
    @Autowired
@@ -19,22 +23,30 @@ public class ProductService {
    protected CartLineItemService cartLineItemService;
 
    @Transactional
-   public Product saveProduct(@NotNull Product product) {
+   public Product saveProduct(@NotNull Product product, Integer productImagesNumber) {
+      Float roundedProductPrice = roundNumberTo2Decimals(product.getPrice());
+      product.setPrice(roundedProductPrice);
       Product savedProduct = this.productRepository.save(product);
-      savedProduct.setImageRelativePath(Utils.getProductImagePath(product));
+      for (Integer i = 0; i < productImagesNumber; i++) {
+         savedProduct.getImageRelativePaths().add(Utils.getProductImagePath(product, i));
+      }
       return savedProduct;
    }
 
    @Transactional
-   public Product updateProduct(@NotNull Product productToUpdate, @NotNull Product product, @NotNull Boolean isProductImageUpdated) {
+   public Product updateProduct(@NotNull Product productToUpdate, @NotNull Product product, Integer productImagesNumber) {
       productToUpdate.setName(product.getName());
       productToUpdate.setDescription(product.getDescription());
-      productToUpdate.setPrice(product.getPrice());
+      productToUpdate.setPrice(roundNumberTo2Decimals(product.getPrice()));
       productToUpdate.setCategory(product.getCategory());
-      Product updatedProduct = this.productRepository.save(productToUpdate);
-      if (isProductImageUpdated) {
-         updatedProduct.setImageRelativePath(Utils.getProductImagePath(updatedProduct));
+      if (productImagesNumber > 0) {
+         List<String> productImageRelativePath = productToUpdate.getImageRelativePaths();
+         productImageRelativePath.clear();
+         for (Integer i = 0; i < productImagesNumber; i++) {
+            productImageRelativePath.add(Utils.getProductImagePath(productToUpdate, i));
+         }
       }
+      Product updatedProduct = this.productRepository.save(productToUpdate);
       return updatedProduct;
    }
 

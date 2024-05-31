@@ -23,4 +23,6 @@ public interface SaleRepository extends CrudRepository<Sale, Long> {
            nativeQuery = true)
    public List<Object[]> countCurrentWeekUserSales(@Param("userId") Long userId);
 
+   public Boolean existsByUser(User user);
+
 }

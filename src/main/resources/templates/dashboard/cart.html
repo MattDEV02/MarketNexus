@@ -12,6 +12,7 @@
 <main>
    <div class="container">
       <div class="row justify-content-center">
+         <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
          <div class="col-12 mt-5">
             <div class="row text-center">
                <h1 th:text="${cartLineItems != null && !#lists.isEmpty(cartLineItems) ? 'Your' : 'No'} + ' Cart Products 👀'">

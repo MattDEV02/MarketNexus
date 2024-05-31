@@ -44,7 +44,6 @@ public class OrderService {
          Cart newCart = new Cart(user);
          Cart savedNewCart = this.cartRepository.save(newCart);
          user.getCarts().add(savedNewCart);
-         this.userRepository.save(user); // TODO:  serve ?
       }
       return savedOrder;
    }

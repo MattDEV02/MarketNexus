@@ -15,4 +15,5 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
 
    public Set<Product> findAllByNameContainingIgnoreCaseAndCategory(String name, ProductCategory category);
 
+   public Boolean existsByNameAndDescriptionAndPriceAndCategory(String name, String description, Float price, ProductCategory category);
 }

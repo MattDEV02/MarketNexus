@@ -25,14 +25,16 @@
                      <i class="fas fa-user-alt mx-1"></i>
                   </a>
                </li>
-               <li class="nav-item" th:if="${#strings.contains(loggedUser.credentials.role, 'BUYER')}">
+               <li class="nav-item"
+                   th:if="${loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER')}">
                   <a class="nav-link link-warning" th:href="@{/dashboard/cart}"
                      th:title="'Go to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' cart'}">
                      Cart
                      <i class="fas fa-cart-plus mx-1"></i>
                   </a>
                </li>
-               <li class="nav-item" th:if="${#strings.contains(loggedUser.credentials.role, 'SELLER')}"
+               <li class="nav-item"
+                   th:if="${loggedUser != null && #strings.contains(loggedUser.credentials.role, 'SELLER')}"
                    th:title="'Publish new ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' sale'}">
                   <a class="nav-link link-success" th:href="@{/dashboard/newSale}">
                      New Sale
@@ -46,10 +48,9 @@
                   </a>
                </li>
             </ul>
-            <form class="d-flex ms-5 mt-4 mt-xl-0" data-bs-toggle="tooltip" id="search-product-form"
+            <form class="d-flex ms-5 mt-4 mt-xl-0" id="search-product-form"
                   method="GET" name="search-product-form"
-                  th:action="@{/dashboard/searchSales}"
-                  th:title="'Search Sales in ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')}">
+                  th:action="@{/dashboard/searchSales}">
                <label class="form-label visually-hidden" for="product-name"></label>
                <input class="form-control p-2 mx-3" id="product-name"
                       name="product-name" placeholder="Product name"
@@ -70,8 +71,9 @@
                           th:value="${productCategoriesEntry.key}"
                   ></option>
                </select>
-               <button class="form-control btn btn-outline-success form-control mx-3" id="submit" name="submit"
-                       title="Search products" type="submit" value="submit">
+               <button class="form-control btn btn-outline-success form-control mx-3" data-bs-toggle="tooltip"
+                       id="submit"
+                       name="submit" title="Search products" type="submit" value="submit">
                   Search
                   <i class="fas fa-search mx-1"></i>
                </button>

@@ -9,10 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 
 public class Utils {
 
@@ -23,20 +20,21 @@ public class Utils {
       return ProjectPaths.IMAGES + Utils.PRODUCT_IMAGES_DIRECTORY + "/" + product.getId().toString();
    }
 
-   public static @NonNull String getProductImageFileName(@NonNull Product product) {
-      return product.getId().toString() + Utils.PRODUCT_IMAGE_EXTENSION;
+   public static @NonNull String getProductImageFileName(Integer index) {
+      return String.valueOf(index + 1) + Utils.PRODUCT_IMAGE_EXTENSION;
    }
 
-   public static @NonNull String getProductImagePath(@NonNull Product product) {
-      return Utils.getProductImageDirectoryName(product) + "/" + Utils.getProductImageFileName(product);
+   public static @NonNull String getProductImagePath(@NonNull Product product, Integer index) {
+      return Utils.getProductImageDirectoryName(product) + "/" + Utils.getProductImageFileName(index);
    }
 
-   public static void storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage, Boolean targetFlag) {
+   public static void storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage, Integer index, Boolean targetFlag) {
       try {
-         String productImageRelativePath = product.getImageRelativePath();
-         Integer indexOfProductImageFileName = productImageRelativePath.indexOf(Utils.getProductImageFileName(product));
+         String productImageRelativePath = product.getImageRelativePaths().get(index);
+         Integer indexOfProductImageFileName = productImageRelativePath.indexOf(Utils.getProductImageFileName(index));
          String productImageRelativePathDirectory = productImageRelativePath.substring(0, indexOfProductImageFileName);
-         String destinationDirectoryName = targetFlag ? ProjectPaths.getTargetStaticPath() : ProjectPaths.getStaticPath() + productImageRelativePathDirectory;
+         String staticDestinationName = targetFlag ? ProjectPaths.getTargetStaticPath() : ProjectPaths.getStaticPath();
+         String destinationDirectoryName = staticDestinationName + productImageRelativePathDirectory;
          File destinationDirectory = new File(destinationDirectoryName);
          FileUtils.forceMkdir(destinationDirectory);
          String destinationFileName = productImageRelativePath.substring(indexOfProductImageFileName);
@@ -47,10 +45,10 @@ public class Utils {
       }
    }
 
-   public static void storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage) {
-      // /images/products/{productId}/{productName}.jpeg
-      Utils.storeProductImage(product, productImage, false);
-      Utils.storeProductImage(product, productImage, true);
+   public static void storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage, Integer index) {
+      // /images/products/{productId}/{productImageIndex + 1}.jpeg
+      Utils.storeProductImage(product, productImage, index, false);
+      Utils.storeProductImage(product, productImage, index, true);
    }
 
    public static void deleteProductImageDirectory(@NotNull Product product) {
@@ -60,6 +58,26 @@ public class Utils {
       try {
          FileUtils.deleteDirectory(productImageDirectory);
          FileUtils.deleteDirectory(productImageDirectoryTarget);
+      } catch (IOException iOException) {
+         iOException.printStackTrace();
+      }
+   }
+
+   public static void deleteProductImages(@NotNull Product product) {
+      Utils.deleteProductImages(product, false);
+      Utils.deleteProductImages(product, true);
+   }
+
+   public static void deleteProductImages(@NotNull Product product, Boolean targetFlag) {
+      String ricettaImmagineDirectoryName = Utils.getProductImageDirectoryName(product);
+      String staticDestinationName = targetFlag ? ProjectPaths.getTargetStaticPath() : ProjectPaths.getStaticPath();
+      Path ricettaImmagineDirectoryPath = Paths.get(staticDestinationName + ricettaImmagineDirectoryName);
+      try (DirectoryStream<Path> stream = Files.newDirectoryStream(ricettaImmagineDirectoryPath)) {
+         for (Path filePath : stream) {
+            if (Files.exists(filePath)) {
+               FileUtils.forceDelete(filePath.toFile());
+            }
+         }
       } catch (IOException iOException) {
          iOException.printStackTrace();
       }

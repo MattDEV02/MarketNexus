@@ -13,6 +13,7 @@
 <main>
    <div class="container">
       <div class="row justify-content-center">
+         <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
          <div class="col-12 mt-5">
             <div class="row text-center">
                <h1 th:if="${isValidSale && !isAddedToCart}"
@@ -34,8 +35,6 @@
                      th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Buyer users cannot add sales at them cart.', condition = ${userNotBuyerAddSaleToCartError})}"></div>
                <div
                      th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You have already added this product to your cart.', condition = ${userAddExistingSaleToCartError})}"></div>
-               <div
-                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Sale not published.', condition = ${saleNotPublishedError})}"></div>
             </div>
          </div>
          <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 mb-5" th:if="${isValidSale}">
@@ -50,7 +49,7 @@
                   th:replace="~{fragments/dashboard/home/saleNotFound.html :: saleNotFound(${saleId})}"></div>
          </div>
          <div class="col-12 mt-3 mb-4"
-              th:if="${isValidSale && #strings.contains(loggedUser.credentials.role, 'BUYER') && (isAddedToCart || userAddExistingSaleToCartError != null)}">
+              th:if="${isValidSale && loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER') && (isAddedToCart || userAddExistingSaleToCartError != null)}">
             <div class="row justify-content-center">
                <div class="col-12 col-sm-8 col-md-5 col-lg-4 col-xl-3">
                   <a class="btn btn-lg btn-outline-warning form-control fw-bold" role="button" th:href="@{/dashboard}">
@@ -72,22 +71,6 @@
 </main>
 <div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
 </div>
-<script type="text/javascript">
-   // Ottieni l'elemento HTML dell'immagine
-   var imageElements = document.getElementsByClassName('card-img-top');
-   
-   // Genera un timestamp Unix per aggiungere come parametro
-   imageElements.map(imageElement => {
-      var timestamp = new Date().getTime();
-      
-      // Costruisci il nuovo URL dell'immagine con il parametro univoco
-      var newImageUrl = imageElement.src + '?version=' + timestamp;
-      
-      // Assegna il nuovo URL dell'immagine all'attributo src
-      imageElement.src = newImageUrl;
-   });
-
-</script>
 </body>
 
 </html>

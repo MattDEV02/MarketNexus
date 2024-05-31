@@ -8,7 +8,7 @@
                <div th:class="'ms-' + ${isOrder ? '4' : '2'}">
                   <a th:href="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/sale/' + cartLineItem.sale.id}}">
                      <img class="img-fluid product-image" th:alt="${cartLineItem.sale.product.name}"
-                          th:src="@{${cartLineItem.sale.product.imageRelativePath}}"
+                          th:src="@{${cartLineItem.sale.product.imageRelativePaths[0]}}"
                           th:title="${cartLineItem.sale.product.name}"/>
                   </a>
                </div>

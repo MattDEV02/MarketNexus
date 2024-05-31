@@ -11,12 +11,14 @@
 <main>
    <div class="container" th:with="areSalesValid = ${sales != null && !#lists.isEmpty(sales)}">
       <div class="row justify-content-center">
+         <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
          <div class="col-12 mt-5">
             <div class="row text-center">
                <h1 th:if="${hasSearchedSales}">
                   Searched sales 🏖️
                </h1>
-               <h1 th:text="${'Welcome ' + loggedUser.credentials.username + ' 👋'}" th:unless="${hasSearchedSales}">
+               <h1 th:text="${'Welcome ' + (loggedUser != null ? loggedUser.credentials.username : '') + ' 👋'}"
+                   th:unless="${hasSearchedSales}">
                </h1>
             </div>
          </div>
