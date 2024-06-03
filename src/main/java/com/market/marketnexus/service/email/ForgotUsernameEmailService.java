@@ -26,7 +26,7 @@ public class ForgotUsernameEmailService {
               <!DOCTYPE html>
               <html>
               <head>
-                <meta charset="utf-8">
+                <meta charset="UTF-8">
                 <meta http-equiv="x-ua-compatible" content="ie=edge">
                 <title>MarketNexus username forgotten</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -194,7 +194,7 @@ public class ForgotUsernameEmailService {
                         <!-- start copy -->
                         <tr>
                           <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                            <p style="margin: 0;">Your <a target="_blank" href="http://localhost:8080/">MarketNexus</a> username is""" + " " + username + """
+                            <p style="margin: 0;">Your <a target="_blank" href="http://localhost">MarketNexus</a> username is""" + " " + username + """
               .</p>
                                                 </td>
                                               </tr>

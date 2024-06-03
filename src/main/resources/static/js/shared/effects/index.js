@@ -1,3 +1,3 @@
 $(document).ready(() =>
-   $("body").css("display", "none").fadeIn(1800)
+   $("body").css("display", "none").fadeIn(2000)
 );

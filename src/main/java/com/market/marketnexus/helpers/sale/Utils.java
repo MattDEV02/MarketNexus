@@ -8,10 +8,10 @@ public class Utils {
 
    @Contract(pure = true)
    public static @NotNull Float roundNumberTo2Decimals(Float number) {
-      if (number == null || !(number instanceof Float)) {
+      if (number == null) {
          return 0.0F;
       }
-      return Math.round(number * 100.0) / 100.0F;
+      return Math.round(number * 100) / 100.0F;
    }
 
    public static @NotNull Float calculateSalePrice(@NotNull Sale sale) {

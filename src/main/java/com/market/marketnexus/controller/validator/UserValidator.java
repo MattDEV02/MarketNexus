@@ -1,7 +1,6 @@
 package com.market.marketnexus.controller.validator;
 
 import com.market.marketnexus.model.User;
-import com.market.marketnexus.service.NationService;
 import com.market.marketnexus.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -14,8 +13,6 @@ public class UserValidator implements Validator {
 
    @Autowired
    private UserService userService;
-   @Autowired
-   private NationService nationService;
    private Boolean isAccountUpdate = false;
 
    public Boolean getIsAccountUpdate() {
@@ -32,7 +29,7 @@ public class UserValidator implements Validator {
       if (!this.getIsAccountUpdate() && this.userService.userExistsByEmail(user.getEmail())) {
          errors.rejectValue("email", "user.email.unique");
       }
-      if (user.getNation() == null || !this.nationService.nationExistsById(user.getNation().getId())) {
+      if (user.getNation() == null) {
          errors.rejectValue("nation", "user.nation.notExists");
       }
    }

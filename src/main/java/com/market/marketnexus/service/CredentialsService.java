@@ -19,11 +19,11 @@ public class CredentialsService {
    }
 
    public Boolean areBuyerCredentials(@NotNull Credentials credentials) {
-      return credentials.getRole().contains(Roles.BUYER_ROLE.toString());
+      return credentials.getRole().contains(Roles.BUYER.toString());
    }
 
    public Boolean areSellerCredentials(@NotNull Credentials credentials) {
-      return credentials.getRole().contains(Roles.SELLER_ROLE.toString().replace("_ROLE", ""));
+      return credentials.getRole().contains(Roles.SELLER.toString().replace("_ROLE", ""));
    }
 
 }

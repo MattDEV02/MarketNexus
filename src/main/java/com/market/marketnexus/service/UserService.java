@@ -66,9 +66,9 @@ public class UserService {
    }
 
    @Transactional
-   public User updateUser(Long id, @NonNull User updatedUser) {
+   public User updateUser(Long userId, @NonNull User updatedUser) {
       Credentials updatedCredentials = updatedUser.getCredentials();
-      User user = this.userRepository.findById(id).orElse(null);
+      User user = this.getUser(userId); //
       if (user != null) {
          Credentials credentials = user.getCredentials();
          updatedCredentials.setInsertedAt(credentials.getInsertedAt());

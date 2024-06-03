@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.market.marketnexus.helpers.product.Utils.deleteProductImageDirectory;
+import static com.market.marketnexus.helpers.product.ProductImageFileUtils.deleteProductImageDirectory;
 
 @Service
 public class SaleService {
@@ -46,6 +46,7 @@ public class SaleService {
       Float newSalePrice = this.calculateSalePrice(sale);
       saleToUpdate.setSalePrice(newSalePrice);
       Sale updatedSale = this.saleRepository.save(saleToUpdate);
+      updatedSale.preUpdate();
       return updatedSale;
    }
 
@@ -59,6 +60,17 @@ public class SaleService {
 
    public Iterable<Sale> getAllSales() {
       return this.saleRepository.findAllByOrderByUpdatedAt();
+   }
+
+   public Set<Sale> getAllNotSoldSales(User user) {
+      Set<Sale> notSoldSales = new HashSet<Sale>();
+      Iterable<Sale> sales = this.saleRepository.findAllByUser(user);
+      for (Sale sale : sales) {
+         if (sale != null && !sale.getIsSold()) {
+            notSoldSales.add(sale);
+         }
+      }
+      return notSoldSales;
    }
 
    public Set<Sale> getAllSalesByProductName(String productName) {
@@ -103,6 +115,7 @@ public class SaleService {
       Set<Sale> soldSales = new HashSet<Sale>();
       Iterable<Sale> sales = this.saleRepository.findAllByUser(user);
       for (Sale sale : sales) {
+         System.out.println(sale);
          if (sale != null && sale.getIsSold()) {
             soldSales.add(sale);
          }

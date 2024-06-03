@@ -48,6 +48,19 @@ public class CartService {
       return soldSalesCartLineItems;
    }
 
+   public List<CartLineItem> getAllNotSoldCartLineItems(@NotNull Cart cart) {
+      List<CartLineItem> notSoldSalesCartLineItems = new ArrayList<CartLineItem>();
+      List<CartLineItem> cartLineItems = cart.getCartLineItems();
+      Sale sale = null;
+      for (CartLineItem cartLineItem : cartLineItems) {
+         sale = cartLineItem.getSale();
+         if (sale != null && !sale.getIsSold()) {
+            notSoldSalesCartLineItems.add(cartLineItem);
+         }
+      }
+      return notSoldSalesCartLineItems;
+   }
+
    public Boolean existsCartLineItemSale(@NotNull Cart cart, @NotNull Sale sale) {
       return this.cartLineItemRepository.existsByCartAndSale(cart, sale);
    }

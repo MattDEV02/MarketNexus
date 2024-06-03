@@ -1,7 +1,7 @@
 package com.market.marketnexus.controller.validator;
 
 import com.market.marketnexus.helpers.constants.FieldSizes;
-import com.market.marketnexus.helpers.product.Utils;
+import com.market.marketnexus.helpers.product.ProductImageFileUtils;
 import com.market.marketnexus.helpers.validators.FieldValidators;
 import com.market.marketnexus.model.Product;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +38,7 @@ public class ProductValidator implements Validator {
    private static @NotNull Boolean productImagesContainsWrongExtensionFile(MultipartFile @NotNull [] productImages) {
       for (MultipartFile productImage : productImages) {
          String originalFilename = productImage.getOriginalFilename();
-         if (originalFilename == null || (!originalFilename.endsWith(".jpg") && !originalFilename.endsWith(".png") && !originalFilename.endsWith(Utils.PRODUCT_IMAGE_EXTENSION))) {
+         if (originalFilename == null || (!originalFilename.endsWith(".jpg") && !originalFilename.endsWith(".png") && !originalFilename.endsWith(ProductImageFileUtils.PRODUCT_IMAGE_EXTENSION))) {
             return true;
          }
       }

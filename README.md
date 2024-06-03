@@ -1,7 +1,7 @@
 # MarketNexus
 
 <p align="center">
-<img  title="MarketNexus Logo"  alt="MarketNexus Logo"  width="19.5%"  src="/src/main/resources/static/images/logo/logo.png">
+<img  title="MarketNexus Logo"  alt="MarketNexus Logo"  width="19.5%"  src="/src/main/resources/static/images/logo/logo.png"/>
 </p>
 
 MarketNexus is marketplace made in Spring boot.
@@ -10,11 +10,11 @@ MarketNexus is marketplace made in Spring boot.
 
 ## UML Domain Model ‍🎓
 
-<img title="MarketNexus Domain Model" alt="MarketNexus Domain model" src="/src/main/resources/static/images/README/design/Domain_Model.png" width="100%">
+<img title="MarketNexus Domain Model" alt="MarketNexus Domain model" src="/src/main/resources/static/images/README/design/Domain_Model.png" width="100%" />
 
 ## ER Model 🔢
 
-<img title="MarketNexus ER model" alt="MarketNexus ER model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/ER_model3.jpeg" width="100%">
+<img title="MarketNexus ER model" alt="MarketNexus ER model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/ER_model3.jpeg" width="100%" />
 
 ## Key Features ✨
 
@@ -40,56 +40,56 @@ MarketNexus is marketplace made in Spring boot.
 ## `Registration page`
 
 <p align="center">
-<img  title="MarketNexus RegScreen screenshoot 1"  alt="MarketNexus RegScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/registration/1.png"  width="100%">
+<img  title="MarketNexus RegScreen screenshoot 1"  alt="MarketNexus RegScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/registration/1.png"  width="100%" />
 </p>
 
 ## `Login page`
 
 <p align="center">
-	<img  title="MarketNexus LoginScreen screenshoot 1"  alt="MarketNexus LoginScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/login/1.png"  width="100%">
+	<img  title="MarketNexus LoginScreen screenshoot 1"  alt="MarketNexus LoginScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/login/1.png"  width="100%" />
 </p>
 
 ## `Forgot username page`
 
 <p align="center">
-	<img  title="MarketNexus ForgotusernameScreen screenshoot 1"  alt="MarketNexus ForgotusernameScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/forgotUsername/1.png"  width="100%">
+	<img  title="MarketNexus ForgotusernameScreen screenshoot 1"  alt="MarketNexus ForgotusernameScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/forgotUsername/1.png"  width="100%" />
 </p>
 
 ## `Home page`
 
 <p align="center">
-	<img  title="MarketNexus HomeScreen screenshoot 1"  alt="MarketNexus HomeScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/home/1.png"  width="100%">
+	<img  title="MarketNexus HomeScreen screenshoot 1"  alt="MarketNexus HomeScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/home/1.png"  width="100%" />
 </p>
 
 ## `Dashboard page`
 
 <p align="center">
-	<img  title="MarketNexus DashboardScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/dashboard/1.png"  width="100%">
+	<img  title="MarketNexus DashboardScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/dashboard/1.png"  width="100%" />
 </p>
 
 ## `Account page`
 
 <p align="center">
-	<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="100%">
-    <img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus DashboardScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="100%">
-    <img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="100%">
-    <img  title="MarketNexus AccountScreen screenshoot 4"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="100%">
-    <img  title="MarketNexus AccountScreen screenshoot 5"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/5.png"  width="100%">
+	<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="100%" />
+    <img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus DashboardScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="100%" />
+    <img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="100%" />
+    <img  title="MarketNexus AccountScreen screenshoot 4"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="100%" />
+    <img  title="MarketNexus AccountScreen screenshoot 5"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/5.png"  width="100%" />
 </p>
 
 ## `FAQs page`
 
 <p align="center">
-	<img  title="MarketNexus FAQsScreen screenshoot 1"  alt="MarketNexus HelpScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/FAQs/1.png"  width="100%">
+	<img  title="MarketNexus FAQsScreen screenshoot 1"  alt="MarketNexus HelpScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/FAQs/1.png"  width="100%" />
 </p>
 
 ## `Cart page`
 
 <p align="center"> 
-	<img  title="MarketNexus CartScreen screenshoot 1"  alt="MarketNexus StatsScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/cart/1.png"  width="100%">
-	<img  title="MarketNexus CartScreen screenshoot 2"  alt="MarketNexus StatsScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/cart/2.png"  width="100%">
-	<img  title="MarketNexus CartScreen screenshoot 3"  alt="MarketNexus StatsScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/cart/3.png"  width="100%">
-	<img  title="MarketNexus CartScreen screenshoot 4"  alt="MarketNexus StatsScreen screenshoot 4"  src="/src/main/resources/static/images/README/screenshots/cart/4.png"  width="100%">
+	<img  title="MarketNexus CartScreen screenshoot 1"  alt="MarketNexus StatsScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/cart/1.png"  width="100%" />
+	<img  title="MarketNexus CartScreen screenshoot 2"  alt="MarketNexus StatsScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/cart/2.png"  width="100%" />
+	<img  title="MarketNexus CartScreen screenshoot 3"  alt="MarketNexus StatsScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/cart/3.png"  width="100%" />
+	<img  title="MarketNexus CartScreen screenshoot 4"  alt="MarketNexus StatsScreen screenshoot 4"  src="/src/main/resources/static/images/README/screenshots/cart/4.png"  width="100%" />
 </p>
 
 ## Installation 🚀 and usage⚡
@@ -250,9 +250,9 @@ public class AuthConfiguration implements WebMvcConfigurer {
                                       "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs",
                                       "/css/**", "/js/**", "/images/**", "/webfonts/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail").permitAll()
-                              .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.SELLER_ROLE.toString())
-                              .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.BUYER_ROLE.toString())
-                              .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.BUYER_ROLE.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(HttpMethod.DELETE).denyAll()
                               .requestMatchers(HttpMethod.GET, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
                               .requestMatchers(HttpMethod.POST, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()

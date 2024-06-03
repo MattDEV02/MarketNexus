@@ -22,7 +22,6 @@ public class SaleValidator implements Validator {
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       Sale sale = (Sale) object;
       Product product = sale.getProduct();
-
       if (this.saleRepository.existsByUser(sale.getUser()) && this.productRepository.existsByNameAndDescriptionAndPriceAndCategory(product.getName(), product.getDescription(), product.getPrice(), product.getCategory())) {
          errors.reject("saleAlreadyPublishedError", "You have already published this sale.");
       }

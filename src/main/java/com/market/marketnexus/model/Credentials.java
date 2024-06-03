@@ -20,7 +20,7 @@ import java.util.Objects;
 @Table(name = "Credentials", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "credentials_username_unique", columnNames = "username"))
 public class Credentials {
 
-   public static Roles DEFAULT_ROLE = Roles.SELLER_AND_BUYER_ROLE;
+   public static Roles DEFAULT_ROLE = Roles.SELLER_AND_BUYER;
 
    @Id
    @Unsigned

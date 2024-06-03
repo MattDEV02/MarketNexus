@@ -6,7 +6,7 @@ import com.market.marketnexus.exception.SaleNotFoundException;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.constants.GlobalValues;
-import com.market.marketnexus.helpers.product.Utils;
+import com.market.marketnexus.helpers.product.ProductImageFileUtils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
@@ -122,7 +122,7 @@ public class SaleController {
          final Integer notEmptyProductImagesNumber = productImages.length;
          Product savedProduct = this.productService.saveProduct(product, notEmptyProductImagesNumber);
          for (Integer i = 0; i < notEmptyProductImagesNumber; i++) {
-            Utils.storeProductImage(savedProduct, productImages[i], i);
+            ProductImageFileUtils.storeProductImage(savedProduct, productImages[i], i);
          }
          Sale savedSale = this.saleService.saveSale(sale);
          SaleController.LOGGER.info("Published new Sale with ID: {}", savedSale.getId());
@@ -145,9 +145,14 @@ public class SaleController {
    }
 
    @GetMapping(value = {"/updateSale/{saleId}", "/updateSale/{saleId}"})
-   public ModelAndView showUpdateSaleForm(@PathVariable("saleId") Long saleId) {
+   public ModelAndView showUpdateSaleForm(@PathVariable("saleId") Long saleId, @Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/newSale" + GlobalValues.TEMPLATES_EXTENSION);
       Sale sale = this.saleService.getSale(saleId);
+      if (!sale.getUser().equals(loggedUser)) {
+         modelAndView.setViewName("redirect:/" + APIPrefixes.ACCOUNT);
+         modelAndView.addObject("userCantManageNotHisSaleError", true);
+         return modelAndView;
+      }
       modelAndView.addObject("sale", sale);
       modelAndView.addObject("product", sale.getProduct());
       modelAndView.addObject("isUpdate", true);
@@ -182,10 +187,10 @@ public class SaleController {
          Product updatedProduct = this.productService.updateProduct(productToUpdate, product, notEmptyProductImagesNumber);
          if (updatedProduct != null) {
             if (!productImages[0].isEmpty()) {
-               Utils.deleteProductImages(productToUpdate);
+               ProductImageFileUtils.deleteProductImages(productToUpdate);
             }
             for (Integer i = 0; i < notEmptyProductImagesNumber; i++) {
-               Utils.storeProductImage(updatedProduct, notEmptyProductImages[i], i);
+               ProductImageFileUtils.storeProductImage(updatedProduct, notEmptyProductImages[i], i);
             }
             sale.setProduct(updatedProduct);
             Sale updatededSale = this.saleService.updateSale(saleToUpdate, sale);
@@ -213,9 +218,14 @@ public class SaleController {
    }
 
    @GetMapping(value = {"/deleteSale/{saleId}", "/deleteSale/{saleId}"})
-   public ModelAndView deleteSale(@PathVariable("saleId") Long saleId) {
+   public ModelAndView deleteSale(@PathVariable("saleId") Long saleId, @Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.ACCOUNT + "#sales");
       Sale sale = this.saleService.getSale(saleId);
+      if (!sale.getUser().equals(loggedUser)) {
+         modelAndView.setViewName("redirect:/" + APIPrefixes.ACCOUNT);
+         modelAndView.addObject("userCantManageNotHisSaleError", true);
+         return modelAndView;
+      }
       if (this.saleService.deleteSale(sale)) {
          modelAndView.addObject("saleDeletedSuccess", true);
          SaleController.LOGGER.info("Deleted Sale with Sale ID: {}", saleId);

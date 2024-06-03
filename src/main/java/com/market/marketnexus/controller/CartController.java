@@ -41,7 +41,7 @@ public class CartController {
    public ModelAndView showCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.CART + GlobalValues.TEMPLATES_EXTENSION);
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
-      List<CartLineItem> cartLineItems = cart.getCartLineItems();
+      List<CartLineItem> cartLineItems = this.cartService.getAllNotSoldCartLineItems(cart);
       modelAndView.addObject("cart", cart);
       modelAndView.addObject("cartLineItems", cartLineItems);
       return modelAndView;

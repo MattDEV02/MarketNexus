@@ -60,7 +60,7 @@
       </span>
       <button class="btn btn-danger ms-3 mb-2" data-bs-toggle="tooltip"
               th:if="${sale.isSold && loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER')}"
-              th:title="${sale.product.name} + ' ordered.'"
+              th:title="${sale.product.name} + ' sold out.'"
               type="button">
          <i class="fas fa-times-circle"></i>
       </button>

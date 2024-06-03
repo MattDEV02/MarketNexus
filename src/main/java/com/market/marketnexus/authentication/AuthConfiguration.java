@@ -68,13 +68,11 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(
                       authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-                              .requestMatchers(HttpMethod.GET,
-                                      "/**", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs",
-                                      "/css/**", "/js/**", "/images/**", "/webfonts/**").permitAll()
+                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail").permitAll()
-                              .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.SELLER_ROLE.toString())
-                              .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.BUYER_ROLE.toString())
-                              .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER_ROLE.toString(), Roles.BUYER_ROLE.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*Sale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(HttpMethod.DELETE).denyAll()
                               .requestMatchers(HttpMethod.GET, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
                               .requestMatchers(HttpMethod.POST, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
@@ -82,7 +80,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               )
               .formLogin(formLogin -> formLogin
                       .loginPage("/login")
-                      .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
+                      .defaultSuccessUrl("/dashboard", true)
                       .failureUrl("/login?invalidCredentials=true")
                       .usernameParameter("username")
                       .passwordParameter("password")
@@ -91,10 +89,11 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .logout(logout -> logout
                       .logoutUrl("/logout")
                       .logoutSuccessUrl("/login?logoutSuccessful=true")
-                      .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                       .invalidateHttpSession(true)
                       .clearAuthentication(true)
                       .deleteCookies("JSESSIONID")
+                      .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                      .clearAuthentication(true)
                       .permitAll());
       return httpSecurity.build();
    }

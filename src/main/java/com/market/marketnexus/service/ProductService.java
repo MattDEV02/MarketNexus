@@ -1,6 +1,6 @@
 package com.market.marketnexus.service;
 
-import com.market.marketnexus.helpers.product.Utils;
+import com.market.marketnexus.helpers.product.ProductImageFileUtils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.repository.ProductCategoryRepository;
 import com.market.marketnexus.repository.ProductRepository;
@@ -28,7 +28,7 @@ public class ProductService {
       product.setPrice(roundedProductPrice);
       Product savedProduct = this.productRepository.save(product);
       for (Integer i = 0; i < productImagesNumber; i++) {
-         savedProduct.getImageRelativePaths().add(Utils.getProductImagePath(product, i));
+         savedProduct.getImageRelativePaths().add(ProductImageFileUtils.getProductImagePath(product, i));
       }
       return savedProduct;
    }
@@ -43,7 +43,7 @@ public class ProductService {
          List<String> productImageRelativePath = productToUpdate.getImageRelativePaths();
          productImageRelativePath.clear();
          for (Integer i = 0; i < productImagesNumber; i++) {
-            productImageRelativePath.add(Utils.getProductImagePath(productToUpdate, i));
+            productImageRelativePath.add(ProductImageFileUtils.getProductImagePath(productToUpdate, i));
          }
       }
       Product updatedProduct = this.productRepository.save(productToUpdate);

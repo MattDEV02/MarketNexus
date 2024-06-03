@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data = {
                labels: weekDaysX,
                datasets: [{
-                  label: " Number of Sales in this day",
+                  label: " Number sold of Sales in this day",
                   data: numberOfSoldSalesY,
                   borderWidth: 2,
                   backgroundColor: "#1D86BA",
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
                plugins: {
                   title: {
                      display: true,
-                     text: "Number of sales in last week",
+                     text: "Number of sold Sales in this week",
                      fullSize: true,
                      font: {
                         weight: "bold",

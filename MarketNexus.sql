@@ -1,10 +1,12 @@
+--SET TIME ZONE 'Europe/Rome';
+
+SHOW TIMEZONE;
+
 SELECT VERSION();
 
 -- CREATE DATABASE IF NOT EXISTS MarketNexus;
 
 --CONNECT MarketNexus;
-
---ALTER DATABASE MarketNexus SET pg_catalog.TIMEZONE TO 'Europe/Rome';
 
 DROP SCHEMA IF EXISTS MarketNexus CASCADE;
 
@@ -25,9 +27,9 @@ SELECT CURRENT_TIMESTAMP;
 DROP TYPE IF EXISTS ROLES;
 
 CREATE TYPE ROLES AS ENUM (
-    'SELLER_ROLE',
-    'SELLER_AND_BUYER_ROLE',
-    'BUYER_ROLE'
+    'SELLER',
+    'SELLER_AND_BUYER',
+    'BUYER'
     );
 
 COMMENT ON TYPE ROLES IS 'MarketNexus Users Credentials Roles.';
@@ -135,7 +137,7 @@ VALUES ('Smartphone', 599.99, 'High-end smartphone.', 1,
         '{/images/products/5/1.jpeg, /images/products/5/2.jpeg}'),
        ('Python Book', 39.99, 'Master Python programming.', 3,
         '{/images/products/6/1.jpeg, /images/products/6/2.jpeg}'),
-       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4, '{/images/products/7/1.jpeg}');
+       ('Coffee Maker', 89.99, 'Automatic coffee maker.', 4, '{/images/products/7/1.jpeg, /images/products/7/2.jpeg}');
 
 
 CREATE OR REPLACE FUNCTION CHECK_ROLE_ROLES_ENUM_FUNCTION(role TEXT) RETURNS BOOLEAN AS
@@ -155,7 +157,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Credentials
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT credentials_username_unique UNIQUE (username),
-    CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(MarketNexus.Credentials.role) >= 10),
+    CONSTRAINT credentials_role_min_length_check CHECK (LENGTH(MarketNexus.Credentials.role) >= 3),
     CONSTRAINT credentials_role_valid_check CHECK (MarketNexus.CHECK_ROLE_ROLES_ENUM_FUNCTION(role)),
     CONSTRAINT credentials_username_min_length_check CHECK (LENGTH(MarketNexus.Credentials.username) >= 3),
     CONSTRAINT credentials_password_min_check CHECK (LENGTH(MarketNexus.Credentials.password) >= 60),
@@ -180,9 +182,9 @@ ALTER TABLE MarketNexus.Credentials
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Credentials (username, password, role)
-VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BUYER_ROLE'),
-       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'SELLER_AND_BUYER_ROLE'),
-       ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'SELLER_AND_BUYER_ROLE');
+VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BUYER'),
+       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'SELLER_AND_BUYER'),
+       ('Musc', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'SELLER_AND_BUYER');
 -- Gabriel1
 
 -- N.B. = La password è criptata da spring boot con l'algoritmo bscrypt e va da 60 caratteri a 72.
@@ -293,7 +295,7 @@ CREATE
 $$
 BEGIN
     IF ((SELECT CASE
-                    WHEN (c.role = 'SELLER_AND_BUYER_ROLE' OR c.role = 'SELLER_ROLE') THEN TRUE
+                    WHEN (c.role = 'SELLER_AND_BUYER' OR c.role = 'SELLER') THEN TRUE
                     ELSE FALSE END AS are_equals
          FROM MarketNexus.Sales s
                   JOIN MarketNexus.Users u ON s._user = u.id
@@ -377,7 +379,7 @@ CREATE
 $$
 BEGIN
     IF ((SELECT CASE
-                    WHEN (c.role = 'SELLER_AND_BUYER_ROLE' OR c.role = 'BUYER_ROLE')
+                    WHEN (c.role = 'SELLER_AND_BUYER' OR c.role = 'BUYER')
                         THEN TRUE
                     ELSE FALSE END AS are_equals
          FROM MarketNexus.cart_line_items cli
@@ -582,7 +584,7 @@ END
 $$ LANGUAGE PLPGSQL;
 
 SELECT *
-FROM GET_USER_SOLD_SALES_STATS(2);
+FROM GET_USER_SOLD_SALES_STATS(1);
 
 DROP FUNCTION IF EXISTS GET_USERS_SALES_STATS();
 
@@ -629,4 +631,4 @@ $$ LANGUAGE PLPGSQL;
 
 SELECT *
 FROM GET_USERS_SALES_STATS();
-
+;

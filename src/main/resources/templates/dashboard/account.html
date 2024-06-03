@@ -30,7 +30,7 @@
          </div>
          <div th:if="${isUserFound}">
             <div th:class="'col-12 mt-5 py-4' + ${!isLoggedUser ? ' pb-5' : ''} + ' px-5 px-xl-0 rounded shadow border'"
-                 th:with="accountUpdatedSuccessful = ${param.accountUpdatedSuccessful}, saleNotDeletedError = ${param.saleNotDeletedError}">
+                 th:with="accountUpdatedSuccessful = ${param.accountUpdatedSuccessful}, saleNotDeletedError = ${param.saleNotDeletedError}, userCantManageNotHisSaleError = ${param.userCantManageNotHisSaleError}">
                <form class="row justify-content-center" id="update-account-form"
                      method="POST"
                      name="update-account-form"
@@ -61,6 +61,8 @@
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Server ERROR, Sale not deleted.', condition = ${saleNotDeletedError})}"></div>
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${passwordDifferentFromConfirmPasswordError}, condition = ${passwordDifferentFromConfirmPasswordError != null})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You can manage only your Sales.', condition = ${userCantManageNotHisSaleError})}"></div>
                   <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-5 col-xxl-5 text-center me-3 mt-lg-2 mt-xl-0"
                        th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' user informations'">
                      <h2 class="mt-4 mt-md-3 mt-lg-3 mt-xl-3 mt-xxl-3 mb-5">User informations</h2>
@@ -117,11 +119,11 @@
                </form>
             </div>
             <div class="col-12 mt-5"
-                 th:with="areSaleProductsValid=${sales != null && !#lists.isEmpty(sales)}">
+                 th:with="areNotSoldSaleProductsValid=${notSoldSales != null && !#lists.isEmpty(notSoldSales)}">
                <div class="row text-center">
-                  <h1 th:if="${areSaleProductsValid}"
+                  <h1 th:if="${areNotSoldSaleProductsValid}"
                       th:text="${isLoggedUser ? 'Your' : 'His'} + ' Sale products 🏖️'"></h1>
-                  <h1 th:unless="${areSaleProductsValid}">No sale products</h1>
+                  <h1 th:unless="${areNotSoldSaleProductsValid}">No sale products</h1>
                </div>
             </div>
             <div class="col-12" id="sales"
@@ -132,13 +134,13 @@
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Server ERROR, Sale not deleted.', condition = ${saleDeletedError})}"></div>
                   <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4"
-                       th:each="sale : ${sales}">
-                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${sale}, isLoggedUser = ${isLoggedUser}, isAccountPage = true)}"></div>
+                       th:each="notSoldSale : ${notSoldSales}">
+                     <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${notSoldSale}, isLoggedUser = ${isLoggedUser}, isAccountPage = true)}"></div>
                   </div>
                </div>
             </div>
             <div class="col-12 mt-5"
-                 th:with="areSoldSaleProductsValid=${soldSales != null && !#lists.isEmpty(soldSale)}">
+                 th:with="areSoldSaleProductsValid=${soldSales != null && !#lists.isEmpty(soldSales)}">
                <div class="row text-center">
                   <h1 th:if="${areSoldSaleProductsValid}"
                       th:text="${isLoggedUser ? 'Your' : 'His'} + ' sold Sale products 🏖️'"></h1>

@@ -24,6 +24,6 @@ class StatsControllerTests {
       this.mockMvc.perform(MockMvcRequestBuilders
                       .get("/" + APIPrefixes.STATS + "/tableData")
                       .contentType(MediaType.APPLICATION_JSON))
-              .andExpect(MockMvcResultMatchers.status().isOk());
+              .andExpect(MockMvcResultMatchers.status().is3xxRedirection());
    }
 }
