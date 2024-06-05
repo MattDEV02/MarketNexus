@@ -213,7 +213,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
    public void addResourceHandlers(@NonNull ResourceHandlerRegistry resourceHandlerRegistry) {
       resourceHandlerRegistry.addResourceHandler("/**")
               .addResourceLocations(AuthConfiguration.CLASSPATH_RESOURCE_LOCATIONS)
-      //.setCachePeriod(0)
+      //  .setCachePeriod(0)
       ;
    }
 
@@ -246,11 +246,9 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(
                       authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-                              .requestMatchers(HttpMethod.GET,
-                                      "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs",
-                                      "/css/**", "/js/**", "/images/**", "/webfonts/**").permitAll()
+                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail").permitAll()
-                              .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*Sale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(HttpMethod.DELETE).denyAll()
@@ -260,7 +258,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               )
               .formLogin(formLogin -> formLogin
                       .loginPage("/login")
-                      .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
+                      .defaultSuccessUrl("/dashboard", true)
                       .failureUrl("/login?invalidCredentials=true")
                       .usernameParameter("username")
                       .passwordParameter("password")
@@ -269,10 +267,11 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .logout(logout -> logout
                       .logoutUrl("/logout")
                       .logoutSuccessUrl("/login?logoutSuccessful=true")
-                      .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                       .invalidateHttpSession(true)
                       .clearAuthentication(true)
                       .deleteCookies("JSESSIONID")
+                      .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                      .clearAuthentication(true)
                       .permitAll());
       return httpSecurity.build();
    }
@@ -469,7 +468,8 @@ public class UserService {
       User user = this.getUser(userId);
       if (user != null) {
          List<Cart> carts = user.getCarts();
-         currentCart = carts.get(carts.size() - 1);
+         Integer currentCartIndex = carts.size() - 1;
+         currentCart = carts.get(currentCartIndex);
       }
       return currentCart;
    }
@@ -557,7 +557,6 @@ public interface SaleRepository extends CrudRepository<Sale, Long> {
            """,
            nativeQuery = true)
    public List<Object[]> countCurrentWeekUserSales(@Param("userId") Long userId);
-
 }
 
 ```
@@ -726,7 +725,7 @@ public class SaleNotFoundException extends RuntimeException {
 
 ```XHTML
 <!DOCTYPE html>
-<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns :th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Cart')}">
 
@@ -739,6 +738,7 @@ public class SaleNotFoundException extends RuntimeException {
 <main>
     <div class="container">
         <div class="row justify-content-center">
+            <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
             <div class="col-12 mt-5">
                 <div class="row text-center">
                     <h1 th:text="${cartLineItems != null && !#lists.isEmpty(cartLineItems) ? 'Your' : 'No'} + ' Cart Products 👀'">
@@ -750,13 +750,9 @@ public class SaleNotFoundException extends RuntimeException {
                 <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartLineItemNotDeletedError})}"></div>
                 <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You are a not buyer User.', condition = ${userNotBuyerAddSaleToCartError})}"></div>
-                <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Users cannot add them Sale to them Cart.', condition = ${userAddOwnSaleToCartError})}"></div>
                 <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Order not possible, your Cart is empty.', condition = ${emptyCartError})}"></div>
-                <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart not exists error.', condition = ${userCartNotExistsError})}"></div>
                 <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Your balance is not sufficient to complete the order.', condition = ${userBalanceLowerThanCartPriceError})}"></div>
                 <div
