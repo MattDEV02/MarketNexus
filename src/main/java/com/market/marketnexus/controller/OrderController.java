@@ -51,31 +51,23 @@ public class OrderController {
       if (!request.getHeader("referer").contains(APIPrefixes.CART)) {
          return modelAndView;
       }
-      if (!this.credentialsService.areBuyerCredentials(loggedUser.getCredentials())) {
-         modelAndView.addObject("userNotBuyerAddSaleToCartError", true);
-         OrderController.LOGGER.error(GlobalErrorsMessages.USER_NOT_BUYER_ADD_SALE_TO_CART_ERROR);
-      } else if (this.cartService.existsCartBtId(cartId)) {
-         Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
-         if (cart.getCartPrice() == 0) {
-            OrderController.LOGGER.error(GlobalErrorsMessages.EMPTY_CART_ERROR);
-            modelAndView.addObject("emptyCartError", true);
-         } else if (loggedUser.getBalance() < cart.getCartPrice()) {
-            OrderController.LOGGER.error(GlobalErrorsMessages.USER_BALANCE_LOWER_THAN_CART_PRICE_ERROR);
-            modelAndView.addObject("userBalanceLowerThanCartPriceError", true);
-         } else {
-            Order savedOrder = this.orderService.makeOrder(loggedUser.getId());
-            LocalDateTime orderInsertedAt = savedOrder.getInsertedAt();
-            Cart orderedCart = savedOrder.getCart();
-            List<CartLineItem> cartLineItems = this.cartService.getAllSoldCartLineItems(orderedCart);
-            OrderController.LOGGER.info("New Order with ID: {}", savedOrder.getId());
-            modelAndView.addObject("orderInsertedAt", orderInsertedAt);
-            modelAndView.addObject("cart", orderedCart);
-            modelAndView.addObject("cartLineItems", cartLineItems);
-            modelAndView.setViewName(APIPrefixes.ORDER + GlobalValues.TEMPLATES_EXTENSION);
-         }
+      Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
+      if (cart.getCartPrice() == 0) {
+         OrderController.LOGGER.error(GlobalErrorsMessages.EMPTY_CART_ERROR);
+         modelAndView.addObject("emptyCartError", true);
+      } else if (loggedUser.getBalance() < cart.getCartPrice()) {
+         OrderController.LOGGER.error(GlobalErrorsMessages.USER_BALANCE_LOWER_THAN_CART_PRICE_ERROR);
+         modelAndView.addObject("userBalanceLowerThanCartPriceError", true);
       } else {
-         OrderController.LOGGER.error(GlobalErrorsMessages.USER_CART_NOT_EXISTS_ERROR);
-         modelAndView.addObject("userCartNotExistsError", true);
+         Order savedOrder = this.orderService.makeOrder(loggedUser.getId());
+         LocalDateTime orderInsertedAt = savedOrder.getInsertedAt();
+         Cart orderedCart = savedOrder.getCart();
+         List<CartLineItem> cartLineItems = this.cartService.getAllSoldCartLineItems(orderedCart);
+         OrderController.LOGGER.info("New Order with ID: {}", savedOrder.getId());
+         modelAndView.addObject("orderInsertedAt", orderInsertedAt);
+         modelAndView.addObject("cart", orderedCart);
+         modelAndView.addObject("cartLineItems", cartLineItems);
+         modelAndView.setViewName(APIPrefixes.ORDER + GlobalValues.TEMPLATES_EXTENSION);
       }
       return modelAndView;
    }

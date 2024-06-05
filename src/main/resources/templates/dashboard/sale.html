@@ -28,11 +28,7 @@
                <div
                      th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Sale updated.', condition = ${saleUpdatedSuccess})}"></div>
                <div
-                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You are a not seller User.', condition = ${userNotSellerPublishedASaleError})}"></div>
-               <div
                      th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You cannot add your own sale to your cart.', condition = ${userAddOwnSaleToCartError})}"></div>
-               <div
-                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Buyer users cannot add sales at them cart.', condition = ${userNotBuyerAddSaleToCartError})}"></div>
                <div
                      th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You have already added this product to your cart.', condition = ${userAddExistingSaleToCartError})}"></div>
             </div>

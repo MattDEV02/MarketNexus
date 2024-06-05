@@ -24,13 +24,9 @@
             <div
                   th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartLineItemNotDeletedError})}"></div>
             <div
-                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You are a not buyer User.', condition = ${userNotBuyerAddSaleToCartError})}"></div>
-            <div
                   th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Users cannot add them Sale to them Cart.', condition = ${userAddOwnSaleToCartError})}"></div>
             <div
                   th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Order not possible, your Cart is empty.', condition = ${emptyCartError})}"></div>
-            <div
-                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart not exists error.', condition = ${userCartNotExistsError})}"></div>
             <div
                   th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Your balance is not sufficient to complete the order.', condition = ${userBalanceLowerThanCartPriceError})}"></div>
             <div

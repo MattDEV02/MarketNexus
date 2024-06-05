@@ -53,11 +53,6 @@ public class CartController {
       Sale sale = this.saleService.getSale(saleId);
       modelAndView.addObject("sale", sale);
       modelAndView.addObject("isAddedToCart", false);
-      if (!this.credentialsService.areBuyerCredentials(loggedUser.getCredentials())) {
-         CartController.LOGGER.error(GlobalErrorsMessages.USER_NOT_BUYER_ADD_SALE_TO_CART_ERROR);
-         modelAndView.addObject("userNotBuyerAddSaleToCartError", true);
-         return modelAndView;
-      }
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       if (loggedUser.equals(sale.getUser())) {
          CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_OWN_SALE_TO_CART_ERROR);

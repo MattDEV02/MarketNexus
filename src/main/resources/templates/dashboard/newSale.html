@@ -19,8 +19,6 @@
                   th:action="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/'} + ${isUpdate ? ('publishUpdatedSale/' + sale.id) : 'publishNewSale'}}"
                   th:title="${isUpdate ? 'Update this' : 'Publish a new'}  + ' Sale'">
                <div
-                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${userNotSellerPublishedASaleError}, condition = ${userNotSellerPublishedASaleError})}"></div>
-               <div
                      th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${saleAlreadyPublishedError}, condition = ${saleAlreadyPublishedError != null})}"></div>
                <div class="col-12 mt-2 mb-4">
                   <div class="row text-center">

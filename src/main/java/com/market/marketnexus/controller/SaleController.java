@@ -108,11 +108,6 @@ public class SaleController {
            @NonNull BindingResult saleBindingResult,
            @RequestParam("product-images") MultipartFile[] productImages) {
       ModelAndView modelAndView = new ModelAndView(SaleController.PUBLISH_ERROR_VIEW);
-      if (!this.credentialsService.areSellerCredentials(loggedUser.getCredentials())) {
-         modelAndView.addObject("userNotSellerPublishedASaleError", true);
-         SaleController.LOGGER.error(GlobalErrorsMessages.USER_NOT_SELLER_PUBLISHED_A_SALE_ERROR);
-         return modelAndView;
-      }
       sale.setUser(loggedUser);
       sale.setProduct(product);
       this.saleValidator.validate(sale, saleBindingResult);
@@ -169,11 +164,6 @@ public class SaleController {
            @NonNull BindingResult saleBindingResult,
            @RequestParam(name = "product-images", required = false) MultipartFile[] productImages) {
       ModelAndView modelAndView = new ModelAndView(SaleController.PUBLISH_ERROR_VIEW);
-      if (!this.credentialsService.areSellerCredentials(loggedUser.getCredentials())) {
-         modelAndView.addObject("userNotSellerPublishedASaleError", true);
-         SaleController.LOGGER.error(GlobalErrorsMessages.USER_NOT_SELLER_PUBLISHED_A_SALE_ERROR);
-         return modelAndView;
-      }
       sale.setUser(loggedUser);
       sale.setProduct(product);
       this.productValidator.setIsUpdate(true);
