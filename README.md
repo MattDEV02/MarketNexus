@@ -24,7 +24,8 @@ MarketNexus is marketplace made in Spring boot.
 - **Responsive:** The site is responsive and user-friendly.
 
 - **Security and user errors control:** The user's sensitive data, such as their password, are encrypted and stored in a
-  very robust database. There are also errors control in in client-side and server-side
+  very robust database. There are also errors control in in client-side and server-side and it is possible to sign in
+  with your google account.
 
 - **Tested:** The project is tested with Junit tests.
 
@@ -725,7 +726,7 @@ public class SaleNotFoundException extends RuntimeException {
 
 ```XHTML
 <!DOCTYPE html>
-<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns :th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Cart')}">
 

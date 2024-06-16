@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.sql.DataSource;
 
 @Configuration
-//@EnableWebMvc
+@EnableWebSecurity
 public class AuthConfiguration implements WebMvcConfigurer {
 
    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + ProjectPaths.STATIC + "/"};
@@ -80,11 +81,18 @@ public class AuthConfiguration implements WebMvcConfigurer {
               )
               .formLogin(formLogin -> formLogin
                       .loginPage("/login")
-                      .defaultSuccessUrl("/dashboard", true)
+                      .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
                       .failureUrl("/login?invalidCredentials=true")
                       .usernameParameter("username")
                       .passwordParameter("password")
                       .permitAll()
+              )
+              .oauth2Login(oauth2Login ->
+                      oauth2Login
+                              .loginPage("/oauth2/authorization/google")
+                              .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
+                              .failureUrl("/login?invalidCredentials=true")
+                              .permitAll()
               )
               .logout(logout -> logout
                       .logoutUrl("/logout")

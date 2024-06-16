@@ -17,9 +17,12 @@ import com.market.marketnexus.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -89,14 +92,19 @@ public class GlobalController {
 
    @ModelAttribute("loggedUser")
    public User getLoggedUser(@NonNull Model model) {
-      UserDetails userDetails = null;
-      Credentials credentials = null;
       User loggedUser = null;
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
       if (Utils.userIsLoggedIn(authentication)) {
-         userDetails = (UserDetails) authentication.getPrincipal();
-         credentials = this.credentialsService.getCredentials(userDetails.getUsername());
-         loggedUser = this.userService.getUser(credentials);
+         Object principal = authentication.getPrincipal();
+         if (authentication instanceof OAuth2AuthenticationToken) {
+            OAuth2User oAuth2User = (OAuth2User) (principal);
+            String email = oAuth2User.getAttribute("email");
+            loggedUser = this.userService.getUser(email);
+         } else if (authentication instanceof UsernamePasswordAuthenticationToken) {
+            UserDetails userDetails = (UserDetails) (principal);
+            Credentials credentials = this.credentialsService.getCredentials(userDetails.getUsername());
+            loggedUser = this.userService.getUser(credentials);
+         }
          model.addAttribute("loggedUser", loggedUser);
       }
       return loggedUser;
