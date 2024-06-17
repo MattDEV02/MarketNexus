@@ -17,7 +17,6 @@
                </div>
                <form id="registration-form" method="POST" name="registration-form"
                      th:action="@{/registerNewUser}">
-                  
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${userNotRegisteredError}, condition = ${userNotRegisteredError != null})}"></div>
                   <div class="mb-3">
@@ -66,7 +65,6 @@
                             type="number"/>
                      <div
                            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.balance')}"></div>
-                  
                   </div>
                   <div class="mb-3">
                      <label class="form-label" for="email">Email:</label>
@@ -78,7 +76,6 @@
                      <div
                            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.email')}"></div>
                   </div>
-                  
                   <div class="mb-3">
                      <label class="form-label" for="username">Username:</label>
                      <input class="form-control py-2" id="username" name="username"
@@ -91,7 +88,6 @@
                      <div
                            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.username')}"></div>
                   </div>
-                  
                   <div class="mb-3">
                      <label class="form-label" for="password">Password:</label>
                      <div class="input-group">
@@ -158,11 +154,12 @@
                         Register
                         <i class="fas fa-registered mx-1"></i>
                      </button>
+                     <a th:replace="~{fragments/shared/googleLoginButton.html :: googleLoginButton()}"></a>
                   </div>
                </form>
                <div class="col-12">
                   <div class="row text-center" id="registration-footer">
-                     <p>
+                     <p class="mt-1">
                         <a class="text-decoration-none mx-4" th:href="@{/}"
                            th:title="'Go to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' home'">Home</a>
                         <a class="text-decoration-none mx-4" th:href="@{/login}"

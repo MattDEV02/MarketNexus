@@ -23,11 +23,12 @@
                      </span>
                      <a th:href="@{${'/' + API_PREFIXES_MAP.get('ACCOUNT') + '/' + cartLineItem.sale.user.credentials.username}}"
                         th:text="${cartLineItem.sale.user.credentials.username}"
-                        th:title="'The ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' User who made the Sale.'"></a>
+                        th:title="'The ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' User who published the Sale.'"></a>
                   </p>
                   <p class="card-text text-secondary fw-bold"
                      th:text="'Price: ' + ${cartLineItem.cartLineItemPrice} + ' $'"></p>
-                  <p class="card-text fw-bold" th:text="'Available quantity : ' + ${cartLineItem.sale.quantity}"></p>
+                  <p class="card-text fw-bold"
+                     th:text="${isOrder ? 'Quantity' : 'Available quantity'} + ': ' + ${isOrder ? cartLineItem.quantity : cartLineItem.sale.quantity}"></p>
                </div>
             </div>
             <div class="col-2" th:if="${!isOrder}">

@@ -32,7 +32,6 @@
    }
 }
 
-/* CSS personalizzato */
 .tooltip {
    color: #FFFFFF;
 !important /* Cambia il colore del testo */
@@ -53,5 +52,38 @@ font-size: 16 px;
 !important /* Aggiungi spaziatura interna */
 }
 
-/* tooltip bs-tooltip-auto fade show tooltip-arrow tooltip-inner */
+.btn-google {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: #FFFFFF;
+   color: #757575;
+   border: 1px solid #DCDCDC;
+   border-radius: 0.375rem;
+   padding: 0.5rem 0.75rem;
+   font-size: 1rem;
+   font-weight: 500;
+   text-decoration: none;
+   box-shadow: 0 2px 4px 0 #00000019;
+}
+
+.btn-google:hover {
+   background-color: #F5F5F5;
+   color: #757575;
+   text-decoration: none;
+}
+
+.btn-google .google-icon-wrapper {
+   background-color: #FFFFFF;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   margin-right: 0.3rem;
+   padding-right: 0.3rem;
+}
+
+.btn-google .google-icon-wrapper img {
+   width: 18px;
+   height: 18px;
+}
 

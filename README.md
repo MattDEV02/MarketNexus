@@ -4,7 +4,7 @@
 <img  title="MarketNexus Logo"  alt="MarketNexus Logo"  width="19.5%"  src="/src/main/resources/static/images/logo/logo.png"/>
 </p>
 
-MarketNexus is marketplace made in Spring boot.
+MarketNexus is marketplace made in Spring boot where Users can sell and buy from different categories.
 
 #### P.S. = Go to Releases section and download the JAR (latest release).
 
@@ -14,18 +14,21 @@ MarketNexus is marketplace made in Spring boot.
 
 ## ER Model 🔢
 
-<img title="MarketNexus ER model" alt="MarketNexus ER model" src="https://matteolambertucci.altervista.org/MarketNexus/planning/ER_model3.jpeg" width="100%" />
+<img title="MarketNexus ER model" alt="MarketNexus ER model" src="/src/main/resources/static/images/README/design/ER.png" width="100%" />
 
 ## Key Features ✨
 
-- **Usage:** Users can publish their products, put product in their cart, buy other products, search products of a
+- **Usage:** Users can publish their products, put product in their cart (set the quantity), buy other products,
+  search products of a
   wide range of categories and more.
 
 - **Responsive:** The site is responsive and user-friendly. There are also dynamic contents and special effects.
 
 - **Security and user errors control:** The user's sensitive data, such as their password, are encrypted and stored in a
-  very robust database. There are also errors control in in client-side and server-side and it is possible to sign in
-  with your google account.
+  very robust database. There are also errors control in in client-side and server-side (also CHECKS and TRIGGERS in the
+  Database) and it is possible to sign in
+  with your google account. Furthermore, sensitive data present in the configuration files has been hidden via
+  environment variables.
 
 - **Tested:** The project is tested with Junit tests.
 
@@ -151,6 +154,9 @@ mvnw package
 java -jar target/MarketNexus-0.0.1-SNAPSHOT.jar
 ```
 
+P.S. = Remember to create and populate the Postgres Database by running the script contained in the root folder of the
+project.
+
 ## Some code examples 🤖
 
 ### `MarketNexusApplication.java` -> `com.market.marketnexus.MarketNexusApplication`
@@ -191,6 +197,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -203,7 +210,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.sql.DataSource;
 
 @Configuration
-//@EnableWebMvc
+@EnableWebSecurity
 public class AuthConfiguration implements WebMvcConfigurer {
 
    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + ProjectPaths.STATIC + "/"};
@@ -249,7 +256,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
                       authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
                               .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail").permitAll()
-                              .requestMatchers(new RegexRequestMatcher(".*Sale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(HttpMethod.DELETE).denyAll()
@@ -259,11 +266,18 @@ public class AuthConfiguration implements WebMvcConfigurer {
               )
               .formLogin(formLogin -> formLogin
                       .loginPage("/login")
-                      .defaultSuccessUrl("/dashboard", true)
+                      .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
                       .failureUrl("/login?invalidCredentials=true")
                       .usernameParameter("username")
                       .passwordParameter("password")
                       .permitAll()
+              )
+              .oauth2Login(oauth2Login ->
+                      oauth2Login
+                              .loginPage("/oauth2/authorization/google")
+                              .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
+                              .failureUrl("/login?invalidCredentials=true")
+                              .permitAll()
               )
               .logout(logout -> logout
                       .logoutUrl("/logout")
@@ -809,6 +823,61 @@ public class SaleNotFoundException extends RuntimeException {
    img.card-img-top {
       height: 18rem;
    }
+}
+
+.tooltip {
+   color: #FFFFFF;
+!important /* Cambia il colore del testo */
+border-radius: 10 px;
+!important /* Arrotonda i bordi */
+box-shadow: 0 0 10 px rgba(0, 0, 0, 0.5);
+!important /* Aggiungi ombreggiatura */
+font-size: 16 px;
+!important /* Cambia la dimensione del testo */
+}
+
+.tooltip .tooltip-arrow {
+
+}
+
+.tooltip-inner {
+   padding: 10px 13px;
+!important /* Aggiungi spaziatura interna */
+}
+
+.btn-google {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background-color: #FFFFFF;
+   color: #757575;
+   border: 1px solid #DCDCDC;
+   border-radius: 0.375rem;
+   padding: 0.5rem 0.75rem;
+   font-size: 1rem;
+   font-weight: 500;
+   text-decoration: none;
+   box-shadow: 0 2px 4px 0 #00000019;
+}
+
+.btn-google:hover {
+   background-color: #F5F5F5;
+   color: #757575;
+   text-decoration: none;
+}
+
+.btn-google .google-icon-wrapper {
+   background-color: #FFFFFF;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   margin-right: 0.3rem;
+   padding-right: 0.3rem;
+}
+
+.btn-google .google-icon-wrapper img {
+   width: 18px;
+   height: 18px;
 }
 ```
 
