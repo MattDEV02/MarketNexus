@@ -10,7 +10,6 @@ import com.market.marketnexus.helpers.product.ProductImageFileUtils;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
-import com.market.marketnexus.service.CredentialsService;
 import com.market.marketnexus.service.ProductCategoryService;
 import com.market.marketnexus.service.ProductService;
 import com.market.marketnexus.service.SaleService;
@@ -44,8 +43,6 @@ public class SaleController {
    private ProductService productService;
    @Autowired
    private SaleService saleService;
-   @Autowired
-   private CredentialsService credentialsService;
    @Autowired
    private SaleValidator saleValidator;
    @Autowired

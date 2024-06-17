@@ -1,5 +1,5 @@
-<div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-8 col-xxl-8" th:fragment="cartLineInformation(cartLineItem)"
-     th:title="${cartLineItem.sale.user.credentials.username} + ' ' + ${cartLineItem.sale.product.name} + ' X' + ${cartLineItem.sale.quantity} + ' at ' + ${cartLineItem.sale.product.price} + ' $ in your cart'"
+<div class="col-12 col-sm-12 col-md-12 col-lg-11 col-xl-8 col-xxl-8" th:fragment="cartLineInformation(cartLineItem)"
+     th:title="${cartLineItem.sale.user.credentials.username} + ' ' + ${cartLineItem.sale.product.name} + ' X' + ${cartLineItem.quantity} + ' at ' + ${cartLineItem.sale.product.price} + ' $ in your cart'"
      th:with="isOrder=(${isOrder} ?: false)">
    <div class="card border border-bottom-0 rounded shadow">
       <div class="card-body">
@@ -13,7 +13,7 @@
                   </a>
                </div>
             </div>
-            <div th:class="'col-' + ${isOrder ? '8' : '7'}">
+            <div th:class="'col-' + ${isOrder ? '8' : '5'}">
                <div class="ms-5 mt-2">
                   <h5 class="card-title"
                       th:text="${cartLineItem.sale.product.name}"></h5>
@@ -26,12 +26,26 @@
                         th:title="'The ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' User who made the Sale.'"></a>
                   </p>
                   <p class="card-text text-secondary fw-bold"
-                     th:text="'Price: ' + ${cartLineItem.sale.salePrice} + ' $'"></p>
-                  <p class="card-text fw-bold" th:text="'Quantity: ' + ${cartLineItem.sale.quantity}"></p>
+                     th:text="'Price: ' + ${cartLineItem.cartLineItemPrice} + ' $'"></p>
+                  <p class="card-text fw-bold" th:text="'Quantity: ' + ${cartLineItem.quantity}"></p>
                </div>
             </div>
             <div class="col-2" th:if="${!isOrder}">
-               <button class="btn btn-danger delete-cart-button mt-5"
+               <input class="form-control form-control-sm ms-3 mt-5 cartlineitem-quantity-input"
+                      data-bs-toggle="tooltip"
+                      name="quantity" required
+                      th:id="'quantity#' + ${cartLineItem.id}"
+                      th:max="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MAX_VALUE')}"
+                      th:min="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MIN_VALUE')}"
+                      th:object="${cartLineItem}"
+                      th:step="${FIELD_SIZES_MAP.get('SALE_QUANTITY_STEP_VALUE')}"
+                      th:value="${cartLineItem.quantity}"
+                      title="Set Cart Line Product quantity"
+                      type="number"
+               />
+            </div>
+            <div class="col-2" th:if="${!isOrder}">
+               <button class="btn btn-danger delete-cart-button py-1 mt-5"
                        data-bs-toggle="modal"
                        th:data-bs-target="'#confirm-delete-cartlineitem-modal-' + ${cartLineItem.id}"
                        title="Remove Cart line from Cart"

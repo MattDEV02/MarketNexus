@@ -247,8 +247,8 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Sales
     CONSTRAINT sale_product_min_value_check CHECK (MarketNexus.Sales.product >= 1),
     CONSTRAINT sale_quantity_min_value_check CHECK (MarketNexus.Sales.quantity >= 0),
     CONSTRAINT sale_quantity_max_value_check CHECK (MarketNexus.Sales.quantity <= 10),
-    CONSTRAINT sale_saleprice_min_value_check CHECK (MarketNexus.Sales.quantity > 0),
-    CONSTRAINT sale_saleprice_max_value_check CHECK (MarketNexus.Sales.quantity <= 10000),
+    CONSTRAINT sale_saleprice_min_value_check CHECK (MarketNexus.Sales.sale_price > 0),
+    CONSTRAINT sale_saleprice_max_value_check CHECK (MarketNexus.Sales.sale_price <= 10000),
     --CONSTRAINT sale_insertedat_min_value_check CHECK (MarketNexus.Sales.inserted_at <= CURRENT_TIMESTAMP),
     CONSTRAINT sale_insertedat_updatedat_value_check CHECK (MarketNexus.Sales.inserted_at <=
                                                             MarketNexus.Sales.updated_at)
@@ -359,18 +359,22 @@ VALUES (179.98, 1),
 
 CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
 (
-    id          SERIAL                                                                               NOT NULL PRIMARY KEY,
-    cart        INTEGER                                                                              NOT NULL,
-    sale        INTEGER                                                                              NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
+    id                 SERIAL                                                                               NOT NULL PRIMARY KEY,
+    quantity           INTEGER                                                                              NOT NULL,
+    cartlineitem_price FLOAT                                                                                NOT NULL,
+    cart               INTEGER                                                                              NOT NULL,
+    sale               INTEGER                                                                              NOT NULL,
+    inserted_at        TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT cartlineitems_cart_sale_insertedat_unique UNIQUE (cart, sale, inserted_at),
     CONSTRAINT cartlineitems_carts_fk FOREIGN KEY (cart) REFERENCES MarketNexus.Carts (id) ON DELETE CASCADE,
     CONSTRAINT cartlineitems_sale_fk FOREIGN KEY (sale) REFERENCES MarketNexus.Sales (id) ON DELETE CASCADE,
     CONSTRAINT cartlineitems_id_min_value_check CHECK (MarketNexus.cart_line_items.id >= 1),
+    CONSTRAINT cartlineitems_cartlineitemprice_min_value_check CHECK (MarketNexus.cart_line_items.cartlineitem_price > 0),
+    CONSTRAINT cartlineitems_cartlineitemprice_max_value_check CHECK (MarketNexus.cart_line_items.cartlineitem_price <= 10000),
     CONSTRAINT cartlineitems_cart_min_value_check CHECK (MarketNexus.cart_line_items.cart >= 1),
-    CONSTRAINT cartlineitems_sale_min_value_check CHECK (MarketNexus.cart_line_items.sale >= 1)
+    CONSTRAINT cartlineitems_sale_min_value_check CHECK (MarketNexus.cart_line_items.sale >= 1),
+    CONSTRAINT cartlineitems_quantity_min_value_check CHECK (MarketNexus.cart_line_items.quantity >= 1)
     --CONSTRAINT cartlineitems_insertedat_min_value_check CHECK (MarketNexus.cart_line_items.inserted_at <= CURRENT_TIMESTAMP),
-
 );
 
 CREATE
@@ -403,6 +407,35 @@ CREATE
 EXECUTE
     FUNCTION MarketNexus.CHECK_CART_USER_CREDENTIALS_ROLE_FUNCTION();
 
+CREATE
+    OR REPLACE FUNCTION CHECK_CARTLINEITEM_CARTLINEITEMPRICE_VALUE_FUNCTION()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF ((SELECT CASE
+                    WHEN (ROUND(cli.cartlineitem_price::NUMERIC, 2) = ROUND((p.price * cli.quantity)::NUMERIC, 2))
+                        THEN TRUE
+                    ELSE FALSE END AS are_equals
+         FROM MarketNexus.Products p
+                  JOIN MarketNexus.Sales s ON p.id = s.product
+                  JOIN MarketNexus.cart_line_items cli ON s.id = cli.sale
+         WHERE cli.id = NEW.ID) = TRUE) THEN
+        RETURN NEW;
+    ELSE
+        RAISE EXCEPTION 'CartLineItem cartlineitem_price error with this CartLineItem ID: % and this cartlineitem_price: % %.' , NEW.ID, NEW.cartlineitem_price, NEW.quantity;
+    END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+
+CREATE
+    OR REPLACE TRIGGER CARTLINEITEM_CARTLINEITEMPRICE_VALUE_TRIGGER
+    AFTER
+        INSERT
+    ON MarketNexus.cart_line_items
+    FOR EACH ROW
+EXECUTE
+    FUNCTION MarketNexus.CHECK_CARTLINEITEM_CARTLINEITEMPRICE_VALUE_FUNCTION();
 
 CREATE
     OR REPLACE FUNCTION CHECK_CART_USER_SALE_FUNCTION()
@@ -436,23 +469,23 @@ EXECUTE
 
 
 
-CREATE OR REPLACE FUNCTION GET_CARTLINEITEMS_COUNT_FROM_CARTID(cart_id BIGINT)
-    RETURNS INTEGER AS
+CREATE OR REPLACE FUNCTION GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(cart_id BIGINT)
+    RETURNS FLOAT AS
 $$
 DECLARE
-    cartLineItemsNumberFromCartId INTEGER;
+    cartLineItemsPriceSumFromCartId INTEGER;
 BEGIN
-    SELECT COUNT(DISTINCT cli.id)
+    SELECT SUM(DISTINCT cli.id) AS cart_line_items_price_sum_from_cart_id
     FROM MarketNexus.Carts c
              JOIN MarketNexus.cart_line_items cli ON cli.cart = c.id
     WHERE c.id = cart_id
-    INTO cartLineItemsNumberFromCartId;
-    RETURN cartLineItemsNumberFromCartId;
+    INTO cartLineItemsPriceSumFromCartId;
+    RETURN cartLineItemsPriceSumFromCartId;
 END;
 $$ LANGUAGE PLPGSQL;
 
 SELECT *
-FROM GET_CARTLINEITEMS_COUNT_FROM_CARTID(1);
+FROM GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(1);
 
 
 CREATE
@@ -461,8 +494,8 @@ CREATE
 $$
 BEGIN
 
-    IF (SELECT DISTINCT (c.cart_price::FLOAT <
-                         (s.sale_price * MarketNexus.GET_CARTLINEITEMS_COUNT_FROM_CARTID(NEW.cart))::FLOAT)::BOOLEAN
+    IF (SELECT DISTINCT (ROUND(c.cart_price::NUMERIC, 2) ==
+                         (ROUND(GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(NEW.cart)::NUMERIC, 2)))::BOOLEAN
                             AS are_equals
         FROM MarketNexus.Carts c
                  JOIN MarketNexus.cart_line_items cli ON cli.cart = NEW.cart
@@ -491,8 +524,8 @@ COMMENT ON TABLE MarketNexus.cart_line_items IS 'MarketNexus User who puts a Sal
 ALTER TABLE MarketNexus.cart_line_items
     OWNER TO postgres;
 
-INSERT INTO MarketNexus.cart_line_items(cart, sale)
-VALUES (1, 6);
+INSERT INTO MarketNexus.cart_line_items(cart, sale, quantity, cartlineitem_price)
+VALUES (1, 6, 1, 89.99);
 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Orders

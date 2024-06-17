@@ -31,14 +31,14 @@ public class OrderService {
    }
 
    @Transactional
-   public Order makeOrder(@NotNull Long userId) {
+   public Order makeOrder(Long userId) {
       Order savedOrder = null;
       User user = this.userRepository.findById(userId).orElse(null);
       if (user != null) {
          Cart cart = this.userService.getUserCurrentCart(user.getId());
          Float newUserOrderBalance = user.getBalance() - cart.getCartPrice();
          this.userService.updateUserBalance(user, newUserOrderBalance);
-         this.cartService.updateCartLineItemsSalesIsSold(cart);
+         this.cartService.updateCartLineItemsSalesQuantityAndIsSold(cart);
          Order order = new Order(user, cart);
          savedOrder = this.orderRepository.save(order);
          Cart newCart = new Cart(user);

@@ -3,3 +3,12 @@
    height: 150px;
    object-fit: cover;
 }
+
+input[type = "number"] {
+   width: 57%;
+!important;
+   padding-top: .37em;
+!important;
+   padding-bottom: .37rem;
+!important;
+}

@@ -20,6 +20,8 @@ import java.util.Objects;
 @Table(name = "Sales", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "sales_user_product_unique", columnNames = {"_user", "product"}))
 public class Sale {
 
+   public static final Integer SALE_DEFAULT_QUANTITY = 1;
+
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
@@ -29,7 +31,7 @@ public class Sale {
 
    @JsonIgnore
    @NotNull
-   @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
+   @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE - 1)
    @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
    @Column(name = "quantity", nullable = false)
    private Integer quantity;

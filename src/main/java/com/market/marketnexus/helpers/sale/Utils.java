@@ -17,4 +17,8 @@ public class Utils {
    public static @NotNull Float calculateSalePrice(@NotNull Sale sale) {
       return Utils.roundNumberTo2Decimals(sale.getProduct().getPrice() * sale.getQuantity());
    }
+
+   public static @NotNull Float calculateSalePrice(@NotNull Sale sale, Integer quantity) {
+      return Utils.roundNumberTo2Decimals(sale.getProduct().getPrice() * quantity);
+   }
 }

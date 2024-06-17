@@ -26,12 +26,17 @@ public class CartService {
    }
 
    @Transactional
-   public void updateCartLineItemsSalesIsSold(@NotNull Cart cart) {
+   public void updateCartLineItemsSalesQuantityAndIsSold(@NotNull Cart cart) {
       List<CartLineItem> cartLineItems = cart.getCartLineItems();
-      Sale sale = null;
       for (CartLineItem cartLineItem : cartLineItems) {
-         sale = cartLineItem.getSale();
-         sale.setIsSold(true);
+         Sale sale = cartLineItem.getSale();
+         Integer newSaleQuantity = sale.getQuantity() - cartLineItem.getQuantity();
+         sale.setQuantity(newSaleQuantity);
+         Float newSalePrice = Utils.calculateSalePrice(sale, Sale.SALE_DEFAULT_QUANTITY);
+         sale.setSalePrice(newSalePrice);
+         if (sale.getQuantity() == 0) {
+            sale.setIsSold(true);
+         }
       }
    }
 
@@ -67,6 +72,7 @@ public class CartService {
 
    @Transactional
    public CartLineItem makeCartLineItem(@NotNull Cart cart, @NotNull Sale sale) {
+      System.out.println(sale);
       CartLineItem cartLineItem = new CartLineItem(cart, sale);
       CartLineItem cartLineItemSaved = this.cartLineItemRepository.save(cartLineItem);
       cart.getCartLineItems().add(cartLineItemSaved);
@@ -81,20 +87,36 @@ public class CartService {
       CartLineItem cartLineItemToRemove = cart.getCartLineItems().stream()
               .filter(cartLineItem -> cartLineItem.getId().equals(cartLineItemId))
               .findFirst().orElse(null);
-      cart.getCartLineItems().remove(cartLineItemToRemove);
-      Float newCartPrice = this.calculateCartPrice(cart);
-      cart.setCartPrice(newCartPrice);
-      this.cartRepository.save(cart);
+      if (cartLineItemToRemove != null) {
+         cart.getCartLineItems().remove(cartLineItemToRemove);
+         Float newCartPrice = this.calculateCartPrice(cart);
+         cart.setCartPrice(newCartPrice);
+         this.cartRepository.save(cart);
+      }
       return !this.cartLineItemRepository.existsById(cartLineItemId);
+   }
+
+   public void updateCartLineItem(@NotNull Cart cart, @NotNull Long cartLineItemId, Integer quantity) {
+      CartLineItem cartLineItemToUpdate = cart.getCartLineItems().stream()
+              .filter(cartLineItem -> cartLineItem.getId().equals(cartLineItemId))
+              .findFirst().orElse(null);
+      if (cartLineItemToUpdate != null && quantity >= 0 && quantity <= cartLineItemToUpdate.getSale().getQuantity()) {
+         cartLineItemToUpdate.setQuantity(quantity);
+         Float newCartLineItemPrice = Utils.calculateSalePrice(cartLineItemToUpdate.getSale(), cartLineItemToUpdate.getQuantity());
+         cartLineItemToUpdate.setCartLineItemPrice(newCartLineItemPrice);
+         this.cartLineItemRepository.save(cartLineItemToUpdate);
+         Float newCartPrice = this.calculateCartPrice(cart);
+         cart.setCartPrice(newCartPrice);
+         this.cartRepository.save(cart);
+         System.out.println(newCartPrice);
+      }
    }
 
    public Float calculateCartPrice(@NotNull Cart cart) {
       Float cartPrice = 0.0F;
       List<CartLineItem> cartLineItems = cart.getCartLineItems();
-      Sale sale = null;
       for (CartLineItem cartLineItem : cartLineItems) {
-         sale = cartLineItem.getSale();
-         cartPrice += sale.getSalePrice();
+         cartPrice += cartLineItem.getCartLineItemPrice();
       }
       return Utils.roundNumberTo2Decimals(cartPrice);
    }
