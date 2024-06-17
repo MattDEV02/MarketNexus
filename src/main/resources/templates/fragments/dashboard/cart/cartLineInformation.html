@@ -27,7 +27,7 @@
                   </p>
                   <p class="card-text text-secondary fw-bold"
                      th:text="'Price: ' + ${cartLineItem.cartLineItemPrice} + ' $'"></p>
-                  <p class="card-text fw-bold" th:text="'Quantity: ' + ${cartLineItem.quantity}"></p>
+                  <p class="card-text fw-bold" th:text="'Available quantity : ' + ${cartLineItem.sale.quantity}"></p>
                </div>
             </div>
             <div class="col-2" th:if="${!isOrder}">
@@ -35,10 +35,10 @@
                       data-bs-toggle="tooltip"
                       name="quantity" required
                       th:id="'quantity#' + ${cartLineItem.id}"
-                      th:max="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MAX_VALUE')}"
-                      th:min="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MIN_VALUE')}"
+                      th:max="${FIELD_SIZES_MAP.get('CARTLINEITEM_QUANTITY_MAX_VALUE')}"
+                      th:min="${FIELD_SIZES_MAP.get('CARTLINEITEM_QUANTITY_MIN_VALUE')}"
                       th:object="${cartLineItem}"
-                      th:step="${FIELD_SIZES_MAP.get('SALE_QUANTITY_STEP_VALUE')}"
+                      th:step="${FIELD_SIZES_MAP.get('CARTLINEITEM_QUANTITY_STEP_VALUE')}"
                       th:value="${cartLineItem.quantity}"
                       title="Set Cart Line Product quantity"
                       type="number"

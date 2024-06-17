@@ -115,7 +115,6 @@ public class SaleService {
       Set<Sale> soldSales = new HashSet<Sale>();
       Iterable<Sale> sales = this.saleRepository.findAllByUser(user);
       for (Sale sale : sales) {
-         System.out.println(sale);
          if (sale != null && sale.getIsSold()) {
             soldSales.add(sale);
          }

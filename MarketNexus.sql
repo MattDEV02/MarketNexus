@@ -353,7 +353,7 @@ ALTER TABLE MarketNexus.Carts
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Carts(cart_price, _user)
-VALUES (179.98, 1),
+VALUES (89.99, 1),
        (0, 2),
        (0, 3);
 
@@ -422,7 +422,7 @@ BEGIN
          WHERE cli.id = NEW.ID) = TRUE) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'CartLineItem cartlineitem_price error with this CartLineItem ID: % and this cartlineitem_price: % %.' , NEW.ID, NEW.cartlineitem_price, NEW.quantity;
+        RAISE EXCEPTION 'CartLineItem cartlineitem_price error with this CartLineItem ID: % and this cartlineitem_price: %.' , NEW.ID, NEW.cartlineitem_price;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
@@ -468,14 +468,13 @@ EXECUTE
     FUNCTION MarketNexus.CHECK_CART_USER_SALE_FUNCTION();
 
 
-
 CREATE OR REPLACE FUNCTION GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(cart_id BIGINT)
     RETURNS FLOAT AS
 $$
 DECLARE
-    cartLineItemsPriceSumFromCartId INTEGER;
+    cartLineItemsPriceSumFromCartId FLOAT;
 BEGIN
-    SELECT SUM(DISTINCT cli.id) AS cart_line_items_price_sum_from_cart_id
+    SELECT SUM(ROUND(cli.cartlineitem_price::NUMERIC, 2)) AS cart_line_items_price_sum_from_cart_id
     FROM MarketNexus.Carts c
              JOIN MarketNexus.cart_line_items cli ON cli.cart = c.id
     WHERE c.id = cart_id
@@ -493,13 +492,11 @@ CREATE
     RETURNS TRIGGER AS
 $$
 BEGIN
-
-    IF (SELECT DISTINCT (ROUND(c.cart_price::NUMERIC, 2) ==
-                         (ROUND(GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(NEW.cart)::NUMERIC, 2)))::BOOLEAN
-                            AS are_equals
+    IF (SELECT (ROUND(c.cart_price::NUMERIC, 2) =
+                ROUND(GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(NEW.cart)::NUMERIC, 2))
+                   AS are_equals
         FROM MarketNexus.Carts c
-                 JOIN MarketNexus.cart_line_items cli ON cli.cart = NEW.cart
-                 JOIN MarketNexus.Sales s ON cli.sale = NEW.sale
+        WHERE c.id = NEW.cart
         LIMIT 1) THEN
         RETURN NEW;
     ELSE
@@ -507,18 +504,16 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
-
 /*
 CREATE
     OR REPLACE TRIGGER CART_CARTPRICE_VALUE_TRIGGER
-    BEFORE
+    AFTER
         INSERT
     ON MarketNexus.cart_line_items
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.CHECK_CART_CARTPRICE_VALUE_FUNCTION();
 */
-
 COMMENT ON TABLE MarketNexus.cart_line_items IS 'MarketNexus User who puts a Sale Product in his Cart.';
 
 ALTER TABLE MarketNexus.cart_line_items
@@ -549,34 +544,26 @@ CREATE
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF ((SELECT DISTINCT CASE
-                             WHEN (o._user != s._user)::BOOLEAN
-                                 THEN TRUE
-                             ELSE FALSE END AS are_equals
-         FROM MarketNexus.Orders o
-                  JOIN MarketNexus.Carts c ON o.cart = c.id
-                  JOIN MarketNexus.cart_line_items cli ON cli.cart = c.id
-                  JOIN MarketNexus.Sales s ON cli.sale = s.id
-         WHERE o.id = NEW.ID
-         LIMIT 1) = TRUE) THEN
+    IF (SELECT (o._user = c._user) AS are_equals
+        FROM MarketNexus.Orders o
+                 JOIN MarketNexus.Carts c ON o.cart = c.id
+        WHERE o.id = NEW.ID) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'User that Order his Sale error, with this Order ID: % and this User ID: %.' , NEW.ID, NEW._user;
+        RAISE EXCEPTION 'User that Ordered his Cart error, with this Order ID: %, this Cart ID: % and this User ID: %.' , NEW.ID, NEW.cart, NEW._user;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
 
-
-/*
 CREATE
     OR REPLACE TRIGGER ORDER_USER_SALE_FUNCTION_TRIGGER
-    BEFORE
+    AFTER
         INSERT
     ON MarketNexus.Orders
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.CHECK_ORDER_USER_SALE_FUNCTION();
-*/
+
 
 COMMENT ON TABLE MarketNexus.Orders IS 'MarketNexus User who buys all Sale Products that are in his Cart.';
 
@@ -664,4 +651,4 @@ $$ LANGUAGE PLPGSQL;
 
 SELECT *
 FROM GET_USERS_SALES_STATS();
-;
+

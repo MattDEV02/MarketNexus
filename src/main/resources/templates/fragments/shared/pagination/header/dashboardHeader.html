@@ -18,7 +18,7 @@
                      <i class="fas fa-home mx-1"></i>
                   </a>
                </li>
-               <li class="nav-item">
+               <li class="nav-item" th:if="${loggedUser != null}">
                   <a class="nav-link link-primary" th:href="@{/dashboard/account}"
                      th:title="'Go to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' account'}">
                      Account

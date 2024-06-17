@@ -15,6 +15,7 @@ cartLineItemQuantityInputs.forEach(cartLineItemQuantityInput => {
       axios.post(url, data)
          .then(response => {
             console.log(response);
+            console.log(response.data);
             //document.getElementById("cartContainer").innerHTML = response.data;
             window.location.reload();
          })

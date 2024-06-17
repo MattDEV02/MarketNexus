@@ -36,7 +36,7 @@
       <span class="text-secondary fs-5 ms-2 me-3" th:text="${sale.salePrice} + ' $'"></span>
       <a class="btn btn-primary ms-3 mb-2" data-bs-toggle="tooltip"
          role="button"
-         th:href="@{'/' + ${API_PREFIXES_MAP.get('CART')} + '/' + ${sale.id} + '?quantity=' + ${sale.quantity}}"
+         th:href="@{'/' + ${API_PREFIXES_MAP.get('CART')} + '/' + ${sale.id}}"
          th:if="${loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER') && !isLoggedUser && !sale.isSold && !isAddedToCart}"
          th:title="'Add this ' + ${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' cart'"
       >
@@ -45,12 +45,12 @@
       <a class="btn btn-warning ms-3 mb-2" data-bs-toggle="tooltip"
          role="button"
          th:href="@{'/' + ${API_PREFIXES_MAP.get('DASHBOARD')} + '/updateSale/' + ${sale.id}}"
-         th:if="${!sale.isSold && loggedUser != null && #strings.contains(loggedUser.credentials.role, 'SELLER') && isLoggedUser}"
+         th:if="${!sale.isSold && loggedUser != null && isLoggedUser && sale.user == loggedUser}"
          title="Modify this Sale.">
          <i class="fas fa-edit"></i>
       </a>
       <span data-bs-toggle="tooltip"
-            th:if="${!sale.isSold && loggedUser != null && #strings.contains(loggedUser.credentials.role, 'SELLER') && isLoggedUser && isAccountPage}"
+            th:if="${!sale.isSold && loggedUser != null && isLoggedUser && isAccountPage && sale.user == loggedUser}"
             title="Delete this Sale.">
           <button class="btn btn-danger ms-2 mb-2" data-bs-toggle="modal"
                   th:data-bs-target="'#confirm-delete-sale-modal-' + ${sale.id}"
@@ -59,8 +59,9 @@
       </button>
       </span>
       <button class="btn btn-danger ms-3 mb-2" data-bs-toggle="tooltip"
-              th:if="${sale.isSold && loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER')}"
-              th:title="${sale.product.name} + ' sold out.'"
+              disabled
+              th:if="${sale.quantity == 0}"
+              th:title="${sale.product.name} + ' is sold out.'"
               type="button">
          <i class="fas fa-times-circle"></i>
       </button>

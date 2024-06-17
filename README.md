@@ -21,7 +21,7 @@ MarketNexus is marketplace made in Spring boot.
 - **Usage:** Users can publish their products, put product in their cart, buy other products, search products of a
   wide range of categories and more.
 
-- **Responsive:** The site is responsive and user-friendly.
+- **Responsive:** The site is responsive and user-friendly. There are also dynamic contents and special effects.
 
 - **Security and user errors control:** The user's sensitive data, such as their password, are encrypted and stored in a
   very robust database. There are also errors control in in client-side and server-side and it is possible to sign in
@@ -969,6 +969,7 @@ I am the only author of this beautiful site 😉
 |     Junit      |       4        |
 |   PostgreSQL   |      16.0      |
 |   thymeleaf    |     3.0.14     |
+| OAuth (Google) |      2.0       |
 |      XML       |      1.1       |
 |   Bootstrap    |     5.3.3      |
 |  FontAwesome   |     5.15.4     |

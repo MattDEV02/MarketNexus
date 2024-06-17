@@ -17,7 +17,7 @@
                <h1 th:if="${hasSearchedSales}">
                   Searched sales 🏖️
                </h1>
-               <h1 th:text="${'Welcome ' + (loggedUser != null ? loggedUser.credentials.username : '') + ' 👋'}"
+               <h1 th:text="${'Welcome ' + (loggedUser != null ? loggedUser.credentials.username : 'Google User') + ' 👋'}"
                    th:unless="${hasSearchedSales}">
                </h1>
             </div>

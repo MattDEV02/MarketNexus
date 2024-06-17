@@ -34,9 +34,7 @@ public class CartService {
          sale.setQuantity(newSaleQuantity);
          Float newSalePrice = Utils.calculateSalePrice(sale, Sale.SALE_DEFAULT_QUANTITY);
          sale.setSalePrice(newSalePrice);
-         if (sale.getQuantity() == 0) {
-            sale.setIsSold(true);
-         }
+         sale.setIsSold(true);
       }
    }
 

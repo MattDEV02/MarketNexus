@@ -61,7 +61,7 @@ public class SaleController {
    public ModelAndView searchSales(@NonNull HttpServletRequest request, @Valid @ModelAttribute("loggedUser") User loggedUser) {
       String productName = request.getParameter("product-name");
       String productCategoryId = request.getParameter("category");
-      SaleController.LOGGER.info("User username: {} has searched sale with product name: {} and product category ID: {}", loggedUser.getCredentials().getUsername(), productName, productCategoryId);
+      SaleController.LOGGER.info("User username: {} has searched sale with product name: {} and product category ID: {}", loggedUser != null ? loggedUser.getCredentials().getUsername() : "Google User", productName, productCategoryId);
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/index.html");
       Iterable<Sale> searchedSales = null;
       if (productName.isEmpty() && productCategoryId.isEmpty()) {

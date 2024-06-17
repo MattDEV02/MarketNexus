@@ -1,5 +1,6 @@
 package com.market.marketnexus.controller.validator;
 
+import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.model.Product;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.repository.ProductRepository;
@@ -24,6 +25,9 @@ public class SaleValidator implements Validator {
       Product product = sale.getProduct();
       if (this.saleRepository.existsByUser(sale.getUser()) && this.productRepository.existsByNameAndDescriptionAndPriceAndCategory(product.getName(), product.getDescription(), product.getPrice(), product.getCategory())) {
          errors.reject("saleAlreadyPublishedError", "You have already published this sale.");
+      }
+      if (sale.getQuantity() <= (FieldSizes.SALE_SALEPRICE_MIN_VALUE + 1)) {
+         errors.rejectValue("sale.quantity", "Min.sale.quantity");
       }
    }
 

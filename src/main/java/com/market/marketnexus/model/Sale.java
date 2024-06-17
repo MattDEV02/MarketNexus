@@ -31,7 +31,7 @@ public class Sale {
 
    @JsonIgnore
    @NotNull
-   @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE - 1)
+   @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
    @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
    @Column(name = "quantity", nullable = false)
    private Integer quantity;
@@ -64,7 +64,7 @@ public class Sale {
       this.user = null;
       this.product = null;
       this.isSold = false;
-      //this.quantity = 0;
+      this.quantity = Sale.SALE_DEFAULT_QUANTITY;
       this.salePrice = 0.0F;
    }
 

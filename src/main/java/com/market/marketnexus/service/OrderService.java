@@ -49,7 +49,6 @@ public class OrderService {
       return savedOrder;
    }
 
-   @Transactional
    public Set<Sale> getUserOrderedSales(@NotNull User user) {
       Set<Sale> orderedSales = new HashSet<Sale>();
       Iterable<Order> orders = this.getAllOrdersByUser(user);

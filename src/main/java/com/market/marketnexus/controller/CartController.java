@@ -46,7 +46,7 @@ public class CartController {
    }
 
    @GetMapping(value = {"/{saleId}", "/{saleId}/"})
-   public ModelAndView addSaleProductToCartById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("saleId") Long saleId, @RequestParam("quantity") Integer quantity) {
+   public ModelAndView addSaleProductToCartById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("saleId") Long saleId) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.SALE + GlobalValues.TEMPLATES_EXTENSION);
       Sale sale = this.saleService.getSale(saleId);
       modelAndView.addObject("sale", sale);
@@ -61,7 +61,7 @@ public class CartController {
       } else {
          CartLineItem savedCartLineItem = this.cartService.makeCartLineItem(cart, sale);
          modelAndView.addObject("sale", savedCartLineItem.getSale());
-         modelAndView.addObject("isAddedToCart", TypeValidators.validateTimestamp(savedCartLineItem.getInsertedAt())); //
+         modelAndView.addObject("isAddedToCart", TypeValidators.validateTimestamp(savedCartLineItem.getInsertedAt()));
       }
       return modelAndView;
    }

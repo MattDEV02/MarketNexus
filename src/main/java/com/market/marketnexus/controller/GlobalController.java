@@ -1,5 +1,6 @@
 package com.market.marketnexus.controller;
 
+import com.market.marketnexus.exception.UserEmailNotExistsException;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
@@ -98,11 +99,17 @@ public class GlobalController {
       if (Utils.userIsLoggedIn(authentication)) {
          Object principal = authentication.getPrincipal();
          if (Utils.userIsLoggedInWithOAuth2(authentication)) {
-            OAuth2User oAuth2User = (OAuth2User) (principal);
-            String email = oAuth2User.getAttribute("email");
-            loggedUser = this.userService.getUser(email);
-            credentials = loggedUser.getCredentials();
-            Utils.updateUserCredentialsOAuth2Authentication(authentication, credentials);
+            String email = null;
+            try {
+               OAuth2User oAuth2User = (OAuth2User) (principal);
+               email = oAuth2User.getAttribute("email");
+               loggedUser = this.userService.getUser(email);
+               credentials = loggedUser.getCredentials();
+               Utils.updateUserCredentialsOAuth2Authentication(authentication, credentials);
+            } catch (UserEmailNotExistsException userEmailNotExistsException) {
+               // oppure redirect
+               System.out.println("User with email: " + email + " has logged in with Google and without " + GlobalValues.APP_NAME + " account.");
+            }
          } else if (Utils.userIsLoggedInWithUsernameAndPassword(authentication)) {
             UserDetails userDetails = (UserDetails) (principal);
             credentials = this.credentialsService.getCredentials(userDetails.getUsername());

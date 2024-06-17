@@ -20,7 +20,7 @@ public class FieldSizes {
 
    public static final int PASSWORD_MIN_LENGTH = 8;
    public static final int PASSWORD_MAX_LENGTH = 8;
-   
+
    public static final int PRODUCT_NAME_MIN_LENGTH = 3;
    public static final int PRODUCT_NAME_MAX_LENGTH = 30;
 
@@ -35,12 +35,19 @@ public class FieldSizes {
    public static final float PRODUCT_PRICE_MAX_VALUE = 1000F;
    public static final float PRODUCT_PRICE_STEP_VALUE = 0.01F;
 
-   public static final int SALE_QUANTITY_MIN_VALUE = 1;
+   public static final int SALE_QUANTITY_MIN_VALUE = 0;
    public static final int SALE_QUANTITY_MAX_VALUE = 10;
    public static final int SALE_QUANTITY_STEP_VALUE = 1;
 
    public static final float SALE_SALEPRICE_MIN_VALUE = 0.01F;
    public static final float SALE_SALEPRICE_MAX_VALUE = 10000F;
+
+   public static final int CARTLINEITEM_QUANTITY_MIN_VALUE = 1;
+   public static final int CARTLINEITEM_QUANTITY_MAX_VALUE = 10;
+   public static final int CARTLINEITEM_QUANTITY_STEP_VALUE = 1;
+
+   public static final float CARTLINEITEM_CARTLINEITEMPRICE_MIN_VALUE = 0.01F;
+   public static final float CARTLINEITEM_CARTLINEITEMPRICE_MAX_VALUE = 10000F;
 
    public static final float CART_CARTPRICE_MIN_VALUE = 0.01F;
 
