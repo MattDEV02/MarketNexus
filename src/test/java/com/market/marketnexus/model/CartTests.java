@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CartsTests {
+public class CartTests {
    @BeforeEach
    public void setUp() {
 
@@ -46,27 +46,30 @@ public class CartsTests {
       assertNotNull(cart);
       assertNotNull(sale1);
       assertFalse(sale1.getIsSold());
-      assertNull(sale1.getQuantity());
+      assertEquals(sale1.getQuantity(), Sale.SALE_DEFAULT_QUANTITY);
       assertEquals(sale1.getSalePrice(), 0.0F);
       CartLineItem cartLineItem1 = new CartLineItem(cart, sale1);
       assertNotNull(cartLineItem1);
+      assertEquals(cartLineItem1.getQuantity(), CartLineItem.CARTLINEITEM_DEFAULT_QUANTITY);
       cartLineItem1.setInsertedAt(LocalDateTime.now());
       assertEquals(cartLineItem1.getInsertedAt().getClass(), LocalDateTime.class);
       Sale sale2 = new Sale();
       assertNotNull(sale2);
       CartLineItem cartLineItem2 = new CartLineItem(cart, sale2);
       assertNotNull(cartLineItem2);
+      assertEquals(cartLineItem1.getQuantity(), CartLineItem.CARTLINEITEM_DEFAULT_QUANTITY);
       cartLineItem2.setInsertedAt(LocalDateTime.MAX);
       assertEquals(cartLineItem2.getInsertedAt().getClass(), LocalDateTime.class);
       assertFalse(sale2.getIsSold());
-      assertNull(sale2.getQuantity());
+      assertEquals(sale2.getQuantity(), Sale.SALE_DEFAULT_QUANTITY);
       assertEquals(sale2.getSalePrice(), 0.0F);
       Sale sale3 = new Sale();
       assertNotNull(sale3);
       assertFalse(sale3.getIsSold());
-      assertNull(sale3.getQuantity());
+      assertEquals(sale3.getQuantity(), Sale.SALE_DEFAULT_QUANTITY);
       assertEquals(sale3.getSalePrice(), 0.0F);
       CartLineItem cartLineItem3 = new CartLineItem(cart, sale3);
+      assertEquals(cartLineItem1.getQuantity(), CartLineItem.CARTLINEITEM_DEFAULT_QUANTITY);
       assertNotNull(cartLineItem3);
       cartLineItem3.setInsertedAt(LocalDateTime.MIN);
       assertEquals(cartLineItem3.getInsertedAt().getClass(), LocalDateTime.class);

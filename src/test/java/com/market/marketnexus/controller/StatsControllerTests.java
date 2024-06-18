@@ -23,7 +23,49 @@ class StatsControllerTests {
    public void testTableData() throws Exception {
       this.mockMvc.perform(MockMvcRequestBuilders
                       .get("/" + APIPrefixes.STATS + "/tableData")
-                      .contentType(MediaType.APPLICATION_JSON))
-              .andExpect(MockMvcResultMatchers.status().is3xxRedirection());
+                      .accept(MediaType.APPLICATION_JSON))
+              .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+              .andExpect(MockMvcResultMatchers.content().string(""))
+              .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/login/**"));
+   }
+
+   @Test
+   public void testChartData() throws Exception {
+      this.mockMvc.perform(MockMvcRequestBuilders
+                      .get("/" + APIPrefixes.STATS + "/chartData")
+                      .accept(MediaType.APPLICATION_JSON))
+              .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+              .andExpect(MockMvcResultMatchers.content().string(""))
+              .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/login/**"));
+   }
+
+   @Test
+   public void testMapData() throws Exception {
+      this.mockMvc.perform(MockMvcRequestBuilders
+                      .get("/" + APIPrefixes.STATS + "/mapData")
+                      .accept(MediaType.APPLICATION_JSON))
+              .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+              .andExpect(MockMvcResultMatchers.content().string(""))
+              .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/login/**"));
+   }
+
+   @Test
+   public void testCalendarDataSalesData() throws Exception {
+      this.mockMvc.perform(MockMvcRequestBuilders
+                      .get("/" + APIPrefixes.STATS + "/calendarData/salesData")
+                      .accept(MediaType.APPLICATION_JSON))
+              .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+              .andExpect(MockMvcResultMatchers.content().string(""))
+              .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/login/**"));
+   }
+
+   @Test
+   public void testCalendarDataOrdersData() throws Exception {
+      this.mockMvc.perform(MockMvcRequestBuilders
+                      .get("/" + APIPrefixes.STATS + "/calendarData/ordersData")
+                      .accept(MediaType.APPLICATION_JSON))
+              .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+              .andExpect(MockMvcResultMatchers.content().string(""))
+              .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/login/**"));
    }
 }

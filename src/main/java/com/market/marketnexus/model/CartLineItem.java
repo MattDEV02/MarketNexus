@@ -18,7 +18,7 @@ import java.util.Objects;
 @Table(name = "cart_line_items", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "carts_user_unique", columnNames = {"cart", "sale", "inserted_at"}))
 public class CartLineItem {
 
-   public static final Integer DEFAULT_QUANTITY = 1;
+   public static final Integer CARTLINEITEM_DEFAULT_QUANTITY = 1;
 
    @Id
    @Unsigned
@@ -54,7 +54,7 @@ public class CartLineItem {
    public CartLineItem() {
       this.cart = null;
       this.sale = null;
-      this.quantity = CartLineItem.DEFAULT_QUANTITY;
+      this.quantity = CartLineItem.CARTLINEITEM_DEFAULT_QUANTITY;
       this.cartLineItemPrice = 0.0F;
    }
 
