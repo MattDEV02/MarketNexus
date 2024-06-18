@@ -33,7 +33,6 @@
             </div>
             <div class="col-2" th:if="${!isOrder}">
                <input class="form-control form-control-sm ms-3 mt-5 cartlineitem-quantity-input"
-                      data-bs-toggle="tooltip"
                       name="quantity" required
                       th:id="'quantity#' + ${cartLineItem.id}"
                       th:max="${FIELD_SIZES_MAP.get('CARTLINEITEM_QUANTITY_MAX_VALUE')}"

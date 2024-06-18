@@ -70,7 +70,6 @@ public class CartService {
 
    @Transactional
    public CartLineItem makeCartLineItem(@NotNull Cart cart, @NotNull Sale sale) {
-      System.out.println(sale);
       CartLineItem cartLineItem = new CartLineItem(cart, sale);
       CartLineItem cartLineItemSaved = this.cartLineItemRepository.save(cartLineItem);
       cart.getCartLineItems().add(cartLineItemSaved);
@@ -106,7 +105,6 @@ public class CartService {
          Float newCartPrice = this.calculateCartPrice(cart);
          cart.setCartPrice(newCartPrice);
          this.cartRepository.save(cart);
-         System.out.println(newCartPrice);
       }
    }
 

@@ -1,24 +1,28 @@
-const cartLineItemQuantityInputs = document.querySelectorAll(".cartlineitem-quantity-input"),
-   baseUrl = "http://localhost:80/dashboard/cart/updateCartLineItemQuantity/";
+document.addEventListener("DOMContentLoaded", () => {
+   const cartContainer = document.getElementById("cart-container"),
+      baseUrl = "http://localhost:80/dashboard/cart/updateCartLineItemQuantity/";
 
-
-cartLineItemQuantityInputs.forEach(cartLineItemQuantityInput => {
-   cartLineItemQuantityInput.addEventListener("change", event => {
-      event.preventDefault();
-      const
-         id = cartLineItemQuantityInput.id.replace("quantity#", ""),
-         quantity = parseInt(cartLineItemQuantityInput.value, 10);
-      const url = baseUrl + id;
-      const data = {
-         quantity
-      };
-      axios.post(url, data)
-         .then(response => {
-            console.log(response);
-            console.log(response.data);
-            //document.getElementById("cartContainer").innerHTML = response.data;
-            window.location.reload();
-         })
-         .catch(error => console.error("Error:", error));
+   cartContainer.addEventListener("change", event => {
+      if (validateObject(event) && validateObject(event.target) && event.target.classList.contains("cartlineitem-quantity-input")) {
+         const cartLineItemQuantityInput = event.target;
+         // id e quantity del CartLineItem i-esimo.
+         const
+            id = cartLineItemQuantityInput.id.replace("quantity#", ""),
+            quantity = parseInt(cartLineItemQuantityInput.value, 10);
+         const url = baseUrl + id;
+         const data = {
+            quantity
+         };
+         if (validateURI(url)) {
+            axios.post(url, data)
+               .then(response => {
+                  console.log(response);
+                  cartContainer.innerHTML = response.data;
+               })
+               .catch(error => console.error("Error:", error))
+               .finally(() => cartLineItemQuantityInput.focus());
+         }
+      }
    });
 });
+

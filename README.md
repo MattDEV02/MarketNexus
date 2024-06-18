@@ -733,14 +733,210 @@ public class SaleNotFoundException extends RuntimeException {
       super(message);
    }
 }
+```
 
+### `pom.xml`
+
+```XML
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.2</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.market</groupId>
+    <artifactId>MarketNexus</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>MarketNexus</name>
+    <description>MarketNexus is a marketplace made in Spring boot 🤖</description>
+    <properties>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <contributors>
+        <contributor>
+            <name>Matteo Lambertucci</name>
+            <email>mat.lambertucci@stud.uniroma3.it</email>
+            <url>https://github.com/MattDEV02</url>
+            <organization>Università degli Studi di Roma Tre</organization>
+            <organizationUrl>https://www.uniroma3.it/</organizationUrl>
+            <roles>
+                <role>ALL</role>
+            </roles>
+            <timezone>+2</timezone>
+        </contributor>
+    </contributors>
+
+</project>
+```
+
+### `/src/main/resources/application.properties`
+
+```properties
+#==================================
+# = Datasource configurations
+#==================================
+spring.jpa.show-sql=true
+logging.level.org.hibernate.SQL=debug
+logging.level.org.hibernate.type.descriptor.sql=trace
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.open-in-view=false
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.properties.hibernate.default_schema=marketnexus
+#spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.datasource.url=${DATABASE_URL}
+spring.datasource.username=${DATABASE_USERNAME}
+spring.datasource.password=${DATABASE_PASSWORD}
+spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
+#==================================
+# = Web server configurations
+#==================================
+spring.application.name=MarketNexus
+server.port=80
+server.servlet.context-path=/
+logging.level.root=INFO
+spring.servlet.multipart.max-file-size=5000KB
+spring.servlet.multipart.max-request-size=5000KB
+server.error.whitelabel.enabled=false
+server.error.include-stacktrace=always
+#server.servlet.session.timeout=40m
+spring.web.resources.static-locations=classpath:/static/
+spring.servlet.multipart.enabled=true
+spring.web.locale=en_US
+#spring.web.resources.cache.period=0
+#spring.web.resources.chain.cache=false
+spring.jackson.time-zone=Europe/Rome
+#==================================
+# = Messages configurations
+#==================================
+spring.messages.basename=messages/messages
+spring.messages.encoding=ISO-8859-1
+#==================================
+# = Thymeleaf configurations
+#==================================
+spring.thymeleaf.check-template-location=true
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.servlet.content-type=text/html
+spring.thymeleaf.cache=false
+spring.thymeleaf.enabled=true
+spring.thymeleaf.encoding=UTF-8
+#==================================
+# = SMTP configurations
+#==================================
+spring.mail.host=smtp.office365.com
+spring.mail.port=587
+spring.mail.protocol=smtp
+spring.mail.username=mat.lambertucci@stud.uniroma3.it
+spring.mail.password=${SMTP_PASSWORD}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+#==================================
+# = Google Oauth2 configurations
+#==================================
+spring.security.oauth2.client.registration.google.client-id=${GOOGLE_OAUTH2_CLIENT_ID}
+spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_OAUTH2_CLIENT_SECRET}
+spring.security.oauth2.client.registration.google.scope=profile, email
+spring.security.oauth2.client.registration.google.redirect-uri=http://localhost:80/login/oauth2/code/google
+spring.security.oauth2.client.registration.google.authorization-grant-type=authorization_code
+spring.security.oauth2.client.provider.google.authorization-uri=https://accounts.google.com/o/oauth2/auth
+spring.security.oauth2.client.provider.google.token-uri=https://oauth2.googleapis.com/token
+spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleapis.com/oauth2/v3/userinfo
 ```
 
 ### `/dashboard/cart.html`
 
-```XHTML
+```thymeleaftemplatesfragmentexpressions
 <!DOCTYPE html>
-<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns :th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
 
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Cart')}">
 

@@ -68,7 +68,7 @@ public class CartController {
 
    @PostMapping(value = {"/updateCartLineItemQuantity/{cartLineItemId}", "/updateCartLineItemQuantity/{cartLineItemId}/"})
    public ModelAndView updateCartLineItemQuantity(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId, @RequestBody Map<String, String> data) {
-      ModelAndView modelAndView = new ModelAndView("dashboard/cart.html :: cartContainer");
+      ModelAndView modelAndView = new ModelAndView("dashboard/cart.html :: dynamicCartSection");
       try {
          Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
          Integer quantity = Integer.parseInt(data.get("quantity"));

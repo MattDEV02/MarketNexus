@@ -12,9 +12,10 @@
     <artifactId>MarketNexus</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>MarketNexus</name>
-    <description>MarketNexus</description>
+    <description>MarketNexus is a marketplace made in Spring boot 🤖</description>
     <properties>
         <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
         <dependency>
@@ -99,5 +100,19 @@
             </plugin>
         </plugins>
     </build>
+
+    <contributors>
+        <contributor>
+            <name>Matteo Lambertucci</name>
+            <email>mat.lambertucci@stud.uniroma3.it</email>
+            <url>https://github.com/MattDEV02</url>
+            <organization>Università degli Studi di Roma Tre</organization>
+            <organizationUrl>https://www.uniroma3.it/</organizationUrl>
+            <roles>
+                <role>ALL</role>
+            </roles>
+            <timezone>+2</timezone>
+        </contributor>
+    </contributors>
 
 </project>
