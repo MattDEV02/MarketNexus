@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 @RequestMapping(value = "/" + APIPrefixes.ACCOUNT)
@@ -125,15 +124,9 @@ public class AccountController {
          AccountController.LOGGER.info("Updated account with User ID: {}", updatedUser.getId());
       } else {
          List<ObjectError> userErrors = userBindingResult.getAllErrors();
-         for (ObjectError userGlobalError : userErrors) {
-            modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
-            System.out.println(userGlobalError.getCode() + " -> " + userGlobalError.getDefaultMessage());
-         }
+         modelAndView.addObject("userErrors", userErrors);
          List<ObjectError> credentialsErrors = credentialsBindingResult.getAllErrors();
-         for (ObjectError credentialGlobalErrors : credentialsErrors) {
-            modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
-            System.out.println(credentialGlobalErrors.getCode() + " -> " + credentialGlobalErrors.getDefaultMessage());
-         }
+         modelAndView.addObject("credentialsErrors", credentialsErrors);
          Iterable<Sale> notSoldSales = this.saleService.getAllNotSoldSales(loggedUser);
          Iterable<Sale> soldSales = this.saleService.getAllUserSoldSales(loggedUser);
          Iterable<Sale> orderedSales = this.orderService.getUserOrderedSales(loggedUser);

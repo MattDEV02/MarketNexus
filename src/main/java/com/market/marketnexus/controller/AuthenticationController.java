@@ -105,12 +105,11 @@ public class AuthenticationController {
    @PostMapping(value = {"/sendForgotUsernameEmail", "/sendForgotUsernameEmail/"})
    public ModelAndView sendForgotUsernameEmail(
            @Valid @NonNull @ModelAttribute("user") User user,
-           @NonNull BindingResult userBindingResult,
-           @RequestParam("email") String email) {
+           @NonNull BindingResult userBindingResult) {
       ModelAndView modelAndView = new ModelAndView("forgotUsername.html");
       if (!userBindingResult.hasFieldErrors("email")) {
          try {
-            User userByEmail = this.userService.getUser(email);
+            User userByEmail = this.userService.getUser(user.getEmail());
             this.forgotUsernameEmailService.sendEmail(userByEmail.getEmail(), userByEmail.getCredentials().getUsername());
             modelAndView.addObject("emailSentSuccess", true);
          } catch (IOException | MessagingException exception) {

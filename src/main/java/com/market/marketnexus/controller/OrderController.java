@@ -33,8 +33,6 @@ public class OrderController {
    @Autowired
    private OrderService orderService;
    @Autowired
-   private CartService cartService;
-   @Autowired
    private UserService userService;
 
    @GetMapping(value = {"", "/"})

@@ -49,18 +49,18 @@ public class CredentialsValidator implements Validator {
       if ((!this.getIsAccountUpdate() && this.credentialsRepository.existsByUsername(credentials.getUsername())) ||
               (this.getIsAccountUpdate() && !this.getCurrentUsername().equals(credentials.getUsername()) && this.credentialsRepository.existsByUsername(credentials.getUsername()))
       ) {
-         errors.reject("credentials.username.unique", "cc");
+         errors.rejectValue("username", "credentials.username.unique", "Username already used.");
       }
       if (!this.getIsAccountUpdate() && !FieldValidators.passwordValidator(credentials.getPassword())) {
-         errors.reject("credentials.password.invalidFormat");
+         errors.rejectValue("password", "credentials.password.invalidFormat", "The password must be 8 characters long and must has uppercase, lowercase and numbers.");
       } else if (this.isAccountUpdate && TypeValidators.validateString(credentials.getPassword()) && !FieldValidators.passwordValidator(credentials.getPassword())) {
-         errors.reject("credentials.password.invalidFormat");
+         errors.rejectValue("password", "credentials.password.invalidFormat", "The password must be 8 characters long and must has uppercase, lowercase and numbers.");
       }
       if (this.getConfirmPassword() == null || !credentials.getPassword().equals(this.getConfirmPassword())) {
-         errors.reject("credentials.password.passwordDifferentFromConfirmPasswordError");
+         errors.rejectValue("password", "credentials.password.passwordDifferentFromConfirmPasswordError", "The confirm-password must be the same as the password.");
       }
       if (!Utils.existsRole(credentials.getRole())) {
-         errors.reject("credentials.role.notExists");
+         errors.rejectValue("role", "credentials.role.notExists", "Selected role does not exists.");
       }
 
    }

@@ -41,7 +41,7 @@ MarketNexus is marketplace made in Spring boot where Users can sell and buy Prod
 - **Tooltips guide Display:** There are many tooltips and popups that guide the User in the site. There is also a FAQs
   page.
 
-- **Language:** There is only the English language at the moment.
+- **Language:** There is the English language at the moment and a bit of internationalization.
 
 ## Screenshots 📸
 

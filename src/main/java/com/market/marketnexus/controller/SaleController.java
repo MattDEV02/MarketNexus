@@ -98,12 +98,12 @@ public class SaleController {
 
    @PostMapping(value = {"/publishNewSale", "/publishNewSale/"})
    public ModelAndView publishNewSale(
-           @Valid @ModelAttribute("loggedUser") User loggedUser,
            @Valid @ModelAttribute("product") Product product,
            @NonNull BindingResult productBindingResult,
            @Valid @ModelAttribute("sale") Sale sale,
            @NonNull BindingResult saleBindingResult,
-           @RequestParam("product-images") MultipartFile[] productImages) {
+           @RequestParam("product-images") MultipartFile[] productImages,
+           @Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(SaleController.PUBLISH_ERROR_VIEW);
       sale.setUser(loggedUser);
       sale.setProduct(product);

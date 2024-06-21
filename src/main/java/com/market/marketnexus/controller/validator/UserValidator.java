@@ -27,10 +27,10 @@ public class UserValidator implements Validator {
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       User user = (User) object;
       if (!this.getIsAccountUpdate() && this.userService.userExistsByEmail(user.getEmail())) {
-         errors.rejectValue("email", "user.email.unique");
+         errors.reject("user.email.unique", "Email already used.");
       }
       if (user.getNation() == null) {
-         errors.rejectValue("nation", "user.nation.notExists");
+         errors.reject("user.nation.notExists", "Selected Nation does not exists.");
       }
    }
 

@@ -34,29 +34,17 @@
                <form class="row justify-content-center" id="update-account-form"
                      method="POST"
                      name="update-account-form"
-                     th:action="@{/dashboard/account/updateAccount}">
+                     th:action="@{${'/' + API_PREFIXES_MAP.get('ACCOUNT') + '/updateAccount'}}">
                   <div
                         th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Account updated successfully.', condition = ${accountUpdatedSuccessful != null})}"></div>
                   <div
-                        th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Server ERROR, account not deleted.', condition = ${accountNotDeletedError != null})}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.name')}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.email')}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.surname')}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.birthDate')}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.balance')}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.username')}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.password')}"></div>
-                  <div
-                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.role')}"></div>
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Server ERROR, account not deleted.', condition = ${accountNotDeletedError != null})}"></div>
+                  <div th:each="userError : ${userErrors}">
+                     <div th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${userError.getDefaultMessage()}, condition = ${userError != null})}"></div>
+                  </div>
+                  <div th:each="credentialsError : ${credentialsErrors}">
+                     <div th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${credentialsError.getDefaultMessage()}, condition = ${credentialsError != null})}"></div>
+                  </div>
                   <div
                         th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Server ERROR, Sale not deleted.', condition = ${saleNotDeletedError})}"></div>
                   <div
@@ -85,6 +73,7 @@
                      <div class="row justify-content-center">
                         <div class="col-12 col-sm-10 col-md-9 col-lg-7 col-xl-3 col-xxl-3">
                            <button class="btn btn-lg btn-outline-success form-control py-2"
+                                   data-bs-toggle="tooltip"
                                    id="confirm-button"
                                    th:title="'Confirm your new ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' informations'"
                                    type="submit">
@@ -93,19 +82,21 @@
                            </button>
                         </div>
                         <div class="col-12 col-sm-10 col-md-9 col-lg-7 col-xl-3 col-xxl-3 mt-4 mt-xl-0">
-                           <button class="btn btn-lg btn-outline-warning form-control py-2" id="cancel-button"
+                           <button class="btn btn-lg btn-outline-warning form-control py-2" data-bs-toggle="tooltip"
+                                   id="cancel-button"
                                    th:title="'Reset your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' informations'"
                                    type="button">
                               Cancel
                               <i class="fas fa-ban ms-1"></i>
                            </button>
                         </div>
-                        <div class="col-12 col-sm-10 col-md-9 col-lg-7 col-xl-3 col-xxl-3 mt-4 mt-xl-0">
+                        <div class="col-12 col-sm-10 col-md-9 col-lg-7 col-xl-3 col-xxl-3 mt-4 mt-xl-0"
+                             data-bs-toggle="tooltip"
+                             th:title="'Delete your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account with this email: ' + ${loggedUser != null ? loggedUser.email : 'Undefined'}">
                            <button class="btn btn-lg btn-outline-danger form-control py-2"
                                    data-bs-target="#confirm-delete-account-modal"
                                    data-bs-toggle="modal"
                                    id="delete-account-button"
-                                   th:title="'Delete your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account with this email: ' + ${loggedUser != null ? loggedUser.email : 'Undefined'}"
                                    type="button">
                               Delete Account
                               <i class="fas fa-trash ms-1"></i>

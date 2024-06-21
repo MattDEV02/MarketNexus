@@ -208,7 +208,7 @@ public class ForgotUsernameEmailService {
                                                         <table border="0" cellpadding="0" cellspacing="0">
                                                           <tr>
                                                             <td align="center" bgcolor="#1a82e2" class="confirm-button" style="border-radius: 7px;">
-                                                              <a target="_blank" href="http://localhost:8080/login" target="_blank"  style="display: inline-block; padding: 15px 28px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 19px; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">Go to MarketNexus</a>
+                                                              <a target="_blank" href="http://localhost/login" target="_blank"  style="display: inline-block; padding: 15px 28px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 19px; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">Go to MarketNexus</a>
                                                             </td>
                                                           </tr>
                                                         </table>
