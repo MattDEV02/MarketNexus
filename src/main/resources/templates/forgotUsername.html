@@ -12,7 +12,8 @@
          <div class="row justify-content-center">
             <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 col-xxl-5 shadow border rounded px-5 pt-4 pb-3 mt-3">
                <div class="row text-center mt-2 mb-4">
-                  <h2 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Forgot username? 🕵️‍♂️'"></h2>
+                  <h2 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Forgot username? 🕵️‍♂️'">Forgot
+                     username?</h2>
                </div>
                <div
                      th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Email Successfully sent, check your mailbox.', condition = ${emailSentSuccess})}"></div>

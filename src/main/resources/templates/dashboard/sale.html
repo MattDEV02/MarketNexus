@@ -17,7 +17,7 @@
          <div class="col-12 mt-5">
             <div class="row text-center">
                <h1 th:if="${isValidSale && !isAddedToCart}"
-                   th:text="${sale.product.name} + ' in sale'"></h1>
+                   th:text="${sale.product.name} + ' in sale'">Sale</h1>
                <div th:if="${isAddedToCart}">
                   <h1 class="text-success"
                       th:text="'The product ' + ${sale.product.name} + ' has been added to the cart'"></h1>
@@ -41,8 +41,7 @@
             </div>
          </div>
          <div th:unless="${isValidSale}">
-            <div
-                  th:replace="~{fragments/dashboard/home/saleNotFound.html :: saleNotFound(${saleId})}"></div>
+            <div th:replace="~{fragments/dashboard/home/saleNotFound.html :: saleNotFound(${saleId})}"></div>
          </div>
          <div class="col-12 mt-3 mb-4"
               th:if="${isValidSale && loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER') && (isAddedToCart || userAddExistingSaleToCartError != null)}">

@@ -17,6 +17,7 @@ public class CredentialsValidator implements Validator {
    private CredentialsRepository credentialsRepository;
    private String confirmPassword;
    private Boolean isAccountUpdate = false;
+   private String currentUsername;
 
    public Boolean getIsAccountUpdate() {
       return this.isAccountUpdate;
@@ -24,6 +25,14 @@ public class CredentialsValidator implements Validator {
 
    public void setIsAccountUpdate(Boolean isAccountUpdate) {
       this.isAccountUpdate = isAccountUpdate;
+   }
+
+   public String getCurrentUsername() {
+      return this.currentUsername;
+   }
+
+   public void setCurrentUsername(String currentUsername) {
+      this.currentUsername = currentUsername;
    }
 
    public String getConfirmPassword() {
@@ -37,19 +46,21 @@ public class CredentialsValidator implements Validator {
    @Override
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       Credentials credentials = (Credentials) object;
-      if (!this.getIsAccountUpdate() && this.credentialsRepository.existsByUsername(credentials.getUsername())) {
-         errors.rejectValue("username", "credentials.username.unique");
+      if ((!this.getIsAccountUpdate() && this.credentialsRepository.existsByUsername(credentials.getUsername())) ||
+              (this.getIsAccountUpdate() && !this.getCurrentUsername().equals(credentials.getUsername()) && this.credentialsRepository.existsByUsername(credentials.getUsername()))
+      ) {
+         errors.reject("credentials.username.unique", "cc");
       }
       if (!this.getIsAccountUpdate() && !FieldValidators.passwordValidator(credentials.getPassword())) {
-         errors.rejectValue("password", "credentials.password.invalidFormat");
+         errors.reject("credentials.password.invalidFormat");
       } else if (this.isAccountUpdate && TypeValidators.validateString(credentials.getPassword()) && !FieldValidators.passwordValidator(credentials.getPassword())) {
-         errors.rejectValue("password", "credentials.password.invalidFormat");
+         errors.reject("credentials.password.invalidFormat");
       }
       if (this.getConfirmPassword() == null || !credentials.getPassword().equals(this.getConfirmPassword())) {
-         errors.reject("passwordDifferentFromConfirmPasswordError", "The password must be the same as the confirm password.");
+         errors.reject("credentials.password.passwordDifferentFromConfirmPasswordError");
       }
       if (!Utils.existsRole(credentials.getRole())) {
-         errors.rejectValue("role", "credentials.role.notExists");
+         errors.reject("credentials.role.notExists");
       }
 
    }

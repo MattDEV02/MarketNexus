@@ -110,6 +110,7 @@ public class AccountController {
       ModelAndView modelAndView = new ModelAndView(AccountController.UPDATE_ERROR_VIEW);
       this.userValidator.setIsAccountUpdate(true);
       this.credentialsValidator.setIsAccountUpdate(true);
+      this.credentialsValidator.setCurrentUsername(loggedUser.getCredentials().getUsername());
       this.credentialsValidator.setConfirmPassword(confirmPassword);
       this.userValidator.validate(user, userBindingResult);
       this.credentialsValidator.validate(credentials, credentialsBindingResult);
@@ -123,6 +124,16 @@ public class AccountController {
          Utils.updateUserCredentialsAuthentication(updatedUser.getCredentials());
          AccountController.LOGGER.info("Updated account with User ID: {}", updatedUser.getId());
       } else {
+         List<ObjectError> userErrors = userBindingResult.getAllErrors();
+         for (ObjectError userGlobalError : userErrors) {
+            modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
+            System.out.println(userGlobalError.getCode() + " -> " + userGlobalError.getDefaultMessage());
+         }
+         List<ObjectError> credentialsErrors = credentialsBindingResult.getAllErrors();
+         for (ObjectError credentialGlobalErrors : credentialsErrors) {
+            modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
+            System.out.println(credentialGlobalErrors.getCode() + " -> " + credentialGlobalErrors.getDefaultMessage());
+         }
          Iterable<Sale> notSoldSales = this.saleService.getAllNotSoldSales(loggedUser);
          Iterable<Sale> soldSales = this.saleService.getAllUserSoldSales(loggedUser);
          Iterable<Sale> orderedSales = this.orderService.getUserOrderedSales(loggedUser);
@@ -134,14 +145,6 @@ public class AccountController {
          modelAndView.addObject("soldSales", soldSales);
          modelAndView.addObject("orderedSales", orderedSales);
          modelAndView.addObject("tableData", this.statsController.getTableData());
-         List<ObjectError> userErrors = userBindingResult.getAllErrors();
-         for (ObjectError userGlobalError : userErrors) {
-            modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
-         }
-         List<ObjectError> credentialsErrors = credentialsBindingResult.getAllErrors();
-         for (ObjectError credentialGlobalErrors : credentialsErrors) {
-            modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
-         }
       }
       return modelAndView;
    }

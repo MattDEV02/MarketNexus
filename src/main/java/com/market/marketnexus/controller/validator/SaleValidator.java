@@ -23,11 +23,11 @@ public class SaleValidator implements Validator {
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       Sale sale = (Sale) object;
       Product product = sale.getProduct();
-      if (this.saleRepository.existsByUser(sale.getUser()) && this.productRepository.existsByNameAndDescriptionAndPriceAndCategory(product.getName(), product.getDescription(), product.getPrice(), product.getCategory())) {
+      if (this.saleRepository.existsByUser(sale.getUser()) && this.productRepository.existsByNameAndDescriptionAndPriceAndCategoryOrderById(product.getName(), product.getDescription(), product.getPrice(), product.getCategory())) {
          errors.reject("saleAlreadyPublishedError", "You have already published this sale.");
       }
-      if (sale.getQuantity() <= (FieldSizes.SALE_SALEPRICE_MIN_VALUE + 1)) {
-         errors.rejectValue("sale.quantity", "Min.sale.quantity");
+      if (sale.getQuantity() < (FieldSizes.SALE_QUANTITY_MIN_VALUE + 1)) {
+         errors.rejectValue("quantity", "Min.sale.quantity");
       }
    }
 

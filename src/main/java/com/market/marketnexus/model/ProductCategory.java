@@ -10,7 +10,7 @@ import jdk.jfr.Unsigned;
 
 import java.util.Objects;
 
-@Entity(name = "product_categories")
+@Entity(name = "ProductCategory")
 @Table(name = "product_categories", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "productcategories_name_unique", columnNames = "name"))
 public class ProductCategory {
    @Id

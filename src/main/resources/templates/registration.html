@@ -13,7 +13,7 @@
             <div class="col-12 col-sm-12 col-md-10 col-lg-8 col-xl-7 col-xxl-6 shadow border rounded px-5 pt-4 pb-2"
                  th:title="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' registration form.'">
                <div class="row text-center mt-2 mb-4">
-                  <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Registration 🕵️‍♂️'"></h1>
+                  <h1 th:text="${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Registration 🕵️‍♂️'">Registration</h1>
                </div>
                <form id="registration-form" method="POST" name="registration-form"
                      th:action="@{/registerNewUser}">
@@ -114,8 +114,6 @@
                             th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
                             th:title="'Confirm your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' username'"
                             type="password"/>
-                     <div
-                           th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${passwordDifferentFromConfirmPasswordError}, condition = ${passwordDifferentFromConfirmPasswordError != null})}"></div>
                   </div>
                   <div class="mb-3">
                      <label class="form-label" for="nation">Nation:</label>

@@ -7,11 +7,12 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jdk.jfr.Unsigned;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 
 import java.util.Objects;
 
-@Entity(name = "Nations")
+@Entity(name = "Nation")
 @Table(name = "Nations", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "nations_name_unique", columnNames = "name"))
 public class Nation {
 
@@ -32,11 +33,11 @@ public class Nation {
 
    }
 
-   public Nation(String name) {
+   public Nation(@NotNull String name) {
       this.name = name;
    }
 
-   public Nation(Long id, String name) {
+   public Nation(Long id, @NotNull String name) {
       this.id = id;
       this.name = name;
    }
@@ -49,11 +50,11 @@ public class Nation {
       this.id = id;
    }
 
-   public String getName() {
+   public @NotNull String getName() {
       return this.name;
    }
 
-   public void setName(String name) {
+   public void setName(@NotNull String name) {
       this.name = name;
    }
 

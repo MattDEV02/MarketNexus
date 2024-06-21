@@ -14,10 +14,6 @@ public class NationService {
    @Autowired
    protected NationRepository nationRepository;
 
-   public Boolean nationExistsById(Long id) {
-      return this.nationRepository.existsById(id);
-   }
-
    public Iterable<Nation> getAllNations() {
       return this.nationRepository.findAllByOrderByName();
    }

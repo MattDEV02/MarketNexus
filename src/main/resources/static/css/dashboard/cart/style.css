@@ -5,10 +5,24 @@
 }
 
 input[type = "number"] {
-   width: 57%;
+   width: 54%;
 !important;
    padding-top: .37em;
 !important;
    padding-bottom: .37rem;
 !important;
+}
+
+@media (max-width: 767px) {
+   input[type = "number"] {
+      width: 94%;
+   }
+
+   .product-image {
+      width: 100%;
+   }
+}
+
+.cartlineitem-quantity-input {
+   border: 1px solid #414040;
 }

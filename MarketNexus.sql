@@ -365,6 +365,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
     cart               INTEGER                                                                              NOT NULL,
     sale               INTEGER                                                                              NOT NULL,
     inserted_at        TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
+    updated_at         TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT cartlineitems_cart_sale_insertedat_unique UNIQUE (cart, sale, inserted_at),
     CONSTRAINT cartlineitems_carts_fk FOREIGN KEY (cart) REFERENCES MarketNexus.Carts (id) ON DELETE CASCADE,
     CONSTRAINT cartlineitems_sale_fk FOREIGN KEY (sale) REFERENCES MarketNexus.Sales (id) ON DELETE CASCADE,
@@ -373,9 +374,20 @@ CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
     CONSTRAINT cartlineitems_cartlineitemprice_max_value_check CHECK (MarketNexus.cart_line_items.cartlineitem_price <= 10000),
     CONSTRAINT cartlineitems_cart_min_value_check CHECK (MarketNexus.cart_line_items.cart >= 1),
     CONSTRAINT cartlineitems_sale_min_value_check CHECK (MarketNexus.cart_line_items.sale >= 1),
-    CONSTRAINT cartlineitems_quantity_min_value_check CHECK (MarketNexus.cart_line_items.quantity >= 1)
+    CONSTRAINT cartlineitems_quantity_min_value_check CHECK (MarketNexus.cart_line_items.quantity >= 1),
+    CONSTRAINT cartlineitems_insertedat_updatedat_value_check CHECK (MarketNexus.cart_line_items.inserted_at <=
+                                                                     MarketNexus.cart_line_items.updated_at)
     --CONSTRAINT cartlineitems_insertedat_min_value_check CHECK (MarketNexus.cart_line_items.inserted_at <= CURRENT_TIMESTAMP),
 );
+
+CREATE
+    OR REPLACE TRIGGER CARTLINEITEMS_UPDATEDAT_TRIGGER
+    BEFORE
+        UPDATE
+    ON MarketNexus.cart_line_items
+    FOR EACH ROW
+EXECUTE
+    FUNCTION MarketNexus.UPDATEDAT_SET_TIMESTAMP_FUNCTION();
 
 CREATE
     OR REPLACE FUNCTION CHECK_CART_USER_CREDENTIALS_ROLE_FUNCTION()
@@ -645,6 +657,7 @@ BEGIN
               GROUP BY c.username, s.inserted_at::DATE
               ORDER BY salesPublishedPerDay DESC) AS userAndDayToSalesPublished
         GROUP BY userAndDayToSalesPublished.user_username
+        ORDER BY SUM(salesPublishedPerDay) DESC -- TOT
         LIMIT 5;
 END
 $$ LANGUAGE PLPGSQL;

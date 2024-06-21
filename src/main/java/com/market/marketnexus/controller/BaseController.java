@@ -15,7 +15,6 @@ public class BaseController {
    private final static Map<String, String> FAQ_ACCORDIONS = new HashMap<>();
 
    static {
-      // https://github.com/MattDEV02/LambertQuiz/blob/main/src/screens/helpScreen.js
       FAQ_ACCORDIONS.put("How can I register in " + GlobalValues.APP_NAME + "?", "Simply ! Go to /registration and insert your data!");
       FAQ_ACCORDIONS.put("Is it possible to have 2 account?", "Yes it is possible but with 2 not equals emails and usernames!");
       FAQ_ACCORDIONS.put("Is it possible to navigate in offline-mode?", "No, unfortunately it is not possible.");

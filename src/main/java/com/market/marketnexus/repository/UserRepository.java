@@ -18,9 +18,13 @@ public interface UserRepository extends CrudRepository<User, Long> {
    public Optional<User> findByCredentials(Credentials credentials);
 
    @Query(value = """
-           SELECT DISTINCT n.name AS nationName, COUNT(DISTINCT u.id) AS numbersOfUsers 
-           FROM Users u JOIN u.nation n 
-           GROUP BY n.name
+           SELECT
+              DISTINCT
+                 user.nation.name AS nationName, COUNT(DISTINCT user.id) AS numbersOfUsers
+           FROM
+              User user
+           GROUP BY
+              user.nation.name
            """
    )
    public List<Object[]> countUsersByNation();

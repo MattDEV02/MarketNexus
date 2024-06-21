@@ -14,7 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity(name = "cart_line_items")
+@Entity(name = "CartLineItem")
 @Table(name = "cart_line_items", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "carts_user_unique", columnNames = {"cart", "sale", "inserted_at"}))
 public class CartLineItem {
 
@@ -50,6 +50,11 @@ public class CartLineItem {
    @Column(name = "inserted_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
+
+   @Column(name = "updated_at", nullable = false)
+   @Temporal(TemporalType.TIMESTAMP)
+   @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
+   private LocalDateTime updatedAt;
 
    public CartLineItem() {
       this.cart = null;
@@ -120,12 +125,27 @@ public class CartLineItem {
       this.insertedAt = insertedAt;
    }
 
+   public LocalDateTime getUpdatedAt() {
+      return this.updatedAt;
+   }
+
+   public void setUpdatedAt(LocalDateTime updatedAt) {
+      this.updatedAt = updatedAt;
+   }
 
    @PrePersist
    public void prePersist() {
       if (this.insertedAt == null) {
          this.insertedAt = LocalDateTime.now();
       }
+      if (this.updatedAt == null) {
+         this.updatedAt = this.insertedAt;
+      }
+   }
+
+   @PreUpdate
+   public void preUpdate() {
+      this.updatedAt = LocalDateTime.now();
    }
 
    @Override
@@ -151,6 +171,7 @@ public class CartLineItem {
               ", cartLineItemPrice = " + this.getCartLineItemPrice().toString() +
               ", cart = " + this.getCart().toString() +
               ", sale = " + this.getSale().toString() +
+              // ", insertedAt = " + this.getInsertedAt().toString() +
               // ", insertedAt = " + this.getInsertedAt().toString() +
               " }";
    }

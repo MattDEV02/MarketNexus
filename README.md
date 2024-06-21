@@ -4,17 +4,21 @@
 <img  title="MarketNexus Logo"  alt="MarketNexus Logo"  width="19.5%"  src="/src/main/resources/static/images/logo/logo.png"/>
 </p>
 
-MarketNexus is marketplace made in Spring boot where Users can sell and buy from different categories.
+MarketNexus is marketplace made in Spring boot where Users can sell and buy Products from different categories.
 
 #### P.S. = Go to Releases section and download the JAR (latest release).
 
 ## UML Domain Model ‍🎓
 
-<img title="MarketNexus Domain Model" alt="MarketNexus Domain model" src="/src/main/resources/static/images/README/design/Domain_Model.png" width="100%" />
+<img title="MarketNexus UML Domain Model" alt="MarketNexus UML Domain model" src="/src/main/resources/static/images/README/design/Domain_Model.png" width="100%" />
 
 ## ER Model 🔢
 
-<img title="MarketNexus ER model" alt="MarketNexus ER model" src="/src/main/resources/static/images/README/design/ER.png" width="100%" />
+<img title="MarketNexus ER model" alt="MarketNexus ER model" src="/src/main/resources/static/images/README/design/ER_Model.png" width="100%" />
+
+## Relational Model 👨‍🎓
+
+<img title="MarketNexus Relational model" alt="MarketNexus Relational model" src="/src/main/resources/static/images/README/design/Relational_Model.png" width="100%" />
 
 ## Key Features ✨
 
@@ -616,7 +620,7 @@ public class Cart {
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
 
-   @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER, orphanRemoval = true)
+   @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER, orphanRemoval = true)
    private List<CartLineItem> cartLineItems;
 
    public Cart() {
@@ -1404,6 +1408,55 @@ I am the only author of this beautiful site 😉
 - [Vinted](https://www.vinted.it/)
 
 - [Decathlon](https://www.decathlon.it/)
+
+# API Documentation 👨‍💻
+
+## AuthenticationController:
+
+### GET "/registration"
+
+**Description:** Displays the form to register a new User.
+
+### POST "/registerNewUser"
+
+**Description:** Takes the data from the previous form and uses it to register a new User.
+
+**Request Parameters:**
+
+- `confirm-password` (form parameter, required): The User's confirm-password.
+
+### GET "/login"
+
+**Description:** Displays the login form for a User.
+
+### GET "/forgotUsername"
+
+**Description:** Displays the form that allows a User to recover their username using their email.
+
+### POST "/sendForgotUsernameEmail"
+
+**Description:** Takes a User's email from the previous form and uses it to send an email (HTML TEXT) to that address
+with the User's username.
+
+**Request Parameters:**
+
+- `email` (form parameter, required): The User's personal email.
+
+## SaleController: ("/dashboard")
+
+### GET "/"
+
+**Description:** Displays all the Sales registered on the site.
+
+### GET "/{saleId}"
+
+**Description:** Displays a specific Sale registered on the site based on the matching saleId.
+
+**Request Parameters:**
+
+- `saleId` (path parameter, required): The ID of a Sale registered on the site.
+
+...
 
 ## License 🗒️
 

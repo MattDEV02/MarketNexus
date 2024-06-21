@@ -16,7 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Entity(name = "Sales")
+@Entity(name = "Sale")
 @Table(name = "Sales", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = @UniqueConstraint(name = "sales_user_product_unique", columnNames = {"_user", "product"}))
 public class Sale {
 
@@ -46,7 +46,7 @@ public class Sale {
    @ManyToOne(targetEntity = User.class, optional = false)
    @JoinColumn(name = "_user", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_users_fk"))
    private User user;
-   @ManyToOne(targetEntity = Product.class, optional = false, cascade = {CascadeType.DETACH, CascadeType.REMOVE})
+   @ManyToOne(targetEntity = Product.class, optional = false, cascade = {CascadeType.REMOVE})
    @JoinColumn(name = "product", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "sales_products_fk"))
    private Product product;
    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Temporals.DATE_FORMAT)

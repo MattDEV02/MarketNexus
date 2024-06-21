@@ -27,7 +27,7 @@ public class OrderService {
    private CartService cartService;
 
    public Iterable<Order> getAllOrdersByUser(@NotNull User user) {
-      return this.orderRepository.findAllByUser(user);
+      return this.orderRepository.findAllByUserOrderByInsertedAt(user);
    }
 
    @Transactional

@@ -9,9 +9,11 @@ import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-@Entity(name = "Carts")
+@Entity(name = "Cart")
 @Table(name = "Carts", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "carts_user_insertedat_unique", columnNames = {"_user", "inserted_at"})})
 public class Cart {
    public final static Float CART_START_PRICE = 0.0F;
@@ -35,7 +37,8 @@ public class Cart {
    @Temporal(TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
 
-   @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER, orphanRemoval = true)
+   @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER, orphanRemoval = true)
+   @OrderBy(value = "insertedAt DESC")
    private List<CartLineItem> cartLineItems;
 
    public Cart() {
@@ -118,20 +121,11 @@ public class Cart {
    public String toString() {
       return "Cart: {" +
               // "id = " + this.getId() != null ? this.getId().toString() : "null" +
-              ", user = " + this.getUser().toString() +
+              //", user = " + this.getUser().toString() +
               ", cartPrice = " + this.getCartPrice().toString() +
-              ", cartLineItems = " + this.getCartLineItems().toString() +
+              //", cartLineItems = " + this.getCartLineItems().toString() +
               //", insertedAt = " + this.getInsertedAt() != null ? this.getInsertedAt().toString() : "null" +
               " }";
-   }
-
-   public void sortCartLineItemsByInsertedAt() {
-      Collections.sort(this.cartLineItems, new Comparator<CartLineItem>() {
-         @Override
-         public int compare(CartLineItem cartLineItem1, CartLineItem cartLineItem2) {
-            return cartLineItem2.getInsertedAt().compareTo(cartLineItem1.getInsertedAt());
-         }
-      });
    }
 
 }

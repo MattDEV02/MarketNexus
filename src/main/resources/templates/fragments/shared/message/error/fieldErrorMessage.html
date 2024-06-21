@@ -1,6 +1,5 @@
-<div th:fragment="fieldErrorMessage(field)" th:if="${field != null && #fields.hasErrors(field)}">
+<div th:fragment="fieldErrorMessage(field)">
    <div th:each="fieldError: ${#fields.errors(field)}">
-      <div
-            th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${fieldError}, condition = ${#fields.hasErrors(field)})}"></div>
+      <div th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${fieldError}, condition = ${#fields.hasErrors(field)})}"></div>
    </div>
 </div>

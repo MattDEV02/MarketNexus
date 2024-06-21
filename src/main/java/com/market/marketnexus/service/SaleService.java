@@ -55,7 +55,7 @@ public class SaleService {
    }
 
    public Iterable<Sale> getAllSalesByUser(@NotNull User user) {
-      return this.saleRepository.findAllByUser(user);
+      return this.saleRepository.findAllByUserOrderByUpdatedAt(user);
    }
 
    public Iterable<Sale> getAllSales() {
@@ -64,7 +64,7 @@ public class SaleService {
 
    public Set<Sale> getAllNotSoldSales(User user) {
       Set<Sale> notSoldSales = new HashSet<Sale>();
-      Iterable<Sale> sales = this.saleRepository.findAllByUser(user);
+      Iterable<Sale> sales = this.saleRepository.findAllByUserOrderByUpdatedAt(user);
       for (Sale sale : sales) {
          if (sale != null && !sale.getIsSold()) {
             notSoldSales.add(sale);
@@ -76,7 +76,7 @@ public class SaleService {
    public Set<Sale> getAllSalesByProductName(String productName) {
       Set<Sale> salesByProductName = new HashSet<Sale>();
       Iterable<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
-      Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCase(productName);
+      Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCaseOrderById(productName);
       for (Sale sale : sales) {
          if (products.contains(sale.getProduct())) {
             salesByProductName.add(sale);
@@ -89,7 +89,7 @@ public class SaleService {
       Set<Sale> salesByProductCategoryId = new HashSet<Sale>();
       Iterable<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
       ProductCategory productCategory = this.productCategoryRepository.findById(productCategoryId).orElse(null);
-      Set<Product> products = this.productRepository.findAllByCategory(productCategory);
+      Set<Product> products = this.productRepository.findAllByCategoryOrderById(productCategory);
       for (Sale sale : sales) {
          if (products.contains(sale.getProduct())) {
             salesByProductCategoryId.add(sale);
@@ -102,7 +102,7 @@ public class SaleService {
       Set<Sale> salesByProductNameAndProductCategoryId = new HashSet<Sale>();
       Iterable<Sale> sales = this.saleRepository.findAllByOrderByUpdatedAt();
       ProductCategory productCategory = this.productCategoryRepository.findById(productCategoryId).orElse(null);
-      Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCaseAndCategory(productName, productCategory);
+      Set<Product> products = this.productRepository.findAllByNameContainingIgnoreCaseAndCategoryOrderById(productName, productCategory);
       for (Sale sale : sales) {
          if (products.contains(sale.getProduct())) {
             salesByProductNameAndProductCategoryId.add(sale);
@@ -113,7 +113,7 @@ public class SaleService {
 
    public Set<Sale> getAllUserSoldSales(User user) {
       Set<Sale> soldSales = new HashSet<Sale>();
-      Iterable<Sale> sales = this.saleRepository.findAllByUser(user);
+      Iterable<Sale> sales = this.saleRepository.findAllByUserOrderByUpdatedAt(user);
       for (Sale sale : sales) {
          if (sale != null && sale.getIsSold()) {
             soldSales.add(sale);

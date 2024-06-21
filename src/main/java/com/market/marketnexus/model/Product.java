@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Entity(name = "Products")
+@Entity(name = "Product")
 @Table(name = "Products", schema = GlobalValues.SQL_SCHEMA_NAME)
 public class Product {
    @Id

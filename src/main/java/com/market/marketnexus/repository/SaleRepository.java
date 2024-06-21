@@ -14,7 +14,7 @@ public interface SaleRepository extends CrudRepository<Sale, Long> {
 
    public Iterable<Sale> findAllByOrderByUpdatedAt();
 
-   public Iterable<Sale> findAllByUser(User user);
+   public Iterable<Sale> findAllByUserOrderByUpdatedAt(User user);
 
    @Query(value = """
            SELECT *

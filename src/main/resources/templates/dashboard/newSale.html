@@ -19,10 +19,11 @@
                   th:action="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/'} + ${isUpdate ? ('publishUpdatedSale/' + sale.id) : 'publishNewSale'}}"
                   th:title="${isUpdate ? 'Update this' : 'Publish a new'}  + ' Sale'">
                <div
-                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${saleAlreadyPublishedError}, condition = ${saleAlreadyPublishedError != null})}"></div>
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = #{saleAlreadyPublishedError}, condition = ${saleAlreadyPublishedError != null})}"></div>
                <div class="col-12 mt-2 mb-4">
                   <div class="row text-center">
                      <h1 th:text="${isUpdate ? 'Update' : 'New'} + ' Sale 🚀'">
+                        Sale form
                      </h1>
                   </div>
                </div>
@@ -70,7 +71,7 @@
                   <input class="form-control py-2" id="quantity" name="quantity"
                          placeholder="Insert product quantity" required
                          th:field="${sale.quantity}" th:max="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MAX_VALUE')}"
-                         th:min="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MIN_VALUE')}"
+                         th:min="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MIN_VALUE') + 1}"
                          th:object="${sale}"
                          th:step="${FIELD_SIZES_MAP.get('SALE_QUANTITY_STEP_VALUE')}" type="number"/>
                   <div
@@ -103,11 +104,11 @@
                          title="Insert your product images"
                          type="file"/>
                   <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productImageEmptyError}, condition = ${productImageEmptyError != null})}"></div>
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = #{productImageEmptyError}, condition = ${productImageEmptyError != null})}"></div>
                   <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productImageSizeError}, condition = ${productImageSizeError != null})}"></div>
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = #{productImageSizeError}, condition = ${productImageSizeError != null})}"></div>
                   <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = ${productImageExtensionError}, condition = ${productImageExtensionError != null})}"></div>
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = #{productImageExtensionError}, condition = ${productImageExtensionError != null})}"></div>
                </div>
                <!-- Pulsante di invio -->
                <div class="mt-4">

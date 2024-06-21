@@ -21,10 +21,6 @@ public class CartService {
    @Autowired
    private CartLineItemRepository cartLineItemRepository;
 
-   public Boolean existsCartBtId(Long cartId) {
-      return this.cartRepository.existsById(cartId);
-   }
-
    @Transactional
    public void updateCartLineItemsSalesQuantityAndIsSold(@NotNull Cart cart) {
       List<CartLineItem> cartLineItems = cart.getCartLineItems();
@@ -38,26 +34,13 @@ public class CartService {
       }
    }
 
-   public List<CartLineItem> getAllSoldCartLineItems(@NotNull Cart cart) {
-      List<CartLineItem> soldSalesCartLineItems = new ArrayList<CartLineItem>();
-      List<CartLineItem> cartLineItems = cart.getCartLineItems();
-      Sale sale = null;
-      for (CartLineItem cartLineItem : cartLineItems) {
-         sale = cartLineItem.getSale();
-         if (sale != null && sale.getIsSold()) {
-            soldSalesCartLineItems.add(cartLineItem);
-         }
-      }
-      return soldSalesCartLineItems;
-   }
-
    public List<CartLineItem> getAllNotSoldCartLineItems(@NotNull Cart cart) {
       List<CartLineItem> notSoldSalesCartLineItems = new ArrayList<CartLineItem>();
       List<CartLineItem> cartLineItems = cart.getCartLineItems();
       Sale sale = null;
       for (CartLineItem cartLineItem : cartLineItems) {
          sale = cartLineItem.getSale();
-         if (sale != null && !sale.getIsSold()) {
+         if (sale != null && sale.getQuantity() > 0) {
             notSoldSalesCartLineItems.add(cartLineItem);
          }
       }

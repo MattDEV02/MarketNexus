@@ -90,7 +90,6 @@ public class UserService {
 
    @Transactional
    public Boolean deleteUser(User user) {
-      //this.cartRepository.deleteByUser(user);
       this.userRepository.delete(user);
       return !this.userRepository.existsById(user.getId());
    }

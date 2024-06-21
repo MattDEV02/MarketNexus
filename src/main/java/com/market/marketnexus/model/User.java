@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-@Entity(name = "Users")
+@Entity(name = "User")
 @Table(name = "Users", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "users_email_unique", columnNames = "email"), @UniqueConstraint(name = "users_credentials_unique", columnNames = "credentials")})
 public class User {
 
@@ -58,7 +58,8 @@ public class User {
    @JoinColumn(name = "credentials", referencedColumnName = "id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "users_credentials_fk"))
    private Credentials credentials;
 
-   @OneToMany(targetEntity = Cart.class, orphanRemoval = false, mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.REMOVE})
+   @OneToMany(targetEntity = Cart.class, orphanRemoval = false, mappedBy = "user", cascade = {CascadeType.REMOVE})
+   //@OrderBy(value = "insertedAt ASC")
    private List<Cart> carts;
 
    public User() {

@@ -4,17 +4,18 @@
    <div class="card border border-bottom-0 rounded shadow">
       <div class="card-body">
          <div class="row">
-            <div th:class="'col-' + ${isOrder ? '4' : '3'}">
-               <div th:class="'ms-' + ${isOrder ? '4' : '2'}">
+            <div th:class="'col-' + ${isOrder ? '4' : '4'}">
+               <div th:class="'ms-' + ${isOrder ? '4' : '4'}">
                   <a th:href="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/sale/' + cartLineItem.sale.id}}">
-                     <img class="img-fluid product-image" th:alt="${cartLineItem.sale.product.name}"
+                     <img class="img-thumbnail img-fluid product-image"
+                          th:alt="${cartLineItem.sale.product.name}"
                           th:src="@{${cartLineItem.sale.product.imageRelativePaths[0]}}"
                           th:title="${cartLineItem.sale.product.name}"/>
                   </a>
                </div>
             </div>
-            <div th:class="'col-' + ${isOrder ? '8' : '5'}">
-               <div class="ms-5 mt-2">
+            <div th:class="'col-' + ${isOrder ? '8' : '6'}">
+               <div class="ms-md-5 ms-4 mt-2">
                   <h5 class="card-title"
                       th:text="${cartLineItem.sale.product.name}"></h5>
                   <p>
@@ -32,7 +33,7 @@
                </div>
             </div>
             <div class="col-2" th:if="${!isOrder}">
-               <input class="form-control form-control-sm ms-3 mt-5 cartlineitem-quantity-input"
+               <input class="form-control form-control-sm mt-4 cartlineitem-quantity-input"
                       name="quantity" required
                       th:id="'quantity#' + ${cartLineItem.id}"
                       th:max="${FIELD_SIZES_MAP.get('CARTLINEITEM_QUANTITY_MAX_VALUE')}"
@@ -43,9 +44,7 @@
                       title="Set Cart Line Product quantity"
                       type="number"
                />
-            </div>
-            <div class="col-2" th:if="${!isOrder}">
-               <button class="btn btn-danger delete-cart-button py-1 mt-5"
+               <button class="btn btn-danger delete-cart-button mt-4 ms-1"
                        data-bs-toggle="modal"
                        th:data-bs-target="'#confirm-delete-cartlineitem-modal-' + ${cartLineItem.id}"
                        title="Remove Cart line from Cart"

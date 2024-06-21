@@ -23,7 +23,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -91,7 +90,7 @@ public class GlobalController {
    }
 
    @ModelAttribute("loggedUser")
-   public User getLoggedUser(@NonNull Model model) {
+   public User getLoggedUser() {
       Credentials credentials = null;
       User loggedUser = null;
       SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -115,7 +114,6 @@ public class GlobalController {
             credentials = this.credentialsService.getCredentials(userDetails.getUsername());
             loggedUser = this.userService.getUser(credentials);
          }
-         model.addAttribute("loggedUser", loggedUser);
       }
       return loggedUser;
    }
