@@ -3,10 +3,7 @@ package com.market.marketnexus.model;
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import jdk.jfr.Unsigned;
 
 import java.util.ArrayList;
@@ -35,6 +32,7 @@ public class Product {
 
    @Min((long) (FieldSizes.PRODUCT_PRICE_MIN_VALUE))
    @Max((long) (FieldSizes.PRODUCT_PRICE_MAX_VALUE))
+   @NotNull
    @Column(name = "price", nullable = false)
    private Float price;
 

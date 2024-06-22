@@ -24,5 +24,5 @@ public interface OrderRepository extends CrudRepository<Order, Long> {
    )
    public List<Object[]> findAllByUserId(Long userId);
 
-   public Iterable<Order> findAllByUserOrderByInsertedAt(User user);
+   public Iterable<Order> findAllByUserOrderByInsertedAtDesc(User user);
 }

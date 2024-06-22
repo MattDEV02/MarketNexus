@@ -33,6 +33,7 @@ public class Sale {
    @NotNull
    @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
    @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
+   @NotNull
    @Column(name = "quantity", nullable = false)
    private Integer quantity;
    @Column(name = "is_sold", columnDefinition = "BOOLEAN NOT NULL DEFAULT FALSE")

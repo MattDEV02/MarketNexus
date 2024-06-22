@@ -51,9 +51,8 @@ public class CredentialsValidator implements Validator {
       ) {
          errors.rejectValue("username", "credentials.username.unique", "Username already used.");
       }
-      if (!this.getIsAccountUpdate() && !FieldValidators.passwordValidator(credentials.getPassword())) {
-         errors.rejectValue("password", "credentials.password.invalidFormat", "The password must be 8 characters long and must has uppercase, lowercase and numbers.");
-      } else if (this.isAccountUpdate && TypeValidators.validateString(credentials.getPassword()) && !FieldValidators.passwordValidator(credentials.getPassword())) {
+      if ((!this.getIsAccountUpdate() && !FieldValidators.passwordValidator(credentials.getPassword())) || (this.isAccountUpdate && TypeValidators.validateString(credentials.getPassword()) && !FieldValidators.passwordValidator(credentials.getPassword()))
+      ) {
          errors.rejectValue("password", "credentials.password.invalidFormat", "The password must be 8 characters long and must has uppercase, lowercase and numbers.");
       }
       if (this.getConfirmPassword() == null || !credentials.getPassword().equals(this.getConfirmPassword())) {

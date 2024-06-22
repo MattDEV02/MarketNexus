@@ -224,7 +224,7 @@ ALTER TABLE MarketNexus.Users
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Users (name, surname, email, birthdate, balance, credentials, nation)
-VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2024-03-14', 220, 1, 1),
+VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2002-04-02', 220, 1, 1),
        ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2, 2),
        ('Test', 'Test', 'test@test.com', '2002-03-27', 0.1, 3, 6);
 

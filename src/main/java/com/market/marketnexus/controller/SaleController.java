@@ -72,13 +72,10 @@ public class SaleController {
          try {
             Long longProductCategoryId = Long.parseLong(productCategoryId);
             modelAndView.addObject("searchedProductCategoryName", this.productCategoryService.getProductCategory(longProductCategoryId).getName());
-            if (productName.isEmpty()) {
-               searchedSales = this.saleService.getAllSalesByProductCategoryId(longProductCategoryId);
-            } else {
-               searchedSales = this.saleService.getAllSalesByProductNameAndProductCategoryId(productName, longProductCategoryId);
-            }
+            searchedSales = productName.isEmpty() ? this.saleService.getAllSalesByProductCategoryId(longProductCategoryId) : this.saleService.getAllSalesByProductNameAndProductCategoryId(productName, longProductCategoryId);
          } catch (NumberFormatException numberFormatException) {
             SaleController.LOGGER.error(numberFormatException.getMessage());
+            searchedSales = this.saleService.getAllSales();
          }
       }
       modelAndView.addObject("sales", searchedSales);

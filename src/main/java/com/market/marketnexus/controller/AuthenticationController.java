@@ -18,7 +18,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
 
 @Controller
 public class AuthenticationController {
@@ -74,15 +71,6 @@ public class AuthenticationController {
          } else {
             AuthenticationController.LOGGER.error(GlobalErrorsMessages.USER_NOT_REGISTERED_ERROR);
             modelAndView.addObject("userNotRegisteredError", "Server ERROR, User not registered.");
-         }
-      } else {
-         List<ObjectError> userErrors = userBindingResult.getAllErrors();
-         for (ObjectError userGlobalError : userErrors) {
-            modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
-         }
-         List<ObjectError> credentialsErrors = credentialsBindingResult.getAllErrors();
-         for (ObjectError credentialGlobalErrors : credentialsErrors) {
-            modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
          }
       }
       return modelAndView;

@@ -47,6 +47,7 @@ public class User {
    private String email;
    @Min((long) FieldSizes.BALANCE_MIN_VALUE)
    @Max((long) FieldSizes.BALANCE_MAX_VALUE)
+   @NotNull
    @Column(name = "balance", nullable = false)
    private Float balance;
 

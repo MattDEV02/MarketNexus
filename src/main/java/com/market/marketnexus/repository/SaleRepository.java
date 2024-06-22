@@ -12,9 +12,9 @@ import java.util.List;
 @Repository
 public interface SaleRepository extends CrudRepository<Sale, Long> {
 
-   public Iterable<Sale> findAllByOrderByUpdatedAt();
+   public Iterable<Sale> findAllByOrderByUpdatedAtDesc();
 
-   public Iterable<Sale> findAllByUserOrderByUpdatedAt(User user);
+   public Iterable<Sale> findAllByUserOrderByUpdatedAtDesc(User user);
 
    @Query(value = """
            SELECT *

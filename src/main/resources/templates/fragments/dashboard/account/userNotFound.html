@@ -1,5 +1,5 @@
 <div class="col-12 pt-4 pb-5 text-center border rounded shadow mb-4" th:fragment="userNotFound(username)">
-   <h1 class="display-1 fw-bold" th:text="'User ' + ${username} + ' not found'"></h1>
+   <h1 class="display-1 fw-bold" th:text="'User ' + ${username != null ? username : ''} + ' not found'"></h1>
    <h5 class="text-muted mt-5">The searched User was not found...</h5>
    <a class="btn btn-outline-dark mt-5" role="button" th:href="@{/dashboard/account}">
       Back to your Account

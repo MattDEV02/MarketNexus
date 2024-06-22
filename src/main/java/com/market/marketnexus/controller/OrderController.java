@@ -7,7 +7,6 @@ import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.CartLineItem;
 import com.market.marketnexus.model.Order;
 import com.market.marketnexus.model.User;
-import com.market.marketnexus.service.CartService;
 import com.market.marketnexus.service.OrderService;
 import com.market.marketnexus.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;

@@ -106,7 +106,7 @@ public class GlobalController {
                credentials = loggedUser.getCredentials();
                Utils.updateUserCredentialsOAuth2Authentication(authentication, credentials);
             } catch (UserEmailNotExistsException userEmailNotExistsException) {
-               // oppure redirect
+               // oppure si può fare un redirect al login con messaggio di credenziali invalide.
                System.out.println("User with email: " + email + " has logged in with Google and without " + GlobalValues.APP_NAME + " account.");
             }
          } else if (Utils.userIsLoggedInWithUsernameAndPassword(authentication)) {
@@ -131,7 +131,8 @@ public class GlobalController {
    @ModelAttribute("productCategoriesMap")
    public Map<Long, ProductCategory> getProductCategories() {
       Map<Long, ProductCategory> productCategories = null;
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      Authentication authentication = securityContext.getAuthentication();
       if (Utils.userIsLoggedIn(authentication)) {
          productCategories = this.productCategoryService.getAllProductCategoriesMap();
       }

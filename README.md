@@ -20,7 +20,7 @@ MarketNexus is marketplace made in Spring boot where Users can sell and buy Prod
 
 <img title="MarketNexus Relational model" alt="MarketNexus Relational model" src="/src/main/resources/static/images/README/design/Relational_Model.png" width="100%" />
 
-## Key Features ✨
+## Key Features and characteristics✨
 
 - **Usage:** Users can publish their products, put product in their cart (set the quantity), buy other products,
   search products of a
@@ -36,7 +36,7 @@ MarketNexus is marketplace made in Spring boot where Users can sell and buy Prod
 
 - **Tested:** The project is tested with Junit tests.
 
-- **Modularity:** The project is divided in many logic modules, packages, fragments and directories.
+- **Modularity:** The project is divided in many logic modules, packages, fragments, directories and global variables...
 
 - **Tooltips guide Display:** There are many tooltips and popups that guide the User in the site. There is also a FAQs
   page.
@@ -1353,6 +1353,7 @@ I am the only author of this beautiful site 😉
 | IntelliJ IDEA  |     2024.1     |
 |     Chrome     | 124.0.6367.201 |
 | Microsoft EDGE | 123.0.2420.65  |
+|     Opera      | 111.0.5168.15  |
 
 ## Project structure 🏠
 
