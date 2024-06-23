@@ -40,10 +40,10 @@ public class ProductService {
       productToUpdate.setPrice(roundNumberTo2Decimals(product.getPrice()));
       productToUpdate.setCategory(product.getCategory());
       if (productImagesNumber > 0) {
-         List<String> productImageRelativePath = productToUpdate.getImageRelativePaths();
-         productImageRelativePath.clear();
+         List<String> productImageRelativePaths = productToUpdate.getImageRelativePaths();
+         productImageRelativePaths.clear();
          for (Integer i = 0; i < productImagesNumber; i++) {
-            productImageRelativePath.add(ProductImageFileUtils.getProductImagePath(productToUpdate, i));
+            productImageRelativePaths.add(ProductImageFileUtils.getProductImagePath(productToUpdate, i));
          }
       }
       Product updatedProduct = this.productRepository.save(productToUpdate);

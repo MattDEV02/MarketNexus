@@ -113,24 +113,24 @@ public class ForgotUsernameEmailService {
                   border: 0;
                   outline: none;
                 }
-                                  
+                            
                 .confirm-button:hover {
                 	opacity: 0.8;
                 }
-               
+                            
                 </style>
-                    
+                           
               </head>
               <body style="background-color: #e9ecef;">
-                    
+                            
                 <!-- start preheader -->
                 <div class="preheader" style="display: none; max-width: 0; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #fff; opacity: 0;">
                 </div>
                 <!-- end preheader -->
-                    
+                            
                 <!-- start body -->
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                    
+                            
                   <!-- start logo -->
                   <tr>
                     <td align="center" bgcolor="#e9ecef">
@@ -156,7 +156,7 @@ public class ForgotUsernameEmailService {
                     </td>
                   </tr>
                   <!-- end logo -->
-                    
+                            
                   <!-- start hero -->
                   <tr>
                     <td align="center" bgcolor="#e9ecef">
@@ -180,7 +180,7 @@ public class ForgotUsernameEmailService {
                     </td>
                   </tr>
                   <!-- end hero -->
-                    
+                           
                   <!-- start copy block -->
                   <tr>
                     <td align="center" bgcolor="#e9ecef">
@@ -190,7 +190,7 @@ public class ForgotUsernameEmailService {
                       <td align="center" valign="top" width="600">
                       <![endif]-->
                       <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    
+                          
                         <!-- start copy -->
                         <tr>
                           <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
@@ -218,7 +218,7 @@ public class ForgotUsernameEmailService {
                                                 </td>
                                               </tr>
                                               <!-- end button -->
-                                          
+                            
                                               <!-- start copy -->
                                               <tr>
                                                 <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
@@ -226,7 +226,7 @@ public class ForgotUsernameEmailService {
                                                 </td>
                                               </tr>
                                               <!-- end copy -->
-                                          
+                            
                                             </table>
                                             <!--[if (gte mso 9)|(IE)]>
                                             </td>
@@ -236,7 +236,7 @@ public class ForgotUsernameEmailService {
                                           </td>
                                         </tr>
                                         <!-- end copy block -->
-                                          
+                            
                                         <!-- start footer -->
                                         <tr>
                                           <td align="center" bgcolor="#e9ecef" style="padding: 24px;">
@@ -246,7 +246,7 @@ public class ForgotUsernameEmailService {
                                             <td align="center" valign="top" width="600">
                                             <![endif]-->
                                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                                          
+                            
                                               <!-- start permission -->
                                               <tr>
                                                 <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
@@ -254,7 +254,7 @@ public class ForgotUsernameEmailService {
                                                 </td>
                                               </tr>
                                               <!-- end permission -->
-                                          
+                          
                                             </table>
                                             <!--[if (gte mso 9)|(IE)]>
                                             </td>
@@ -264,28 +264,28 @@ public class ForgotUsernameEmailService {
                                           </td>
                                         </tr>
                                         <!-- end footer -->
-                                          
+                           
                                       </table>
                                       <!-- end body -->
-                                          
+                            
                                     </body>
                                     </html>
-                                          
+                            
                                     <!--
                                     <h2>Confirm your signup</h2>
-                                          
+                           
                                     <p>Follow this link to confirm your user:</p>
                                     <p><a href="{{ .ConfirmationURL }}">Confirm your mail</a></p>
-                                          
+                            
                                     -->
                                     <!--
                                     <h2>Confirm your signup</h2>
-                                          
+                            
                                     <p>Follow this link to confirm your user:</p>
                                     <p><a href="{{ .ConfirmationURL }}">Confirm your mail</a></p>
-                                          
+                            
                                     -->
-                            """;
+              """;
    }
 
    public void sendEmail(String email, String username) throws IOException, MessagingException {

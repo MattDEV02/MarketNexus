@@ -56,7 +56,7 @@ public class ProductCategory {
    }
 
    public String getDescription() {
-      return this.name;
+      return this.description;
    }
 
    public void setDescription(String description) {

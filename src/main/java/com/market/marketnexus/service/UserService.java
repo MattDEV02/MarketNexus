@@ -68,7 +68,7 @@ public class UserService {
    @Transactional
    public User updateUser(Long userId, @NonNull User updatedUser) {
       Credentials updatedCredentials = updatedUser.getCredentials();
-      User user = this.getUser(userId); //
+      User user = this.getUser(userId);
       if (user != null) {
          Credentials credentials = user.getCredentials();
          updatedCredentials.setInsertedAt(credentials.getInsertedAt());
