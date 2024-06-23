@@ -20,7 +20,12 @@ document.addEventListener("DOMContentLoaded", () => {
                   cartContainer.innerHTML = response.data;
                })
                .catch(error => console.error("Error:", error))
-               .finally(() => cartLineItemQuantityInput.focus());
+               .finally(() => {
+                  const activeElement = document.getElementById(cartLineItemQuantityInput.id);
+                  if (validateObject(activeElement)) {
+                     activeElement.focus();
+                  }
+               });
          }
       }
    });
