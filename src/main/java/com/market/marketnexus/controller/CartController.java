@@ -1,5 +1,6 @@
 package com.market.marketnexus.controller;
 
+import com.market.marketnexus.exception.SaleNotFoundException;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.constants.GlobalValues;
@@ -48,20 +49,25 @@ public class CartController {
    @GetMapping(value = {"/{saleId}", "/{saleId}/"})
    public ModelAndView addSaleProductToCartById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("saleId") Long saleId) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.SALE + GlobalValues.TEMPLATES_EXTENSION);
-      Sale sale = this.saleService.getSale(saleId);
-      modelAndView.addObject("sale", sale);
-      modelAndView.addObject("isAddedToCart", false);
-      Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
-      if (loggedUser.equals(sale.getUser())) {
-         CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_OWN_SALE_TO_CART_ERROR);
-         modelAndView.addObject("userAddOwnSaleToCartError", true);
-      } else if (this.cartService.existsCartLineItemSale(cart, sale)) {
-         CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_EXISTING_SALE_TO_CART_ERROR);
-         modelAndView.addObject("userAddExistingSaleToCartError", true);
-      } else {
-         CartLineItem savedCartLineItem = this.cartService.makeCartLineItem(cart, sale);
-         modelAndView.addObject("sale", savedCartLineItem.getSale());
-         modelAndView.addObject("isAddedToCart", TypeValidators.validateTimestamp(savedCartLineItem.getInsertedAt()));
+      try {
+         Sale sale = this.saleService.getSale(saleId);
+         modelAndView.addObject("sale", sale);
+         modelAndView.addObject("isAddedToCart", false);
+         Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
+         if (loggedUser.equals(sale.getUser())) {
+            CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_OWN_SALE_TO_CART_ERROR);
+            modelAndView.addObject("userAddOwnSaleToCartError", true);
+         } else if (this.cartService.existsCartLineItemSale(cart, sale)) {
+            CartController.LOGGER.error(GlobalErrorsMessages.USER_ADD_EXISTING_SALE_TO_CART_ERROR);
+            modelAndView.addObject("userAddExistingSaleToCartError", true);
+         } else {
+            CartLineItem savedCartLineItem = this.cartService.makeCartLineItem(cart, sale);
+            modelAndView.addObject("sale", savedCartLineItem.getSale());
+            modelAndView.addObject("isAddedToCart", TypeValidators.validateTimestamp(savedCartLineItem.getInsertedAt()));
+         }
+      } catch (SaleNotFoundException saleNotFoundException) {
+         CartController.LOGGER.error(saleNotFoundException.getMessage());
+         modelAndView.setViewName("redirect:/" + APIPrefixes.DASHBOARD + "/sale/" + saleId);
       }
       return modelAndView;
    }

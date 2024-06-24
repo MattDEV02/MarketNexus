@@ -27,15 +27,15 @@ info.addTo(map);
 const highlightNation = nationToNumberOfUsers => {
    axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${nationToNumberOfUsers.nationName}`)
       .then(response => {
+         console.log(response);
          // Se ci sono risultati, prendi le coordinate del primo risultato
-         const coordinatesData = response.data;
-         console.log(coordinatesData);
-         if (validateObject(coordinatesData) && response.status === 200) {
+         if (validateObject(response) && validateObject(response.data) && response.status === 200) {
+            const coordinatesData = response.data;
             L.marker([coordinatesData[0].lat, coordinatesData[0].lon])
                .addTo(map)
                .bindPopup(`${nationToNumberOfUsers.nationName} has ${nationToNumberOfUsers.numbersOfUsers} MarketNexus ${nationToNumberOfUsers.numbersOfUsers > 1 ? "users" : "user"}.`);
          } else {
-            console.warn("Nation not found.");
+            console.warn(`Nation "${nationToNumberOfUsers.nationName}" not found.`);
          }
       })
       .catch(error => console.error("Error:", error));
@@ -45,8 +45,9 @@ let nationsToNumberOfUsers = [];
 
 axios.get(`${baseAPIURI}mapData`)
    .then(response => {
-      const mapData = response.data;
-      if (validateObject(mapData) && response.status === 200) {
+      console.log(response);
+      if (validateObject(response) && validateObject(response.data) && response.status === 200) {
+         const mapData = response.data;
          mapData.forEach(mapDataRow => {
             nationsToNumberOfUsers.push({
                nationName: mapDataRow[0],

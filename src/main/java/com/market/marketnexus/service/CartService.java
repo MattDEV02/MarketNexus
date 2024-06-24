@@ -1,5 +1,6 @@
 package com.market.marketnexus.service;
 
+import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.sale.Utils;
 import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.CartLineItem;
@@ -72,6 +73,8 @@ public class CartService {
          Float newCartPrice = this.calculateCartPrice(cart);
          cart.setCartPrice(newCartPrice);
          this.cartRepository.save(cart);
+      } else {
+         return false;
       }
       return !this.cartLineItemRepository.existsById(cartLineItemId);
    }
@@ -80,7 +83,7 @@ public class CartService {
       CartLineItem cartLineItemToUpdate = cart.getCartLineItems().stream()
               .filter(cartLineItem -> cartLineItem.getId().equals(cartLineItemId))
               .findFirst().orElse(null);
-      if (cartLineItemToUpdate != null && quantity >= 0 && quantity <= cartLineItemToUpdate.getSale().getQuantity()) {
+      if (cartLineItemToUpdate != null && quantity >= FieldSizes.CARTLINEITEM_QUANTITY_MIN_VALUE && quantity <= FieldSizes.CARTLINEITEM_QUANTITY_MAX_VALUE && quantity <= cartLineItemToUpdate.getSale().getQuantity()) {
          cartLineItemToUpdate.setQuantity(quantity);
          Float newCartLineItemPrice = Utils.calculateSalePrice(cartLineItemToUpdate.getSale(), cartLineItemToUpdate.getQuantity());
          cartLineItemToUpdate.setCartLineItemPrice(newCartLineItemPrice);

@@ -17,7 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
             axios.post(url, data)
                .then(response => {
                   console.log(response);
-                  cartContainer.innerHTML = response.data;
+                  if (validateObject(response) && validateObject(response.data) && response.status === 200) {
+                     cartContainer.innerHTML = response.data;
+                  }
                })
                .catch(error => console.error("Error:", error))
                .finally(() => {

@@ -136,15 +136,20 @@ public class SaleController {
    @GetMapping(value = {"/updateSale/{saleId}", "/updateSale/{saleId}"})
    public ModelAndView showUpdateSaleForm(@PathVariable("saleId") Long saleId, @Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/newSale" + GlobalValues.TEMPLATES_EXTENSION);
-      Sale sale = this.saleService.getSale(saleId);
-      if (!sale.getUser().equals(loggedUser)) {
-         modelAndView.setViewName("redirect:/" + APIPrefixes.ACCOUNT);
-         modelAndView.addObject("userCantManageNotHisSaleError", true);
-         return modelAndView;
+      try {
+         Sale sale = this.saleService.getSale(saleId);
+         if (!sale.getUser().equals(loggedUser)) {
+            modelAndView.setViewName("redirect:/" + APIPrefixes.ACCOUNT);
+            modelAndView.addObject("userCantManageNotHisSaleError", true);
+            return modelAndView;
+         }
+         modelAndView.addObject("sale", sale);
+         modelAndView.addObject("product", sale.getProduct());
+         modelAndView.addObject("isUpdate", true);
+      } catch (SaleNotFoundException saleNotFoundException) {
+         SaleController.LOGGER.error(saleNotFoundException.getMessage());
+         modelAndView.setViewName("redirect:/" + APIPrefixes.DASHBOARD + "/sale/" + saleId);
       }
-      modelAndView.addObject("sale", sale);
-      modelAndView.addObject("product", sale.getProduct());
-      modelAndView.addObject("isUpdate", true);
       return modelAndView;
    }
 
@@ -204,18 +209,23 @@ public class SaleController {
    @GetMapping(value = {"/deleteSale/{saleId}", "/deleteSale/{saleId}"})
    public ModelAndView deleteSale(@PathVariable("saleId") Long saleId, @Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.ACCOUNT + "#sales");
-      Sale sale = this.saleService.getSale(saleId);
-      if (!sale.getUser().equals(loggedUser)) {
-         modelAndView.setViewName("redirect:/" + APIPrefixes.ACCOUNT);
-         modelAndView.addObject("userCantManageNotHisSaleError", true);
-         return modelAndView;
-      }
-      if (this.saleService.deleteSale(sale)) {
-         modelAndView.addObject("saleDeletedSuccess", true);
-         SaleController.LOGGER.info("Deleted Sale with Sale ID: {}", saleId);
-      } else {
-         SaleController.LOGGER.error(GlobalErrorsMessages.SALE_NOT_DELETED_ERROR);
-         modelAndView.addObject("saleNotDeletedError", true);
+      try {
+         Sale sale = this.saleService.getSale(saleId);
+         if (!sale.getUser().equals(loggedUser)) {
+            modelAndView.setViewName("redirect:/" + APIPrefixes.ACCOUNT);
+            modelAndView.addObject("userCantManageNotHisSaleError", true);
+            return modelAndView;
+         }
+         if (this.saleService.deleteSale(sale)) {
+            modelAndView.addObject("saleDeletedSuccess", true);
+            SaleController.LOGGER.info("Deleted Sale with Sale ID: {}", saleId);
+         } else {
+            SaleController.LOGGER.error(GlobalErrorsMessages.SALE_NOT_DELETED_ERROR);
+            modelAndView.addObject("saleNotDeletedError", true);
+         }
+      } catch (SaleNotFoundException saleNotFoundException) {
+         SaleController.LOGGER.error(saleNotFoundException.getMessage());
+         modelAndView.setViewName("redirect:/" + APIPrefixes.DASHBOARD + "/sale/" + saleId);
       }
       return modelAndView;
    }

@@ -159,7 +159,7 @@ java -jar target/MarketNexus-0.0.1-SNAPSHOT.jar
 ```
 
 P.S. = Remember to create and populate the Postgres Database by running the script contained in the root folder of the
-project.
+project (MarketNexus.sql).
 
 ## Some code examples 🤖
 
@@ -173,6 +173,35 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+/**
+ * MarketNexusApplication, the main entry point of the Spring Boot application.
+ *
+ * <p>This class is annotated with {@code @SpringBootApplication} which is a
+ * convenience annotation that adds all of the following:
+ * <ul>
+ *   <li>{@code @Configuration}</li>
+ *   <li>{@code @EnableAutoConfiguration}</li>
+ *   <li>{@code @ComponentScan}</li>
+ * </ul>
+ *
+ * <p>The {@code main} method uses {@link SpringApplication#run} to launch the application.
+ *
+ * <p>Example usage:
+ * <pre>
+ * {@code
+ * public static void main(String[] args) {
+ *     SpringApplication.run(Application.class, args);
+ * }
+ * }
+ * </pre>
+ *
+ * <p>This is typically the main class in a Spring Boot application, used to bootstrap the application.
+ *
+ * @see SpringApplication
+ * @see Configuration
+ * @see EnableWebMvc
+ * @see SpringBootApplication
+ */
 @Configuration
 @EnableWebMvc
 @SpringBootApplication
@@ -181,6 +210,7 @@ public class MarketNexusApplication {
    public static void main(String[] args) {
       SpringApplication.run(MarketNexusApplication.class, args);
    }
+
 }
 ```
 
@@ -261,6 +291,8 @@ public class AuthConfiguration implements WebMvcConfigurer {
                               .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail").permitAll()
                               .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*updateSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(new RegexRequestMatcher(".*updatedSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(HttpMethod.DELETE).denyAll()
@@ -321,7 +353,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -329,8 +360,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
 
 @Controller
 public class AuthenticationController {
@@ -378,15 +407,6 @@ public class AuthenticationController {
             AuthenticationController.LOGGER.error(GlobalErrorsMessages.USER_NOT_REGISTERED_ERROR);
             modelAndView.addObject("userNotRegisteredError", "Server ERROR, User not registered.");
          }
-      } else {
-         List<ObjectError> userErrors = userBindingResult.getAllErrors();
-         for (ObjectError userGlobalError : userErrors) {
-            modelAndView.addObject(Objects.requireNonNull(userGlobalError.getCode()), userGlobalError.getDefaultMessage());
-         }
-         List<ObjectError> credentialsErrors = credentialsBindingResult.getAllErrors();
-         for (ObjectError credentialGlobalErrors : credentialsErrors) {
-            modelAndView.addObject(Objects.requireNonNull(credentialGlobalErrors.getCode()), credentialGlobalErrors.getDefaultMessage());
-         }
       }
       return modelAndView;
    }
@@ -408,12 +428,11 @@ public class AuthenticationController {
    @PostMapping(value = {"/sendForgotUsernameEmail", "/sendForgotUsernameEmail/"})
    public ModelAndView sendForgotUsernameEmail(
            @Valid @NonNull @ModelAttribute("user") User user,
-           @NonNull BindingResult userBindingResult,
-           @RequestParam("email") String email) {
+           @NonNull BindingResult userBindingResult) {
       ModelAndView modelAndView = new ModelAndView("forgotUsername.html");
       if (!userBindingResult.hasFieldErrors("email")) {
          try {
-            User userByEmail = this.userService.getUser(email);
+            User userByEmail = this.userService.getUser(user.getEmail());
             this.forgotUsernameEmailService.sendEmail(userByEmail.getEmail(), userByEmail.getCredentials().getUsername());
             modelAndView.addObject("emailSentSuccess", true);
          } catch (IOException | MessagingException exception) {
@@ -428,7 +447,6 @@ public class AuthenticationController {
       return modelAndView;
    }
 }
-
 ```
 
 ### `UserService.java` -> `com.market.marketnexus.service.UserService`
@@ -487,8 +505,7 @@ public class UserService {
       User user = this.getUser(userId);
       if (user != null) {
          List<Cart> carts = user.getCarts();
-         Integer currentCartIndex = carts.size() - 1;
-         currentCart = carts.get(currentCartIndex);
+         currentCart = carts.get(carts.size() - 1);
       }
       return currentCart;
    }
@@ -503,9 +520,9 @@ public class UserService {
    }
 
    @Transactional
-   public User updateUser(Long id, @NonNull User updatedUser) {
+   public User updateUser(Long userId, @NonNull User updatedUser) {
       Credentials updatedCredentials = updatedUser.getCredentials();
-      User user = this.userRepository.findById(id).orElse(null);
+      User user = this.getUser(userId);
       if (user != null) {
          Credentials credentials = user.getCredentials();
          updatedCredentials.setInsertedAt(credentials.getInsertedAt());
@@ -527,7 +544,6 @@ public class UserService {
 
    @Transactional
    public Boolean deleteUser(User user) {
-      //this.cartRepository.deleteByUser(user);
       this.userRepository.delete(user);
       return !this.userRepository.existsById(user.getId());
    }
@@ -546,7 +562,6 @@ public class UserService {
       user.setBalance(roundedNewBalance);
    }
 }
-
 ```
 
 ### `SaleRepository.java` -> `com.market.marketnexus.repository.SaleRepository`
@@ -594,9 +609,11 @@ import jdk.jfr.Unsigned;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-@Entity(name = "Carts")
+@Entity(name = "Cart")
 @Table(name = "Carts", schema = GlobalValues.SQL_SCHEMA_NAME, uniqueConstraints = {@UniqueConstraint(name = "carts_user_insertedat_unique", columnNames = {"_user", "inserted_at"})})
 public class Cart {
    public final static Float CART_START_PRICE = 0.0F;
@@ -621,6 +638,7 @@ public class Cart {
    private LocalDateTime insertedAt;
 
    @OneToMany(targetEntity = CartLineItem.class, mappedBy = "cart", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER, orphanRemoval = true)
+   @OrderBy(value = "insertedAt DESC")
    private List<CartLineItem> cartLineItems;
 
    public Cart() {
@@ -703,24 +721,14 @@ public class Cart {
    public String toString() {
       return "Cart: {" +
               // "id = " + this.getId() != null ? this.getId().toString() : "null" +
-              ", user = " + this.getUser().toString() +
+              //", user = " + this.getUser().toString() +
               ", cartPrice = " + this.getCartPrice().toString() +
-              ", cartLineItems = " + this.getCartLineItems().toString() +
+              //", cartLineItems = " + this.getCartLineItems().toString() +
               //", insertedAt = " + this.getInsertedAt() != null ? this.getInsertedAt().toString() : "null" +
               " }";
    }
 
-   public void sortCartLineItemsByInsertedAt() {
-      Collections.sort(this.cartLineItems, new Comparator<CartLineItem>() {
-         @Override
-         public int compare(CartLineItem cartLineItem1, CartLineItem cartLineItem2) {
-            return cartLineItem2.getInsertedAt().compareTo(cartLineItem1.getInsertedAt());
-         }
-      });
-   }
-
 }
-
 ```
 
 ### `SaleNotFoundException.java` -> `com.market.marketnexus.exception.SaleNotFoundException`
@@ -936,7 +944,7 @@ spring.security.oauth2.client.provider.google.token-uri=https://oauth2.googleapi
 spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleapis.com/oauth2/v3/userinfo
 ```
 
-### `/dashboard/cart.html`
+### `/templates/dashboard/cart.html`
 
 ```thymeleaftemplatesfragmentexpressions
 <!DOCTYPE html>
@@ -950,36 +958,44 @@ spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleap
 <body>
 <div th:replace="~{fragments/shared/pagination/header/dashboardHeader.html :: dashboardHeader()}">
 </div>
-<main>
-    <div class="container">
-        <div class="row justify-content-center">
-            <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
-            <div class="col-12 mt-5">
-                <div class="row text-center">
-                    <h1 th:text="${cartLineItems != null && !#lists.isEmpty(cartLineItems) ? 'Your' : 'No'} + ' Cart Products 👀'">
-                    </h1>
-                </div>
+<main id="cart-container">
+   <div class="container" th:fragment="dynamicCartSection">
+      <div class="row justify-content-center">
+         <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
+         <div class="col-12 mt-5">
+            <div class="row text-center">
+               <h1 th:text="${cartLineItems != null && !#lists.isEmpty(cartLineItems) ? 'Your' : 'No'} + ' Cart Products 👀'">
+                  Cart
+               </h1>
             </div>
-            <div class="col-12 my-5"
-                 th:with="cartLineItemNotDeletedError = ${param.cartLineItemNotDeletedError != null}, cartLineItemDeletedSuccess = ${param.cartLineItemDeletedSuccess != null}, userBalanceLowerThanCartPriceError = ${param.userBalanceLowerThanCartPriceError != null}, userNotBuyerAddSaleToCartError = ${param.userNotBuyerAddSaleToCartError != null}, userAddOwnSaleToCartError = ${param.userAddOwnSaleToCartError != null}, emptyCartError = ${param.emptyCartError != null}, userCartNotExistsError = ${param.userCartNotExistsError != null}">
-                <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartLineItemNotDeletedError})}"></div>
-                <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Users cannot add them Sale to them Cart.', condition = ${userAddOwnSaleToCartError})}"></div>
-                <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Order not possible, your Cart is empty.', condition = ${emptyCartError})}"></div>
-                <div
-                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Your balance is not sufficient to complete the order.', condition = ${userBalanceLowerThanCartPriceError})}"></div>
-                <div
-                        th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Cart line deleted.', condition = ${cartLineItemDeletedSuccess})}"></div>
-                <div th:replace="~{fragments/dashboard/cart/modal/confirmOrderModal.html :: confirmOrderModal(cart = ${cart})}"></div>
-                <div class="row justify-content-center" th:each="cartLineItem : ${cartLineItems}">
-                    <div th:replace="~{fragments/dashboard/cart/cartLineInformation.html :: cartLineInformation(cartLineItem = ${cartLineItem})}"></div>
-                </div>
-                <div th:replace="~{fragments/dashboard/cart/cartTotalLineInformation.html :: cartTotalLineInformation(cart = ${cart})}"></div>
+         </div>
+         <div class="col-12 my-5"
+              th:with="cartLineItemNotDeletedError = ${param.cartLineItemNotDeletedError != null}, cartLineItemDeletedSuccess = ${param.cartLineItemDeletedSuccess != null}, userBalanceLowerThanCartPriceError = ${param.userBalanceLowerThanCartPriceError != null}, userNotBuyerAddSaleToCartError = ${param.userNotBuyerAddSaleToCartError != null}, userAddOwnSaleToCartError = ${param.userAddOwnSaleToCartError != null}, emptyCartError = ${param.emptyCartError != null}, userCartNotExistsError = ${param.userCartNotExistsError != null}">
+            <div
+                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartLineItemNotDeletedError})}"></div>
+            <div
+                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Users cannot add them Sale to them Cart.', condition = ${userAddOwnSaleToCartError})}"></div>
+            <div
+                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Order not possible, your Cart is empty.', condition = ${emptyCartError})}"></div>
+            <div
+                  th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Your balance is not sufficient to complete the order.', condition = ${userBalanceLowerThanCartPriceError})}"></div>
+            <div
+                  th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Cart line deleted.', condition = ${cartLineItemDeletedSuccess})}"></div>
+            <div th:replace="~{fragments/dashboard/cart/modal/confirmOrderModal.html :: confirmOrderModal(cart = ${cart})}"></div>
+            <div class="row justify-content-center" th:each="cartLineItem : ${cartLineItems}">
+               <div th:replace="~{fragments/dashboard/cart/cartLineInformation.html :: cartLineInformation(cartLineItem = ${cartLineItem})}"></div>
             </div>
-        </div>
-    </div>
+            <div th:replace="~{fragments/dashboard/cart/cartTotalLineInformation.html :: cartTotalLineInformation(cart = ${cart})}"></div>
+         </div>
+      </div>
+      <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
+              th:src="@{/js/libraries/axios/axios.min.js}" type="text/javascript"></script>
+      <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/validators.js}"
+              type="text/javascript"></script>
+      <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
+              th:src="@{'/js/' + ${API_PREFIXES_MAP.get('CART')} + '/index.js'}"
+              type="text/javascript"></script>
+   </div>
 </main>
 <div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
 </div>
@@ -1124,9 +1140,9 @@ let type = null, data = null, options = null, config = null;
 document.addEventListener("DOMContentLoaded", () => {
    axios.get(`${baseAPIURI}chartData`)
       .then(response => {
-         const chartData = response.data;
-         console.log(chartData);
-         if (validateObject(chartData) && response.status === 200) {
+         console.log(response);
+         if (validateObject(response) && validateObject(response.data) && response.status === 200) {
+            const chartData = response.data;
             chartData.forEach(chartDataRow => {
                weekDaysXToNumberOfSalesY.push({
                   weekDay: chartDataRow[0],
@@ -1139,7 +1155,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data = {
                labels: weekDaysX,
                datasets: [{
-                  label: " Number of Sales in this day",
+                  label: " Number sold of Sales in this day",
                   data: numberOfSoldSalesY,
                   borderWidth: 2,
                   backgroundColor: "#1D86BA",
@@ -1154,7 +1170,7 @@ document.addEventListener("DOMContentLoaded", () => {
                plugins: {
                   title: {
                      display: true,
-                     text: "Number of sales in last week",
+                     text: "Number of sold Sales in this week",
                      fullSize: true,
                      font: {
                         weight: "bold",
@@ -1418,6 +1434,8 @@ I am the only author of this beautiful site 😉
 
 **Description:** Displays the form to register a new User.
 
+**Response:** An HTML form with User data.
+
 ### POST "/registerNewUser"
 
 **Description:** Takes the data from the previous form and uses it to register a new User.
@@ -1426,9 +1444,13 @@ I am the only author of this beautiful site 😉
 
 - `confirm-password` (form parameter, required): The User's confirm-password.
 
+**Response:** A successful login redirect or error messages.
+
 ### GET "/login"
 
 **Description:** Displays the login form for a User.
+
+**Response:** A successful login redirect or error messages.
 
 ### GET "/forgotUsername"
 

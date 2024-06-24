@@ -47,14 +47,15 @@
               th:if="${isValidSale && loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER') && (isAddedToCart || userAddExistingSaleToCartError != null)}">
             <div class="row justify-content-center">
                <div class="col-12 col-sm-8 col-md-5 col-lg-4 col-xl-3">
-                  <a class="btn btn-lg btn-outline-warning form-control fw-bold" role="button" th:href="@{/dashboard}">
+                  <a class="btn btn-lg btn-outline-warning form-control fw-bold" role="button"
+                     th:href="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD')}}">
                      <i class="fas fa-chevron-left me-2"></i>
                      Continue the orders
                   </a>
                </div>
                <div class="col-12 col-sm-8 col-md-5 col-lg-4 col-xl-3 mt-4 mt-md-0">
                   <a class="btn btn-lg btn-outline-success form-control fw-bold" role="button"
-                     th:href="@{/dashboard/cart}">
+                     th:href="@{${'/' + API_PREFIXES_MAP.get('CART')}}">
                      Go to the Cart
                      <i class="fas fa-chevron-right ms-2"></i>
                   </a>

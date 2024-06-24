@@ -98,6 +98,7 @@
                                th:field="${credentials.password}"
                                th:maxlength="${FIELD_SIZES_MAP.get('PASSWORD_MAX_LENGTH')}"
                                th:minlength="${FIELD_SIZES_MAP.get('PASSWORD_MIN_LENGTH')}"
+                               th:object="${credentials}"
                                th:title="'Insert your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' password'"
                                type="password"/>
                         <div

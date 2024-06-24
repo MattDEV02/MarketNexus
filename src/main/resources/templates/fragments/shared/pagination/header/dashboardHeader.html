@@ -12,14 +12,14 @@
          <div class="collapse navbar-collapse text-center" id="navbarTogglerDemo03">
             <ul class="navbar-nav ms-2 me-5">
                <li class="nav-item">
-                  <a aria-current="page" class="nav-link active" th:href="@{/dashboard}"
+                  <a aria-current="page" class="nav-link active" th:href="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD')}}"
                      th:title="'Go to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' home'}">
                      Home
                      <i class="fas fa-home mx-1"></i>
                   </a>
                </li>
                <li class="nav-item" th:if="${loggedUser != null}">
-                  <a class="nav-link link-primary" th:href="@{/dashboard/account}"
+                  <a class="nav-link link-primary" th:href="@{${'/' + API_PREFIXES_MAP.get('ACCOUNT')}}"
                      th:title="'Go to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' account'}">
                      Account
                      <i class="fas fa-user-alt mx-1"></i>
@@ -27,7 +27,7 @@
                </li>
                <li class="nav-item"
                    th:if="${loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER')}">
-                  <a class="nav-link link-warning" th:href="@{/dashboard/cart}"
+                  <a class="nav-link link-warning" th:href="@{${'/' + API_PREFIXES_MAP.get('CART')}}"
                      th:title="'Go to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' cart'}">
                      Cart
                      <i class="fas fa-cart-plus mx-1"></i>
@@ -36,7 +36,7 @@
                <li class="nav-item"
                    th:if="${loggedUser != null && #strings.contains(loggedUser.credentials.role, 'SELLER')}"
                    th:title="'Publish new ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' sale'}">
-                  <a class="nav-link link-success" th:href="@{/dashboard/newSale}">
+                  <a class="nav-link link-success" th:href="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/newSale'}}">
                      New Sale
                      <i class="fas fa-plus-square mx-1"></i>
                   </a>
@@ -50,7 +50,7 @@
             </ul>
             <form class="d-flex ms-5 mt-4 mt-xl-0" id="search-product-form"
                   method="GET" name="search-product-form"
-                  th:action="@{/dashboard/searchSales}">
+                  th:action="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/searchSales'}}">
                <label class="form-label visually-hidden" for="product-name"></label>
                <input class="form-control p-2 mx-3" id="product-name"
                       name="product-name" placeholder="Product name"

@@ -1,7 +1,7 @@
 <a class="btn btn-google form-control mt-4"
    data-bs-toggle="tooltip"
-   href="/oauth2/authorization/google"
    th:fragment="googleLoginButton()"
+   th:href="@{/oauth2/authorization/google}"
    th:title="'Login to ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' with your Google account'">
    <div class="google-icon-wrapper">
       <img alt="Google icon" th:src="@{/images/logo/google_logo.png}"/>

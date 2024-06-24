@@ -38,9 +38,9 @@ let type = null, data = null, options = null, config = null;
 document.addEventListener("DOMContentLoaded", () => {
    axios.get(`${baseAPIURI}chartData`)
       .then(response => {
-         const chartData = response.data;
-         console.log(chartData);
-         if (validateObject(chartData) && response.status === 200) {
+         console.log(response);
+         if (validateObject(response) && validateObject(response.data) && response.status === 200) {
+            const chartData = response.data;
             chartData.forEach(chartDataRow => {
                weekDaysXToNumberOfSalesY.push({
                   weekDay: chartDataRow[0],

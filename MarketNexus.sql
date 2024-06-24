@@ -353,7 +353,7 @@ ALTER TABLE MarketNexus.Carts
     OWNER TO postgres;
 
 INSERT INTO MarketNexus.Carts(cart_price, _user)
-VALUES (89.99, 1),
+VALUES (0, 1),
        (0, 2),
        (0, 3);
 
@@ -531,8 +531,7 @@ COMMENT ON TABLE MarketNexus.cart_line_items IS 'MarketNexus User who puts a Sal
 ALTER TABLE MarketNexus.cart_line_items
     OWNER TO postgres;
 
-INSERT INTO MarketNexus.cart_line_items(cart, sale, quantity, cartlineitem_price)
-VALUES (1, 6, 1, 89.99);
+--INSERT INTO MarketNexus.cart_line_items(cart, sale, quantity, cartlineitem_price) VALUES (1, 6, 1, 89.99);
 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Orders

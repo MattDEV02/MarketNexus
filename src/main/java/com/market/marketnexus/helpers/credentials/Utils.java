@@ -52,7 +52,7 @@ public class Utils {
       UserDetails newPrincipal = new User(credentials.getUsername(), credentials.getPassword(), currentUserDetails.getAuthorities());
       Authentication newAuthentication = new UsernamePasswordAuthenticationToken(
               newPrincipal,
-              null, // credentials
+              credentials, // null
               authorities
       );
       SecurityContextHolder.getContext().setAuthentication(newAuthentication);
