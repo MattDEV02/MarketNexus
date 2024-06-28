@@ -26,7 +26,7 @@ public class SaleValidator implements Validator {
       if (this.saleRepository.existsByUser(sale.getUser()) && this.productRepository.existsByNameAndDescriptionAndPriceAndCategoryOrderById(product.getName(), product.getDescription(), product.getPrice(), product.getCategory())) {
          errors.reject("saleAlreadyPublishedError", "You have already published this sale.");
       }
-      if (sale.getQuantity() < (FieldSizes.SALE_QUANTITY_MIN_VALUE + 1)) {
+      if (sale.getQuantity() != null && sale.getQuantity() < (FieldSizes.SALE_QUANTITY_MIN_VALUE + 1)) {
          errors.rejectValue("quantity", "Min.sale.quantity");
       }
    }

@@ -171,6 +171,7 @@
                      <select
                            th:replace="~{fragments/dashboard/account/stats/chart/chartTypeMenu.html :: chartTypeMenu()}"></select>
                   </div>
+                  <div th:replace="~{fragments/dashboard/account/stats/chart/chartButtons.html :: chartButtons()}"></div>
                   <div class="row">
                      <div th:replace="~{fragments/dashboard/account/stats/chart/chart.html :: chart()}"></div>
                   </div>
@@ -227,6 +228,7 @@
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:if="${isUserFound}"
         th:src="@{'/js/' + ${API_PREFIXES_MAP.get('ACCOUNT')} + '/stats/calendar/index.js'}"
         type="text/javascript"></script>
+<script th:if="${isUserFound}" th:src="@{/js/libraries/jspdf/jspdf.umd.min.js}"></script>
 </body>
 
 </html>
