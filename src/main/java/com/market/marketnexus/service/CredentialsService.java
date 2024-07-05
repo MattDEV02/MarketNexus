@@ -16,4 +16,11 @@ public class CredentialsService {
       return this.credentialsRepository.findByUsername(username).orElseThrow(() -> new UserCredentialsUsernameNotExistsException("User Credentials with username '" + username + "' does not exist."));
    }
 
+   public void updateIsOnline(Credentials credentials, Boolean isOnline) {
+      if (credentials != null) {
+         credentials.setIsOnline(isOnline);
+         this.credentialsRepository.save(credentials);
+      }
+   }
+
 }

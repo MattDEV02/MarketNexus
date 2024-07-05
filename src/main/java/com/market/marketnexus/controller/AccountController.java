@@ -3,7 +3,7 @@ package com.market.marketnexus.controller;
 import com.market.marketnexus.controller.validator.CredentialsValidator;
 import com.market.marketnexus.controller.validator.UserValidator;
 import com.market.marketnexus.exception.UserCredentialsUsernameNotExistsException;
-import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.credentials.Utils;
@@ -30,13 +30,13 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/" + APIPrefixes.ACCOUNT)
+@RequestMapping(value = "/" + APIPaths.ACCOUNT)
 public class AccountController {
 
-   public final static String UPDATE_SUCCESSFUL_VIEW = "redirect:/" + APIPrefixes.ACCOUNT + "?accountUpdatedSuccessful=true#update-account-form";
-   public final static String UPDATE_ERROR_VIEW = "/" + APIPrefixes.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION;
+   public final static String UPDATE_SUCCESSFUL_VIEW = "redirect:/" + APIPaths.ACCOUNT + "?accountUpdatedSuccessful=true#update-account-form";
+   public final static String UPDATE_ERROR_VIEW = "/" + APIPaths.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION;
    public final static String DELETE_SUCCESSFUL_VIEW = "redirect:/logout";
-   public final static String DELETE_ERROR_VIEW = APIPrefixes.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION;
+   public final static String DELETE_ERROR_VIEW = APIPaths.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION;
    private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
    @Autowired
    private PasswordEncoder passwordEncoder;
@@ -57,7 +57,7 @@ public class AccountController {
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showUserAccount(@Valid @ModelAttribute("loggedUser") User loggedUser) {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION);
+      ModelAndView modelAndView = new ModelAndView(APIPaths.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION);
       if (loggedUser != null) {
          Iterable<Sale> notSoldSales = this.saleService.getAllNotSoldSales(loggedUser);
          Iterable<Sale> soldSales = this.saleService.getAllUserSoldSales(loggedUser);
@@ -74,7 +74,7 @@ public class AccountController {
 
    @GetMapping(value = {"/{username}", "/{username}/"})
    public ModelAndView showUserAccountByUsername(@Valid @ModelAttribute("loggedUser") @NonNull User loggedUser, @PathVariable("username") String username) {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION);
+      ModelAndView modelAndView = new ModelAndView(APIPaths.ACCOUNT + GlobalValues.TEMPLATES_EXTENSION);
       try {
          Credentials credentials = this.credentialsService.getCredentials(username);
          User user = this.userService.getUser(credentials);

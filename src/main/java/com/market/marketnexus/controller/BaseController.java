@@ -1,6 +1,6 @@
 package com.market.marketnexus.controller;
 
-import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ public class BaseController {
       FAQ_ACCORDIONS.put("Is it possible to have the same account on multiple devices?", "Yes, fortunately it is possible.");
       FAQ_ACCORDIONS.put("How many Product Categories there are in " + GlobalValues.APP_NAME + "?", "At this moment there are " + String.valueOf(9) + " Product Categories.");
       FAQ_ACCORDIONS.put("How should my password be made?", "Your " + GlobalValues.APP_NAME + " password must has 8 characters, uppercase, lowercase letters and numbers.");
-      FAQ_ACCORDIONS.put("Where can I see my account?", "Easy! You can see your account at /" + APIPrefixes.ACCOUNT);
+      FAQ_ACCORDIONS.put("Where can I see my account?", "Easy! You can see your account at /" + APIPaths.ACCOUNT);
       FAQ_ACCORDIONS.put("Where is the repo of this beautiful site?", "Easy! You can find the Github repo of this beatiful site at: " + GlobalValues.APP_REPO);
       FAQ_ACCORDIONS.put("Who is the Author of this beautiful site?", "The Author of this beatiful site is " + GlobalValues.AUTHORS[0].substring(0, GlobalValues.AUTHORS[0].indexOf(",")) + ".");
    }

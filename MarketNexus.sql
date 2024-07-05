@@ -95,7 +95,7 @@ INSERT INTO MarketNexus.product_categories (name, description)
 VALUES ('Electronics', 'Electronics products.'),
        ('Clothing', 'Clothing products.'),
        ('Books', 'Books products.'),
-       ('Appliances', 'Home Appliances products.'),
+       ('Appliances', 'Sales Appliances products.'),
        ('Footwear', 'Footwear products.'),
        ('Sports', 'Sports products.'),
        ('Beauty', 'Beauty products.'),
@@ -150,10 +150,11 @@ $$ LANGUAGE PLPGSQL;
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Credentials
 (
-    id          SERIAL                                                                               NOT NULL PRIMARY KEY,
-    password    VARCHAR(72)                                                                          NOT NULL,
-    username    VARCHAR(10)                                                                          NOT NULL,
-    role        VARCHAR(30)                                                                          NOT NULL DEFAULT 'ROLE_SELLER_AND_BUYER',
+    id          SERIAL      NOT NULL PRIMARY KEY,
+    password    VARCHAR(72) NOT NULL,
+    username    VARCHAR(10) NOT NULL,
+    role        VARCHAR(30) NOT NULL     DEFAULT 'SELLER_AND_BUYER',
+    is_online   BOOLEAN     NOT NULL     DEFAULT FALSE,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT credentials_username_unique UNIQUE (username),
@@ -183,9 +184,11 @@ ALTER TABLE MarketNexus.Credentials
 
 INSERT INTO MarketNexus.Credentials (username, password, role)
 VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BUYER'),
-       ('Test1', '$2a$10$WprxEwx6mj231RuhiUZrxO2Hdnw1acKE/INs0B5Y9.5A1jMjainve', 'SELLER_AND_BUYER'),
-       ('Test2', '$2a$10$eL/ln3CGVOdYbPJ4Faao.OeN46ZkP91e.h5pKOAGe08a1ICNGIzBW', 'SELLER_AND_BUYER');
--- Gabriel1
+       ('JohnDoe', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BUYER'),
+       ('Giuseppe', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BUYER'),
+       ('KatyPerry', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER'),
+       ('SanJay', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'BUYER');
+
 
 -- N.B. = La password è criptata da spring boot con l'algoritmo bscrypt e va da 60 caratteri a 72.
 
@@ -225,8 +228,10 @@ ALTER TABLE MarketNexus.Users
 
 INSERT INTO MarketNexus.Users (name, surname, email, birthdate, balance, credentials, nation)
 VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2002-04-02', 220, 1, 1),
-       ('Test', 'Test', 'test@test.it', '2024-03-17', 2, 2, 2),
-       ('Test', 'Test', 'test@test.com', '2002-03-27', 0.1, 3, 6);
+       ('John', 'Doe', 'johndoe@test.it', '2020-03-17', 2, 2, 6),
+       ('Giuseppe', 'Rossi', 'giusepperossi@test.it', '2020-11-02', 2000.05, 3, 1),
+       ('Katy', 'Perry', 'katyperry@test.it', '2000-01-12', 100.16, 4, 4),
+       ('San', 'Jay', 'sanjay@test.it', '2000-01-12', 0, 5, 9);
 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Sales

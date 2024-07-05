@@ -3,6 +3,7 @@ package com.market.marketnexus.controller;
 import com.market.marketnexus.controller.validator.CredentialsValidator;
 import com.market.marketnexus.controller.validator.UserValidator;
 import com.market.marketnexus.exception.UserEmailNotExistsException;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
@@ -14,17 +15,21 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 @Controller
 public class AuthenticationController {
@@ -110,5 +115,29 @@ public class AuthenticationController {
          }
       }
       return modelAndView;
+   }
+
+   @GetMapping(value = {"/" + APIPaths.MARKETPLACE, "/" + APIPaths.MARKETPLACE + "/"})
+   public ModelAndView redirectToMarketPlaceSales() {
+      return new ModelAndView("redirect:/" + APIPaths.SALES);
+   }
+
+   @PostMapping("/saveToken")
+   public ResponseEntity<?> saveToken(@RequestBody String token) {
+      try {
+         Path path = Paths.get("src/main/resources/static/txt/tokens.txt");
+         List<String> existingTokens = Files.readAllLines(path);
+
+         if (!existingTokens.contains(token)) {
+            Files.write(path, (token + System.lineSeparator()).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            return new ResponseEntity<>(HttpStatus.OK);
+         } else {
+            // Token già esistente, gestisci come preferisci
+            return new ResponseEntity<>("Token already exists", HttpStatus.CONFLICT);
+         }
+      } catch (IOException e) {
+         AuthenticationController.LOGGER.error(e.getMessage());
+         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
    }
 }

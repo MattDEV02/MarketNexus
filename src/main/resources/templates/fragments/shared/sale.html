@@ -1,7 +1,7 @@
 <div class="card text-center shadow mt-5" th:fragment="sale(sale)"
      th:title="${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' X' + ${sale.quantity} + ' at ' + ${sale.product.price} + ' $ ' + ${sale.isSold ? 'sold.' : 'in sale.'}"
      th:with="isLoggedUser=(${isLoggedUser} ?: false), isAddedToCart=(${isAddedToCart} ?: false), isAccountPage=(${isAccountPage} ?: false)">
-   <a th:href="@{${'/' + API_PREFIXES_MAP.get('DASHBOARD') + '/sale/' + sale.id}}">
+   <a th:href="@{${'/' + API_PATHS_MAP.get('SALES') + '/sale/' + sale.id}}">
       <div class="carousel slide" data-bs-ride="carousel" th:id="'carouselExampleIndicators#' + ${sale.id}">
          <div class="carousel-indicators">
             <button class="active" th:aria-current="${iterStat.count == 1}"
@@ -29,7 +29,7 @@
    </div>
    <div class="card-footer">
       <a class="card-link link-primary text-decoration-underline fs-5 ms-1 me-3"
-         th:href="@{${'/' + API_PREFIXES_MAP.get('ACCOUNT') + '/' + sale.user.credentials.username}}"
+         th:href="@{${'/' + API_PATHS_MAP.get('ACCOUNT') + '/' + sale.user.credentials.username}}"
          th:text="${sale.user.credentials.username}"
          th:title="'Go to ' + ${sale.user.credentials.username} + ' ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' account'"
       >
@@ -37,7 +37,7 @@
       <span class="text-secondary fs-5 ms-2 me-3" th:text="${sale.salePrice} + ' $'"></span>
       <a class="btn btn-primary ms-3 mb-2" data-bs-toggle="tooltip"
          role="button"
-         th:href="@{'/' + ${API_PREFIXES_MAP.get('CART')} + '/' + ${sale.id}}"
+         th:href="@{'/' + ${API_PATHS_MAP.get('CART')} + '/' + ${sale.id}}"
          th:if="${loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER') && !isLoggedUser && sale.quantity > 0 && !isAddedToCart}"
          th:title="'Add this ' + ${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' cart'"
       >
@@ -45,7 +45,7 @@
       </a>
       <a class="btn btn-warning ms-3 mb-2" data-bs-toggle="tooltip"
          role="button"
-         th:href="@{'/' + ${API_PREFIXES_MAP.get('DASHBOARD')} + '/updateSale/' + ${sale.id}}"
+         th:href="@{'/' + ${API_PATHS_MAP.get('SALES')} + '/updateSale/' + ${sale.id}}"
          th:if="${sale.quantity > 0 && loggedUser != null && isLoggedUser && #strings.contains(loggedUser.credentials.role, 'SELLER') && sale.user == loggedUser}"
          title="Modify this Sale.">
          <i class="fas fa-edit"></i>
@@ -67,5 +67,5 @@
          <i class="fas fa-times-circle"></i>
       </button>
    </div>
-   <div th:replace="~{fragments/dashboard/account/modal/confirmDeleteSaleModal.html :: confirmDeleteSaleModal(sale = ${sale})}"></div>
+   <div th:replace="~{fragments/marketplace/account/modal/confirmDeleteSaleModal.html :: confirmDeleteSaleModal(sale = ${sale})}"></div>
 </div>

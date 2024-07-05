@@ -41,6 +41,9 @@ public class Credentials {
    @NotBlank
    private String role;
 
+   @Column(name = "is_online", nullable = false)
+   private Boolean isOnline;
+
    @Column(name = "inserted_at", nullable = false)
    @Temporal(TemporalType.TIMESTAMP)
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
@@ -105,6 +108,14 @@ public class Credentials {
       this.role = role;
    }
 
+   public Boolean getIsOnline() {
+      return this.isOnline;
+   }
+
+   public void setIsOnline(Boolean isOnline) {
+      this.isOnline = isOnline;
+   }
+
    public LocalDateTime getInsertedAt() {
       return this.insertedAt;
    }
@@ -140,9 +151,10 @@ public class Credentials {
    public String toString() {
       return "Credentials: {" +
               // " id = " + this.getId() != null ? this.getId().toString() : "null" +
-              ", username = '" + this.getUsername() + '\'' +
+              ", username = " + this.getUsername() +
               ", role = " + this.getRole() +
-              ", password = '" + this.getPassword() + '\'' +
+              ", password = " + this.getPassword() +
+              ", isOnline = '" + this.getIsOnline() +
               //", insertedAt = " + this.getInsertedAt() != null ? this.getInsertedAt().toString() : "null" +
               //", updatedAt = " + this.getUpdatedAt() != null ? this.getUpdatedAt().toString() : "null" +
               " }";

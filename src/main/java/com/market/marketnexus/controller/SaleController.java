@@ -3,7 +3,7 @@ package com.market.marketnexus.controller;
 import com.market.marketnexus.controller.validator.ProductValidator;
 import com.market.marketnexus.controller.validator.SaleValidator;
 import com.market.marketnexus.exception.SaleNotFoundException;
-import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.product.ProductImageFileUtils;
@@ -13,6 +13,7 @@ import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.ProductCategoryService;
 import com.market.marketnexus.service.ProductService;
 import com.market.marketnexus.service.SaleService;
+import com.market.marketnexus.service.notification.PublishedSaleNotificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -31,11 +32,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Controller
-@RequestMapping(value = "/" + APIPrefixes.DASHBOARD)
+@RequestMapping(value = "/" + APIPaths.SALES)
 public class SaleController {
 
-   public final static String PUBLISH_SUCCESSFUL_VIEW = "redirect:/" + APIPrefixes.SALE + "/";
-   public final static String PUBLISH_ERROR_VIEW = APIPrefixes.DASHBOARD + "/newSale" + GlobalValues.TEMPLATES_EXTENSION;
+   public final static String PUBLISH_SUCCESSFUL_VIEW = "redirect:/" + APIPaths.SALES + "/";
+   public final static String PUBLISH_ERROR_VIEW = APIPaths.MARKETPLACE + "/newSale" + GlobalValues.TEMPLATES_EXTENSION;
    private static final Logger LOGGER = LoggerFactory.getLogger(SaleController.class);
    @Autowired
    private ProductCategoryService productCategoryService;
@@ -44,13 +45,15 @@ public class SaleController {
    @Autowired
    private SaleService saleService;
    @Autowired
+   private PublishedSaleNotificationService publishedSaleNotificationService;
+   @Autowired
    private SaleValidator saleValidator;
    @Autowired
    private ProductValidator productValidator;
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showAllSales() {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/index.html");
+      ModelAndView modelAndView = new ModelAndView(APIPaths.MARKETPLACE + "/sales.html");
       Iterable<Sale> sales = this.saleService.getAllSales();
       modelAndView.addObject("sales", sales);
       modelAndView.addObject("hasSearchedSales", false);
@@ -62,7 +65,7 @@ public class SaleController {
       String productName = request.getParameter("product-name");
       String productCategoryId = request.getParameter("category");
       SaleController.LOGGER.info("User username: {} has searched sale with product name: {} and product category ID: {}", loggedUser != null ? loggedUser.getCredentials().getUsername() : "Google User", productName, productCategoryId);
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/index.html");
+      ModelAndView modelAndView = new ModelAndView(APIPaths.MARKETPLACE + "/sales.html");
       Iterable<Sale> searchedSales = null;
       if (productName.isEmpty() && productCategoryId.isEmpty()) {
          searchedSales = this.saleService.getAllSales();
@@ -86,7 +89,7 @@ public class SaleController {
 
    @GetMapping(value = {"/newSale", "/newSale/"})
    public ModelAndView showNewSaleForm() {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/newSale" + GlobalValues.TEMPLATES_EXTENSION);
+      ModelAndView modelAndView = new ModelAndView(APIPaths.MARKETPLACE + "/newSale" + GlobalValues.TEMPLATES_EXTENSION);
       modelAndView.addObject("sale", new Sale());
       modelAndView.addObject("product", new Product());
       modelAndView.addObject("isUpdate", false);
@@ -115,6 +118,7 @@ public class SaleController {
          }
          Sale savedSale = this.saleService.saveSale(sale);
          SaleController.LOGGER.info("Published new Sale with ID: {}", savedSale.getId());
+         //this.publishedSaleNotificationService.sendNotificationToAllUsers(sale);
          modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL_VIEW + savedProduct.getId().toString());
          modelAndView.addObject("sale", savedSale);
          modelAndView.addObject("salePublishedSuccess", true);
@@ -135,11 +139,11 @@ public class SaleController {
 
    @GetMapping(value = {"/updateSale/{saleId}", "/updateSale/{saleId}"})
    public ModelAndView showUpdateSaleForm(@PathVariable("saleId") Long saleId, @Valid @ModelAttribute("loggedUser") User loggedUser) {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/newSale" + GlobalValues.TEMPLATES_EXTENSION);
+      ModelAndView modelAndView = new ModelAndView(APIPaths.MARKETPLACE + "/newSale" + GlobalValues.TEMPLATES_EXTENSION);
       try {
          Sale sale = this.saleService.getSale(saleId);
          if (!sale.getUser().equals(loggedUser)) {
-            modelAndView.setViewName("redirect:/" + APIPrefixes.ACCOUNT);
+            modelAndView.setViewName("redirect:/" + APIPaths.ACCOUNT);
             modelAndView.addObject("userCantManageNotHisSaleError", true);
             return modelAndView;
          }
@@ -148,7 +152,7 @@ public class SaleController {
          modelAndView.addObject("isUpdate", true);
       } catch (SaleNotFoundException saleNotFoundException) {
          SaleController.LOGGER.error(saleNotFoundException.getMessage());
-         modelAndView.setViewName("redirect:/" + APIPrefixes.DASHBOARD + "/sale/" + saleId);
+         modelAndView.setViewName("redirect:/" + APIPaths.MARKETPLACE + "/sale/" + saleId);
       }
       return modelAndView;
    }
@@ -208,11 +212,11 @@ public class SaleController {
 
    @GetMapping(value = {"/deleteSale/{saleId}", "/deleteSale/{saleId}"})
    public ModelAndView deleteSale(@PathVariable("saleId") Long saleId, @Valid @ModelAttribute("loggedUser") User loggedUser) {
-      ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.ACCOUNT + "#sales");
+      ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPaths.ACCOUNT + "#sales");
       try {
          Sale sale = this.saleService.getSale(saleId);
          if (!sale.getUser().equals(loggedUser)) {
-            modelAndView.setViewName("redirect:/" + APIPrefixes.ACCOUNT);
+            modelAndView.setViewName("redirect:/" + APIPaths.ACCOUNT);
             modelAndView.addObject("userCantManageNotHisSaleError", true);
             return modelAndView;
          }
@@ -225,16 +229,17 @@ public class SaleController {
          }
       } catch (SaleNotFoundException saleNotFoundException) {
          SaleController.LOGGER.error(saleNotFoundException.getMessage());
-         modelAndView.setViewName("redirect:/" + APIPrefixes.DASHBOARD + "/sale/" + saleId);
+         modelAndView.setViewName("redirect:/" + APIPaths.MARKETPLACE + "/sale/" + saleId);
       }
       return modelAndView;
    }
 
    @GetMapping(value = {"/sale/{saleId}", "/sale/{saleId}/"})
    public ModelAndView showSaleById(@PathVariable("saleId") Long saleId) {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.DASHBOARD + "/sale.html");
+      ModelAndView modelAndView = new ModelAndView(APIPaths.MARKETPLACE + "/sale.html");
       try {
          Sale sale = this.saleService.getSale(saleId);
+         this.publishedSaleNotificationService.sendNotificationToAllUsers(sale);
          modelAndView.addObject("sale", sale);
          modelAndView.addObject("saleId", saleId);
          modelAndView.addObject("isAddedToCart", false);

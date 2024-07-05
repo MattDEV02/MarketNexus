@@ -70,20 +70,20 @@ carts) from different categories, visualize their stats and much more.
 	<img  title="MarketNexus HomeScreen screenshoot 1"  alt="MarketNexus HomeScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/home/1.png"  width="100%" />
 </p>
 
-## `Dashboard page`
+## `Marketplace page`
 
 <p align="center">
-	<img  title="MarketNexus DashboardScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/dashboard/1.png"  width="100%" />
+	<img  title="MarketNexus MarketplaceScreen screenshoot 1"  alt="MarketNexus MarketplaceScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/marketplace/1.png"  width="100%" />
 </p>
 
 ## `Account page`
 
 <p align="center">
-	<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus DashboardScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="100%" />
-    <img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus DashboardScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="100%" />
-    <img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="100%" />
-    <img  title="MarketNexus AccountScreen screenshoot 4"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="100%" />
-    <img  title="MarketNexus AccountScreen screenshoot 5"  alt="MarketNexus DashboardScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/5.png"  width="100%" />
+	<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus MarketplaceScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="100%" />
+    <img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus MarketplaceScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="100%" />
+    <img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus MarketplaceScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="100%" />
+    <img  title="MarketNexus AccountScreen screenshoot 4"  alt="MarketNexus MarketplaceScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="100%" />
+    <img  title="MarketNexus AccountScreen screenshoot 5"  alt="MarketNexus MarketplaceScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/5.png"  width="100%" />
 </p>
 
 ## `FAQs page`
@@ -220,6 +220,7 @@ public class MarketNexusApplication {
 ```java
 package com.market.marketnexus.authentication;
 
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.ProjectPaths;
 import com.market.marketnexus.helpers.credentials.Roles;
@@ -297,13 +298,13 @@ public class AuthConfiguration implements WebMvcConfigurer {
                               .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(HttpMethod.DELETE).denyAll()
-                              .requestMatchers(HttpMethod.GET, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
-                              .requestMatchers(HttpMethod.POST, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
+                              .requestMatchers(HttpMethod.GET, "/" + APIPaths.MARKETPLACE + "/**").authenticated()
+                              .requestMatchers(HttpMethod.POST, "/" + APIPaths.MARKETPLACE + "/**").authenticated()
                               .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin
                       .loginPage("/login")
-                      .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
+                      .defaultSuccessUrl("/" + APIPaths.MARKETPLACE, true)
                       .failureUrl("/login?invalidCredentials=true")
                       .usernameParameter("username")
                       .passwordParameter("password")
@@ -312,7 +313,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .oauth2Login(oauth2Login ->
                       oauth2Login
                               .loginPage("/oauth2/authorization/google")
-                              .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
+                              .defaultSuccessUrl("/" + APIPaths.MARKETPLACE, true)
                               .failureUrl("/login?invalidCredentials=true")
                               .permitAll()
               )
@@ -945,7 +946,7 @@ spring.security.oauth2.client.provider.google.token-uri=https://oauth2.googleapi
 spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleapis.com/oauth2/v3/userinfo
 ```
 
-### `/templates/dashboard/cart.html`
+### `/templates/marketplace/cart.html`
 
 ```thymeleaftemplatesfragmentexpressions
 <!DOCTYPE html>
@@ -954,10 +955,10 @@ spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleap
 <head th:replace="~{fragments/shared/head.html :: head(title = 'Cart')}">
 
 </head>
-<link rel="stylesheet" th:href="@{'/css/' + ${API_PREFIXES_MAP.get('DASHBOARD')} + '/shared/style.css'}"/>
-<link rel="stylesheet" th:href="@{'/css/' + ${API_PREFIXES_MAP.get('CART')} + '/style.css'}"/>
+<link rel="stylesheet" th:href="@{'/css/' + ${API_PATHS_MAP.get('MARKETPLACE')} + '/shared/style.css'}"/>
+<link rel="stylesheet" th:href="@{'/css/' + ${API_PATHS_MAP.get('CART')} + '/style.css'}"/>
 <body>
-<div th:replace="~{fragments/shared/pagination/header/dashboardHeader.html :: dashboardHeader()}">
+<div th:replace="~{fragments/shared/pagination/header/marketplaceHeader.html :: marketplaceHeader()}">
 </div>
 <main id="cart-container">
    <div class="container" th:fragment="dynamicCartSection">
@@ -982,11 +983,11 @@ spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleap
                   th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Your balance is not sufficient to complete the order.', condition = ${userBalanceLowerThanCartPriceError})}"></div>
             <div
                   th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Cart line deleted.', condition = ${cartLineItemDeletedSuccess})}"></div>
-            <div th:replace="~{fragments/dashboard/cart/modal/confirmOrderModal.html :: confirmOrderModal(cart = ${cart})}"></div>
+            <div th:replace="~{fragments/marketplace/cart/modal/confirmOrderModal.html :: confirmOrderModal(cart = ${cart})}"></div>
             <div class="row justify-content-center" th:each="cartLineItem : ${cartLineItems}">
-               <div th:replace="~{fragments/dashboard/cart/cartLineInformation.html :: cartLineInformation(cartLineItem = ${cartLineItem})}"></div>
+               <div th:replace="~{fragments/marketplace/cart/cartLineInformation.html :: cartLineInformation(cartLineItem = ${cartLineItem})}"></div>
             </div>
-            <div th:replace="~{fragments/dashboard/cart/cartTotalLineInformation.html :: cartTotalLineInformation(cart = ${cart})}"></div>
+            <div th:replace="~{fragments/marketplace/cart/cartTotalLineInformation.html :: cartTotalLineInformation(cart = ${cart})}"></div>
          </div>
       </div>
       <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
@@ -994,7 +995,7 @@ spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleap
       <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/validators.js}"
               type="text/javascript"></script>
       <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
-              th:src="@{'/js/' + ${API_PREFIXES_MAP.get('CART')} + '/index.js'}"
+              th:src="@{'/js/' + ${API_PATHS_MAP.get('CART')} + '/index.js'}"
               type="text/javascript"></script>
    </div>
 </main>
@@ -1098,7 +1099,7 @@ font-size: 16 px;
 }
 ```
 
-### `/js/dashboard/account/stats/chart/index.js`
+### `/js/marketplace/account/stats/chart/index.js`
 
 ```javascript
 //Chart.defaults.elements.bar.borderWidth = 2;
@@ -1521,7 +1522,7 @@ with the User's username.
 
 - `email` (form parameter, required): The User's personal email.
 
-## SaleController: ("/dashboard")
+## SaleController: ("/marketplace")
 
 ### GET "/"
 

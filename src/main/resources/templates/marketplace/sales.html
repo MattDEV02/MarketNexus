@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
+
+<head th:replace="~{fragments/shared/head.html :: head(title = 'Marketplace')}">
+
+</head>
+<link rel="stylesheet" th:href="@{'/css/' + ${API_PATHS_MAP.get('MARKETPLACE')} + '/shared/style.css'}"/>
+<body>
+<div th:replace="~{fragments/shared/pagination/header/marketplaceHeader.html :: marketplaceHeader()}">
+</div>
+<main>
+   <div class="container" th:with="areSalesValid = ${sales != null && !#lists.isEmpty(sales)}">
+      <div class="row justify-content-center">
+         <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
+         <div class="col-12 mt-5">
+            <div class="row text-center">
+               <h1 th:if="${hasSearchedSales}">
+                  Searched sales 🏖️
+               </h1>
+               <h1 th:text="${'Welcome ' + (loggedUser != null ? loggedUser.credentials.username : 'Google User') + ' 👋'}"
+                   th:unless="${hasSearchedSales}">
+               </h1>
+            </div>
+         </div>
+         <div class="col-12 mb-5" th:if="${areSalesValid}">
+            <div class="row">
+               <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4" th:each="sale : ${sales}">
+                  <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${sale}, isLoggedUser = ${loggedUser == sale.user})}"></div>
+               </div>
+            </div>
+         </div>
+         <div th:unless="${areSalesValid}"
+              th:with="productName = ${searchedProductName}, productCategory = ${searchedProductCategoryName}">
+            <div
+                  th:replace="~{fragments/marketplace/sales/salesNotFound.html :: salesNotFound(hasSearchedSales = ${hasSearchedSales}, productName = ${productName}, productCategory = ${productCategory})}"></div>
+         </div>
+      </div>
+   </div>
+</main>
+<div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
+</div>
+</body>
+
+</html>

@@ -1,7 +1,7 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.exception.UserEmailNotExistsException;
-import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.constants.Temporals;
@@ -36,7 +36,7 @@ public class GlobalController {
    private static final Map<String, Object> GLOBAL_CONSTANTS_MAP = new HashMap<String, Object>();
    private static final Map<String, Object> FIELD_SIZES_MAP = new HashMap<String, Object>();
    private static final Map<String, Object> TEMPORALS_MAP = new HashMap<String, Object>();
-   private static final Map<String, Object> API_PREFIXES_MAP = new HashMap<String, Object>();
+   private static final Map<String, Object> API_PATHS_MAP = new HashMap<String, Object>();
    private static final Map<String, Roles> ALL_ROLES_MAP = Utils.getAllRoles();
 
    static {
@@ -52,7 +52,7 @@ public class GlobalController {
    }
 
    static {
-      GlobalValues.fillGlobalMap(APIPrefixes.class, GlobalController.API_PREFIXES_MAP);
+      GlobalValues.fillGlobalMap(APIPaths.class, GlobalController.API_PATHS_MAP);
    }
 
    @Autowired
@@ -79,9 +79,9 @@ public class GlobalController {
       return GlobalController.TEMPORALS_MAP;
    }
 
-   @ModelAttribute("API_PREFIXES_MAP")
+   @ModelAttribute("API_PATHS_MAP")
    public Map<String, Object> getApiPrefixesMap() {
-      return GlobalController.API_PREFIXES_MAP;
+      return GlobalController.API_PATHS_MAP;
    }
 
    @ModelAttribute("ALL_ROLES_MAP")
@@ -114,6 +114,7 @@ public class GlobalController {
             credentials = this.credentialsService.getCredentials(userDetails.getUsername());
             loggedUser = this.userService.getUser(credentials);
          }
+         this.credentialsService.updateIsOnline(credentials, true); // credentials not null at this point
       }
       return loggedUser;
    }
@@ -122,7 +123,7 @@ public class GlobalController {
    public Map<Long, Nation> getNations(@NonNull HttpServletRequest request) {
       Map<Long, Nation> nations = null;
       final String URI = request.getRequestURI();
-      if (URI.contains("/regist") || URI.contains("/" + APIPrefixes.ACCOUNT)) {
+      if (URI.contains("/regist") || URI.contains("/" + APIPaths.ACCOUNT)) {
          nations = this.nationService.getAllNationsMap();
       }
       return nations;

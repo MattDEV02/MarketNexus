@@ -1,0 +1,11 @@
+<table class="table table-light table-bordered table-hover text-center" data-bs-toggle="tooltip"
+       th:fragment="table(tableData)"
+       th:title="'A table with the better 5 ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME') + ' Users in published Sales stats, ordered by Users with more published Sales.'}"
+       th:with="areTableDataValid = ${tableData != null && !#lists.isEmpty(tableData)}">
+   <thead
+         th:replace="~{fragments/marketplace/account/stats/table/tableComponent/tableHead.html :: tableHead()}"></thead>
+   <tbody th:if="${areTableDataValid}"
+          th:replace="~{fragments/marketplace/account/stats/table/tableComponent/tableBody.html :: tableBody(tableData = ${tableData})}"></tbody>
+   <tbody
+         th:replace="~{fragments/marketplace/account/stats/table/tableComponent/tableBodyEmpty.html :: tableBodyEmpty(areTableDataValid = ${areTableDataValid})}"></tbody>
+</table>

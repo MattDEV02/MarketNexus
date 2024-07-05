@@ -1,7 +1,7 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.exception.SaleNotFoundException;
-import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.helpers.validators.TypeValidators;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/" + APIPrefixes.CART)
+@RequestMapping(value = "/" + APIPaths.CART)
 public class CartController {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(CartController.class);
@@ -38,7 +38,7 @@ public class CartController {
 
    @GetMapping(value = {"", "/"})
    public ModelAndView showCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser) {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.CART + GlobalValues.TEMPLATES_EXTENSION);
+      ModelAndView modelAndView = new ModelAndView(APIPaths.CART + GlobalValues.TEMPLATES_EXTENSION);
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       List<CartLineItem> cartLineItems = this.cartService.getAllNotSoldCartLineItems(cart);
       modelAndView.addObject("cart", cart);
@@ -48,7 +48,7 @@ public class CartController {
 
    @GetMapping(value = {"/{saleId}", "/{saleId}/"})
    public ModelAndView addSaleProductToCartById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("saleId") Long saleId) {
-      ModelAndView modelAndView = new ModelAndView(APIPrefixes.SALE + GlobalValues.TEMPLATES_EXTENSION);
+      ModelAndView modelAndView = new ModelAndView(APIPaths.MARKETPLACE + "/sale" + GlobalValues.TEMPLATES_EXTENSION);
       try {
          Sale sale = this.saleService.getSale(saleId);
          modelAndView.addObject("sale", sale);
@@ -67,14 +67,14 @@ public class CartController {
          }
       } catch (SaleNotFoundException saleNotFoundException) {
          CartController.LOGGER.error(saleNotFoundException.getMessage());
-         modelAndView.setViewName("redirect:/" + APIPrefixes.DASHBOARD + "/sale/" + saleId);
+         modelAndView.setViewName("redirect:/" + APIPaths.MARKETPLACE + "/sale/" + saleId);
       }
       return modelAndView;
    }
 
    @PostMapping(value = {"/updateCartLineItemQuantity/{cartLineItemId}", "/updateCartLineItemQuantity/{cartLineItemId}/"})
    public ModelAndView updateCartLineItemQuantity(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId, @RequestBody Map<String, String> data) {
-      ModelAndView modelAndView = new ModelAndView("dashboard/cart.html :: dynamicCartSection");
+      ModelAndView modelAndView = new ModelAndView("marketplace/cart.html :: dynamicCartSection");
       try {
          Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
          Integer quantity = Integer.parseInt(data.get("quantity"));
@@ -90,7 +90,7 @@ public class CartController {
 
    @GetMapping(value = {"/delete/{cartLineItemId}", "/delete/{cartLineItemId}/"})
    public ModelAndView deleteCartLineItemById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId) {
-      ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.CART);
+      ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPaths.CART);
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       if (this.cartService.deleteCartLineItem(cart, cartLineItemId)) {
          modelAndView.addObject("cartLineItemDeletedSuccess", true);

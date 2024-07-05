@@ -1,0 +1,18 @@
+<div class="col-12 pt-4 pb-5 text-center border rounded shadow mt-5 mb-4"
+     th:fragment="salesNotFound(hasSearchedSales, productName, productCategory)"
+     th:with="productName=${!#strings.isEmpty(productName) ? productName : 'not present'}, productCategory=${!#strings.isEmpty(productCategory) ? productCategory : 'not present'}">
+   <h1 class="display-1 fw-bold"
+       th:text="${hasSearchedSales ? 'Sales not found' : 'There are not Sales in this moment'}"></h1>
+   <h5 class="text-muted mt-5"
+       th:text="${hasSearchedSales ? 'The searched Sales with product name ' + productName + ' and product category ' + productCategory + ' were not found...' : 'Come back when there are sales!'}"></h5>
+   <a class="btn btn-outline-dark mt-5" role="button" th:href="@{${'/' + API_PATHS_MAP.get('MARKETPLACE')}}"
+      th:if="${hasSearchedSales}">
+      Back to your Home
+      <i class="fas fa-home mx-1"></i>
+   </a>
+   <a class="btn btn-outline-dark mt-5" role="button" th:href="@{${'/' + API_PATHS_MAP.get('ACCOUNT')}}"
+      th:unless="${hasSearchedSales}">
+      Go to your Account
+      <i class="fas fa-user-alt mx-1"></i>
+   </a>
+</div>

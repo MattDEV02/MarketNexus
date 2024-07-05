@@ -1,6 +1,6 @@
 package com.market.marketnexus.controller;
 
-import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ class StatsControllerTests {
    @Test
    public void testTableData() throws Exception {
       this.mockMvc.perform(MockMvcRequestBuilders
-                      .get("/" + APIPrefixes.STATS + "/tableData")
+                      .get("/" + APIPaths.STATS + "/tableData")
                       .accept(MediaType.APPLICATION_JSON))
               .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
               .andExpect(MockMvcResultMatchers.content().string(""))
@@ -32,7 +32,7 @@ class StatsControllerTests {
    @Test
    public void testChartData() throws Exception {
       this.mockMvc.perform(MockMvcRequestBuilders
-                      .get("/" + APIPrefixes.STATS + "/chartData")
+                      .get("/" + APIPaths.STATS + "/chartData")
                       .accept(MediaType.APPLICATION_JSON))
               .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
               .andExpect(MockMvcResultMatchers.content().string(""))
@@ -42,7 +42,7 @@ class StatsControllerTests {
    @Test
    public void testMapData() throws Exception {
       this.mockMvc.perform(MockMvcRequestBuilders
-                      .get("/" + APIPrefixes.STATS + "/mapData")
+                      .get("/" + APIPaths.STATS + "/mapData")
                       .accept(MediaType.APPLICATION_JSON))
               .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
               .andExpect(MockMvcResultMatchers.content().string(""))
@@ -52,7 +52,7 @@ class StatsControllerTests {
    @Test
    public void testCalendarDataSalesData() throws Exception {
       this.mockMvc.perform(MockMvcRequestBuilders
-                      .get("/" + APIPrefixes.STATS + "/calendarData/salesData")
+                      .get("/" + APIPaths.STATS + "/calendarData/salesData")
                       .accept(MediaType.APPLICATION_JSON))
               .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
               .andExpect(MockMvcResultMatchers.content().string(""))
@@ -62,7 +62,7 @@ class StatsControllerTests {
    @Test
    public void testCalendarDataOrdersData() throws Exception {
       this.mockMvc.perform(MockMvcRequestBuilders
-                      .get("/" + APIPrefixes.STATS + "/calendarData/ordersData")
+                      .get("/" + APIPaths.STATS + "/calendarData/ordersData")
                       .accept(MediaType.APPLICATION_JSON))
               .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
               .andExpect(MockMvcResultMatchers.content().string(""))

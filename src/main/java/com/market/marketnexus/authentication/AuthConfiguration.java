@@ -1,6 +1,7 @@
 package com.market.marketnexus.authentication;
 
-import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.handler.CustomLogoutSuccessHandler;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.helpers.constants.ProjectPaths;
 import com.market.marketnexus.helpers.credentials.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class AuthConfiguration implements WebMvcConfigurer {
    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + ProjectPaths.STATIC + "/"};
    @Autowired
    private DataSource dataSource;
+   @Autowired
+   private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
    @Override
    public void addResourceHandlers(@NonNull ResourceHandlerRegistry resourceHandlerRegistry) {
@@ -71,19 +74,21 @@ public class AuthConfiguration implements WebMvcConfigurer {
                       authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
                               .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail").permitAll()
+                              .requestMatchers("/firebase-cloud-messaging-push-scope", "/firebase-messaging-sw.js", "/firebase-app.js", "firebase-messaging.js").permitAll()
                               .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
-                              .requestMatchers(new RegexRequestMatcher(".*updateSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
-                              .requestMatchers(new RegexRequestMatcher(".*updatedSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(HttpMethod.GET, "/" + APIPaths.MARKETPLACE + "/sales/updatedSale").hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(HttpMethod.POST, "/" + APIPaths.MARKETPLACE + "/sales/publishUpdatedSale").hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
-                              .requestMatchers(HttpMethod.DELETE).denyAll()
-                              .requestMatchers(HttpMethod.GET, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
-                              .requestMatchers(HttpMethod.POST, "/" + APIPrefixes.DASHBOARD + "/**").authenticated()
+                              //.requestMatchers(HttpMethod.DELETE).denyAll()
+                              .requestMatchers("/json/**", "/txt/**").denyAll()
+                              .requestMatchers(HttpMethod.GET, "/" + APIPaths.MARKETPLACE + "/**").authenticated()
+                              .requestMatchers(HttpMethod.POST, "/" + APIPaths.MARKETPLACE + "/**").authenticated()
                               .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin
                       .loginPage("/login")
-                      .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
+                      .defaultSuccessUrl("/" + APIPaths.SALES, true)
                       .failureUrl("/login?invalidCredentials=true")
                       .usernameParameter("username")
                       .passwordParameter("password")
@@ -92,7 +97,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .oauth2Login(oauth2Login ->
                       oauth2Login
                               .loginPage("/oauth2/authorization/google")
-                              .defaultSuccessUrl("/" + APIPrefixes.DASHBOARD, true)
+                              .defaultSuccessUrl("/" + APIPaths.SALES, true)
                               .failureUrl("/login?invalidCredentials=true")
                               .permitAll()
               )
@@ -104,6 +109,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
                       .deleteCookies("JSESSIONID")
                       .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                       .clearAuthentication(true)
+                      .logoutSuccessHandler(this.customLogoutSuccessHandler)
                       .permitAll());
       return httpSecurity.build();
    }

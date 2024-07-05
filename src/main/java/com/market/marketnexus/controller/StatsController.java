@@ -1,6 +1,6 @@
 package com.market.marketnexus.controller;
 
-import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.OrderService;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 
-@RequestMapping(value = "/" + APIPrefixes.STATS)
+@RequestMapping(value = "/" + APIPaths.STATS)
 @RestController
 public class StatsController {
    @Autowired

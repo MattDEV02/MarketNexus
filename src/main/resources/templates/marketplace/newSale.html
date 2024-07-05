@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}" th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
+
+<head th:replace="~{fragments/shared/head.html :: head(title = 'new Sale')}">
+
+</head>
+
+<body>
+<div th:replace="~{fragments/shared/pagination/header/marketplaceHeader.html :: marketplaceHeader()}">
+</div>
+<main>
+   <div class="container">
+      <div class="row justify-content-center">
+         <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
+         <div class="col-12 col-sm-11 col-md-9 col-lg-7 col-xl-6 shadow border rounded px-5 py-4 mt-5 mb-4">
+            <form enctype="multipart/form-data" id="new-sale-form"
+                  method="POST"
+                  name="new-sale-form"
+                  th:action="@{${'/' + API_PATHS_MAP.get('MARKETPLACE') + '/'} + ${isUpdate ? ('publishUpdatedSale/' + sale.id) : 'publishNewSale'}}"
+                  th:title="${isUpdate ? 'Update this' : 'Publish a new'}  + ' Sale'">
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = #{saleAlreadyPublishedError}, condition = ${saleAlreadyPublishedError != null})}"></div>
+               <div class="col-12 mt-2 mb-4">
+                  <div class="row text-center">
+                     <h1 th:text="${isUpdate ? 'Update' : 'New'} + ' Sale 🚀'">
+                        Sale form
+                     </h1>
+                  </div>
+               </div>
+               <!-- Campo Nome -->
+               <div class="my-3">
+                  <label class="form-label" for="name">Name</label>
+                  <input class="form-control py-2" id="name" name="name" placeholder="Insert product name"
+                         required th:field="${product.name}"
+                         th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
+                         th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MIN_LENGTH')}"
+                         th:object="${product}"
+                         type="text"/>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.name')}"></div>
+               </div>
+               <!-- Campo Descrizione -->
+               <div class="mb-3">
+                  <label class="form-label" for="description">Description</label>
+                  <textarea class="form-control" id="description" name="description"
+                            placeholder="Insert product description"
+                            required th:field="${product.description}"
+                            th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_DESCRIPTION_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_DESCRIPTION_MIN_LENGTH')}"
+                            th:object="${product}"
+                            type="text"></textarea>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.description')}"></div>
+               </div>
+               <!-- Campo Prezzo -->
+               <div class="mb-3">
+                  <label class="form-label" for="price">Price ($)</label>
+                  <input class="form-control py-2" id="price" name="price"
+                         placeholder="Insert product price ($)" required
+                         th:field="${product.price}"
+                         th:max="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MAX_VALUE')}"
+                         th:min="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_MIN_VALUE')}"
+                         th:object="${product}" th:step="${FIELD_SIZES_MAP.get('PRODUCT_PRICE_STEP_VALUE')}"
+                         type="number"/>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.price')}"></div>
+               </div>
+               <!-- Campo Quantità -->
+               <div class="mb-3">
+                  <label class="form-label" for="quantity">Quantity</label>
+                  <input class="form-control py-2" id="quantity" name="quantity"
+                         placeholder="Insert product quantity" required
+                         th:field="${sale.quantity}" th:max="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MAX_VALUE')}"
+                         th:min="${FIELD_SIZES_MAP.get('SALE_QUANTITY_MIN_VALUE') + 1}"
+                         th:object="${sale}"
+                         th:step="${FIELD_SIZES_MAP.get('SALE_QUANTITY_STEP_VALUE')}" type="number"/>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'sale.quantity')}"></div>
+               </div>
+               <!-- Campo Categoria (Select) -->
+               <div class="mb-3">
+                  <label class="form-label" for="category">Category</label>
+                  <select class="form-select py-2" id="category" name="category" required th:field="${product.category}"
+                          th:object="${product}">
+                     <option th:each="productCategoriesMapEntry : ${productCategoriesMap}"
+                             th:field="${product.category}"
+                             th:id="${productCategoriesMapEntry.value.name + '#' + productCategoriesMapEntry.key}"
+                             th:name="${productCategoriesMapEntry.value.name + '#' + productCategoriesMapEntry.key}"
+                             th:text="${productCategoriesMapEntry.value.name}"
+                             th:value="${productCategoriesMapEntry.key}"></option>
+                  </select>
+                  <div
+                        th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.category')}"></div>
+               </div>
+               <div class="mb-1">
+                  <label class="form-label" for="product-images">Product images</label>
+                  <input accept="image/png, image/jpeg, image/jpg, image/" class="form-control py-2"
+                         form="new-sale-form"
+                         id="product-images"
+                         multiple
+                         name="product-images"
+                         placeholder="Insert product image"
+                         th:required="${!isUpdate}" th:size="${FIELD_SIZES_MAP.get('PRODUCT_IMAGE_MAX_BYTE_SIZE')}"
+                         title="Insert your product images"
+                         type="file"/>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = #{productImageEmptyError}, condition = ${productImageEmptyError != null})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = #{productImageSizeError}, condition = ${productImageSizeError != null})}"></div>
+                  <div
+                        th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = #{productImageExtensionError}, condition = ${productImageExtensionError != null})}"></div>
+               </div>
+               <!-- Pulsante di invio -->
+               <div class="mt-4">
+                  <button class="btn btn-primary form-control py-2" type="submit">
+                     Register Sale
+                     <i class="fas fa-plus-square mx-1"></i>
+                  </button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</main>
+<div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
+</div>
+</body>
+
+</html>

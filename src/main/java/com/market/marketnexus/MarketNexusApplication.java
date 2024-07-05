@@ -39,6 +39,16 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @SpringBootApplication
 public class MarketNexusApplication {
    // CTRL + FN + F9
+
+   /**
+    * Main method that serves as the entry point for the Spring Boot application.
+    *
+    * <p>
+    * This method launches the application using {@link SpringApplication#run(Class, String...)}.
+    * </p>
+    *
+    * @param args command-line arguments (not used).
+    */
    public static void main(String[] args) {
       SpringApplication.run(MarketNexusApplication.class, args);
    }

@@ -1,6 +1,6 @@
 package com.market.marketnexus.controller;
 
-import com.market.marketnexus.helpers.constants.APIPrefixes;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.constants.GlobalValues;
 import com.market.marketnexus.model.Cart;
@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/" + APIPrefixes.ORDER)
+@RequestMapping(value = "/" + APIPaths.ORDER)
 public class OrderController {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
@@ -34,13 +34,14 @@ public class OrderController {
    @Autowired
    private UserService userService;
 
+
    @GetMapping(value = {"", "/"})
    public ModelAndView makeOrderFromCartLineItem(
            @Valid @ModelAttribute("loggedUser") User loggedUser,
            @NonNull HttpServletRequest request
    ) {
-      ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPrefixes.CART);
-      if (!request.getHeader("referer").contains(APIPrefixes.CART)) {
+      ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPaths.CART);
+      if (!request.getHeader("referer").contains(APIPaths.CART)) {
          return modelAndView;
       }
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
@@ -59,7 +60,7 @@ public class OrderController {
          modelAndView.addObject("orderInsertedAt", orderInsertedAt);
          modelAndView.addObject("cart", orderedCart);
          modelAndView.addObject("cartLineItems", cartLineItems);
-         modelAndView.setViewName(APIPrefixes.ORDER + GlobalValues.TEMPLATES_EXTENSION);
+         modelAndView.setViewName(APIPaths.ORDER + GlobalValues.TEMPLATES_EXTENSION);
       }
       return modelAndView;
    }

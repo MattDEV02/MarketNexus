@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html th:lang="${GLOBAL_CONSTANTS_MAP.get('LANG')}"
+      th:with="isValidSale = ${sale != null && sale.product != null}, salePublishedSuccess = ${param.salePublishedSuccess}, saleUpdatedSuccess = ${param.saleUpdatedSuccess}"
+      th:xmlns:th="${GLOBAL_CONSTANTS_MAP.get('TEMPLATES_XMLNS')}">
+
+<head th:replace="~{fragments/shared/head.html :: head(title = ${isValidSale ? (sale.product.name  + ' in Sale') : 'Sale not found'} )}">
+
+</head>
+<link rel="stylesheet" th:href="@{'/css/' + ${API_PATHS_MAP.get('MARKETPLACE')} + '/shared/style.css'}"/>
+<body>
+<div th:replace="~{fragments/shared/pagination/header/marketplaceHeader.html :: marketplaceHeader()}">
+</div>
+<main>
+   <div class="container">
+      <div class="row justify-content-center">
+         <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
+         <div class="col-12 mt-5">
+            <div class="row text-center">
+               <h1 th:if="${isValidSale && !isAddedToCart}"
+                   th:text="${sale.product.name} + ' ' + ${sale.quantity > 0 ? 'in sale' : 'sold-out' }">Sale</h1>
+               <div th:if="${isAddedToCart}">
+                  <h1 class="text-success"
+                      th:text="'The product ' + ${sale.product.name} + ' has been added to the cart'"></h1>
+                  <h3 class="text-dark mt-4" th:text="'Cart Subtotal: ' + ${sale.salePrice} + ' $'"></h3>
+               </div>
+               <div
+                     th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Sale published.', condition = ${salePublishedSuccess})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/success/successMessage.html :: successMessage(text = 'Sale updated.', condition = ${saleUpdatedSuccess})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You cannot add your own sale to your cart.', condition = ${userAddOwnSaleToCartError})}"></div>
+               <div
+                     th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'You have already added this product to your cart.', condition = ${userAddExistingSaleToCartError})}"></div>
+            </div>
+         </div>
+         <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 col-xxl-4 mb-5" th:if="${isValidSale}">
+            <div class="row justify-content-center">
+               <div th:if="${isValidSale}">
+                  <div th:replace="~{fragments/shared/sale.html :: sale(sale = ${sale}, isLoggedUser = ${loggedUser == sale.user}, isAddedToCart = ${isAddedToCart})}"></div>
+               </div>
+            </div>
+         </div>
+         <div th:unless="${isValidSale}">
+            <div th:replace="~{fragments/marketplace/sales/saleNotFound.html :: saleNotFound(${saleId})}"></div>
+         </div>
+         <div class="col-12 mt-3 mb-4"
+              th:if="${isValidSale && loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER') && (isAddedToCart || userAddExistingSaleToCartError != null)}">
+            <div class="row justify-content-center">
+               <div class="col-12 col-sm-8 col-md-5 col-lg-4 col-xl-3">
+                  <a class="btn btn-lg btn-outline-warning form-control fw-bold" role="button"
+                     th:href="@{${'/' + API_PATHS_MAP.get('MARKETPLACE')}}">
+                     <i class="fas fa-chevron-left me-2"></i>
+                     Continue the orders
+                  </a>
+               </div>
+               <div class="col-12 col-sm-8 col-md-5 col-lg-4 col-xl-3 mt-4 mt-md-0">
+                  <a class="btn btn-lg btn-outline-success form-control fw-bold" role="button"
+                     th:href="@{${'/' + API_PATHS_MAP.get('CART')}}">
+                     Go to the Cart
+                     <i class="fas fa-chevron-right ms-2"></i>
+                  </a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</main>
+<div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
+</div>
+</body>
+
+</html>
