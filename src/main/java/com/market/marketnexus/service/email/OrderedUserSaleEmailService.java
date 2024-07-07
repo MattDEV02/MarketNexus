@@ -1,6 +1,8 @@
 package com.market.marketnexus.service.email;
 
 import com.market.marketnexus.helpers.constants.GlobalValues;
+import com.market.marketnexus.model.Sale;
+import com.market.marketnexus.model.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.jetbrains.annotations.Contract;
@@ -13,10 +15,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class ForgotUsernameEmailService {
-
+public class OrderedUserSaleEmailService {
    private final static String FROM = GlobalValues.EMAIL_FROM;
-   private final static String SUBJECT = GlobalValues.APP_NAME + " username forgotten";
+   private final static String SUBJECT = GlobalValues.APP_NAME + " user forgotten";
    @Autowired
    private JavaMailSender javaMailSender;
 
@@ -288,14 +289,14 @@ public class ForgotUsernameEmailService {
               """;
    }
 
-   public void sendEmail(String emailTo, String username) throws IOException, MessagingException {
+   public void sendEmail(@NotNull User userBuyer, @NotNull Sale sale) throws IOException, MessagingException {
+      String emailTo = sale.getUser().getEmail();
       MimeMessage mimeMessage = javaMailSender.createMimeMessage();
       MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, GlobalValues.CHARSET);
-      mimeMessageHelper.setFrom(ForgotUsernameEmailService.FROM);
       mimeMessageHelper.setTo(emailTo);
-      mimeMessageHelper.setSubject(ForgotUsernameEmailService.SUBJECT);
-      mimeMessageHelper.setReplyTo(ForgotUsernameEmailService.FROM);
-      mimeMessageHelper.setText(ForgotUsernameEmailService.getHTMLText(username), true);
+      mimeMessageHelper.setSubject(OrderedUserSaleEmailService.SUBJECT);
+      mimeMessageHelper.setReplyTo(OrderedUserSaleEmailService.FROM);
+      mimeMessageHelper.setText(OrderedUserSaleEmailService.getHTMLText(sale.getProduct().getName()), true);
       javaMailSender.send(mimeMessage);
    }
 }

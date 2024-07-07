@@ -1,44 +1,43 @@
-const saleBaseURI = baseURI + "sale/";
-
-const sales = [], orders = [];
-
-const getSalesEvent = sales => {
-   return sales.map(sale => {
-      return {
-         id: `${sale.id}-${sale.productName}-${sale.inserted_at}`,
-         title: sale.productName + " in sale.",
-         start: sale.inserted_at,
-         url: saleBaseURI + sale.id,
-         color: "#FFFF00",
-         editable: false,
-         classNames: ["sale-event"],
-         extendedProps: {
-            description: "MarketNexus Sale",
-            place: "MarketNexus",
-         },
-      };
-   });
-};
-
-const getOrdersEvent = orders => {
-   return orders.map(order => {
-      return {
-         id: `${order.id}-${order.productName}-${order.inserted_at}`,
-         title: order.productName + " ordered.",
-         start: order.inserted_at,
-         url: saleBaseURI + order.id,
-         color: "#038A03",
-         editable: false,
-         classNames: ["order-event"],
-         extendedProps: {
-            description: "MarketNexus Order",
-            place: "MarketNexus",
-         },
-      };
-   });
-};
-
 document.addEventListener("DOMContentLoaded", () => {
+   const saleBaseURI = baseURI + "sale/";
+
+   const sales = [], orders = [];
+
+   const getSalesEvent = sales => {
+      return sales.map(sale => {
+         return {
+            id: `${sale.id}-${sale.productName}-${sale.inserted_at}`,
+            title: sale.productName + " in sale.",
+            start: sale.inserted_at,
+            url: saleBaseURI + sale.id,
+            color: "#FFFF00",
+            editable: false,
+            classNames: ["sale-event"],
+            extendedProps: {
+               description: "MarketNexus Sale",
+               place: "MarketNexus",
+            },
+         };
+      });
+   };
+
+   const getOrdersEvent = orders => {
+      return orders.map(order => {
+         return {
+            id: `${order.id}-${order.productName}-${order.inserted_at}`,
+            title: order.productName + " ordered.",
+            start: order.inserted_at,
+            url: saleBaseURI + order.id,
+            color: "#038A03",
+            editable: false,
+            classNames: ["order-event"],
+            extendedProps: {
+               description: "MarketNexus Order",
+               place: "MarketNexus",
+            },
+         };
+      });
+   };
    let calendarEl = document.getElementById("user-calendar");
    let calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: "dayGridMonth",

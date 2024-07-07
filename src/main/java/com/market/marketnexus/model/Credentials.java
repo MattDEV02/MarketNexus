@@ -41,7 +41,7 @@ public class Credentials {
    @NotBlank
    private String role;
 
-   @Column(name = "is_online", nullable = false)
+   @Column(name = "is_online", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
    private Boolean isOnline;
 
    @Column(name = "inserted_at", nullable = false)
@@ -56,6 +56,7 @@ public class Credentials {
 
    public Credentials() {
       this.role = Credentials.DEFAULT_ROLE.toString();
+      this.isOnline = false;
    }
 
    public Credentials(String username, String password) {

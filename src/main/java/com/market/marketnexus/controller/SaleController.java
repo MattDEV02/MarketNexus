@@ -118,7 +118,7 @@ public class SaleController {
          }
          Sale savedSale = this.saleService.saveSale(sale);
          SaleController.LOGGER.info("Published new Sale with ID: {}", savedSale.getId());
-         //this.publishedSaleNotificationService.sendNotificationToAllUsers(sale);
+         this.publishedSaleNotificationService.sendNotificationToAllUsers(sale);
          modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL_VIEW + savedProduct.getId().toString());
          modelAndView.addObject("sale", savedSale);
          modelAndView.addObject("salePublishedSuccess", true);

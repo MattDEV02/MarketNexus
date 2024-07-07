@@ -4,14 +4,18 @@ import com.market.marketnexus.model.*;
 import com.market.marketnexus.repository.CartRepository;
 import com.market.marketnexus.repository.OrderRepository;
 import com.market.marketnexus.repository.UserRepository;
+import com.market.marketnexus.service.email.OrderedUserSaleEmailService;
+import jakarta.mail.MessagingException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -25,6 +29,8 @@ public class OrderService {
    private CartRepository cartRepository;
    @Autowired
    private CartService cartService;
+   @Autowired
+   private OrderedUserSaleEmailService orderedUserSaleEmailService;
 
    public Iterable<Order> getAllOrdersByUser(@NotNull User user) {
       return this.orderRepository.findAllByUserOrderByInsertedAtDesc(user);
@@ -68,6 +74,19 @@ public class OrderService {
 
    public List<Object[]> getAllOrdersForUser(@NotNull Long userId) {
       return this.orderRepository.findAllByUserId(userId);
+   }
+
+   public void sendSalesOrderEmail(@NotNull User userBuyer, @NotNull Order order) {
+      try {
+         Set<Sale> sales = order.getCart().getCartLineItems().stream()
+                 .map(CartLineItem::getSale)
+                 .collect(Collectors.toSet());
+         for (Sale sale : sales) {
+            this.orderedUserSaleEmailService.sendEmail(userBuyer, sale);
+         }
+      } catch (IOException | MessagingException exception) {
+         exception.printStackTrace();
+      }
    }
 
 }

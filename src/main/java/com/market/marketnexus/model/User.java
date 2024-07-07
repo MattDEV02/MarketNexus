@@ -51,6 +51,9 @@ public class User {
    @Column(name = "balance", nullable = false)
    private Float balance;
 
+   @Column(name = "show_is_online", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+   private Boolean showIsOnline;
+
    @ManyToOne(targetEntity = Nation.class, optional = false)
    @JoinColumn(name = "nation", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "users_nations_fk"))
    private Nation nation;
@@ -67,6 +70,7 @@ public class User {
       this.carts = new ArrayList<Cart>();
       this.nation = null;
       this.credentials = null;
+      this.showIsOnline = true;
    }
 
    public User(String name, String surname, String email, Float balance, Credentials credentials, Nation nation) {
@@ -136,6 +140,14 @@ public class User {
       this.email = email;
    }
 
+   public Boolean getShowIsOnline() {
+      return this.showIsOnline;
+   }
+
+   public void setShowIsOnline(Boolean showIsOnline) {
+      this.showIsOnline = showIsOnline;
+   }
+
    public Credentials getCredentials() {
       return this.credentials;
    }
@@ -186,6 +198,7 @@ public class User {
               ", birthDate = " + (this.getBirthDate() != null ? this.getBirthDate().toString() : "Not-present") +
               ", email = '" + this.getEmail() +
               ", balance = " + this.getBalance().toString() +
+              ", showIsOnline = " + this.getShowIsOnline().toString() +
               ", credentials = " + this.getCredentials().toString() +
               ", nation = " + this.getNation().toString() +
               // ", carts = " + this.getCarts().toString() +

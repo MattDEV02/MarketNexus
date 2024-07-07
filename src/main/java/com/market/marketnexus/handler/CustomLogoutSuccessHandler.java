@@ -1,6 +1,7 @@
 package com.market.marketnexus.handler;
 
 
+import com.market.marketnexus.exception.UserCredentialsUsernameNotExistsException;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.service.CredentialsService;
@@ -20,17 +21,23 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
    private CredentialsService credentialsService;
 
    @Override
-   public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+   public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
       try {
          if (Utils.userIsLoggedIn(authentication)) {
             Credentials credentials = this.credentialsService.getCredentials(authentication.getName());
             this.credentialsService.updateIsOnline(credentials, false);
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.sendRedirect("/login?logoutSuccessful=true"); // Reindirizza dopo il logout
-            // Puoi aggiungere qui log, aggiornamenti di stato, ecc.
          }
-      } catch (IOException e) {
-         e.printStackTrace();
+      } catch (UserCredentialsUsernameNotExistsException userCredentialsUsernameNotExistsException) {
+         // do nothing
+      } finally {
+         try {
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            httpServletResponse.sendRedirect("/login?logoutSuccessful=true"); // Reindirizza dopo il logout
+            System.out.println(httpServletResponse.getStatus());
+         } catch (IOException iOException) {
+            iOException.printStackTrace();
+         }
       }
+
    }
 }

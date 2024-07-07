@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class AuthenticationController {
@@ -122,18 +123,21 @@ public class AuthenticationController {
       return new ModelAndView("redirect:/" + APIPaths.SALES);
    }
 
-   @PostMapping("/saveToken")
-   public ResponseEntity<?> saveToken(@RequestBody String token) {
+   @PostMapping("/storeFirebaseToken")
+   public ResponseEntity<?> storeFirebaseToken(@RequestBody Map<String, String> data) {
       try {
          Path path = Paths.get("src/main/resources/static/txt/tokens.txt");
          List<String> existingTokens = Files.readAllLines(path);
-
-         if (!existingTokens.contains(token)) {
+         String token = data.get("token");
+         if (token != null && !existingTokens.contains(token)) {
             Files.write(path, (token + System.lineSeparator()).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            AuthenticationController.LOGGER.info("Firebase token stored successfully: {}", token);
             return new ResponseEntity<>(HttpStatus.OK);
          } else {
-            // Token già esistente, gestisci come preferisci
-            return new ResponseEntity<>("Token already exists", HttpStatus.CONFLICT);
+            // Token già esistente
+            String responseMessage = "Firebase token already exists";
+            AuthenticationController.LOGGER.warn(responseMessage);
+            return new ResponseEntity<>(responseMessage, HttpStatus.CONFLICT);
          }
       } catch (IOException e) {
          AuthenticationController.LOGGER.error(e.getMessage());

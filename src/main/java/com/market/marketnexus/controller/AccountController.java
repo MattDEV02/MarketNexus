@@ -19,6 +19,8 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -142,16 +144,19 @@ public class AccountController {
       return modelAndView;
    }
 
-   @GetMapping(value = {"/delete", "/delete/"})
-   public ModelAndView deleteUserAccountByUsername(@Valid @NonNull @ModelAttribute("loggedUser") User loggedUser) {
+   @DeleteMapping(value = {"/delete", "/delete/"})
+   public ResponseEntity<?> deleteUserAccountByUsername(@Valid @NonNull @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(AccountController.DELETE_ERROR_VIEW);
+      ResponseEntity<?> responseEntity = null;
       if (this.userService.deleteUser(loggedUser)) {
-         modelAndView.setViewName(AccountController.DELETE_SUCCESSFUL_VIEW);
+         System.out.println(modelAndView.getViewName());
          AccountController.LOGGER.info("Deleted account with User ID: {}", loggedUser.getId());
+         responseEntity = ResponseEntity.ok().build();
       } else {
          modelAndView.addObject("accountNotDeletedError", true);
          AccountController.LOGGER.error(GlobalErrorsMessages.ACCOUNT_NOT_DELETED_ERROR);
+         responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(modelAndView);
       }
-      return modelAndView;
+      return responseEntity;
    }
 }

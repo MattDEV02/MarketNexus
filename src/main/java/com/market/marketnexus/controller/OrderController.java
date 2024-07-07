@@ -56,6 +56,7 @@ public class OrderController {
          LocalDateTime orderInsertedAt = savedOrder.getInsertedAt();
          Cart orderedCart = savedOrder.getCart();
          List<CartLineItem> cartLineItems = orderedCart.getCartLineItems();
+         this.orderService.sendSalesOrderEmail(loggedUser, savedOrder);
          OrderController.LOGGER.info("New Order with ID: {}", savedOrder.getId());
          modelAndView.addObject("orderInsertedAt", orderInsertedAt);
          modelAndView.addObject("cart", orderedCart);

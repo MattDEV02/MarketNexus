@@ -6,6 +6,7 @@ const validateString = string => validateObject(string);
 
 const validateURI = (URI) =>
    validateString(URI) && URI !== " " &&
-   new RegExp("^(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*$").test(
+   new RegExp("^(https?|ftp):\\/\\/[^\\s/$.?#].\\S*$").test(
       URI
-   );
+   ) ||
+   new RegExp("^\\/\\S*$").test(URI);

@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
    const cartContainer = document.getElementById("cart-container"),
-      baseUrl = "http://localhost:80/marketplace/cart/updateCartLineItemQuantity/";
+      baseUrl = "/marketplace/cart/updateCartLineItemQuantity/";
 
    cartContainer.addEventListener("change", event => {
       if (validateObject(event) && validateObject(event.target) && event.target.classList.contains("cartlineitem-quantity-input")) {

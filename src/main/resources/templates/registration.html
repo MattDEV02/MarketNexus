@@ -144,6 +144,19 @@
                            th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'credentials.role')}"></div>
                   </div>
                   <div class="my-4">
+                     <div class="form-check">
+                        <label class="form-check-label" for="showIsOnline">Show online status</label>
+                        <input checked class="form-check-input" id="showIsOnline"
+                               name="showIsOnline"
+                               placeholder="Show is online"
+                               th:field="${user.showIsOnline}"
+                               th:title="'Select if you want to show your online status to other ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Users.'"
+                               type="checkbox"/>
+                     </div>
+                     <div
+                           th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.showIsOnline')}"></div>
+                  </div>
+                  <div class="my-4">
                      <button class="btn btn-primary form-control py-2 fw-bold mt-2" data-bs-toggle="tooltip"
                              form="registration-form"
                              formmethod="POST"

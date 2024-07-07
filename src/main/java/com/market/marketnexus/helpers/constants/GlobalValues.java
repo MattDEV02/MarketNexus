@@ -15,7 +15,19 @@ public class GlobalValues {
 
    public final static String[] AUTHORS = {"Matteo Lambertucci, matteolambertucci3@gmail.com, mat.lambertucci@stud.uniroma3.it"};
 
+   public final static String APP_PROTOCOL = "http";
+
+   public final static String APP_IP = "127.0.0.1";
+
+   public final static String APP_HOST = "localhost";
+
+   public final static Integer APP_PORT = 80;
+
+   public final static String APP_URL = GlobalValues.APP_PROTOCOL + "://" + GlobalValues.APP_HOST + ":" + GlobalValues.APP_PORT.toString();
+
    public final static String APP_REPO = "https://github.com/MattDEV02/MarketNexus.git";
+
+   public final static String EMAIL_FROM = "mat.lambertucci@stud.uniroma3.it";
 
    public final static String DESCRIPTION = GlobalValues.APP_NAME + " site.";
 

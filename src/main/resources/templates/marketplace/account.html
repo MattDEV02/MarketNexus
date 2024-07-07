@@ -27,8 +27,8 @@
             <div class="row text-center">
                <h1 data-bs-toggle="tooltip"
                    th:if="${isUserFound}"
-                   th:text="${(credentials.isOnline ? '🟢' : '🔴') + ' ' + credentials.username + ' account 👨‍💻'}"
-                   th:title="${credentials.username + ' is' + (credentials.isOnline ? ' online' : ' offline')}">
+                   th:text="${(user.showIsOnline ? ((credentials.isOnline ? '🟢' : '🔴') + ' ') : '') + credentials.username + ' account 👨‍💻'}"
+                   th:title="${credentials.username + (user.showIsOnline ? (' is' + (credentials.isOnline ? ' online' : ' offline')) : '')}">
                   Account</h1>
             </div>
          </div>
@@ -78,7 +78,7 @@
                         <div class="col-12 col-sm-10 col-md-9 col-lg-7 col-xl-3 col-xxl-3">
                            <button class="btn btn-lg btn-outline-success form-control py-2"
                                    data-bs-toggle="tooltip"
-                                   id="confirm-button"
+                                   id="confirm-update-account-button"
                                    th:title="'Confirm your new ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' informations'"
                                    type="submit">
                               Confirm

@@ -194,14 +194,15 @@ VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Users
 (
-    id          SERIAL      NOT NULL PRIMARY KEY,
-    name        VARCHAR(30) NOT NULL,
-    surname     VARCHAR(30) NOT NULL,
-    email       VARCHAR(50) NOT NULL,
-    birthdate   DATE,
-    balance     FLOAT       NOT NULL,
-    credentials INTEGER     NOT NULL,
-    nation      INTEGER     NOT NULL,
+    id             SERIAL      NOT NULL PRIMARY KEY,
+    name           VARCHAR(30) NOT NULL,
+    surname        VARCHAR(30) NOT NULL,
+    email          VARCHAR(50) NOT NULL,
+    birthdate      DATE,
+    balance        FLOAT       NOT NULL,
+    show_is_online BOOLEAN DEFAULT TRUE,
+    credentials    INTEGER     NOT NULL,
+    nation         INTEGER     NOT NULL,
     CONSTRAINT users_email_unique UNIQUE (email),
     CONSTRAINT users_credentials_unique UNIQUE (credentials),
     CONSTRAINT users_credentials_fk FOREIGN KEY (credentials) REFERENCES MarketNexus.Credentials (id) ON DELETE CASCADE,
@@ -228,7 +229,7 @@ ALTER TABLE MarketNexus.Users
 
 INSERT INTO MarketNexus.Users (name, surname, email, birthdate, balance, credentials, nation)
 VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2002-04-02', 220, 1, 1),
-       ('John', 'Doe', 'johndoe@test.it', '2020-03-17', 2, 2, 6),
+       ('John', 'Doe', 'johndoe@test.it', '2020-03-17', 2000, 2, 6),
        ('Giuseppe', 'Rossi', 'giusepperossi@test.it', '2020-11-02', 2000.05, 3, 1),
        ('Katy', 'Perry', 'katyperry@test.it', '2000-01-12', 100.16, 4, 4),
        ('San', 'Jay', 'sanjay@test.it', '2000-01-12', 0, 5, 9);
