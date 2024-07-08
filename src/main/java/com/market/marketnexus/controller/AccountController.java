@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/" + APIPaths.ACCOUNT)
@@ -149,9 +150,8 @@ public class AccountController {
       ModelAndView modelAndView = new ModelAndView(AccountController.DELETE_ERROR_VIEW);
       ResponseEntity<?> responseEntity = null;
       if (this.userService.deleteUser(loggedUser)) {
-         System.out.println(modelAndView.getViewName());
          AccountController.LOGGER.info("Deleted account with User ID: {}", loggedUser.getId());
-         responseEntity = ResponseEntity.ok().build();
+         responseEntity = ResponseEntity.ok().body(Map.of("redirect", "/logout"));
       } else {
          modelAndView.addObject("accountNotDeletedError", true);
          AccountController.LOGGER.error(GlobalErrorsMessages.ACCOUNT_NOT_DELETED_ERROR);

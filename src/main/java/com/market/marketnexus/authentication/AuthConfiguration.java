@@ -82,6 +82,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
                               .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(HttpMethod.DELETE, "/" + APIPaths.ACCOUNT + "/delete").permitAll()
+                              // .requestMatchers(HttpMethod.DELETE, "/" + APIPaths.CART + "/delete").permitAll()
                               .requestMatchers(HttpMethod.GET, "/" + APIPaths.MARKETPLACE + "/**").authenticated()
                               .requestMatchers(HttpMethod.POST, "/" + APIPaths.MARKETPLACE + "/**").authenticated()
                               .anyRequest().authenticated()

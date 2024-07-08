@@ -16,6 +16,8 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -72,7 +74,7 @@ public class CartController {
       return modelAndView;
    }
 
-   @PostMapping(value = {"/updateCartLineItemQuantity/{cartLineItemId}", "/updateCartLineItemQuantity/{cartLineItemId}/"})
+   @PutMapping(value = {"/updateCartLineItemQuantity/{cartLineItemId}", "/updateCartLineItemQuantity/{cartLineItemId}/"})
    public ModelAndView updateCartLineItemQuantity(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId, @RequestBody Map<String, String> data) {
       ModelAndView modelAndView = new ModelAndView("marketplace/cart.html :: dynamicCartSection");
       try {
@@ -88,17 +90,20 @@ public class CartController {
       return modelAndView;
    }
 
-   @GetMapping(value = {"/delete/{cartLineItemId}", "/delete/{cartLineItemId}/"})
-   public ModelAndView deleteCartLineItemById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId) {
-      ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPaths.CART);
+   @DeleteMapping(value = {"/delete/{cartLineItemId}", "/delete/{cartLineItemId}/"})
+   public ResponseEntity<?> deleteCartLineItemById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId) {
+      String redirect = "/" + APIPaths.CART + "?";
+      ResponseEntity<?> responseEntity = null;
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       if (this.cartService.deleteCartLineItem(cart, cartLineItemId)) {
-         modelAndView.addObject("cartLineItemDeletedSuccess", true);
+         redirect += "cartLineItemDeletedSuccess=true";
+         responseEntity = ResponseEntity.ok().body(Map.of("redirect", redirect));
          CartController.LOGGER.info("Deleted CartLineItem with CartLineItem ID: {}", cartLineItemId);
       } else {
+         redirect += "cartLineItemNotDeletedError=true";
+         responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("redirect", redirect));
          CartController.LOGGER.error(GlobalErrorsMessages.CART_LINE_NOT_DELETED_ERROR);
-         modelAndView.addObject("cartLineItemNotDeletedError", true);
       }
-      return modelAndView;
+      return responseEntity;
    }
 }

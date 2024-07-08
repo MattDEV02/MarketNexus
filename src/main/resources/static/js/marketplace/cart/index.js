@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
             quantity
          };
          if (validateURI(url)) {
-            axios.post(url, data)
+            axios.put(url, data)
                .then(response => {
                   console.log(response);
                   if (validateObject(response) && validateObject(response.data) && response.status === 200) {
@@ -31,5 +31,23 @@ document.addEventListener("DOMContentLoaded", () => {
          }
       }
    });
+
+   const deleteCartLineItemButtons = document.querySelectorAll(".confirm-confirm-delete-cartlineitem-button");
+
+   deleteCartLineItemButtons.forEach(deleteCartLineItemButton => {
+      deleteCartLineItemButton.addEventListener("click", event => {
+         event.preventDefault();
+         console.log(deleteCartLineItemButton);
+         axios.delete(deleteCartLineItemButton.href)
+            .then(response => {
+               console.log(response);
+               if (validateObject(response) && validateObject(response.data) && validateString(response.data.redirect) && response.status === 200) {
+                  window.location.href = response.data.redirect;
+               }
+            })
+            .catch(error => console.error(error));
+      });
+   });
+
 });
 
