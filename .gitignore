@@ -36,3 +36,5 @@ build/
 up.exe
 
 orders
+
+!**/src/main/resources/static/json/market-nexus-firebase-adminsdk.json

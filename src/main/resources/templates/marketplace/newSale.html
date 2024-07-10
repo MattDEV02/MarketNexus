@@ -16,7 +16,7 @@
             <form enctype="multipart/form-data" id="new-sale-form"
                   method="POST"
                   name="new-sale-form"
-                  th:action="@{${'/' + API_PATHS_MAP.get('MARKETPLACE') + '/'} + ${isUpdate ? ('publishUpdatedSale/' + sale.id) : 'publishNewSale'}}"
+                  th:action="@{${'/' + API_PATHS_MAP.get('SALES') + '/'} + ${isUpdate ? ('publishUpdatedSale/' + sale.id) : 'publishNewSale'}}"
                   th:title="${isUpdate ? 'Update this' : 'Publish a new'}  + ' Sale'">
                <div
                      th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = #{saleAlreadyPublishedError}, condition = ${saleAlreadyPublishedError != null})}"></div>

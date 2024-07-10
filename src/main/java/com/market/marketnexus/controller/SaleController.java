@@ -19,6 +19,8 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -29,13 +31,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Controller
 @RequestMapping(value = "/" + APIPaths.SALES)
 public class SaleController {
 
-   public final static String PUBLISH_SUCCESSFUL_VIEW = "redirect:/" + APIPaths.SALES + "/";
+   public final static String PUBLISH_SUCCESSFUL_VIEW = "redirect:/" + APIPaths.SALES + "/sale/";
    public final static String PUBLISH_ERROR_VIEW = APIPaths.MARKETPLACE + "/newSale" + GlobalValues.TEMPLATES_EXTENSION;
    private static final Logger LOGGER = LoggerFactory.getLogger(SaleController.class);
    @Autowired
@@ -118,7 +121,7 @@ public class SaleController {
          }
          Sale savedSale = this.saleService.saveSale(sale);
          SaleController.LOGGER.info("Published new Sale with ID: {}", savedSale.getId());
-         this.publishedSaleNotificationService.sendNotificationToAllUsers(sale);
+         this.publishedSaleNotificationService.sendNotificationToAllUsers(savedSale);
          modelAndView.setViewName(SaleController.PUBLISH_SUCCESSFUL_VIEW + savedProduct.getId().toString());
          modelAndView.addObject("sale", savedSale);
          modelAndView.addObject("salePublishedSuccess", true);
@@ -210,28 +213,33 @@ public class SaleController {
       return modelAndView;
    }
 
-   @GetMapping(value = {"/deleteSale/{saleId}", "/deleteSale/{saleId}"})
-   public ModelAndView deleteSale(@PathVariable("saleId") Long saleId, @Valid @ModelAttribute("loggedUser") User loggedUser) {
+   @DeleteMapping(value = {"/deleteSale/{saleId}", "/deleteSale/{saleId}"})
+   public ResponseEntity<?> deleteSale(@PathVariable("saleId") Long saleId, @Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPaths.ACCOUNT + "#sales");
+      String redirect = "/" + APIPaths.ACCOUNT + "?";
+      ResponseEntity<?> responseEntity = null;
       try {
          Sale sale = this.saleService.getSale(saleId);
          if (!sale.getUser().equals(loggedUser)) {
-            modelAndView.setViewName("redirect:/" + APIPaths.ACCOUNT);
             modelAndView.addObject("userCantManageNotHisSaleError", true);
-            return modelAndView;
+            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("redirect", "/" + APIPaths.ACCOUNT));
+            return responseEntity;
          }
          if (this.saleService.deleteSale(sale)) {
             modelAndView.addObject("saleDeletedSuccess", true);
             SaleController.LOGGER.info("Deleted Sale with Sale ID: {}", saleId);
+            redirect += "saleDeletedSuccess=true#sales";
+            responseEntity = ResponseEntity.ok().body(Map.of("redirect", redirect));
          } else {
             SaleController.LOGGER.error(GlobalErrorsMessages.SALE_NOT_DELETED_ERROR);
-            modelAndView.addObject("saleNotDeletedError", true);
+            redirect += "saleNotDeletedError=true#sales";
+            responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("redirect", redirect));
          }
       } catch (SaleNotFoundException saleNotFoundException) {
          SaleController.LOGGER.error(saleNotFoundException.getMessage());
-         modelAndView.setViewName("redirect:/" + APIPaths.MARKETPLACE + "/sale/" + saleId);
+         responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("redirect", "/" + APIPaths.SALES + "/sale/" + saleId));
       }
-      return modelAndView;
+      return responseEntity;
    }
 
    @GetMapping(value = {"/sale/{saleId}", "/sale/{saleId}/"})
@@ -239,7 +247,7 @@ public class SaleController {
       ModelAndView modelAndView = new ModelAndView(APIPaths.MARKETPLACE + "/sale.html");
       try {
          Sale sale = this.saleService.getSale(saleId);
-         this.publishedSaleNotificationService.sendNotificationToAllUsers(sale);
+         //this.publishedSaleNotificationService.sendNotificationToAllUsers(sale);
          modelAndView.addObject("sale", sale);
          modelAndView.addObject("saleId", saleId);
          modelAndView.addObject("isAddedToCart", false);

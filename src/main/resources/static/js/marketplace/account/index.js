@@ -10,11 +10,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
    confirmDeleteAccountButton.addEventListener("click", event => {
       event.preventDefault();
-      axios.delete(confirmDeleteAccountButton.href)
-         .then(response => {
-            window.location.href = "/logout";
-            console.log(response);
-         })
-         .catch(error => console.error(error));
+      const URI = confirmDeleteAccountButton.href;
+      if (validateURI(URI)) {
+         axios.delete(confirmDeleteAccountButton.href)
+            .then(response => {
+               window.location.href = "/logout";
+               console.log(response);
+            })
+            .catch(error => console.error(error));
+      }
+   });
+
+   const confirmDeleteSaleButtons = document.querySelectorAll(".confirm-delete-sale-button");
+
+   confirmDeleteSaleButtons.forEach(confirmDeleteSaleButton => {
+      confirmDeleteSaleButton.addEventListener("click", event => {
+         event.preventDefault();
+         const URI = confirmDeleteSaleButton.href;
+         console.log(URI);
+         if (validateURI(URI)) {
+            axios.delete(confirmDeleteSaleButton.href)
+               .then(response => {
+                  console.log(response);
+                  if (validateObject(response) && validateObject(response.data) && validateString(response.data.redirect) && response.status === 200) {
+                     const saleId = confirmDeleteSaleButton.id.replace("confirm-delete-sale-button-", "");
+                     document.getElementById("close-confirm-delete-sale-modal-" + saleId).click();
+                     window.location.href = response.data.redirect;
+                  } else {
+                     console.error("Error:", response.data.redirect);
+                  }
+               })
+               .catch(error => console.error(error));
+         }
+      });
    });
 });

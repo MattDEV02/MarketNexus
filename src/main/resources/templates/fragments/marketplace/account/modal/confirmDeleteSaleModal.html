@@ -6,13 +6,14 @@
          <div class="modal-header">
             <h5 class="modal-title" th:id="'confirm-delete-sale-modal-label-' + ${sale.id}"
                 th:text="'Delete your Sale: ' + ${sale.product.name}"></h5>
-            <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                    th:id="'close-confirm-delete-sale-modal-' + ${sale.id}" type="button"></button>
          </div>
          <div class="modal-body">
             <p th:text="'Are you sure to delete your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Sale with this Sale price: ' +  ${sale.salePrice} + ' $ and this Sale quantity: ' + ${sale.quantity} + ' ?'"></p>
          </div>
          <div class="modal-footer justify-content-center">
-            <a class="btn btn-primary me-2"
+            <a class="btn btn-primary me-2 confirm-delete-sale-button"
                role="button"
                th:href="@{${'/' + API_PATHS_MAP.get('SALES') + '/deleteSale/' + sale.id}}"
                th:id="'confirm-delete-sale-button-' + ${sale.id}">

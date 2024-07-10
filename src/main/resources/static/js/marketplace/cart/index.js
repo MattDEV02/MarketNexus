@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
       baseUrl = "/marketplace/cart/updateCartLineItemQuantity/";
 
    cartContainer.addEventListener("change", event => {
+      window.alert(1);
       if (validateObject(event) && validateObject(event.target) && event.target.classList.contains("cartlineitem-quantity-input")) {
          const cartLineItemQuantityInput = event.target;
          // id e quantity del CartLineItem i-esimo.
@@ -32,22 +33,29 @@ document.addEventListener("DOMContentLoaded", () => {
       }
    });
 
-   const deleteCartLineItemButtons = document.querySelectorAll(".confirm-confirm-delete-cartlineitem-button");
-
-   deleteCartLineItemButtons.forEach(deleteCartLineItemButton => {
-      deleteCartLineItemButton.addEventListener("click", event => {
+   cartContainer.addEventListener("click", event => {
+      if (event.target.classList.contains("confirm-delete-cartlineitem-button")) {
          event.preventDefault();
-         console.log(deleteCartLineItemButton);
-         axios.delete(deleteCartLineItemButton.href)
-            .then(response => {
-               console.log(response);
-               if (validateObject(response) && validateObject(response.data) && validateString(response.data.redirect) && response.status === 200) {
-                  window.location.href = response.data.redirect;
-               }
-            })
-            .catch(error => console.error(error));
-      });
-   });
+         const deleteCartLineItemButton = event.target;
+         const URI = deleteCartLineItemButton.href;
 
+         if (validateURI(URI)) {
+            console.log(URI);
+
+            axios.delete(URI)
+               .then(response => {
+                  console.log(response);
+
+                  if (validateObject(response) && validateObject(response.data) && response.status === 200) {
+                     const cartLineItemId = deleteCartLineItemButton.id.replace("confirm-delete-cartlineitem-button-", "");
+                     console.log(cartLineItemId);
+                     document.getElementById("close-confirm-delete-cartlineitem-modal-" + cartLineItemId).click();
+                     cartContainer.innerHTML = response.data;
+                  }
+               })
+               .catch(error => console.error(error));
+         }
+      }
+   });
 });
 

@@ -115,7 +115,7 @@
                  th:with="areNotSoldSaleProductsValid=${notSoldSales != null && !#lists.isEmpty(notSoldSales)}">
                <div class="row text-center">
                   <h1 th:if="${areNotSoldSaleProductsValid}"
-                      th:text="${isLoggedUser ? 'Your' : 'His'} + ' Sale products 🏖️'"></h1>
+                      th:text="${isLoggedUser ? 'Your' : 'His'} + ' Sale products (' + ${#lists.size(notSoldSales)} + ') 🏖️'"></h1>
                   <h1 th:unless="${areNotSoldSaleProductsValid}">No sale products</h1>
                </div>
             </div>
@@ -136,7 +136,7 @@
                  th:with="areSoldSaleProductsValid=${soldSales != null && !#lists.isEmpty(soldSales)}">
                <div class="row text-center">
                   <h1 th:if="${areSoldSaleProductsValid}"
-                      th:text="${isLoggedUser ? 'Your' : 'His'} + ' sold Sale products 🏖️'"></h1>
+                      th:text="${isLoggedUser ? 'Your' : 'His'} + ' sold Sale products (' + ${#lists.size(soldSales)} + ') 📋'"></h1>
                   <h1 th:unless="${areSoldSaleProductsValid}">No sold sale products</h1>
                </div>
             </div>
@@ -152,7 +152,7 @@
                  th:with="areOrderedProductsValid=${orderedSales != null && !#lists.isEmpty(orderedSales)}">
                <div class="row text-center">
                   <h1 th:if="${areOrderedProductsValid}"
-                      th:text="${isLoggedUser ? 'Your' : 'His'} + ' ordered products 🗂️'"></h1>
+                      th:text="${isLoggedUser ? 'Your' : 'His'} + ' ordered products (' + ${#lists.size(orderedSales)} + ') 🗂️'"></h1>
                   <h1 th:unless="${areOrderedProductsValid}">No ordered sale products</h1>
                </div>
             </div>
@@ -186,13 +186,13 @@
                   </div>
                </div>
                <div class="col-12 mt-5">
-                  <div class="row justify-content-center">
-                     <div th:replace="~{fragments/marketplace/account/stats/table/table.html :: table(tableData = ${tableData})}"></div>
+                  <div class="row">
+                     <div th:replace="~{fragments/marketplace/account/stats/map/map.html :: map()}"></div>
                   </div>
                </div>
                <div class="col-12 mt-5">
-                  <div class="row">
-                     <div th:replace="~{fragments/marketplace/account/stats/map/map.html :: map()}"></div>
+                  <div class="row justify-content-center">
+                     <div th:replace="~{fragments/marketplace/account/stats/table/table.html :: table(tableData = ${tableData})}"></div>
                   </div>
                </div>
                <div class="col-12 mt-5 mb-4">

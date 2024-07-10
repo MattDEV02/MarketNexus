@@ -7,6 +7,8 @@ initializeFirebase(firebase);
 
 const messaging = firebase.messaging();
 
+//console.log("sw.js");
+
 // Handle background notifications
 messaging.setBackgroundMessageHandler(payload => {
    console.log(payload);
@@ -20,4 +22,12 @@ messaging.setBackgroundMessageHandler(payload => {
       tag: "Sales",
    };
    return self.registration.showNotification(title, options);
+});
+
+self.addEventListener("install", event => {
+   console.log("Service Worker installing.");
+});
+
+self.addEventListener("activate", event => {
+   console.log("Service Worker activated.");
 });

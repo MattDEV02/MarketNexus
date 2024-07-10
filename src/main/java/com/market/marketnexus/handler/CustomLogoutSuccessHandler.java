@@ -33,7 +33,6 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
          try {
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
             httpServletResponse.sendRedirect("/login?logoutSuccessful=true"); // Reindirizza dopo il logout
-            System.out.println(httpServletResponse.getStatus());
          } catch (IOException iOException) {
             iOException.printStackTrace();
          }

@@ -16,11 +16,10 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +35,8 @@ public class CartController {
    private SaleService saleService;
    @Autowired
    private CartService cartService;
+   @Autowired
+   private ThymeleafViewResolver thymeleafViewResolver;
 
 
    @GetMapping(value = {"", "/"})
@@ -76,7 +77,7 @@ public class CartController {
 
    @PutMapping(value = {"/updateCartLineItemQuantity/{cartLineItemId}", "/updateCartLineItemQuantity/{cartLineItemId}/"})
    public ModelAndView updateCartLineItemQuantity(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId, @RequestBody Map<String, String> data) {
-      ModelAndView modelAndView = new ModelAndView("marketplace/cart.html :: dynamicCartSection");
+      ModelAndView modelAndView = new ModelAndView(APIPaths.CART + GlobalValues.TEMPLATES_EXTENSION + " :: dynamicCartSection");
       try {
          Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
          Integer quantity = Integer.parseInt(data.get("quantity"));
@@ -91,19 +92,20 @@ public class CartController {
    }
 
    @DeleteMapping(value = {"/delete/{cartLineItemId}", "/delete/{cartLineItemId}/"})
-   public ResponseEntity<?> deleteCartLineItemById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId) {
-      String redirect = "/" + APIPaths.CART + "?";
-      ResponseEntity<?> responseEntity = null;
+   public ModelAndView deleteCartLineItemById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("cartLineItemId") Long cartLineItemId) {
+      ModelAndView modelAndView = new ModelAndView("redirect:/" + APIPaths.CART);
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       if (this.cartService.deleteCartLineItem(cart, cartLineItemId)) {
-         redirect += "cartLineItemDeletedSuccess=true";
-         responseEntity = ResponseEntity.ok().body(Map.of("redirect", redirect));
          CartController.LOGGER.info("Deleted CartLineItem with CartLineItem ID: {}", cartLineItemId);
+         modelAndView.setViewName(APIPaths.CART + GlobalValues.TEMPLATES_EXTENSION + " :: dynamicCartSection");
+         modelAndView.addObject("cartLineItemDeletedSuccess", true);
+         List<CartLineItem> cartLineItems = this.cartService.getAllNotSoldCartLineItems(cart);
+         modelAndView.addObject("cart", cart);
+         modelAndView.addObject("cartLineItems", cartLineItems);
       } else {
-         redirect += "cartLineItemNotDeletedError=true";
-         responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("redirect", redirect));
          CartController.LOGGER.error(GlobalErrorsMessages.CART_LINE_NOT_DELETED_ERROR);
+         modelAndView.addObject("cartLineItemNotDeletedError", true);
       }
-      return responseEntity;
+      return modelAndView;
    }
 }
