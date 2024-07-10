@@ -45,12 +45,14 @@ document.addEventListener("DOMContentLoaded", () => {
             axios.delete(URI)
                .then(response => {
                   console.log(response);
-
                   if (validateObject(response) && validateObject(response.data) && response.status === 200) {
-                     const cartLineItemId = deleteCartLineItemButton.id.replace("confirm-delete-cartlineitem-button-", "");
-                     console.log(cartLineItemId);
-                     document.getElementById("close-confirm-delete-cartlineitem-modal-" + cartLineItemId).click();
-                     cartContainer.innerHTML = response.data;
+                     if (!validateObject(response.data.redirect)) {
+                        const cartLineItemId = deleteCartLineItemButton.id.replace("confirm-delete-cartlineitem-button-", "");
+                        document.getElementById("close-confirm-delete-cartlineitem-modal-" + cartLineItemId).click();
+                        cartContainer.innerHTML = response.data;
+                     } else {
+                        window.location.href = response.data.redirect;
+                     }
                   }
                })
                .catch(error => console.error(error));
