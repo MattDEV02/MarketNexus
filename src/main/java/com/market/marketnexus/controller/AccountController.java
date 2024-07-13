@@ -159,4 +159,19 @@ public class AccountController {
       }
       return responseEntity;
    }
+/*
+   @GetMapping(value = "/filterUsersMap")
+   public ResponseEntity<?> searchCredentials(@RequestParam(name = "isOnline", required = false) Boolean isOnline,
+                                              @RequestParam(name = "role", required = false) String role,
+                                              @RequestParam(name = "registeredFrom", required = false) LocalDateTime registeredFrom,
+                                              @RequestParam(name = "registeredTo", required = false) LocalDateTime registeredTo) {
+      System.out.println("isOnline: " + isOnline);
+      System.out.println("role: " + role);
+      System.out.println("registeredFrom: " + registeredFrom);
+      System.out.println("registeredTo: " + registeredTo);
+      List<Credentials> credentials = this.credentialsService.getCredentialsByCriteria(isOnline, role, registeredFrom, registeredTo);
+      System.out.println(credentials);
+      return ResponseEntity.ok().body(Map.of("credentials", credentials));
+   }
+   */
 }

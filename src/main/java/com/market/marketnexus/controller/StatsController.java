@@ -1,6 +1,7 @@
 package com.market.marketnexus.controller;
 
 import com.market.marketnexus.helpers.constants.APIPaths;
+import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Sale;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.OrderService;
@@ -9,10 +10,7 @@ import com.market.marketnexus.service.UserService;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,8 +31,14 @@ public class StatsController {
    }
 
    @GetMapping(value = {"/mapData", "/mapData/"})
-   public List<Object[]> getMapData() {
-      return this.userService.countUsersByNation();
+   public List<Object[]> getMapData(@RequestParam(required = false, name = "isOnline") Boolean isOnline,
+                                    @RequestParam(required = false, name = "role") String role,
+                                    @RequestParam(required = false, name = "registeredFrom") String registeredFrom,
+                                    @RequestParam(required = false, name = "registeredTo") String registeredTo) {
+      role = Utils.existsRole(role) ? role : null;
+      registeredFrom = registeredFrom != null && registeredFrom.isEmpty() ? null : registeredFrom;
+      registeredTo = registeredTo != null && registeredTo.isEmpty() ? null : registeredTo;
+      return userService.countUsersByNation(isOnline, role, registeredFrom, registeredTo);
    }
 
    @GetMapping(value = {"/calendarData/sales", "/calendarData/sales/"})

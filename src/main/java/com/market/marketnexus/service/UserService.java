@@ -7,6 +7,7 @@ import com.market.marketnexus.model.Cart;
 import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.repository.CartRepository;
+import com.market.marketnexus.repository.CredentialsRepository;
 import com.market.marketnexus.repository.OrderRepository;
 import com.market.marketnexus.repository.UserRepository;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,8 @@ import java.util.Optional;
 public class UserService {
    @Autowired
    protected UserRepository userRepository;
+   @Autowired
+   protected CredentialsRepository credentialsRepository;
    @Autowired
    protected CartRepository cartRepository;
    @Autowired
@@ -94,8 +97,9 @@ public class UserService {
       return !this.userRepository.existsById(user.getId());
    }
 
-   public List<Object[]> countUsersByNation() {
-      return this.userRepository.countUsersByNation();
+   public List<Object[]> countUsersByNation(Boolean isOnline, String role, String registeredFrom, String registeredTo) {
+      List<Long> credentialsIds = this.credentialsRepository.findCredentialsIdsByFilters(isOnline, role, registeredFrom, registeredTo);
+      return this.userRepository.countUsersByNation(credentialsIds);
    }
 
    public List<Object[]> usersPublishedSalesStats() {

@@ -4,11 +4,13 @@
    <th scope="col" title="User username.">User</th>
    <th scope="col" title="User minus number of Sales published per day.">Min</th>
    <th scope="col" title="User maximum number of Sales published per day.">Max</th>
+   <th scope="col" title="User number of different days which he has published Sales.">Cnt</th>
    <th scope="col" title="User total number of Sales published.">Tot</th>
    <th scope="col" title="User average number of Sales published per day.">Avg</th>
    <th scope="col"
        th:title="'Percentage of sales published by the User compared to the total sales present on ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + '.'">
-      %
+      Prc
    </th>
+   <th scope="col" title="User standard deviation of published Sales number per day.">Std Dev</th>
 </tr>
 </thead>

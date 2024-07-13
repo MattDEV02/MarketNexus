@@ -186,7 +186,8 @@
                   </div>
                </div>
                <div class="col-12 mt-5">
-                  <div class="row">
+                  <div th:replace="~{fragments/marketplace/account/stats/map/filterButtons.html :: filterButtons()}"></div>
+                  <div class="row" id="map-container">
                      <div th:replace="~{fragments/marketplace/account/stats/map/map.html :: map()}"></div>
                   </div>
                </div>

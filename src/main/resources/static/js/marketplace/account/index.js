@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
                window.location.href = "/logout";
                console.log(response);
             })
-            .catch(error => console.error(error));
+            .catch(error => console.error("Error:", error));
       }
    });
 
@@ -27,21 +27,19 @@ document.addEventListener("DOMContentLoaded", () => {
       confirmDeleteSaleButton.addEventListener("click", event => {
          event.preventDefault();
          const URI = confirmDeleteSaleButton.href;
-         console.log(URI);
          if (validateURI(URI)) {
             axios.delete(confirmDeleteSaleButton.href)
                .then(response => {
                   console.log(response);
-                  if (validateObject(response) && validateObject(response.data) && validateString(response.data.redirect) && response.status === 200) {
+                  if (validateObject(response) && validateObject(response.data) && validateString(response.data.redirect)) {
                      const saleId = confirmDeleteSaleButton.id.replace("confirm-delete-sale-button-", "");
                      document.getElementById("close-confirm-delete-sale-modal-" + saleId).click();
                      window.location.href = response.data.redirect;
-                  } else {
-                     console.error("Error:", response.data.redirect);
                   }
                })
-               .catch(error => console.error(error));
+               .catch(error => console.error("Error:", error));
          }
       });
    });
+
 });

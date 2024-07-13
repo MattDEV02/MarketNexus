@@ -1,0 +1,44 @@
+<div class="row mb-4" id="users-map-filter-container" th:fragment="filterButtons()"
+     th:title="'Filter ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Users by these parameters'">
+   <div class="col">
+      <label class="form-label" for="users-map-filter-role-select">On / Off line Users:</label>
+      <select class="form-control form-select py-2 users-map-filter" data-bs-toggle="tooltip"
+              id="users-map-filter-isonline-select"
+              name="users-map-filter-isonline-select"
+              th:title="'Select online / offline ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' Users'">
+         <option selected value="">All</option>
+         <option value="true">Yes</option>
+         <option value="false">No</option>
+      </select>
+   </div>
+   <div class="col">
+      <label class="form-label" for="users-map-filter-role-select">Users Role:</label>
+      <select
+            class="form-control form-select py-2 users-map-filter"
+            data-bs-toggle="tooltip" id="users-map-filter-role-select" name="users-map-filter-role-select"
+            th:title="'Select a ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' role'">
+         <option selected value="">All</option>
+         <option th:each="roleEntry : ${ALL_ROLES_MAP}"
+                 th:id="${roleEntry.key + '#role' }"
+                 th:name="${roleEntry.key + '#role' }"
+                 th:text="${#strings.capitalize(roleEntry.key.toLowerCase().replace('_', ' '))}"
+                 th:value="${roleEntry.value}"></option>
+      </select>
+   </div>
+   <div class="col">
+      <label class="form-label" for="users-map-filter-registered-from">Users registered from:</label>
+      <input class="form-control py-2 users-map-filter" data-bs-toggle="tooltip" id="users-map-filter-registered-from"
+             name="users-map-filter-registered-from"
+             th:fieldFormat="${TEMPORALS_MAP.get('DATE_FORMAT')}" th:format="${TEMPORALS_MAP.get('DATE_FORMAT')}"
+             title="Select Users from registered date"
+             type="date"/>
+   </div>
+   <div class="col">
+      <label class="form-label" for="users-map-filter-registered-to">Users registered to:</label>
+      <input class="form-control py-2 users-map-filter" data-bs-toggle="tooltip" id="users-map-filter-registered-to"
+             name="users-map-filter-registered-to"
+             th:fieldFormat="${TEMPORALS_MAP.get('DATE_FORMAT')}" th:format="${TEMPORALS_MAP.get('DATE_FORMAT')}"
+             title="Select Users to registered date"
+             type="date"/>
+   </div>
+</div>

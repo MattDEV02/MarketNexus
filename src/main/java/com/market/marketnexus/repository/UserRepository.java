@@ -4,6 +4,7 @@ import com.market.marketnexus.model.Credentials;
 import com.market.marketnexus.model.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,16 +19,14 @@ public interface UserRepository extends CrudRepository<User, Long> {
    public Optional<User> findByCredentials(Credentials credentials);
 
    @Query(value = """
-           SELECT
-              DISTINCT
-                 user.nation.name AS nationName, COUNT(DISTINCT user.id) AS numbersOfUsers
-           FROM
-              User user
-           GROUP BY
-              user.nation.name
+           SELECT DISTINCT user.nation.name AS nationName,
+                                                      COUNT(DISTINCT user.id) AS numbersOfUsers
+                                      FROM User user
+                                      WHERE user.credentials.id IN (:credentialsIds)
+                                      GROUP BY user.nation.name
            """
    )
-   public List<Object[]> countUsersByNation();
+   public List<Object[]> countUsersByNation(@Param("credentialsIds") List<Long> credentialsIds);
 
    @Query(value = """
            SELECT *

@@ -1408,6 +1408,7 @@ I am the only author of this beautiful site 😉
 |   PostgreSQL   |      16.0      |
 |   thymeleaf    |     3.0.14     |
 | OAuth (Google) |      2.0       |
+|    Firebase    |    v13.8.0     |
 |      XML       |      1.1       |
 |   Bootstrap    |     5.3.3      |
 |  FontAwesome   |     5.15.4     |

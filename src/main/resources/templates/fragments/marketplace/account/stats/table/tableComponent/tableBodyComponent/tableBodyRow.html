@@ -1,4 +1,10 @@
 <tr th:fragment="tableBodyRow(tableDataRow, index)">
    <th scope="row" th:text="${index}"></th>
-   <td th:each="tableDataRowColumn : ${tableDataRow}" th:text="${tableDataRowColumn}"></td>
+   <td th:each="tableDataRowColumn, iterStat : ${tableDataRow}"
+       th:with="isUsername=${iterStat.count == 1}">
+      <a th:href="@{${'/' + API_PATHS_MAP.get('ACCOUNT') + '/' + tableDataRowColumn}}"
+         th:if="${isUsername}"
+         th:text="${tableDataRowColumn}"></a>
+      <span th:text="${tableDataRowColumn}" th:unless="${isUsername}"></span>
+   </td>
 </tr>

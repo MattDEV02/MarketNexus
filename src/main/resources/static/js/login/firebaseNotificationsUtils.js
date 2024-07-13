@@ -8,6 +8,6 @@ const firebaseConfig = {
    measurementId: "G-0DNFQT9WRX"
 };
 
-const vapidKey = "BJfWInhR997GRhcwRDzCTgxoHBn7kIXxQ4jY80DCBDt90AZdB-GvKQgik2BiVBh_x0ECdHgVe_wN58fYf-SolrQ";
+const vapidKey = "BH_mizqc-VwAkshL17wZxhySQ6itNZ54yqjtS0YxvW6wBWe9NHrMmRMQZArM6hGuA25iKL8LNko9OBOgg2gvDJI";
 
 const initializeFirebase = firebase => !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();

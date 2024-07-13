@@ -89,6 +89,9 @@ public class Utils {
    }
 
    public static @NotNull Boolean existsRole(String stringRole) {
+      if (stringRole == null) {
+         return false;
+      }
       Roles[] roles = Roles.values();
       for (Roles role : roles) {
          if (role.toString().equals(stringRole)) {

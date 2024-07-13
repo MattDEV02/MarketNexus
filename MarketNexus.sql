@@ -631,28 +631,35 @@ CREATE OR REPLACE FUNCTION GET_USERS_SALES_STATS()
                 user_username VARCHAR,
                 MIN           BIGINT,
                 MAX           BIGINT,
+                CNT           BIGINT,
                 TOT           NUMERIC,
                 AVG           NUMERIC,
-                "%"           TEXT
+                "%"           TEXT,
+                STDDEV        NUMERIC
             )
 AS
 $$
 BEGIN
     RETURN QUERY
         SELECT userAndDayToSalesPublished.user_username,
-               MIN(salesPublishedPerDay)           AS MIN,
-               MAX(salesPublishedPerDay)           AS MAX,
-               SUM(salesPublishedPerDay)           AS TOT,
-               ROUND(AVG(salesPublishedPerDay), 2) AS AVG,
+               MIN(userAndDayToSalesPublished.salesPublishedPerDay)                              AS MIN,
+               MAX(userAndDayToSalesPublished.salesPublishedPerDay)                              AS MAX,
+               COUNT(DISTINCT CASE
+                                  WHEN userAndDayToSalesPublished.salesPublishedPerDay > 0
+                                      THEN (userAndDayToSalesPublished.salesPublishedPerDay,
+                                            userAndDayToSalesPublished.inserted_at) END)         AS CNT,
+               SUM(userAndDayToSalesPublished.salesPublishedPerDay)                              AS TOT,
+               ROUND(AVG(userAndDayToSalesPublished.salesPublishedPerDay), 2)                    AS AVG,
                CAST((ROUND(
                              CAST(
                                      (
-                                         CAST(SUM(salesPublishedPerDay) AS FLOAT) /
-                                         (SELECT COUNT(id) FROM Sales)
+                                         CAST(SUM(userAndDayToSalesPublished.salesPublishedPerDay) AS FLOAT) /
+                                         (SELECT COUNT(s2.id) FROM Sales s2)
                                          ) AS NUMERIC
                              ),
                              2
-                     ) * 100) AS TEXT) || ' %'     AS "%"
+                     ) * 100) AS TEXT) || ' %'                                                   AS "%",
+               ROUND(COALESCE(STDDEV(userAndDayToSalesPublished.salesPublishedPerDay), 0.00), 2) AS STDDEV
         FROM (SELECT c.username           AS user_username,
                      s.inserted_at::DATE,
                      COUNT(DISTINCT s.id) AS salesPublishedPerDay
@@ -662,7 +669,7 @@ BEGIN
               GROUP BY c.username, s.inserted_at::DATE
               ORDER BY salesPublishedPerDay DESC) AS userAndDayToSalesPublished
         GROUP BY userAndDayToSalesPublished.user_username
-        ORDER BY SUM(salesPublishedPerDay) DESC -- TOT
+        ORDER BY SUM(userAndDayToSalesPublished.salesPublishedPerDay) DESC -- TOT
         LIMIT 5;
 END
 $$ LANGUAGE PLPGSQL;
