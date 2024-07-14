@@ -3,16 +3,15 @@ document.addEventListener("DOMContentLoaded", () => {
       baseUrl = "/marketplace/cart/updateCartLineItemQuantity/";
 
    cartContainer.addEventListener("change", event => {
-      window.alert(1);
       if (validateObject(event) && validateObject(event.target) && event.target.classList.contains("cartlineitem-quantity-input")) {
          const cartLineItemQuantityInput = event.target;
          // id e quantity del CartLineItem i-esimo.
          const
-            id = cartLineItemQuantityInput.id.replace("quantity#", ""),
-            quantity = parseInt(cartLineItemQuantityInput.value, 10);
-         const url = baseUrl + id;
+            cartLineItemId = cartLineItemQuantityInput.id.replace("quantity#", ""),
+            cartLineItemQuantity = parseInt(cartLineItemQuantityInput.value, 10);
+         const url = baseUrl + cartLineItemId;
          const data = {
-            quantity
+            cartLineItemQuantity
          };
          if (validateURI(url)) {
             axios.put(url, data)
@@ -38,10 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
          event.preventDefault();
          const deleteCartLineItemButton = event.target;
          const URI = deleteCartLineItemButton.href;
-
          if (validateURI(URI)) {
-            console.log(URI);
-
             axios.delete(URI)
                .then(response => {
                   console.log(response);

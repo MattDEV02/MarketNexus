@@ -76,6 +76,7 @@ carts) from different categories, visualize their stats and much more.
 
 <p align="center">
 	<img  title="MarketNexus MarketplaceScreen screenshoot 1"  alt="MarketNexus MarketplaceScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/marketplace/1.png"  width="100%" />
+    <img  title="MarketNexus MarketplaceScreen screenshoot 2"  alt="MarketNexus MarketplaceScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/marketplace/2.png"  width="100%" />
 </p>
 
 ## `Account page`
@@ -84,8 +85,7 @@ carts) from different categories, visualize their stats and much more.
 	<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus MarketplaceScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="100%" />
     <img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus MarketplaceScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="100%" />
     <img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus MarketplaceScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="100%" />
-    <img  title="MarketNexus AccountScreen screenshoot 4"  alt="MarketNexus MarketplaceScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="100%" />
-    <img  title="MarketNexus AccountScreen screenshoot 5"  alt="MarketNexus MarketplaceScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/5.png"  width="100%" />
+
 </p>
 
 ## `FAQs page`
@@ -222,8 +222,8 @@ public class MarketNexusApplication {
 ```java
 package com.market.marketnexus.authentication;
 
+import com.market.marketnexus.handler.CustomLogoutSuccessHandler;
 import com.market.marketnexus.helpers.constants.APIPaths;
-import com.market.marketnexus.helpers.constants.APIPrefixes;
 import com.market.marketnexus.helpers.constants.ProjectPaths;
 import com.market.marketnexus.helpers.credentials.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -254,6 +254,8 @@ public class AuthConfiguration implements WebMvcConfigurer {
    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:" + ProjectPaths.STATIC + "/"};
    @Autowired
    private DataSource dataSource;
+   @Autowired
+   private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
    @Override
    public void addResourceHandlers(@NonNull ResourceHandlerRegistry resourceHandlerRegistry) {
@@ -293,20 +295,21 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .authorizeHttpRequests(
                       authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
                               .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
-                              .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail").permitAll()
+                              .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail", "/storeFirebaseToken").permitAll()
+                              .requestMatchers("/json/**", "/txt/**").denyAll()
+                              .requestMatchers("/firebase-cloud-messaging-push-scope", "/firebase-messaging-sw.js").permitAll()
                               .requestMatchers(new RegexRequestMatcher(".*newSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
-                              .requestMatchers(new RegexRequestMatcher(".*updateSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
-                              .requestMatchers(new RegexRequestMatcher(".*updatedSale.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(HttpMethod.GET, "/" + APIPaths.MARKETPLACE + "/sales/updatedSale").hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
+                              .requestMatchers(HttpMethod.POST, "/" + APIPaths.MARKETPLACE + "/sales/publishUpdatedSale").hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.SELLER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*cart.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
                               .requestMatchers(new RegexRequestMatcher(".*order.*", null)).hasAnyAuthority(Roles.SELLER_AND_BUYER.toString(), Roles.BUYER.toString())
-                              .requestMatchers(HttpMethod.DELETE).denyAll()
                               .requestMatchers(HttpMethod.GET, "/" + APIPaths.MARKETPLACE + "/**").authenticated()
                               .requestMatchers(HttpMethod.POST, "/" + APIPaths.MARKETPLACE + "/**").authenticated()
                               .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin
                       .loginPage("/login")
-                      .defaultSuccessUrl("/" + APIPaths.MARKETPLACE, true)
+                      .defaultSuccessUrl("/" + APIPaths.SALES, true)
                       .failureUrl("/login?invalidCredentials=true")
                       .usernameParameter("username")
                       .passwordParameter("password")
@@ -315,7 +318,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .oauth2Login(oauth2Login ->
                       oauth2Login
                               .loginPage("/oauth2/authorization/google")
-                              .defaultSuccessUrl("/" + APIPaths.MARKETPLACE, true)
+                              .defaultSuccessUrl("/" + APIPaths.SALES, true)
                               .failureUrl("/login?invalidCredentials=true")
                               .permitAll()
               )
@@ -327,6 +330,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
                       .deleteCookies("JSESSIONID")
                       .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                       .clearAuthentication(true)
+                      .logoutSuccessHandler(this.customLogoutSuccessHandler)
                       .permitAll());
       return httpSecurity.build();
    }
@@ -438,6 +442,7 @@ package com.market.marketnexus.controller;
 import com.market.marketnexus.controller.validator.CredentialsValidator;
 import com.market.marketnexus.controller.validator.UserValidator;
 import com.market.marketnexus.exception.UserEmailNotExistsException;
+import com.market.marketnexus.helpers.constants.APIPaths;
 import com.market.marketnexus.helpers.constants.GlobalErrorsMessages;
 import com.market.marketnexus.helpers.credentials.Utils;
 import com.market.marketnexus.model.Credentials;
@@ -449,17 +454,22 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class AuthenticationController {
@@ -545,6 +555,33 @@ public class AuthenticationController {
          }
       }
       return modelAndView;
+   }
+
+   @GetMapping(value = {"/" + APIPaths.MARKETPLACE, "/" + APIPaths.MARKETPLACE + "/"})
+   public ModelAndView redirectToMarketPlaceSales() {
+      return new ModelAndView("redirect:/" + APIPaths.SALES);
+   }
+
+   @PostMapping("/storeFirebaseToken")
+   public ResponseEntity<?> storeFirebaseToken(@RequestBody Map<String, String> data) {
+      try {
+         Path path = Paths.get("src/main/resources/static/txt/tokens.txt");
+         List<String> existingTokens = Files.readAllLines(path);
+         String token = data.get("token");
+         if (token != null && !existingTokens.contains(token)) {
+            Files.write(path, (token + System.lineSeparator()).getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            AuthenticationController.LOGGER.info("Firebase token stored successfully: {}", token);
+            return new ResponseEntity<>(HttpStatus.OK);
+         } else {
+            // Token già esistente
+            String responseMessage = "Firebase token already exists";
+            AuthenticationController.LOGGER.warn(responseMessage);
+            return new ResponseEntity<>(responseMessage, HttpStatus.CONFLICT);
+         }
+      } catch (IOException e) {
+         AuthenticationController.LOGGER.error(e.getMessage());
+         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+      }
    }
 }
 ```
@@ -721,7 +758,7 @@ public class Cart {
    @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
-   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
+   @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
    @Min((long) FieldSizes.CART_CARTPRICE_MIN_VALUE)
@@ -1200,46 +1237,47 @@ font-size: 16 px;
 ### `/js/marketplace/account/stats/chart/index.js`
 
 ```javascript
-//Chart.defaults.elements.bar.borderWidth = 2;
-
-const CHART_TYPES = {
-   bar: "bar",
-   line: "line",
-   horizontalBar: "horizontalBar",
-   pie: "pie",
-   //radar: "radar",
-   //polarArea: "polarArea",
-   bubble: "bubble",
-   doughnut: "doughnut",
-};
-
-const isMultiColorChartType = chartType => chartType === CHART_TYPES.pie || chartType === CHART_TYPES.doughnut;
-
-const getChartColor = chartType =>
-   isMultiColorChartType(chartType) ? [
-      "#0D6EFD", // PRIMARY
-      "#6C757D", // SECONDARY
-      "#198754", // SUCCESS
-      "#DC3545", // DANGER
-      "#FFC107", // WARNING
-      "#0DCAF0", // INFO
-      "#212529", // DARK
-   ] : "#1D86BA";
-
-
-const chartTypeSelect = document.getElementById("chart-type-select");
-
-const weekDaysXToNumberOfSalesY = [];
-
-let weekDaysX = null, numberOfSoldSalesY = null;
-
-const canvas = document.getElementById("chart");
-
-const ctx = canvas.getContext("2d");
-
-let type = null, data = null, options = null, config = null;
-
 document.addEventListener("DOMContentLoaded", () => {
+
+   //Chart.defaults.elements.bar.borderWidth = 2;
+
+   const CHART_TYPES = {
+      bar: "bar",
+      line: "line",
+      horizontalBar: "horizontalBar",
+      pie: "pie",
+      //radar: "radar",
+      //polarArea: "polarArea",
+      bubble: "bubble",
+      doughnut: "doughnut",
+   };
+
+   const isMultiColorChartType = chartType => chartType === CHART_TYPES.pie || chartType === CHART_TYPES.doughnut;
+
+   const getChartColor = chartType =>
+      isMultiColorChartType(chartType) ? [
+         "#0D6EFD", // PRIMARY
+         "#6C757D", // SECONDARY
+         "#198754", // SUCCESS
+         "#DC3545", // DANGER
+         "#FFC107", // WARNING
+         "#0DCAF0", // INFO
+         "#212529", // DARK
+      ] : "#1D86BA";
+
+
+   const chartTypeSelect = document.getElementById("chart-type-select");
+
+   const weekDaysXToNumberOfSalesY = [];
+
+   let weekDaysX = null, numberOfSoldSalesY = null;
+
+   const canvas = document.getElementById("chart");
+
+   const ctx = canvas.getContext("2d");
+
+   let type = null, data = null, options = null, config = null;
+
    axios.get(`${baseAPIURI}chartData`)
       .then(response => {
          console.log(response);

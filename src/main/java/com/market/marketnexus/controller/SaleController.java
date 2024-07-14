@@ -248,7 +248,7 @@ public class SaleController {
       ModelAndView modelAndView = new ModelAndView(APIPaths.MARKETPLACE + "/sale.html");
       try {
          Sale sale = this.saleService.getSale(saleId);
-         //this.publishedSaleNotificationService.sendNotificationToAllUsers(sale);
+         this.publishedSaleNotificationService.sendNotificationToAllUsers(sale);
          modelAndView.addObject("sale", sale);
          modelAndView.addObject("saleId", saleId);
          modelAndView.addObject("isAddedToCart", false);
