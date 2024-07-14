@@ -1545,23 +1545,23 @@ I am the only author of this beautiful site 😉
     - **`src/main/resources/application.properties`**:: Configuration files for your Spring Boot application. They
       contain properties to configure various aspects of your application, such as database connection settings, server
       port, logging configuration, etc.
-    - **`src/main/java/com/market/marketnexus/MarketNexusApplication.java**`**:: The main entry point of your Spring
+    - **`src/main/java/com/market/marketnexus/MarketNexusApplication.java`**:: The main entry point of your Spring
       Boot application. This Java file typically contains the main method to start the Spring application context.
-    - **`src/main/java/com/market/marketnexus/authentication**`**: A directory (package) where there is the site auth
+    - **`src/main/java/com/market/marketnexus/authentication`**: A directory (package) where there is the site auth
       configuration.
-    - **`src/main/java/com/market/marketnexus/config**`**: A directory (package) where there are Configuration Classes.
-    - **`src/main/java/com/market/marketnexus/controller**`**: A directory (package) where there are Site Controllers
+    - **`src/main/java/com/market/marketnexus/config`**: A directory (package) where there are Configuration Classes.
+    - **`src/main/java/com/market/marketnexus/controller`**: A directory (package) where there are Site Controllers
       classes.
-    - **`src/main/java/com/market/marketnexus/exception**`**: A directory (package) where there are project custom
+    - **`src/main/java/com/market/marketnexus/exception`**: A directory (package) where there are project custom
       Exceptions classes.
-    - **`src/main/java/com/market/marketnexus/handler**`**: A directory (package) where there are Event-Handler classes.
-    - **`src/main/java/com/market/marketnexus/helpers**`**: A directory (package) where there are project useful helpers
+    - **`src/main/java/com/market/marketnexus/handler`**: A directory (package) where there are Event-Handler classes.
+    - **`src/main/java/com/market/marketnexus/helpers`**: A directory (package) where there are project useful helpers
       with many static methods.
-    - **`src/main/java/com/market/marketnexus/model**`**: A directory (package) where there are project Entity Models
+    - **`src/main/java/com/market/marketnexus/model`**: A directory (package) where there are project Entity Models
       classes.
-    - **`src/main/java/com/market/marketnexus/repository**`**: A directory (package) where there are project
+    - **`src/main/java/com/market/marketnexus/repository`**: A directory (package) where there are project
       Repositories interface.
-    - **`src/main/java/com/market/marketnexus/service**`**:  A directory (package) where there are project Services
+    - **`src/main/java/com/market/marketnexus/service`**:  A directory (package) where there are project Services
       classes.
 
 - **`target/`**: This directory is a standard directory created by build tools like Maven or Gradle during the build
