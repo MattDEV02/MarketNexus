@@ -21,7 +21,7 @@ public class Order {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    @Unsigned
-   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
+   @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
    @JsonIgnore
@@ -36,7 +36,7 @@ public class Order {
    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Temporals.DATE_FORMAT)
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    @Column(name = "inserted_at", nullable = false)
-   @Temporal(TemporalType.TIMESTAMP)
+   @Temporal(value = TemporalType.TIMESTAMP)
    private LocalDateTime insertedAt;
 
    public Order() {

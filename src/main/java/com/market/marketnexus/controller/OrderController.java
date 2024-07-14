@@ -9,7 +9,6 @@ import com.market.marketnexus.model.Order;
 import com.market.marketnexus.model.User;
 import com.market.marketnexus.service.OrderService;
 import com.market.marketnexus.service.UserService;
-import com.market.marketnexus.service.email.OrderedUserSaleEmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -34,8 +33,6 @@ public class OrderController {
    private OrderService orderService;
    @Autowired
    private UserService userService;
-   @Autowired
-   private OrderedUserSaleEmailService orderedUserSaleEmailService;
 
 
    @GetMapping(value = {"", "/"})

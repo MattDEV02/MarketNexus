@@ -27,7 +27,9 @@ carts) from different categories, visualize their stats and much more.
   search products of a
   wide range of categories and more.
 
-- **Responsive:** The site is responsive and user-friendly. There are also dynamic contents and special effects.
+- **Responsive:** The site is responsive and user-friendly.
+
+- **Dynamic**: The site is content-dynamic and interactive. There are also special effects.
 
 - **Security and user errors control:** The user's sensitive data, such as their password, are encrypted and stored in a
   very robust database. There are also errors control in in client-side and server-side (also CHECKS and TRIGGERS in the
@@ -329,6 +331,102 @@ public class AuthConfiguration implements WebMvcConfigurer {
       return httpSecurity.build();
    }
 
+}
+```
+
+### `FirebaseConfig.java` -> `com.market.marketnexus.config.FirebaseConfig`
+
+```java
+package com.market.marketnexus.config;
+
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+
+@Configuration
+public class FirebaseConfig {
+
+   @Bean
+   public FirebaseApp firebaseApp() throws IOException {
+      FileInputStream serviceAccount =
+              new FileInputStream("src/main/resources/static/json/marketnexus-firebase-adminsdk-14lel-745b5f32e4.json");
+
+      FirebaseOptions options = FirebaseOptions.builder()
+              .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+              .build();
+
+      return FirebaseApp.initializeApp(options);
+   }
+
+   @Bean
+   public FirebaseMessaging firebaseMessaging() throws IOException {
+      return FirebaseMessaging.getInstance(this.firebaseApp());
+   }
+}
+```
+
+### `CustomLogoutSuccessHandler.java` -> `com.market.marketnexus.handler.CustomLogoutSuccessHandler`
+
+```java
+package com.market.marketnexus.handler;
+
+
+import com.market.marketnexus.exception.UserCredentialsUsernameNotExistsException;
+import com.market.marketnexus.helpers.credentials.Utils;
+import com.market.marketnexus.model.Credentials;
+import com.market.marketnexus.model.User;
+import com.market.marketnexus.service.CredentialsService;
+import com.market.marketnexus.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+@Component
+public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
+
+   @Autowired
+   private CredentialsService credentialsService;
+   @Autowired
+   private UserService userService;
+
+   @Override
+   public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
+      Credentials credentials = null;
+      try {
+         if (Utils.userIsLoggedIn(authentication)) {
+            credentials = this.credentialsService.getCredentials(authentication.getName());
+         }
+      } catch (UserCredentialsUsernameNotExistsException userCredentialsUsernameNotExistsException) {
+         if (Utils.userIsLoggedInWithOAuth2(authentication)) {
+            Object principal = authentication.getPrincipal();
+            OAuth2User oAuth2User = (OAuth2User) (principal);
+            String email = oAuth2User.getAttribute("email");
+            User loggedUser = this.userService.getUser(email);
+            credentials = loggedUser.getCredentials();
+         }
+      } finally {
+         try {
+            this.credentialsService.updateIsOnline(credentials, false);
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            httpServletResponse.sendRedirect("/login?logoutSuccessful=true"); // Reindirizza dopo il logout
+         } catch (IOException iOException) {
+            iOException.printStackTrace();
+         }
+      }
+
+   }
 }
 ```
 
@@ -1451,10 +1549,12 @@ I am the only author of this beautiful site 😉
       Boot application. This Java file typically contains the main method to start the Spring application context.
     - **`src/main/java/com/market/marketnexus/authentication**`**: A directory (package) where there is the site auth
       configuration.
+    - **`src/main/java/com/market/marketnexus/config**`**: A directory (package) where there are Configuration Classes.
     - **`src/main/java/com/market/marketnexus/controller**`**: A directory (package) where there are Site Controllers
       classes.
     - **`src/main/java/com/market/marketnexus/exception**`**: A directory (package) where there are project custom
       Exceptions classes.
+    - **`src/main/java/com/market/marketnexus/handler**`**: A directory (package) where there are Event-Handler classes.
     - **`src/main/java/com/market/marketnexus/helpers**`**: A directory (package) where there are project useful helpers
       with many static methods.
     - **`src/main/java/com/market/marketnexus/model**`**: A directory (package) where there are project Entity Models
@@ -1478,66 +1578,327 @@ I am the only author of this beautiful site 😉
 
 - **`README.md`**: Markdown documentation for this project.
 
+# API Documentation 👨‍💻
+
+## `BaseController`
+
+The `BaseController` serves the homepage and a FAQs page, providing basic navigation and information about the
+application.
+
+## Endpoints
+
+### GET /
+
+- **Description**: Displays the homepage of the application.
+- **Response**: The homepage view (`index.html`).
+
+### GET /FAQs
+
+- **Description**: Shows a list of frequently asked questions and their answers.
+- **Response**: A view (`FAQs.html`) displaying FAQs.
+    - The FAQs are dynamically populated from a static map, covering topics like registration, account management,
+      offline navigation, device compatibility, product categories, password requirements, account information,
+      repository location, and site authorship.
+
+## Notes
+
+- The FAQs are stored in a static `Map<String, String>` within the `BaseController`, making it easy to update or add new
+  questions and answers.
+- This controller uses `ModelAndView` to return views, ensuring that data can be passed to the templates for rendering.
+
+## `AuthenticationController`
+
+The `AuthenticationController` manages user authentication processes, including registration, login, and username
+recovery. It also handles the storage of Firebase tokens for push notifications.
+
+## Endpoints
+
+### GET /registration
+
+- **Description**: Displays the user registration form.
+- **Response**: A view with the registration form.
+
+### POST /registerNewUser
+
+- **Description**: Registers a new user with the provided credentials.
+- **Parameters**:
+    - `user`: User details.
+    - `credentials`: Login credentials.
+    - `confirm-password`: Confirmation of the user's password.
+- **Response**: Redirects to the login page with a success message if registration is successful; otherwise, displays
+  registration errors.
+
+### GET /login
+
+- **Description**: Displays the login form.
+- **Response**: A view with the login form.
+
+### GET /forgotUsername
+
+- **Description**: Displays the form for recovering a forgotten username.
+- **Response**: A view with the forgot username form.
+
+### POST /sendForgotUsernameEmail
+
+- **Description**: Sends an email to the user with their username if the provided email is associated with an account.
+- **Parameters**:
+    - `user`: User details, specifically the email address.
+- **Response**: A view indicating whether the email was sent successfully or not.
+
+### GET /marketplace
+
+- **Description**: Redirects to the marketplace sales page.
+- **Response**: A redirection to the sales page.
+
+### POST /storeFirebaseToken
+
+- **Description**: Stores a Firebase token for push notifications.
+- **Parameters**:
+    - `data`: A map containing the `token` key with the Firebase token as its value.
+- **Response**: HTTP status indicating success or failure of token storage.
+
+## Notes
+
+- The controller uses `ModelAndView` to return views, ensuring that data can be passed to the templates for rendering.
+- Error handling is implemented for operations that require specific conditions (e.g., valid data, unique email).
+- The controller interacts with `UserService`, `PasswordEncoder`, and `ForgotUsernameEmailService` to manage user
+  authentication and notification operations.
+
+## `SaleController`
+
+The `SaleController` manages operations related to sales, including displaying all sales, searching for sales,
+publishing new sales, updating existing sales, and deleting sales.
+
+## Endpoints
+
+### GET /sales
+
+- **Description**: Displays all sales.
+- **Response**: A view with all sales listed.
+
+### GET /sales/searchSales
+
+- **Description**: Searches for sales based on product name and/or product category.
+- **Parameters**:
+    - `product-name`: Name of the product to search for.
+    - `category`: ID of the product category to search for.
+    - `isAsyncSearch`: Boolean indicating if the search is asynchronous.
+- **Response**: A view with the search results.
+
+### GET /sales/newSale
+
+- **Description**: Shows the form to publish a new sale.
+- **Response**: A form view for publishing a new sale.
+
+### POST /sales/publishNewSale
+
+- **Description**: Publishes a new sale.
+- **Parameters**:
+    - `product`: The product details.
+    - `sale`: The sale details.
+    - `product-images`: Array of product images.
+- **Response**: Redirects to the successful view if the sale is published; otherwise, shows errors.
+
+### GET /sales/updateSale/{saleId}
+
+- **Description**: Shows the form to update an existing sale.
+- **Parameters**:
+    - `saleId`: The ID of the sale to update.
+- **Response**: A form view for updating the sale if the user is authorized; otherwise, redirects.
+
+### POST /sales/publishUpdatedSale/{saleId}
+
+- **Description**: Updates an existing sale.
+- **Parameters**:
+    - `saleId`: The ID of the sale to update.
+    - `product`: Updated product details.
+    - `sale`: Updated sale details.
+    - `product-images`: Array of new product images (optional).
+- **Response**: Redirects to the successful view if the sale is updated; otherwise, shows errors.
+
+### DELETE /sales/deleteSale/{saleId}
+
+- **Description**: Deletes a sale.
+- **Parameters**:
+    - `saleId`: The ID of the sale to delete.
+- **Response**: A JSON response indicating success or failure, with a redirect URL.
+
+### GET /sales/sale/{saleId}
+
+- **Description**: Displays details of a specific sale.
+- **Parameters**:
+    - `saleId`: The ID of the sale to display.
+- **Response**: A view with the sale details.
+
+## Notes
+
+- All views are returned as `ModelAndView` objects.
+- Responses may include redirections or JSON objects for asynchronous operations.
+- Error handling is implemented for operations that require specific conditions (e.g., user authorization, valid data).
+
+## `CartController`
+
+The `CartController` manages operations related to the shopping cart, including displaying cart items, adding sales
+products to the cart, updating cart line item quantities, and deleting cart line items.
+
+## Endpoints
+
+### GET /cart
+
+- **Description**: Displays all items in the user's cart.
+- **Response**: A view with the cart and its line items.
+
+### GET /cart/{saleId}
+
+- **Description**: Adds a product associated with a sale to the user's cart by sale ID.
+- **Parameters**:
+    - `saleId`: The ID of the sale whose product is to be added to the cart.
+- **Response**: A view of the sale with an indication if it was added to the cart. Errors are displayed if the user
+  tries to add their own sale or a sale already in the cart.
+
+### PUT /cart/updateCartLineItemQuantity/{cartLineItemId}
+
+- **Description**: Updates the quantity of a specific cart line item.
+- **Parameters**:
+    - `cartLineItemId`: The ID of the cart line item to update.
+    - `quantity`: The new quantity for the cart line item.
+- **Response**: A dynamic section of the cart view with updated quantities.
+
+### DELETE /cart/delete/{cartLineItemId}
+
+- **Description**: Deletes a specific cart line item by ID.
+- **Parameters**:
+    - `cartLineItemId`: The ID of the cart line item to delete.
+- **Response**: A dynamic section of the cart view indicating success or failure of the deletion.
+
+## Notes
+
+- The controller uses `ModelAndView` to return views, ensuring that data can be passed to the templates for rendering.
+- Error handling is implemented for operations that require specific conditions (e.g., user authorization, valid data).
+- The controller interacts with `UserService`, `SaleService`, and `CartService` to manage cart operations.
+
+## `OrderController`
+
+The `OrderController` is responsible for handling operations related to creating orders from cart line items. It ensures
+that orders are only created if the cart is not empty, the user has sufficient balance, and the request comes from the
+cart page.
+
+## Endpoints
+
+### GET /order
+
+- **Description**: Creates an order from the cart line items of the logged-in user.
+- **Preconditions**:
+    - The request must originate from the cart page.
+    - The user's cart must not be empty.
+    - The user must have a balance greater than or equal to the total price of the cart.
+- **Postconditions**:
+    - An order is created with the current cart line items.
+    - An email is sent to the user with the order details.
+- **Response**:
+    - If the preconditions are not met, redirects to the cart page with an appropriate error message.
+    - If the order is successfully created, redirects to an order confirmation page with details of the order.
+
+## Notes
+
+- The controller uses `ModelAndView` to return views, ensuring that data can be passed to the templates for rendering.
+- Error handling is implemented for operations that require specific conditions (e.g., cart not empty, sufficient user
+  balance).
+- The controller interacts with `UserService`, `OrderService`, and `OrderedUserSaleEmailService` to manage order
+  operations.
+
+## `AccountController`
+
+The `AccountController` manages user account operations, including displaying user account details, updating user
+information, and deleting user accounts.
+
+## Endpoints
+
+### GET /account
+
+- **Description**: Displays the account details of the logged-in user.
+- **Response**: A view with the user's account details, including sales and orders.
+
+### GET /account/{username}
+
+- **Description**: Displays the account details of a user by username.
+- **Parameters**:
+    - `username`: The username of the user whose account details are to be displayed.
+- **Response**: A view with the specified user's account details if found; otherwise, an error message.
+
+### POST /account/updateAccount
+
+- **Description**: Updates the account details of the logged-in user.
+- **Parameters**:
+    - `user`: The updated user details.
+    - `credentials`: The updated credentials.
+    - `confirm-password`: The confirmation of the new password.
+- **Response**: Redirects to the account page with a success message if the update is successful; otherwise, displays
+  errors.
+
+### DELETE /account/delete
+
+- **Description**: Deletes the account of the logged-in user.
+- **Response**: Redirects to the logout page if the deletion is successful; otherwise, displays an error message.
+
+## Notes
+
+- The controller uses `ModelAndView` to return views, ensuring that data can be passed to the templates for rendering.
+- Error handling is implemented for operations that require specific conditions (e.g., valid data, user authorization).
+- The controller interacts with services such as `UserService`, `SaleService`, `OrderService`, and `CredentialsService`
+  to manage user account operations.
+- Statistical data for the user's account is retrieved using the `StatsController`.
+
+## `StatsController`
+
+The `StatsController` manages operations related to the display of statistics, including data for charts, maps, sales
+and orders calendars, and tabular data.
+
+## Endpoints
+
+### GET /stats/chartData
+
+- **Description**: Provides data for a chart, counting the sales made by the user in the current week.
+- **Response**: A list of object arrays containing the data for the chart.
+
+### GET /stats/mapData
+
+- **Description**: Provides data for a map visualization, counting users by nation based on filters such as online
+  status, role, and registration date range.
+- **Parameters**:
+    - `isOnline`: User's online status (optional).
+    - `role`: User's role (optional).
+    - `registeredFrom`: Start date for the registration filter (optional).
+    - `registeredTo`: End date for the registration filter (optional).
+- **Response**: A list of object arrays containing the data for the map.
+
+### GET /stats/calendarData/sales
+
+- **Description**: Provides sales data for a calendar view, listing all sales made by the logged-in user.
+- **Response**: An iterable of `Sale` containing the sales data for the calendar.
+
+### GET /stats/calendarData/orders
+
+- **Description**: Provides order data for a calendar view, showing all orders placed by the logged-in user.
+- **Response**: A list of object arrays containing the data for the orders calendar.
+
+### GET /stats/tableData
+
+- **Description**: Provides data for a tabular view, showing statistics on sales published by users.
+- **Response**: A list of object arrays containing the data for the table.
+
+## Notes
+
+- The controller uses services such as `UserService`, `SaleService`, and `OrderService` to retrieve the necessary data
+  for generating statistics.
+- Responses may include JSON objects for asynchronous operations.
+- Error handling is implemented for operations that require specific conditions (e.g., user authorization, valid data).
+
 ## Sources of inspiration 🤝
 
 - [Vinted](https://www.vinted.it/)
 
 - [Decathlon](https://www.decathlon.it/)
-
-# API Documentation 👨‍💻
-
-## AuthenticationController:
-
-### GET "/registration"
-
-**Description:** Displays the form to register a new User.
-
-**Response:** An HTML form with User data.
-
-### POST "/registerNewUser"
-
-**Description:** Takes the data from the previous form and uses it to register a new User.
-
-**Request Parameters:**
-
-- `confirm-password` (form parameter, required): The User's confirm-password.
-
-**Response:** A successful login redirect or error messages.
-
-### GET "/login"
-
-**Description:** Displays the login form for a User.
-
-**Response:** A successful login redirect or error messages.
-
-### GET "/forgotUsername"
-
-**Description:** Displays the form that allows a User to recover their username using their email.
-
-### POST "/sendForgotUsernameEmail"
-
-**Description:** Takes a User's email from the previous form and uses it to send an email (HTML TEXT) to that address
-with the User's username.
-
-**Request Parameters:**
-
-- `email` (form parameter, required): The User's personal email.
-
-## SaleController: ("/marketplace")
-
-### GET "/"
-
-**Description:** Displays all the Sales registered on the site.
-
-### GET "/{saleId}"
-
-**Description:** Displays a specific Sale registered on the site based on the matching saleId.
-
-**Request Parameters:**
-
-- `saleId` (path parameter, required): The ID of a Sale registered on the site.
-
-...
 
 ## License 🗒️
 

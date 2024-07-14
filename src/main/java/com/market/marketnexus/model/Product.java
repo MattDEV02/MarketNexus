@@ -20,9 +20,9 @@ public class Product {
    @Column(name = "id", nullable = false)
    private Long id;
 
-   @Size(min = (FieldSizes.PRODUCT_NAME_MIN_LENGTH), max = (FieldSizes.PRODUCT_NAME_MAX_LENGTH))
+   @Size(min = FieldSizes.PRODUCT_NAME_MIN_LENGTH, max = FieldSizes.PRODUCT_NAME_MAX_LENGTH, message = "The length of the Product name must be between 3 and 30 characters.")
    @Column(name = "name", nullable = false)
-   @NotBlank
+   @NotBlank(message = "Product Name is a mandatory field.")
    private String name;
 
    @Size(min = (FieldSizes.PRODUCT_DESCRIPTION_MIN_LENGTH), max = (FieldSizes.PRODUCT_DESCRIPTION_MAX_LENGTH))
@@ -30,8 +30,8 @@ public class Product {
    @NotBlank
    private String description;
 
-   @Min((long) (FieldSizes.PRODUCT_PRICE_MIN_VALUE))
-   @Max((long) (FieldSizes.PRODUCT_PRICE_MAX_VALUE))
+   @Min(value = (long) (FieldSizes.PRODUCT_PRICE_MIN_VALUE))
+   @Max(value = (long) (FieldSizes.PRODUCT_PRICE_MAX_VALUE))
    @NotNull
    @Column(name = "price", nullable = false)
    private Float price;

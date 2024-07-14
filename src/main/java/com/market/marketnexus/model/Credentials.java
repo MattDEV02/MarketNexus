@@ -26,31 +26,31 @@ public class Credentials {
    @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
-   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
+   @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
    @NotBlank
    @Size(min = FieldSizes.USERNAME_MIN_LENGTH, max = FieldSizes.USERNAME_MAX_LENGTH)
    @Column(name = "username", unique = true, nullable = false)
-   @NotBlank
+   @NotBlank()
    private String username;
 
    @Column(name = "password", nullable = false)
    private String password;
 
    @Column(name = "role", nullable = false)
-   @NotBlank
+   @NotBlank()
    private String role;
 
    @Column(name = "is_online", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
    private Boolean isOnline;
 
    @Column(name = "inserted_at", nullable = false)
-   @Temporal(TemporalType.TIMESTAMP)
+   @Temporal(value = TemporalType.TIMESTAMP)
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    private LocalDateTime insertedAt;
 
    @Column(name = "updated_at", nullable = false)
-   @Temporal(TemporalType.TIMESTAMP)
+   @Temporal(value = TemporalType.TIMESTAMP)
    @DateTimeFormat(pattern = Temporals.DATE_TIME_FORMAT)
    private LocalDateTime updatedAt;
 

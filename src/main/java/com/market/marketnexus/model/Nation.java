@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jdk.jfr.Unsigned;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.lang.NonNull;
 
 import java.util.Objects;
 
@@ -20,11 +19,10 @@ public class Nation {
    @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
-   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
+   @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
-   @NonNull
-   @NotBlank
+   @NotBlank()
    @Column(name = "name", nullable = false, unique = true)
    @Size(min = (FieldSizes.NATION_NAME_MIN_LENGTH), max = (FieldSizes.NATION_NAME_MAX_LENGTH))
    private String name;

@@ -127,8 +127,8 @@ public class AccountController {
          AccountController.LOGGER.info("Updated account with User ID: {}", updatedUser.getId());
       } else {
          List<ObjectError> userErrors = userBindingResult.getAllErrors();
-         modelAndView.addObject("userErrors", userErrors);
          List<ObjectError> credentialsErrors = credentialsBindingResult.getAllErrors();
+         modelAndView.addObject("userErrors", userErrors);
          modelAndView.addObject("credentialsErrors", credentialsErrors);
          Iterable<Sale> notSoldSales = this.saleService.getAllNotSoldSales(loggedUser);
          Iterable<Sale> soldSales = this.saleService.getAllUserSoldSales(loggedUser);

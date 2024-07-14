@@ -21,23 +21,23 @@ public class User {
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    @Unsigned
-   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
+   @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
-   @NotBlank
+   @NotBlank()
    @Size(min = FieldSizes.NAME_MIN_LENGTH, max = FieldSizes.NAME_MAX_LENGTH)
    @Column(name = "name", nullable = false)
    private String name;
 
-   @NotBlank
+   @NotBlank()
    @Size(min = FieldSizes.SURNAME_MIN_LENGTH, max = FieldSizes.SURNAME_MAX_LENGTH)
    @Column(name = "surname", nullable = false)
    private String surname;
 
    @DateTimeFormat(pattern = Temporals.DATE_FORMAT)
-   @Past
+   @Past()
    @Column(name = "birthdate", nullable = true)
-   @Temporal(TemporalType.DATE)
+   @Temporal(value = TemporalType.DATE)
    private Date birthDate;
 
    @NotBlank
@@ -45,8 +45,8 @@ public class User {
    @Size(min = FieldSizes.EMAIL_MIN_LENGTH, max = FieldSizes.EMAIL_MAX_LENGTH)
    @Column(name = "email", unique = true, nullable = false)
    private String email;
-   @Min((long) FieldSizes.BALANCE_MIN_VALUE)
-   @Max((long) FieldSizes.BALANCE_MAX_VALUE)
+   @Min(value = (long) FieldSizes.BALANCE_MIN_VALUE, message = "The min value for balance is 0 $.")
+   @Max(value = (long) FieldSizes.BALANCE_MAX_VALUE, message = "The max value for balance is 0 $.")
    @NotNull
    @Column(name = "balance", nullable = false)
    private Float balance;

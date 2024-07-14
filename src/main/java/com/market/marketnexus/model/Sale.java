@@ -24,23 +24,22 @@ public class Sale {
 
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
+   @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    @Unsigned
    @Column(name = "id", nullable = false)
    private Long id;
 
    @JsonIgnore
    @NotNull
-   @Min(FieldSizes.SALE_QUANTITY_MIN_VALUE)
-   @Max(FieldSizes.SALE_QUANTITY_MAX_VALUE)
-   @NotNull
+   @Min(value = FieldSizes.SALE_QUANTITY_MIN_VALUE)
+   @Max(value = FieldSizes.SALE_QUANTITY_MAX_VALUE)
    @Column(name = "quantity", nullable = false)
    private Integer quantity;
    @Column(name = "is_sold", columnDefinition = "BOOLEAN NOT NULL DEFAULT FALSE")
    private Boolean isSold;
    @JsonIgnore
-   @Min((long) FieldSizes.SALE_SALEPRICE_MIN_VALUE)
-   @Max((long) FieldSizes.SALE_SALEPRICE_MAX_VALUE)
+   @Min(value = (long) FieldSizes.SALE_SALEPRICE_MIN_VALUE)
+   @Max(value = (long) FieldSizes.SALE_SALEPRICE_MAX_VALUE)
    @Column(name = "sale_price", nullable = false)
    private Float salePrice;
    @JsonIgnore

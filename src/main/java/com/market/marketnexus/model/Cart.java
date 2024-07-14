@@ -21,7 +21,7 @@ public class Cart {
    @Unsigned
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
-   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
+   @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
    @Min((long) FieldSizes.CART_CARTPRICE_MIN_VALUE)

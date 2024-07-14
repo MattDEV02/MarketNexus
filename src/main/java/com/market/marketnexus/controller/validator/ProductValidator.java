@@ -2,7 +2,6 @@ package com.market.marketnexus.controller.validator;
 
 import com.market.marketnexus.helpers.constants.FieldSizes;
 import com.market.marketnexus.helpers.product.ProductImageFileUtils;
-import com.market.marketnexus.helpers.validators.FieldValidators;
 import com.market.marketnexus.model.Product;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
@@ -64,9 +63,9 @@ public class ProductValidator implements Validator {
    @Override
    public void validate(@NonNull Object object, @NonNull Errors errors) {
       Product product = (Product) object;
-      if (!FieldValidators.productNameValidator(product.getName())) {
+     /* if (!FieldValidators.productNameValidator(product.getName())) {
          errors.rejectValue("name", "product.name.invalidFormat");
-      }
+      }*/
       if (product.getCategory() == null) {
          errors.rejectValue("category", "product.category.notExists");
       }

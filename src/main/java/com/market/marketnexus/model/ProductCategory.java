@@ -15,17 +15,17 @@ import java.util.Objects;
 public class ProductCategory {
    @Id
    @Unsigned
-   @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
+   @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "id", nullable = false)
    private Long id;
 
-   @NotBlank
+   @NotBlank()
    @Column(name = "name", nullable = false, unique = true)
    @Size(min = FieldSizes.PRODUCT_CATEGORY_NAME_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_NAME_MAX_LENGTH)
    private String name;
 
-   @NotBlank
+   @NotBlank()
    @Column(name = "description", nullable = false)
    @Size(min = FieldSizes.PRODUCT_CATEGORY_DESCRIPTION_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_DESCRIPTION_MAX_LENGTH)
    private String description;

@@ -28,13 +28,13 @@ public class CartLineItem {
    private Long id;
 
    @NotNull
-   @Min(FieldSizes.CARTLINEITEM_QUANTITY_MIN_VALUE)
-   @Max(FieldSizes.CARTLINEITEM_QUANTITY_MAX_VALUE)
+   @Min(value = FieldSizes.CARTLINEITEM_QUANTITY_MIN_VALUE)
+   @Max(value = FieldSizes.CARTLINEITEM_QUANTITY_MAX_VALUE)
    @Column(name = "quantity", nullable = false)
    private Integer quantity;
 
-   @Min((long) FieldSizes.CARTLINEITEM_CARTLINEITEMPRICE_MIN_VALUE)
-   @Max((long) FieldSizes.CARTLINEITEM_CARTLINEITEMPRICE_MAX_VALUE)
+   @Min(value = (long) FieldSizes.CARTLINEITEM_CARTLINEITEMPRICE_MIN_VALUE)
+   @Max(value = (long) FieldSizes.CARTLINEITEM_CARTLINEITEMPRICE_MAX_VALUE)
    @Column(name = "cartlineitem_price", nullable = false)
    private Float cartLineItemPrice;
 
