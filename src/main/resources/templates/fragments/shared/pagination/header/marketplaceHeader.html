@@ -48,36 +48,38 @@
                   </a>
                </li>
             </ul>
-            <form class="d-flex ms-5 mt-4 mt-xl-0" id="search-product-form"
-                  method="GET" name="search-product-form"
-                  th:action="@{${'/' + API_PATHS_MAP.get('SALES') + '/searchSales'}}">
-               <label class="form-label visually-hidden" for="product-name"></label>
-               <input class="form-control p-2 mx-3" id="product-name"
-                      name="product-name" placeholder="Product name"
-                      th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
-                      th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MIN_LENGTH')}"
-                      th:value="${param != null ? param.get('product-name') : null}"
-                      title="Search Sales by them product names"
-                      type="text"/>
-               <label class="form-label visually-hidden" for="category">Product Category:</label>
-               <select class="form-select p-2" id="category" name="category"
-                       title="Search Sales by them product categories">
-                  <option th:value="${null}">All categories</option>
-                  <option th:each="productCategoriesEntry : ${productCategoriesMap}"
-                          th:id="${productCategoriesEntry.value.name + '#' + productCategoriesEntry.key}"
-                          th:name="${productCategoriesEntry.value.name + '#' + productCategoriesEntry.key}"
-                          th:selected="${param != null && ((productCategoriesEntry.key + '') == (param.category + ''))}"
-                          th:text="${productCategoriesEntry.value.name}"
-                          th:value="${productCategoriesEntry.key}"
-                  ></option>
-               </select>
-               <button class="form-control btn btn-outline-success form-control mx-3" data-bs-toggle="tooltip"
-                       id="submit"
-                       title="Search products" type="submit">
-                  Search
-                  <i class="fas fa-search mx-1"></i>
-               </button>
-            </form>
+            <div id="search-sales-container">
+               <form class="d-flex ms-5 mt-4 mt-xl-0" id="search-products-form"
+                     method="GET" name="search-products-form"
+                     th:action="@{${'/' + API_PATHS_MAP.get('SALES') + '/searchSales'}}">
+                  <label class="form-label visually-hidden" for="product-name"></label>
+                  <input class="form-control p-2 mx-3" id="product-name"
+                         name="product-name" placeholder="Product name"
+                         th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
+                         th:value="${param != null ? param.get('product-name') : null}"
+                         title="Search Sales by them product names"
+                         type="text"/>
+                  <label class="form-label visually-hidden" for="category">Product Category:</label>
+                  <select class="form-select p-2" id="category" name="category"
+                          title="Search Sales by them product categories">
+                     <option th:value="${null}">All categories</option>
+                     <option th:each="productCategoriesEntry : ${productCategoriesMap}"
+                             th:id="${productCategoriesEntry.value.name + '#' + productCategoriesEntry.key}"
+                             th:name="${productCategoriesEntry.value.name + '#' + productCategoriesEntry.key}"
+                             th:selected="${param != null && ((productCategoriesEntry.key + '') == (param.category + ''))}"
+                             th:text="${productCategoriesEntry.value.name}"
+                             th:value="${productCategoriesEntry.key}"
+                     ></option>
+                  </select>
+                  <button class="form-control btn btn-outline-success form-control mx-3" data-bs-toggle="tooltip"
+                          id="submit"
+                          title="Search products"
+                          type="submit">
+                     Search
+                     <i class="fas fa-search mx-1"></i>
+                  </button>
+               </form>
+            </div>
          </div>
       </div>
    </nav>

@@ -67,8 +67,9 @@ public class SaleController {
    public ModelAndView searchSales(@NonNull HttpServletRequest request, @Valid @ModelAttribute("loggedUser") User loggedUser) {
       String productName = request.getParameter("product-name");
       String productCategoryId = request.getParameter("category");
+      Boolean isAsyncSearch = Boolean.valueOf(request.getParameter("isAsyncSearch"));
       SaleController.LOGGER.info("User username: {} has searched sale with product name: {} and product category ID: {}", loggedUser != null ? loggedUser.getCredentials().getUsername() : "Google User", productName, productCategoryId);
-      ModelAndView modelAndView = new ModelAndView(APIPaths.MARKETPLACE + "/sales.html");
+      ModelAndView modelAndView = new ModelAndView(APIPaths.SALES + GlobalValues.TEMPLATES_EXTENSION + (isAsyncSearch ? " :: dynamicSalesSection" : ""));
       Iterable<Sale> searchedSales = null;
       if (productName.isEmpty() && productCategoryId.isEmpty()) {
          searchedSales = this.saleService.getAllSales();

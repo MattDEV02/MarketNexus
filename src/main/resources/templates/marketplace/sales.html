@@ -8,8 +8,9 @@
 <body>
 <div th:replace="~{fragments/shared/pagination/header/marketplaceHeader.html :: marketplaceHeader()}">
 </div>
-<main>
-   <div class="container" th:with="areSalesValid = ${sales != null && !#lists.isEmpty(sales)}">
+<main id="sales-container">
+   <div class="container" th:fragment="dynamicSalesSection"
+        th:with="areSalesValid = ${sales != null && !#lists.isEmpty(sales)}">
       <div class="row justify-content-center">
          <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
          <div class="col-12 mt-5">
