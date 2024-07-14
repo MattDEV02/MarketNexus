@@ -27,14 +27,14 @@ public class CartLineItem {
    @Min(FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
-   @NotNull
-   @Min(value = FieldSizes.CARTLINEITEM_QUANTITY_MIN_VALUE)
-   @Max(value = FieldSizes.CARTLINEITEM_QUANTITY_MAX_VALUE)
+   @NotNull(message = "Cart line item quantity is mandatory field.")
+   @Min(value = FieldSizes.CARTLINEITEM_QUANTITY_MIN_VALUE, message = "Cart line item Quantity Min value is 1.")
+   @Max(value = FieldSizes.CARTLINEITEM_QUANTITY_MAX_VALUE, message = "Cart line item Quantity Min value is 1.")
    @Column(name = "quantity", nullable = false)
    private Integer quantity;
 
-   @Min(value = (long) FieldSizes.CARTLINEITEM_CARTLINEITEMPRICE_MIN_VALUE)
-   @Max(value = (long) FieldSizes.CARTLINEITEM_CARTLINEITEMPRICE_MAX_VALUE)
+   @Min(value = (long) FieldSizes.CARTLINEITEM_CARTLINEITEMPRICE_MIN_VALUE, message = "Cart line item price Min value is 0.01 $.")
+   @Max(value = (long) FieldSizes.CARTLINEITEM_CARTLINEITEMPRICE_MAX_VALUE, message = "Cart line item price Max value is 1000.00 $.")
    @Column(name = "cartlineitem_price", nullable = false)
    private Float cartLineItemPrice;
 

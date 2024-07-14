@@ -1671,12 +1671,12 @@ publishing new sales, updating existing sales, and deleting sales.
 
 ## Endpoints
 
-### GET /sales
+### GET /marketplace/sales
 
 - **Description**: Displays all sales.
 - **Response**: A view with all sales listed.
 
-### GET /sales/searchSales
+### GET /marketplace/sales/searchSales
 
 - **Description**: Searches for sales based on product name and/or product category.
 - **Parameters**:
@@ -1685,12 +1685,12 @@ publishing new sales, updating existing sales, and deleting sales.
     - `isAsyncSearch`: Boolean indicating if the search is asynchronous.
 - **Response**: A view with the search results.
 
-### GET /sales/newSale
+### GET /marketplace/sales/newSale
 
 - **Description**: Shows the form to publish a new sale.
 - **Response**: A form view for publishing a new sale.
 
-### POST /sales/publishNewSale
+### POST /marketplace/sales/publishNewSale
 
 - **Description**: Publishes a new sale.
 - **Parameters**:
@@ -1699,14 +1699,14 @@ publishing new sales, updating existing sales, and deleting sales.
     - `product-images`: Array of product images.
 - **Response**: Redirects to the successful view if the sale is published; otherwise, shows errors.
 
-### GET /sales/updateSale/{saleId}
+### GET /marketplace/sales/updateSale/{saleId}
 
 - **Description**: Shows the form to update an existing sale.
 - **Parameters**:
     - `saleId`: The ID of the sale to update.
 - **Response**: A form view for updating the sale if the user is authorized; otherwise, redirects.
 
-### POST /sales/publishUpdatedSale/{saleId}
+### POST /marketplace/sales/publishUpdatedSale/{saleId}
 
 - **Description**: Updates an existing sale.
 - **Parameters**:
@@ -1716,14 +1716,14 @@ publishing new sales, updating existing sales, and deleting sales.
     - `product-images`: Array of new product images (optional).
 - **Response**: Redirects to the successful view if the sale is updated; otherwise, shows errors.
 
-### DELETE /sales/deleteSale/{saleId}
+### DELETE /marketplace/sales/deleteSale/{saleId}
 
 - **Description**: Deletes a sale.
 - **Parameters**:
     - `saleId`: The ID of the sale to delete.
 - **Response**: A JSON response indicating success or failure, with a redirect URL.
 
-### GET /sales/sale/{saleId}
+### GET /marketplace/sales/sale/{saleId}
 
 - **Description**: Displays details of a specific sale.
 - **Parameters**:
@@ -1743,12 +1743,12 @@ products to the cart, updating cart line item quantities, and deleting cart line
 
 ## Endpoints
 
-### GET /cart
+### GET /marketplace/cart
 
 - **Description**: Displays all items in the user's cart.
 - **Response**: A view with the cart and its line items.
 
-### GET /cart/{saleId}
+### GET /marketplace/cart/{saleId}
 
 - **Description**: Adds a product associated with a sale to the user's cart by sale ID.
 - **Parameters**:
@@ -1756,7 +1756,7 @@ products to the cart, updating cart line item quantities, and deleting cart line
 - **Response**: A view of the sale with an indication if it was added to the cart. Errors are displayed if the user
   tries to add their own sale or a sale already in the cart.
 
-### PUT /cart/updateCartLineItemQuantity/{cartLineItemId}
+### PUT /marketplace/cart/updateCartLineItemQuantity/{cartLineItemId}
 
 - **Description**: Updates the quantity of a specific cart line item.
 - **Parameters**:
@@ -1764,7 +1764,7 @@ products to the cart, updating cart line item quantities, and deleting cart line
     - `quantity`: The new quantity for the cart line item.
 - **Response**: A dynamic section of the cart view with updated quantities.
 
-### DELETE /cart/delete/{cartLineItemId}
+### DELETE /marketplace/cart/delete/{cartLineItemId}
 
 - **Description**: Deletes a specific cart line item by ID.
 - **Parameters**:
@@ -1785,7 +1785,7 @@ cart page.
 
 ## Endpoints
 
-### GET /order
+### GET /marketplace/order
 
 - **Description**: Creates an order from the cart line items of the logged-in user.
 - **Preconditions**:
@@ -1814,19 +1814,19 @@ information, and deleting user accounts.
 
 ## Endpoints
 
-### GET /account
+### GET /marketplace/account
 
 - **Description**: Displays the account details of the logged-in user.
 - **Response**: A view with the user's account details, including sales and orders.
 
-### GET /account/{username}
+### GET /marketplace/account/{username}
 
 - **Description**: Displays the account details of a user by username.
 - **Parameters**:
     - `username`: The username of the user whose account details are to be displayed.
 - **Response**: A view with the specified user's account details if found; otherwise, an error message.
 
-### POST /account/updateAccount
+### POST /marketplace/account/updateAccount
 
 - **Description**: Updates the account details of the logged-in user.
 - **Parameters**:
@@ -1836,7 +1836,7 @@ information, and deleting user accounts.
 - **Response**: Redirects to the account page with a success message if the update is successful; otherwise, displays
   errors.
 
-### DELETE /account/delete
+### DELETE /marketplace/account/delete
 
 - **Description**: Deletes the account of the logged-in user.
 - **Response**: Redirects to the logout page if the deletion is successful; otherwise, displays an error message.
@@ -1856,12 +1856,12 @@ and orders calendars, and tabular data.
 
 ## Endpoints
 
-### GET /stats/chartData
+### GET /marketplace/account/api/stats/chartData
 
 - **Description**: Provides data for a chart, counting the sales made by the user in the current week.
 - **Response**: A list of object arrays containing the data for the chart.
 
-### GET /stats/mapData
+### GET /marketplace/account/api/stats/mapData
 
 - **Description**: Provides data for a map visualization, counting users by nation based on filters such as online
   status, role, and registration date range.
@@ -1872,17 +1872,17 @@ and orders calendars, and tabular data.
     - `registeredTo`: End date for the registration filter (optional).
 - **Response**: A list of object arrays containing the data for the map.
 
-### GET /stats/calendarData/sales
+### GET /marketplace/account/api/stats/calendarData/sales
 
 - **Description**: Provides sales data for a calendar view, listing all sales made by the logged-in user.
 - **Response**: An iterable of `Sale` containing the sales data for the calendar.
 
-### GET /stats/calendarData/orders
+### GET /marketplace/account/api/stats/calendarData/orders
 
 - **Description**: Provides order data for a calendar view, showing all orders placed by the logged-in user.
 - **Response**: A list of object arrays containing the data for the orders calendar.
 
-### GET /stats/tableData
+### GET /marketplace/account/api/stats/tableData
 
 - **Description**: Provides data for a tabular view, showing statistics on sales published by users.
 - **Response**: A list of object arrays containing the data for the table.

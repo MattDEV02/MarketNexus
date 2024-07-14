@@ -20,12 +20,12 @@ public class ProductCategory {
    @Column(name = "id", nullable = false)
    private Long id;
 
-   @NotBlank()
+   @NotBlank(message = "Product Category Name is a mandatory field.")
    @Column(name = "name", nullable = false, unique = true)
    @Size(min = FieldSizes.PRODUCT_CATEGORY_NAME_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_NAME_MAX_LENGTH)
    private String name;
 
-   @NotBlank()
+   @NotBlank(message = "Product Category Description is a mandatory field.")
    @Column(name = "description", nullable = false)
    @Size(min = FieldSizes.PRODUCT_CATEGORY_DESCRIPTION_MIN_LENGTH, max = FieldSizes.PRODUCT_CATEGORY_DESCRIPTION_MAX_LENGTH)
    private String description;

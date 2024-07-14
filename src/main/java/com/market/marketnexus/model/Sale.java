@@ -30,16 +30,16 @@ public class Sale {
    private Long id;
 
    @JsonIgnore
-   @NotNull
-   @Min(value = FieldSizes.SALE_QUANTITY_MIN_VALUE)
-   @Max(value = FieldSizes.SALE_QUANTITY_MAX_VALUE)
+   @NotNull(message = "Sale quantity is mandatory field.")
+   @Min(value = FieldSizes.SALE_QUANTITY_MIN_VALUE, message = "The minimum quantity of a Sale must be 1.")
+   @Max(value = FieldSizes.SALE_QUANTITY_MAX_VALUE, message = "The maximum quantity of a Sale must be 10.")
    @Column(name = "quantity", nullable = false)
    private Integer quantity;
    @Column(name = "is_sold", columnDefinition = "BOOLEAN NOT NULL DEFAULT FALSE")
    private Boolean isSold;
    @JsonIgnore
-   @Min(value = (long) FieldSizes.SALE_SALEPRICE_MIN_VALUE)
-   @Max(value = (long) FieldSizes.SALE_SALEPRICE_MAX_VALUE)
+   @Min(value = (long) FieldSizes.SALE_SALEPRICE_MIN_VALUE, message = "The minimum Sale price of a Sale must be 0.01 $")
+   @Max(value = (long) FieldSizes.SALE_SALEPRICE_MAX_VALUE, message = "The maximum Sale price of a Sale must be 1000.00 $.")
    @Column(name = "sale_price", nullable = false)
    private Float salePrice;
    @JsonIgnore

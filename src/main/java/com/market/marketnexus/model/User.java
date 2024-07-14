@@ -24,30 +24,30 @@ public class User {
    @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
-   @NotBlank()
+   @NotBlank(message = "Name is a mandatory field.")
    @Size(min = FieldSizes.NAME_MIN_LENGTH, max = FieldSizes.NAME_MAX_LENGTH)
    @Column(name = "name", nullable = false)
    private String name;
 
-   @NotBlank()
+   @NotBlank(message = "Surname is a mandatory field.")
    @Size(min = FieldSizes.SURNAME_MIN_LENGTH, max = FieldSizes.SURNAME_MAX_LENGTH)
    @Column(name = "surname", nullable = false)
    private String surname;
 
    @DateTimeFormat(pattern = Temporals.DATE_FORMAT)
-   @Past()
+   @Past(message = "Birth date must be in the past.")
    @Column(name = "birthdate", nullable = true)
    @Temporal(value = TemporalType.DATE)
    private Date birthDate;
 
-   @NotBlank
+   @NotBlank(message = "Email is a mandatory field.")
    @Email(message = "Invalid email format.")
    @Size(min = FieldSizes.EMAIL_MIN_LENGTH, max = FieldSizes.EMAIL_MAX_LENGTH)
    @Column(name = "email", unique = true, nullable = false)
    private String email;
-   @Min(value = (long) FieldSizes.BALANCE_MIN_VALUE, message = "The min value for balance is 0 $.")
-   @Max(value = (long) FieldSizes.BALANCE_MAX_VALUE, message = "The max value for balance is 0 $.")
-   @NotNull
+   @Min(value = (long) FieldSizes.BALANCE_MIN_VALUE, message = "The min value for balance is 0.01 $.")
+   @Max(value = (long) FieldSizes.BALANCE_MAX_VALUE, message = "The max value for balance is 10000.00 $.")
+   @NotNull(message = "Balance is a mandatory field.")
    @Column(name = "balance", nullable = false)
    private Float balance;
 

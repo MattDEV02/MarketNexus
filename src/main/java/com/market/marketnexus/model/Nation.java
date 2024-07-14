@@ -22,7 +22,7 @@ public class Nation {
    @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
 
-   @NotBlank()
+   @NotBlank(message = "Nation name is mandatory field.")
    @Column(name = "name", nullable = false, unique = true)
    @Size(min = (FieldSizes.NATION_NAME_MIN_LENGTH), max = (FieldSizes.NATION_NAME_MAX_LENGTH))
    private String name;

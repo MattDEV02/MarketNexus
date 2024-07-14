@@ -25,13 +25,13 @@ public class Product {
    @NotBlank(message = "Product Name is a mandatory field.")
    private String name;
 
-   @Size(min = (FieldSizes.PRODUCT_DESCRIPTION_MIN_LENGTH), max = (FieldSizes.PRODUCT_DESCRIPTION_MAX_LENGTH))
+   @Size(min = (FieldSizes.PRODUCT_DESCRIPTION_MIN_LENGTH), max = (FieldSizes.PRODUCT_DESCRIPTION_MAX_LENGTH), message = "The length of the Product description must be between 3 and 60 characters.")
    @Column(name = "description", nullable = false)
    @NotBlank
    private String description;
 
-   @Min(value = (long) (FieldSizes.PRODUCT_PRICE_MIN_VALUE))
-   @Max(value = (long) (FieldSizes.PRODUCT_PRICE_MAX_VALUE))
+   @Min(value = (long) (FieldSizes.PRODUCT_PRICE_MIN_VALUE), message = "The minimum price of a Product must be greater or equal than 0.01 $.")
+   @Max(value = (long) (FieldSizes.PRODUCT_PRICE_MAX_VALUE), message = "The maximum price of a Product must be less or equal than 1000.00 $.")
    @NotNull
    @Column(name = "price", nullable = false)
    private Float price;

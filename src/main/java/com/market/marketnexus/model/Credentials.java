@@ -29,16 +29,16 @@ public class Credentials {
    @Min(value = FieldSizes.ENTITY_ID_MIN_VALUE)
    private Long id;
    @NotBlank
-   @Size(min = FieldSizes.USERNAME_MIN_LENGTH, max = FieldSizes.USERNAME_MAX_LENGTH)
+   @Size(min = FieldSizes.USERNAME_MIN_LENGTH, max = FieldSizes.USERNAME_MAX_LENGTH, message = "The length of the username must be between 3 and 60 characters.")
    @Column(name = "username", unique = true, nullable = false)
-   @NotBlank()
+   @NotBlank(message = "Username is mandatory field.")
    private String username;
 
    @Column(name = "password", nullable = false)
    private String password;
 
    @Column(name = "role", nullable = false)
-   @NotBlank()
+   @NotBlank(message = "Role is mandatory field.")
    private String role;
 
    @Column(name = "is_online", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
