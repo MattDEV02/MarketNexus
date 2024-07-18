@@ -37,7 +37,8 @@
                             th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MIN_LENGTH')}"
                             th:object="${product}"
                             type="text"/>
-                     <button class="btn btn-outline-secondary" id="copy-product-name-button"
+                     <button class="btn btn-outline-secondary" data-bs-toggle="tooltip"
+                             id="copy-product-name-button" title="Copy the Product name to the clipboard"
                              type="button">
                         <i class="fas fa-copy"></i>
                      </button>

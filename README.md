@@ -9,17 +9,61 @@ carts) from different categories, visualize their stats and much more.
 
 #### P.S. = Go to Releases section and download the JAR (latest release).
 
+## Use Cases 👔
+
+...
+
+### Use Case UC2:
+
+#### Place an Order - Primary Actor: A Buyer User.
+
+`Primary Success Scenario:`
+
+1. The Buyer User wants to place an Order.
+2. The Buyer User enters his username and password. The System verifies that the data entered is correct, and
+   authenticates the Buyer User. The System displays the Buyer User's username and the list of Sales currently running
+   on the System.
+3. The Student chooses the “Enter Sales in the Shopping Cart” activity. The System displays the current Shopping Cart
+   for the Buyer User showing for each cart row the data of the product it refers to, the quantity you wish to purchase
+   of that product, and the total price of the Sale.
+4. The Student enters (selecting it from the list of Sales) the identification code of a Sale in which they are
+   interested in purchasing. The System displays information about the selected Sale (data related Product, quantity and
+   price of the Sale).
+5. The Buyer User enters the quantity of that Product he/she intends to purchase. The System records the Buyer User's
+   choice of quantity. The Buyer User repeats steps 4-5 until it indicates that it is finished.
+6. The System displays a summary of the Shopping Cart entered by the Buyer User (listing the Sales chosen, each with the
+   details of the relevant Product, quantity and price of the Sale, and the total cost of the Shopping Cart).
+7. The Buyer User confirms the purchase of the Shopping Cart entered. The System records the purchase by the Buyer User,
+   also recording the date and time of purchase.
+
+`Extensions:`
+
+- 6a. The Buyer User, who does not want to add the selected Sale to his or her current Shopping Cart, cancels the
+  selection of the Sale. The System does not record the addition of the Sale in the Buyer User's Shopping Cart.
+- 8a. The Buyer User cancels the Purchase transaction of the current Shopping Cart. The System does not record the Buyer
+  User's purchase of the Shopping Cart.
+
+...
+
 ## UML Domain Model ‍🎓
 
-<img title="MarketNexus UML Domain Model" alt="MarketNexus UML Domain model" src="/src/main/resources/static/images/README/design/Domain_Model.png" width="100%" />
+<img title="MarketNexus UML Domain Model" alt="MarketNexus UML Domain model" src="/src/main/resources/static/images/README/schemas/OO/OOA/Domain_Model.png" width="100%" />
+
+## UML Domain Class Diagram 🤓
+
+<img title="MarketNexus UML DCD" alt="MarketNexus UML DCD" src="/src/main/resources/static/images/README/schemas/OO/OOD/DCD.png" width="100%" />
 
 ## ER Model 🔢
 
-<img title="MarketNexus ER model" alt="MarketNexus ER model" src="/src/main/resources/static/images/README/design/ER_Model.png" width="100%" />
+<img title="MarketNexus ER model" alt="MarketNexus ER model" src="/src/main/resources/static/images/README/schemas/DB/ER_Model.png" width="100%" />
 
 ## Relational Model 👨‍🎓
 
-<img title="MarketNexus Relational model" alt="MarketNexus Relational model" src="/src/main/resources/static/images/README/design/Relational_Model.png" width="100%" />
+<img title="MarketNexus Relational model" alt="MarketNexus Relational model" src="/src/main/resources/static/images/README/schemas/DB/Relational_Model.png" width="100%" />
+
+## Network 🛜
+
+<img title="MarketNexus Network" alt="MarketNexus Network" src="/src/main/resources/static/images/README/schemas/network/marketnexus_network.png" width="100%" />
 
 ## Key Features and characteristics✨
 
@@ -45,10 +89,6 @@ carts) from different categories, visualize their stats and much more.
   page.
 
 - **Language:** There is the English language at the moment and a bit of internationalization.
-
-## Network 🛜
-
-<img title="MarketNexus Network" alt="MarketNexus Network" src="/src/main/resources/static/images/README/network/marketnexus_network.png" width="100%" />
 
 ## Screenshots 📸
 
@@ -96,6 +136,12 @@ carts) from different categories, visualize their stats and much more.
 
 <p align="center">
 	<img  title="MarketNexus FAQsScreen screenshoot 1"  alt="MarketNexus HelpScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/FAQs/1.png"  width="100%" />
+</p>
+
+## `New Sale page`
+
+<p align="center">
+	<img  title="MarketNexus NewSale screenshoot 1"  alt="MarketNexus NewSale screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/newSale/1.png"  width="100%" />
 </p>
 
 ## `Cart page`
@@ -869,6 +915,19 @@ public class Cart {
               " }";
    }
 
+   public CartLineItem getCartLineItem(Long cartLineItemId) {
+      return this.getCartLineItems().stream()
+              .filter(cartLineItem -> cartLineItem.getId().equals(cartLineItemId))
+              .findFirst().orElse(null);
+   }
+
+   public void addCartLineItem(CartLineItem cartLineItem) {
+      this.getCartLineItems().add(cartLineItem);
+   }
+
+   public void removeCartLineItem(CartLineItem cartLineItem) {
+      this.getCartLineItems().remove(cartLineItem);
+   }
 }
 ```
 

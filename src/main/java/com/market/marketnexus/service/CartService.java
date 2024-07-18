@@ -56,7 +56,7 @@ public class CartService {
    public CartLineItem makeCartLineItem(@NotNull Cart cart, @NotNull Sale sale) {
       CartLineItem cartLineItem = new CartLineItem(cart, sale);
       CartLineItem cartLineItemSaved = this.cartLineItemRepository.save(cartLineItem);
-      cart.getCartLineItems().add(cartLineItemSaved);
+      cart.addCartLineItem(cartLineItem);
       Float newCartPrice = this.calculateCartPrice(cart);
       cart.setCartPrice(newCartPrice);
       this.cartRepository.save(cart);
@@ -65,11 +65,9 @@ public class CartService {
 
    @Transactional
    public Boolean deleteCartLineItem(@NotNull Cart cart, @NotNull Long cartLineItemId) {
-      CartLineItem cartLineItemToRemove = cart.getCartLineItems().stream()
-              .filter(cartLineItem -> cartLineItem.getId().equals(cartLineItemId))
-              .findFirst().orElse(null);
+      CartLineItem cartLineItemToRemove = cart.getCartLineItem(cartLineItemId);
       if (cartLineItemToRemove != null) {
-         cart.getCartLineItems().remove(cartLineItemToRemove);
+         cart.removeCartLineItem(cartLineItemToRemove);
          Float newCartPrice = this.calculateCartPrice(cart);
          cart.setCartPrice(newCartPrice);
          this.cartRepository.save(cart);
@@ -80,9 +78,7 @@ public class CartService {
    }
 
    public void updateCartLineItem(@NotNull Cart cart, @NotNull Long cartLineItemId, Integer quantity) {
-      CartLineItem cartLineItemToUpdate = cart.getCartLineItems().stream()
-              .filter(cartLineItem -> cartLineItem.getId().equals(cartLineItemId))
-              .findFirst().orElse(null);
+      CartLineItem cartLineItemToUpdate = cart.getCartLineItem(cartLineItemId);
       if (cartLineItemToUpdate != null && quantity >= FieldSizes.CARTLINEITEM_QUANTITY_MIN_VALUE && quantity <= FieldSizes.CARTLINEITEM_QUANTITY_MAX_VALUE && quantity <= cartLineItemToUpdate.getSale().getQuantity()) {
          cartLineItemToUpdate.setQuantity(quantity);
          Float newCartLineItemPrice = Utils.calculateSalePrice(cartLineItemToUpdate.getSale(), cartLineItemToUpdate.getQuantity());

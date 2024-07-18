@@ -128,4 +128,17 @@ public class Cart {
               " }";
    }
 
+   public CartLineItem getCartLineItem(Long cartLineItemId) {
+      return this.getCartLineItems().stream()
+              .filter(cartLineItem -> cartLineItem.getId().equals(cartLineItemId))
+              .findFirst().orElse(null);
+   }
+
+   public void addCartLineItem(CartLineItem cartLineItem) {
+      this.getCartLineItems().add(cartLineItem);
+   }
+
+   public void removeCartLineItem(CartLineItem cartLineItem) {
+      this.getCartLineItems().remove(cartLineItem);
+   }
 }
