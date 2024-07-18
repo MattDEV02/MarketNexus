@@ -30,12 +30,18 @@
                <!-- Campo Nome -->
                <div class="my-3">
                   <label class="form-label" for="name">Name</label>
-                  <input class="form-control py-2" id="name" name="name" placeholder="Insert product name"
-                         required th:field="${product.name}"
-                         th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
-                         th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MIN_LENGTH')}"
-                         th:object="${product}"
-                         type="text"/>
+                  <div class="input-group">
+                     <input class="form-control py-2" id="name" name="name" placeholder="Insert product name"
+                            required th:field="${product.name}"
+                            th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MIN_LENGTH')}"
+                            th:object="${product}"
+                            type="text"/>
+                     <button class="btn btn-outline-secondary" id="copy-product-name-button"
+                             type="button">
+                        <i class="fas fa-copy"></i>
+                     </button>
+                  </div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'product.name')}"></div>
                </div>
@@ -124,6 +130,9 @@
 </main>
 <div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
 </div>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
+        th:src="@{/js/marketplace/newSale/index.js}"
+        type="text/javascript"></script>
 </body>
 
 </html>

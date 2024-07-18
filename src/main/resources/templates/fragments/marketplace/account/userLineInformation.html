@@ -2,7 +2,7 @@
      th:fragment="userLineInformation(object, property, value, isLoggedUser)"
      th:with="isReadOnly=(${isReadOnly} ?: false), isSelect=(${isSelect} ?: false), type=(${type} ?: '')">
    <div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 col-xxl-3">
-      <h6 class="">
+      <h6>
          <label class="form-label mt-3" th:for="${property == 'birth date' ? 'birthDate' : property}"
                 th:text="${#strings.replace(#strings.capitalize(property), '-password', '') + (property == 'balance' ? '($)' : '' ) + ': '}">
          </label>
@@ -50,8 +50,7 @@
                 th:value="${value}"
          />
          <div th:if="${property == 'password' && isLoggedUser}">
-            <div
-                  th:replace="~{fragments/shared/showPasswordButton.html :: showPasswordButton()}"></div>
+            <div th:replace="~{fragments/shared/showPasswordButton.html :: showPasswordButton()}"></div>
          </div>
       </div>
    </div>
@@ -60,8 +59,14 @@
       <button
             disabled
             th:class="'btn btn-' + ${(isReadOnly || !isLoggedUser) ? 'danger' : 'primary'}"
+            th:if="${property != 'email'}"
             type="button">
          <i th:class="' fas fa-' + ${(isReadOnly || !isLoggedUser) ? 'ban' : 'edit'}"></i>
+      </button>
+      <button class="btn btn-outline-secondary" id="open-send-email-button" th:unless="${property != 'email'}"
+              title="Send an email to this User (Non-editable information)"
+              type="button">
+         <i class="fas fa-paper-plane"></i>
       </button>
    </div>
 </div>

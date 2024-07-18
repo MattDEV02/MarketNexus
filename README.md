@@ -46,6 +46,10 @@ carts) from different categories, visualize their stats and much more.
 
 - **Language:** There is the English language at the moment and a bit of internationalization.
 
+## Network 🛜
+
+<img title="MarketNexus Network" alt="MarketNexus Network" src="/src/main/resources/static/images/README/network/marketnexus_network.png" width="100%" />
+
 ## Screenshots 📸
 
 ## `Registration page`

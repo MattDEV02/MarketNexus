@@ -118,9 +118,29 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Products
     CONSTRAINT products_price_min_value_check CHECK (MarketNexus.Products.price > 0),
     CONSTRAINT products_price_max_value_check CHECK (MarketNexus.Products.price <= 1000),
     CONSTRAINT products_description_min_length_check CHECK (LENGTH(MarketNexus.Products.description) >= 3),
-    CONSTRAINT products_imagerelativepath_min_valid_check CHECK (POSITION('/' IN MarketNexus.Products.image_relative_paths[0]) > 0),
     CONSTRAINT products_category_min_value_check CHECK (MarketNexus.Products.category >= 1)
 );
+
+CREATE OR REPLACE FUNCTION MarketNexus.VALIDATE_PRODUCTS_IMAGE_PATHS_FUNCTION() RETURNS TRIGGER AS
+$$
+DECLARE
+    image_path TEXT;
+BEGIN
+    FOREACH image_path IN ARRAY NEW.image_relative_paths
+        LOOP
+            IF image_path !~ '^/images/products/[1-9][0-9]*/-?\d+\.jpeg$' THEN
+                RAISE EXCEPTION 'Invalid image path: %', image_path;
+            END IF;
+        END LOOP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER VALIDATE_PRODUCTS_IMAGE_PATHS_TRIGGER
+    BEFORE INSERT OR UPDATE
+    ON MarketNexus.Products
+    FOR EACH ROW
+EXECUTE FUNCTION VALIDATE_PRODUCTS_IMAGE_PATHS_FUNCTION();
 
 ALTER TABLE MarketNexus.Products
     OWNER TO postgres;
@@ -289,7 +309,7 @@ $$ LANGUAGE PLPGSQL;
 CREATE
     OR REPLACE TRIGGER SALE_SALEPRICE_VALUE_TRIGGER
     AFTER
-        INSERT
+        INSERT OR UPDATE
     ON MarketNexus.Sales
     FOR EACH ROW
 EXECUTE
@@ -317,7 +337,7 @@ $$ LANGUAGE PLPGSQL;
 CREATE
     OR REPLACE TRIGGER SALE_USER_CREDENTIALS_ROLE_TRIGGER
     AFTER
-        INSERT
+        INSERT OR UPDATE
     ON MarketNexus.Sales
     FOR EACH ROW
 EXECUTE
@@ -419,7 +439,7 @@ $$ LANGUAGE PLPGSQL;
 CREATE
     OR REPLACE TRIGGER CART_USER_CREDENTIALS_ROLE_TRIGGER
     AFTER
-        INSERT
+        INSERT OR UPDATE
     ON MarketNexus.cart_line_items
     FOR EACH ROW
 EXECUTE
@@ -449,7 +469,7 @@ $$ LANGUAGE PLPGSQL;
 CREATE
     OR REPLACE TRIGGER CARTLINEITEM_CARTLINEITEMPRICE_VALUE_TRIGGER
     AFTER
-        INSERT
+        INSERT OR UPDATE
     ON MarketNexus.cart_line_items
     FOR EACH ROW
 EXECUTE
@@ -471,7 +491,7 @@ BEGIN
          WHERE cli.id = NEW.ID) = TRUE) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'User that adds to Cart him sale error, with this cart_line_items ID: % .' , NEW.ID;
+        RAISE EXCEPTION 'User that adds to Cart his sale error, with this cart_line_items ID: % .' , NEW.ID;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
@@ -479,7 +499,7 @@ $$ LANGUAGE PLPGSQL;
 CREATE
     OR REPLACE TRIGGER CART_USER_SALE_FUNCTION_TRIGGER
     AFTER
-        INSERT
+        INSERT OR UPDATE
     ON MarketNexus.cart_line_items
     FOR EACH ROW
 EXECUTE
@@ -492,7 +512,8 @@ $$
 DECLARE
     cartLineItemsPriceSumFromCartId FLOAT;
 BEGIN
-    SELECT SUM(ROUND(cli.cartlineitem_price::NUMERIC, 2)) AS cart_line_items_price_sum_from_cart_id
+    SELECT COALESCE(SUM(cli.cartlineitem_price),
+                    0) AS cart_line_items_price_sum_from_cart_id
     FROM MarketNexus.Carts c
              JOIN MarketNexus.cart_line_items cli ON cli.cart = c.id
     WHERE c.id = cart_id
@@ -504,7 +525,6 @@ $$ LANGUAGE PLPGSQL;
 SELECT *
 FROM GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(1);
 
-
 CREATE
     OR REPLACE FUNCTION CHECK_CART_CARTPRICE_VALUE_FUNCTION()
     RETURNS TRIGGER AS
@@ -514,24 +534,23 @@ BEGIN
                 ROUND(GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(NEW.cart)::NUMERIC, 2))
                    AS are_equals
         FROM MarketNexus.Carts c
-        WHERE c.id = NEW.cart
-        LIMIT 1) THEN
+        WHERE c.id = NEW.cart) THEN
         RETURN NEW;
     ELSE
         RAISE EXCEPTION 'Cart cart_price error with this Cart ID: % and this cart_line_item ID: %' , NEW.cart, NEW.id;
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
-/*
+
 CREATE
     OR REPLACE TRIGGER CART_CARTPRICE_VALUE_TRIGGER
-    AFTER
-        INSERT
+    BEFORE
+        INSERT OR UPDATE
     ON MarketNexus.cart_line_items
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.CHECK_CART_CARTPRICE_VALUE_FUNCTION();
-*/
+
 COMMENT ON TABLE MarketNexus.cart_line_items IS 'MarketNexus User who puts a Sale Product in his Cart.';
 
 ALTER TABLE MarketNexus.cart_line_items
@@ -575,7 +594,7 @@ $$ LANGUAGE PLPGSQL;
 CREATE
     OR REPLACE TRIGGER ORDER_USER_SALE_FUNCTION_TRIGGER
     AFTER
-        INSERT
+        INSERT OR UPDATE
     ON MarketNexus.Orders
     FOR EACH ROW
 EXECUTE
@@ -586,6 +605,7 @@ COMMENT ON TABLE MarketNexus.Orders IS 'MarketNexus User who buys all Sale Produ
 
 ALTER TABLE MarketNexus.Orders
     OWNER TO postgres;
+
 /*
 INSERT INTO MarketNexus.Orders(_user, cart)
 VALUES (1, 1);

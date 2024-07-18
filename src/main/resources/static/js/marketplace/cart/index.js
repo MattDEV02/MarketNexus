@@ -8,10 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
          // id e quantity del CartLineItem i-esimo.
          const
             cartLineItemId = cartLineItemQuantityInput.id.replace("quantity#", ""),
-            cartLineItemQuantity = parseInt(cartLineItemQuantityInput.value, 10);
+            quantity = parseInt(cartLineItemQuantityInput.value, 10);
          const url = baseUrl + cartLineItemId;
          const data = {
-            cartLineItemQuantity
+            quantity
          };
          if (validateURI(url)) {
             axios.put(url, data)

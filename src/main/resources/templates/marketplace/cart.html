@@ -21,7 +21,7 @@
                </h1>
             </div>
          </div>
-         <div class="col-12 mt-5 mb-4"
+         <div class="col-12 my-5"
               th:with="cartLineItemNotDeletedError = ${param.cartLineItemNotDeletedError != null}, userBalanceLowerThanCartPriceError = ${param.userBalanceLowerThanCartPriceError != null}, userNotBuyerAddSaleToCartError = ${param.userNotBuyerAddSaleToCartError != null}, userAddOwnSaleToCartError = ${param.userAddOwnSaleToCartError != null}, emptyCartError = ${param.emptyCartError != null}, userCartNotExistsError = ${param.userCartNotExistsError != null}">
             <div
                   th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartLineItemNotDeletedError})}"></div>

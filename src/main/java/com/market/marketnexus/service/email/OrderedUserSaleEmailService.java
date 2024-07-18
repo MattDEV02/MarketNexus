@@ -195,7 +195,7 @@ public class OrderedUserSaleEmailService {
                         <!-- start copy -->
                         <tr>
                           <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                            <p style="margin: 0;"><a target="_blank" href="http://localhost">MarketNexus</a> User """ + " " + (userBuyer.getCredentials().getUsername() + " has bought your " + sale.getProduct().getName() + " at " + sale.getSalePrice().toString() + " $") + """
+                            <p style="margin: 0;"><a target="_blank" href="http://localhost">MarketNexus</a> User """ + " " + ("<a target=\"_blank\" href=\"http://localhost/marketplace/account/" + userBuyer.getCredentials().getUsername() + "\">" + userBuyer.getCredentials().getUsername() + "</a>" + " has bought your <a target=\"_blank\" href=\"http://localhost/marketplace/sales/sale/" + sale.getId() + "\">" + sale.getProduct().getName() + "</a> at " + sale.getSalePrice().toString() + " $") + """
               .</p>
                                                 </td>
                                               </tr>
@@ -251,7 +251,7 @@ public class OrderedUserSaleEmailService {
                                               <!-- start permission -->
                                               <tr>
                                                 <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                                                  <p style="margin: 0;">You received this email because we received a request for username forgotten for your account. If you didn't request email confirmation you can safely delete this email.</p>
+                                                  <p style="margin: 0;">You received this email because Someone has bought one of your MarketNexus Sale.</p>
                                                 </td>
                                               </tr>
                                               <!-- end permission -->
@@ -295,6 +295,7 @@ public class OrderedUserSaleEmailService {
       MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, GlobalValues.CHARSET);
       mimeMessageHelper.setFrom(OrderedUserSaleEmailService.FROM);
       mimeMessageHelper.setTo(emailTo);
+      mimeMessageHelper.setCc(userBuyer.getEmail());
       mimeMessageHelper.setSubject(OrderedUserSaleEmailService.SUBJECT);
       mimeMessageHelper.setReplyTo(OrderedUserSaleEmailService.FROM);
       mimeMessageHelper.setText(OrderedUserSaleEmailService.getHTMLText(userBuyer, sale), true);

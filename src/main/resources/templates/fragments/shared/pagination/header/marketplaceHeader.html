@@ -57,11 +57,11 @@
                          name="product-name" placeholder="Product name"
                          th:maxlength="${FIELD_SIZES_MAP.get('PRODUCT_NAME_MAX_LENGTH')}"
                          th:value="${param != null ? param.get('product-name') : null}"
-                         title="Search Sales by them product names"
+                         title="Search Sales by them product names (async search works only in Sales page)"
                          type="text"/>
                   <label class="form-label visually-hidden" for="category">Product Category:</label>
                   <select class="form-select p-2" id="category" name="category"
-                          title="Search Sales by them product categories">
+                          title="Search Sales by them product categories (async search works only in Sales page)">
                      <option th:value="${null}">All categories</option>
                      <option th:each="productCategoriesEntry : ${productCategoriesMap}"
                              th:id="${productCategoriesEntry.value.name + '#' + productCategoriesEntry.key}"
