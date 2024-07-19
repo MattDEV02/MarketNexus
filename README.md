@@ -4,37 +4,45 @@
 <img  title="MarketNexus Logo"  alt="MarketNexus Logo"  width="19.5%"  src="/src/main/resources/static/images/logo/logo.png"/>
 </p>
 
-MarketNexus is marketplace made in Spring boot where Users can sell, manage and buy Products (putting them in their
-carts) from different categories, visualize their stats and much more.
+MarketNexus is a marketplace created with Spring boot where Users can sell, manage, view and purchase Products (by
+placing them in their carts) of different categories, view their statistics dynamically, other Users' data and much
+more.
+There are 3 type of Users (User roles):
 
-#### P.S. = Go to Releases section and download the JAR (latest release).
+1. Seller Users: They can publish and sell their Products. They can't add other Users Products in their Cart and buy
+   them.
+2. Buyer Users: They can add other Users Products in their Cart and buy them. They can't publish and sell their
+   Products.
+3. Seller and Buyer Users: They can do all things written in 1. and 2.
 
 ## Use Cases 👔
 
-...
+### Use Case UC1:
 
 ### Use Case UC2:
 
-#### Place an Order - Primary Actor: A Buyer User.
+### Use Case UC3:
+
+#### Make an Order - Primary Actor: A Buyer User.
 
 `Primary Success Scenario:`
 
 1. The Buyer User wants to place an Order.
 2. The Buyer User enters his username and password. The System verifies that the data entered is correct, and
-   authenticates the Buyer User. The System displays the Buyer User's username and the list of Sales currently running
-   on the System.
-3. The Student chooses the “Enter Sales in the Shopping Cart” activity. The System displays the current Shopping Cart
-   for the Buyer User showing for each cart row the data of the product it refers to, the quantity you wish to purchase
-   of that product, and the total price of the Sale.
+   authenticates the Buyer User. The System displays the Buyer User's data (such username).
+3. The Buyer User chooses the “Enter Sales in the Shopping Cart” activity. The System displays the list of all the Sales
+   on the system for each Sale the relative Product data and the sold quantity.
 4. The Student enters (selecting it from the list of Sales) the identification code of a Sale in which they are
    interested in purchasing. The System displays information about the selected Sale (data related Product, quantity and
    price of the Sale).
 5. The Buyer User enters the quantity of that Product he/she intends to purchase. The System records the Buyer User's
-   choice of quantity. The Buyer User repeats steps 4-5 until it indicates that it is finished.
-6. The System displays a summary of the Shopping Cart entered by the Buyer User (listing the Sales chosen, each with the
+   choice of quantity.
+   The Buyer User repeats steps 4-5 until it indicates that it is finished.
+6. The System displays a summary of the Shopping Cart entered by the Buyer User (listing the Cart rows with Sales
+   chosen, each with the
    details of the relevant Product, quantity and price of the Sale, and the total cost of the Shopping Cart).
 7. The Buyer User confirms the purchase of the Shopping Cart entered. The System records the purchase by the Buyer User,
-   also recording the date and time of purchase.
+   also recording the date and time of purchase with an Order summary for the buyer User.
 
 `Extensions:`
 
@@ -43,11 +51,33 @@ carts) from different categories, visualize their stats and much more.
 - 8a. The Buyer User cancels the Purchase transaction of the current Shopping Cart. The System does not record the Buyer
   User's purchase of the Shopping Cart.
 
-...
+### Use Case UC4:
+
+### Use Case UC5:
+
+### Use Case UC6:
+
+### Use Case UC7:
+
+### Use Case UC8:
+
+### Use Case UC9:
 
 ## UML Domain Model ‍🎓
 
 <img title="MarketNexus UML Domain Model" alt="MarketNexus UML Domain model" src="/src/main/resources/static/images/README/schemas/OO/OOA/Domain_Model.png" width="100%" />
+
+## UML System Sequence Diagram ‍🎓
+
+<img title="MarketNexus UML SSD" alt="MarketNexus UML SSD" src="/src/main/resources/static/images/README/schemas/OO/OOA/SSD.png" width="100%" />
+
+<!--
+
+## UML Interaction Diagram ‍🎓
+
+<img title="MarketNexus UML Interaction Diagram" alt="MarketNexus UML Interaction Diagram" src="/src/main/resources/static/images/README/schemas/OO/OOD/Interaction_Diagram.png" width="100%" />
+
+-->
 
 ## UML Domain Class Diagram 🤓
 
@@ -92,6 +122,12 @@ carts) from different categories, visualize their stats and much more.
 
 ## Screenshots 📸
 
+## `Home page`
+
+<p align="center">
+	<img  title="MarketNexus HomeScreen screenshoot 1"  alt="MarketNexus HomeScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/home/1.png"  width="100%" />
+</p>
+
 ## `Registration page`
 
 <p align="center">
@@ -104,23 +140,23 @@ carts) from different categories, visualize their stats and much more.
 	<img  title="MarketNexus LoginScreen screenshoot 1"  alt="MarketNexus LoginScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/login/1.png"  width="100%" />
 </p>
 
+## `FAQs page`
+
+<p align="center">
+	<img  title="MarketNexus FAQsScreen screenshoot 1"  alt="MarketNexus HelpScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/FAQs/1.png"  width="100%" />
+</p>
+
 ## `Forgot username page`
 
 <p align="center">
 	<img  title="MarketNexus ForgotusernameScreen screenshoot 1"  alt="MarketNexus ForgotusernameScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/forgotUsername/1.png"  width="100%" />
 </p>
 
-## `Home page`
+## `Sales page`
 
 <p align="center">
-	<img  title="MarketNexus HomeScreen screenshoot 1"  alt="MarketNexus HomeScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/home/1.png"  width="100%" />
-</p>
-
-## `Marketplace page`
-
-<p align="center">
-	<img  title="MarketNexus MarketplaceScreen screenshoot 1"  alt="MarketNexus MarketplaceScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/marketplace/1.png"  width="100%" />
-    <img  title="MarketNexus MarketplaceScreen screenshoot 2"  alt="MarketNexus MarketplaceScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/marketplace/2.png"  width="100%" />
+	<img  title="MarketNexus Sales screenshoot 1"  alt="MarketNexus Sales screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/marketplace/1.png"  width="100%" />
+    <img  title="MarketNexus Sales screenshoot 2"  alt="MarketNexus Sales screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/marketplace/2.png"  width="100%" />
 </p>
 
 ## `Account page`
@@ -130,12 +166,6 @@ carts) from different categories, visualize their stats and much more.
     <img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus MarketplaceScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="100%" />
     <img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus MarketplaceScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="100%" />
 
-</p>
-
-## `FAQs page`
-
-<p align="center">
-	<img  title="MarketNexus FAQsScreen screenshoot 1"  alt="MarketNexus HelpScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/FAQs/1.png"  width="100%" />
 </p>
 
 ## `New Sale page`
@@ -1575,110 +1605,6 @@ public class CartsTest {
 }
 ```
 
-## Author ©️
-
-Made with ❤️ and a lot of hard work 🏋️‍♂️ by:
-
-- **Matteo Lambertucci (matricola 578219, Roma TRE)**
-
-    - [GitHub Profile (MattDEV02)](https://github.com/MattDEV02)
-
-    - [Linkedin Profile](https://www.linkedin.com/in/matteo-lambertucci-134073211)
-
-    - [Instagram Profile (_matte.02_)](https://www.instagram.com/_matte.02_/)
-
-    - [Moodle Profile](https://ingegneriacivileinformaticatecnologieaeronautiche.el.uniroma3.it/user/profile.php?id=5522)
-
-    - [mat.lambertucci@stud.uniroma3.it](mat.lambertucci@stud.uniroma3.it)
-
-    - [matteolambertucci3@gmail.com](matteolambertucci3@gmail.com)
-
-I am the only author of this beautiful site 😉
-
-## Technologies and languages used 🧑‍💻
-
-|     *Name*     |   *Version*    |
-|:--------------:|:--------------:|
-|      Java      |       17       |
-|  Spring boot   |     3.2.5      |  
-|     Maven      |     3.9.6      |
-|   Hibernate    |     4.3.11     |
-|     Junit      |       4        |
-|   PostgreSQL   |      16.0      |
-|   thymeleaf    |     3.0.14     |
-| OAuth (Google) |      2.0       |
-|    Firebase    |    v13.8.0     |
-|      XML       |      1.1       |
-|   Bootstrap    |     5.3.3      |
-|  FontAwesome   |     5.15.4     |
-|    Leaflet     |     1.9.4      |
-|      HTML      |       5        |
-|      CSS       |      4.15      |
-|   Javascript   |      ES6       |
-|     Axios      |     1.6.8      |
-|    ChartJS     |     4.4.2      |
-|  FullCalendar  |     6.1.11     |
-|     JSPDF      |     2.3.1      |
-|    Markdown    |      3.6       |
-|    Windows     |       11       |
-|      GIT       |     2.43.0     |
-|     GITHUB     |     3.12.3     |
-| IntelliJ IDEA  |     2024.1     |
-|     Chrome     | 124.0.6367.201 |
-| Microsoft EDGE | 123.0.2420.65  |
-|     Opera      | 111.0.5168.15  |
-
-## Project structure 🏠
-
-- **`src/`**: This directory contains two subdirectories: main/ and test/.
-
-    - **`src/main/`**: Contains all reusable components of the application.
-
-    - **`src/main/java/`**: This directory contains the main source code and resources for your application, which are
-      used in production.
-      packages corresponding to your application's domain or feature areas.
-
-    - **`src/main/resources/`**: This directory contains non-Java resources used by your application, such as properties
-      files, XML configuration files, static assets, etc.
-
-    - **`src/test/java`**:: Similar to src/main/java, this directory contains Java source code files specifically for
-      testing purposes. It follows the same package structure as the main source code.
-    - **`src/main/resources/application.properties`**:: Configuration files for your Spring Boot application. They
-      contain properties to configure various aspects of your application, such as database connection settings, server
-      port, logging configuration, etc.
-    - **`src/main/java/com/market/marketnexus/MarketNexusApplication.java`**:: The main entry point of your Spring
-      Boot application. This Java file typically contains the main method to start the Spring application context.
-    - **`src/main/java/com/market/marketnexus/authentication`**: A directory (package) where there is the site auth
-      configuration.
-    - **`src/main/java/com/market/marketnexus/config`**: A directory (package) where there are Configuration Classes.
-    - **`src/main/java/com/market/marketnexus/controller`**: A directory (package) where there are Site Controllers
-      classes.
-    - **`src/main/java/com/market/marketnexus/exception`**: A directory (package) where there are project custom
-      Exceptions classes.
-    - **`src/main/java/com/market/marketnexus/handler`**: A directory (package) where there are Event-Handler classes.
-    - **`src/main/java/com/market/marketnexus/helpers`**: A directory (package) where there are project useful helpers
-      with many static methods.
-    - **`src/main/java/com/market/marketnexus/model`**: A directory (package) where there are project Entity Models
-      classes.
-    - **`src/main/java/com/market/marketnexus/repository`**: A directory (package) where there are project
-      Repositories interface.
-    - **`src/main/java/com/market/marketnexus/service`**:  A directory (package) where there are project Services
-      classes.
-
-- **`target/`**: This directory is a standard directory created by build tools like Maven or Gradle during the build
-  process. It's not typically part of your source code repository and is generated dynamically. It contains the project
-  JAR and HTML documentation.
-
-- **`MarketNexus.sql`**: A SQL (PostGreSQL) script file that allows to create the database that I used for this App.
-
-- **`pom.xml`**: This file is specific to Maven-based projects. It stands for "Project Object Model" and is used by
-  Maven to manage the project's build configuration, dependencies, plugins, and other settings. The pom.xml file is
-  written in XML format and contains information such as project metadata, dependencies on external libraries, build
-  instructions, and profiles for different environments. It's the central configuration file for Maven projects and is
-  crucial for building, testing, and deploying the application.
-
-- **`README.md`**: Markdown documentation for this project.
-
 # API Documentation 👨‍💻
 
 ## `BaseController`
@@ -1995,6 +1921,113 @@ and orders calendars, and tabular data.
 - Responses may include JSON objects for asynchronous operations.
 - Error handling is implemented for operations that require specific conditions (e.g., user authorization, valid data).
 
+## Technologies and languages used 🧑‍💻
+
+|     *Name*     |   *Version*    |
+|:--------------:|:--------------:|
+|      Java      |       17       |
+|  Spring boot   |     3.2.5      |  
+|     Maven      |     3.9.6      |
+|   Hibernate    |     4.3.11     |
+|     Junit      |       4        |
+|   PostgreSQL   |      16.0      |
+|   thymeleaf    |     3.0.14     |
+| OAuth (Google) |      2.0       |
+|    Firebase    |    v13.8.0     |
+|      XML       |      1.1       |
+|   Bootstrap    |     5.3.3      |
+|  FontAwesome   |     5.15.4     |
+|    Leaflet     |     1.9.4      |
+|      HTML      |       5        |
+|      CSS       |      4.15      |
+|   Javascript   |      ES6       |
+|     Axios      |     1.6.8      |
+|    ChartJS     |     4.4.2      |
+|  FullCalendar  |     6.1.11     |
+|     JSPDF      |     2.3.1      |
+|    Markdown    |      3.6       |
+|    Windows     |       11       |
+|      GIT       |     2.43.0     |
+|     GITHUB     |     3.12.3     |
+| IntelliJ IDEA  |     2024.1     |
+|     Chrome     | 124.0.6367.201 |
+| Microsoft EDGE | 123.0.2420.65  |
+|     Opera      | 111.0.5168.15  |
+|    Draw.io     |     24.4.6     |
+
+## Project structure 🏠
+
+- **`src/`**: This directory contains two subdirectories: main/ and test/.
+
+    - **`src/main/`**: Contains all reusable components of the application.
+
+    - **`src/main/java/`**: This directory contains the main source code and resources for your application, which are
+      used in production.
+      packages corresponding to your application's domain or feature areas.
+
+    - **`src/main/resources/`**: This directory contains non-Java resources used by your application, such as properties
+      files, XML configuration files, static assets, etc.
+
+    - **`src/test/java`**:: Similar to src/main/java, this directory contains Java source code files specifically for
+      testing purposes. It follows the same package structure as the main source code.
+    - **`src/main/resources/application.properties`**:: Configuration files for your Spring Boot application. They
+      contain properties to configure various aspects of your application, such as database connection settings, server
+      port, logging configuration, etc.
+    - **`src/main/java/com/market/marketnexus/MarketNexusApplication.java`**:: The main entry point of your Spring
+      Boot application. This Java file typically contains the main method to start the Spring application context.
+    - **`src/main/java/com/market/marketnexus/authentication`**: A directory (package) where there is the site auth
+      configuration.
+    - **`src/main/java/com/market/marketnexus/config`**: A directory (package) where there are Configuration Classes.
+    - **`src/main/java/com/market/marketnexus/controller`**: A directory (package) where there are Site Controllers
+      classes.
+    - **`src/main/java/com/market/marketnexus/exception`**: A directory (package) where there are project custom
+      Exceptions classes.
+    - **`src/main/java/com/market/marketnexus/handler`**: A directory (package) where there are Event-Handler classes.
+    - **`src/main/java/com/market/marketnexus/helpers`**: A directory (package) where there are project useful helpers
+      with many static methods.
+    - **`src/main/java/com/market/marketnexus/model`**: A directory (package) where there are project Entity Models
+      classes.
+    - **`src/main/java/com/market/marketnexus/repository`**: A directory (package) where there are project
+      Repositories interface.
+    - **`src/main/java/com/market/marketnexus/service`**:  A directory (package) where there are project Services
+      classes.
+
+- **`target/`**: This directory is a standard directory created by build tools like Maven or Gradle during the build
+  process. It's not typically part of your source code repository and is generated dynamically. It contains the project
+  JAR and HTML documentation.
+
+- **`MarketNexus.sql`**: A SQL (PostGreSQL) script file that allows to create the database that I used for this App.
+
+- **`pom.xml`**: This file is specific to Maven-based projects. It stands for "Project Object Model" and is used by
+  Maven to manage the project's build configuration, dependencies, plugins, and other settings. The pom.xml file is
+  written in XML format and contains information such as project metadata, dependencies on external libraries, build
+  instructions, and profiles for different environments. It's the central configuration file for Maven projects and is
+  crucial for building, testing, and deploying the application.
+
+- **`README.md`**: Markdown documentation for this project.
+
+## Author ©️
+
+Made with ❤️ and a lot of hard work 🏋️‍♂️ by:
+
+- **Matteo Lambertucci (matricola 578219, Roma TRE)**
+
+    - [GitHub Profile (MattDEV02)](https://github.com/MattDEV02)
+
+    - [Linkedin Profile](https://www.linkedin.com/in/matteo-lambertucci-134073211)
+
+    - [Instagram Profile (_matte.02_)](https://www.instagram.com/_matte.02_/)
+
+    - [Moodle Profile](https://ingegneriacivileinformaticatecnologieaeronautiche.el.uniroma3.it/user/profile.php?id=5522)
+
+    - [mat.lambertucci@stud.uniroma3.it](mat.lambertucci@stud.uniroma3.it)
+
+    - [matteolambertucci3@gmail.com](matteolambertucci3@gmail.com)
+
+    - [matteo.lambertucci@it.ey.com](matteo.lambertucci@it.ey.com)
+
+I am the only author of this beautiful site 😉
+
 ## Sources of inspiration 🤝
 
 - [Vinted](https://www.vinted.it/)
@@ -2004,3 +2037,5 @@ and orders calendars, and tabular data.
 ## License 🗒️
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for more details.
+
+#### P.S. = Go to Releases section and download the JAR (latest release).
