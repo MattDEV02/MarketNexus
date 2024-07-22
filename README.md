@@ -89,7 +89,7 @@ There are 3 type of Users (User roles):
 
 ## UML SW Objects Diagram ‍🤓
 
-<img title="MarketNexus UML Conceptual Objects Diagram" alt="MarketNexus UML Conceptual Objects Diagram" src="/src/main/resources/static/images/README/schemas/OO/OOA/SWOD.png" width="100%" />
+<img title="MarketNexus UML Conceptual Objects Diagram" alt="MarketNexus UML Conceptual Objects Diagram" src="/src/main/resources/static/images/README/schemas/OO/OOD/SWOD.png" width="100%" />
 
 ## ER Model 🔢
 
