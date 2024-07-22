@@ -67,13 +67,17 @@ There are 3 type of Users (User roles):
 
 <img title="MarketNexus UML Domain Model" alt="MarketNexus UML Domain model" src="/src/main/resources/static/images/README/schemas/OO/OOA/Domain_Model.png" width="100%" />
 
-## UML System Sequence Diagram ‍🎓
+## UML Conceptual Objects Diagram ‍🎓
+
+<img title="MarketNexus UML Conceptual Objects Diagram" alt="MarketNexus UML Conceptual Objects Diagram" src="/src/main/resources/static/images/README/schemas/OO/OOA/COD.png" width="100%" />
+
+## UML System Sequence Diagram (UC3) ‍🎓
 
 <img title="MarketNexus UML SSD" alt="MarketNexus UML SSD" src="/src/main/resources/static/images/README/schemas/OO/OOA/SSD.png" width="100%" />
 
 <!--
 
-## UML Interaction Diagram ‍🎓
+## UML Interaction Diagram (UC3) ‍🎓
 
 <img title="MarketNexus UML Interaction Diagram" alt="MarketNexus UML Interaction Diagram" src="/src/main/resources/static/images/README/schemas/OO/OOD/Interaction_Diagram.png" width="100%" />
 
@@ -82,6 +86,10 @@ There are 3 type of Users (User roles):
 ## UML Domain Class Diagram 🤓
 
 <img title="MarketNexus UML DCD" alt="MarketNexus UML DCD" src="/src/main/resources/static/images/README/schemas/OO/OOD/DCD.png" width="100%" />
+
+## UML SW Objects Diagram ‍🎓
+
+<img title="MarketNexus UML Conceptual Objects Diagram" alt="MarketNexus UML Conceptual Objects Diagram" src="/src/main/resources/static/images/README/schemas/OO/OOA/SWOD.png" width="100%" />
 
 ## ER Model 🔢
 
