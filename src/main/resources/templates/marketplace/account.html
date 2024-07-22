@@ -6,6 +6,7 @@
 
 </head>
 <link rel="stylesheet" th:href="@{'/css/' + ${API_PATHS_MAP.get('ACCOUNT')} + '/style.css'}"/>
+<link href="/css/registration/style.css" rel="stylesheet" th:if="${isLoggedUser}"/>
 <link rel="stylesheet" th:href="@{/css/libraries/leaflet/style.css}" th:if="${isLoggedUser}"/>
 <link rel="stylesheet" th:href="@{'/css/' + ${API_PATHS_MAP.get('ACCOUNT')} + '/stats/map/style.css'}"
       th:if="${isLoggedUser}"/>
@@ -59,7 +60,7 @@
                      <div th:replace="~{fragments/marketplace/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'surname', type = 'text', value =  ${user.surname}, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/marketplace/account/userLineInformation.html :: userLineInformation(object = ${user}, property ='birth date', type = 'date', value = ${#dates.format(user.birthDate, 'yyyy-MM-dd')}, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/marketplace/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'balance', type = 'number', value = ${user.balance}, isLoggedUser = ${isLoggedUser})}"></div>
-                     <div th:replace="~{fragments/marketplace/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'nation', value = ${user.nation}, isSelect = true, isLoggedUser = ${isLoggedUser})}"></div>
+                     <div th:replace="~{fragments/marketplace/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'nation', value = ${user.nation}, isLoggedUser = ${isLoggedUser})}"></div>
                      <div th:replace="~{fragments/marketplace/account/userLineInformation.html :: userLineInformation(object = ${user}, property = 'email', type = 'email', value = ${user.email}, isReadOnly = true, isLoggedUser = ${isLoggedUser})}"></div>
                   </div>
                   <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-5 col-xxl-5 text-center mt-4 mt-xl-0 ms-xl-3"
@@ -212,6 +213,8 @@
 </div>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:if="${isLoggedUser}"
         th:src="@{/js/shared/showPassword.js}" type="text/javascript"></script>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:if="${isLoggedUser}"
+        th:src="@{/js/registration/index.js}" type="text/javascript"></script>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
         th:src="@{'/js/' + ${API_PATHS_MAP.get('ACCOUNT')} + '/stats/index.js'}"
         type="text/javascript"></script>

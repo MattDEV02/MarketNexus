@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -25,5 +26,9 @@ public class NationService {
          allNationsOrderByNameMap.put(nation.getId(), nation);
       }
       return allNationsOrderByNameMap;
+   }
+
+   public List<Nation> getNations(String query) {
+      return this.nationRepository.findByNameContainingIgnoreCase(query);
    }
 }

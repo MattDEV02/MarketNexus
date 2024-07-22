@@ -116,15 +116,21 @@
                             th:title="'Confirm your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' username'"
                             type="password"/>
                   </div>
-                  <div class="mb-3">
+                  <div class="mb-3 position-relative input-container">
                      <label class="form-label" for="nation">Nation:</label>
-                     <select class="form-control form-select py-2" id="nation" name="nation" required
-                             th:field="${user.nation}" th:object="${user}" title="Insert your Nation">
-                        <option th:each="nationEntry : ${nationsMap}" th:field="${user.nation}"
-                                th:id="${nationEntry.value.name + '#' + nationEntry.key}"
-                                th:name="${nationEntry.value.name + '#' + nationEntry.key}"
-                                th:text="${nationEntry.value.name}" th:value="${nationEntry.key}"></option>
-                     </select>
+                     <input id="nation-id" name="nation-id" required th:field="${user.nation}" th:object="${user}"
+                            type="hidden"/>
+                     <input autocomplete="off" class="form-control py-2" id="nation" name="nation"
+                            placeholder="Insert your Nation"
+                            required
+                            th:maxlength="${FIELD_SIZES_MAP.get('NATION_NAME_MAX_LENGTH')}"
+                            th:minlength="${FIELD_SIZES_MAP.get('NATION_NAME_MIN_LENGTH')}"
+                            title="Insert your Nation (min 3 characters)"
+                            type="text"/>
+                     <div class="input-icon m-3">
+                        <i class="fas fa-search"></i>
+                     </div>
+                     <div class="list-group autocomplete-suggestions" id="autocomplete-list"></div>
                   </div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>

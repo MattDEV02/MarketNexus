@@ -2,3 +2,26 @@
    font-size: 1.2em;
 !important;
 }
+
+.autocomplete-suggestions {
+   position: absolute;
+   z-index: 1000;
+   width: 100%;
+}
+
+.input-icon {
+   position: absolute;
+   right: 10px;
+   top: 50%;
+   transform: translateY(-50%);
+   pointer-events: none;
+}
+
+.input-container {
+   position: relative;
+}
+
+.list-group-item:hover {
+   background-color: #0D6EFD;
+   color: #FFFFFF;
+}
