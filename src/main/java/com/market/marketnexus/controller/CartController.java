@@ -35,12 +35,10 @@ public class CartController {
    private SaleService saleService;
    @Autowired
    private CartService cartService;
-   @Autowired
-   private ThymeleafViewResolver thymeleafViewResolver;
 
 
    @GetMapping(value = {"", "/"})
-   public ModelAndView showCartLineItem(@Valid @ModelAttribute("loggedUser") User loggedUser) {
+   public ModelAndView showCart(@Valid @ModelAttribute("loggedUser") User loggedUser) {
       ModelAndView modelAndView = new ModelAndView(APIPaths.CART + GlobalValues.TEMPLATES_EXTENSION);
       Cart cart = this.userService.getUserCurrentCart(loggedUser.getId());
       List<CartLineItem> cartLineItems = this.cartService.getAllNotSoldCartLineItems(cart);
@@ -50,7 +48,7 @@ public class CartController {
    }
 
    @GetMapping(value = {"/{saleId}", "/{saleId}/"})
-   public ModelAndView addSaleProductToCartById(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("saleId") Long saleId) {
+   public ModelAndView addSaleProductToCart(@Valid @ModelAttribute("loggedUser") User loggedUser, @PathVariable("saleId") Long saleId) {
       ModelAndView modelAndView = new ModelAndView(APIPaths.MARKETPLACE + "/sale" + GlobalValues.TEMPLATES_EXTENSION);
       try {
          Sale sale = this.saleService.getSale(saleId);

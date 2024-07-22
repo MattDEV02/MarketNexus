@@ -36,7 +36,7 @@ public class OrderController {
 
 
    @GetMapping(value = {"", "/"})
-   public ModelAndView makeOrderFromCartLineItem(
+   public ModelAndView makeOrder(
            @Valid @ModelAttribute("loggedUser") User loggedUser,
            @NonNull HttpServletRequest request
    ) {

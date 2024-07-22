@@ -75,19 +75,19 @@ There are 3 type of Users (User roles):
 
 <img title="MarketNexus UML SSD" alt="MarketNexus UML SSD" src="/src/main/resources/static/images/README/schemas/OO/OOA/SSD.png" width="100%" />
 
-<!--
+## UML System Operations Contracts (UC3) ‍🎓
+
+...
 
 ## UML Interaction Diagram (UC3) ‍🎓
 
-<img title="MarketNexus UML Interaction Diagram" alt="MarketNexus UML Interaction Diagram" src="/src/main/resources/static/images/README/schemas/OO/OOD/Interaction_Diagram.png" width="100%" />
-
--->
+<img title="MarketNexus UML Interaction Diagram" alt="MarketNexus UML Interaction Diagram" src="/src/main/resources/static/images/README/schemas/OO/OOD/ID.png" width="100%" />
 
 ## UML Domain Class Diagram 🤓
 
 <img title="MarketNexus UML DCD" alt="MarketNexus UML DCD" src="/src/main/resources/static/images/README/schemas/OO/OOD/DCD.png" width="100%" />
 
-## UML SW Objects Diagram ‍🎓
+## UML SW Objects Diagram ‍🤓
 
 <img title="MarketNexus UML Conceptual Objects Diagram" alt="MarketNexus UML Conceptual Objects Diagram" src="/src/main/resources/static/images/README/schemas/OO/OOA/SWOD.png" width="100%" />
 
@@ -382,7 +382,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(
                       authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**").permitAll()
+                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**", "/" + APIPaths.NATIONS + "/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail", "/storeFirebaseToken").permitAll()
                               .requestMatchers("/json/**", "/txt/**").denyAll()
                               .requestMatchers("/firebase-cloud-messaging-push-scope", "/firebase-messaging-sw.js").permitAll()
@@ -981,6 +981,96 @@ public class SaleNotFoundException extends RuntimeException {
 
    public SaleNotFoundException(String message) {
       super(message);
+   }
+}
+```
+
+### `ProductImageFileUtils.java` -> `com.market.marketnexus.helpers.product`
+
+```java
+package com.market.marketnexus.helpers.product;
+
+import com.market.marketnexus.helpers.constants.ProjectPaths;
+import com.market.marketnexus.model.Product;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
+
+public class ProductImageFileUtils {
+
+   public final static String PRODUCT_IMAGES_DIRECTORY = "/products";
+   public final static String PRODUCT_IMAGE_EXTENSION = ".jpeg";
+
+   public static @NonNull String getProductImageDirectoryName(@NonNull Product product) {
+      return ProjectPaths.IMAGES + ProductImageFileUtils.PRODUCT_IMAGES_DIRECTORY + "/" + product.getId().toString();
+   }
+
+   public static @NonNull String getProductImageFileName(Integer index) {
+      return String.valueOf(index + 1) + ProductImageFileUtils.PRODUCT_IMAGE_EXTENSION;
+   }
+
+   public static @NonNull String getProductImagePath(@NonNull Product product, Integer index) {
+      return ProductImageFileUtils.getProductImageDirectoryName(product) + "/" + ProductImageFileUtils.getProductImageFileName(index);
+   }
+
+   public static void storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage, Integer index, Boolean targetFlag) {
+      try {
+         String productImageRelativePath = product.getImageRelativePaths().get(index);
+         Integer indexOfProductImageFileName = productImageRelativePath.indexOf(ProductImageFileUtils.getProductImageFileName(index));
+         String productImageRelativePathDirectory = productImageRelativePath.substring(0, indexOfProductImageFileName);
+         String staticDestinationName = targetFlag ? ProjectPaths.getTargetStaticPath() : ProjectPaths.getStaticPath();
+         String destinationDirectoryName = staticDestinationName + productImageRelativePathDirectory;
+         File destinationDirectory = new File(destinationDirectoryName);
+         FileUtils.forceMkdir(destinationDirectory);
+         String destinationFileName = productImageRelativePath.substring(indexOfProductImageFileName);
+         Path fileOutput = Paths.get(destinationDirectoryName + destinationFileName);
+         Files.copy(productImage.getInputStream(), fileOutput, StandardCopyOption.REPLACE_EXISTING);
+      } catch (IOException iOException) {
+         iOException.printStackTrace();
+      }
+   }
+
+   public static void storeProductImage(@NonNull Product product, @NonNull MultipartFile productImage, Integer index) {
+      // /images/products/{productId}/{productImageIndex + 1}.jpeg
+      ProductImageFileUtils.storeProductImage(product, productImage, index, false);
+      ProductImageFileUtils.storeProductImage(product, productImage, index, true);
+   }
+
+   public static void deleteProductImageDirectory(@NotNull Product product) {
+      String productImageDirectoryName = ProductImageFileUtils.getProductImageDirectoryName(product);
+      File productImageDirectory = new File(ProjectPaths.getStaticPath() + productImageDirectoryName);
+      File productImageDirectoryTarget = new File(ProjectPaths.getTargetStaticPath() + productImageDirectoryName);
+      try {
+         FileUtils.deleteDirectory(productImageDirectory);
+         FileUtils.deleteDirectory(productImageDirectoryTarget);
+      } catch (IOException iOException) {
+         iOException.printStackTrace();
+      }
+   }
+
+   public static void deleteProductImages(@NotNull Product product) {
+      ProductImageFileUtils.deleteProductImages(product, false);
+      ProductImageFileUtils.deleteProductImages(product, true);
+   }
+
+   public static void deleteProductImages(@NotNull Product product, Boolean targetFlag) {
+      String ricettaImmagineDirectoryName = ProductImageFileUtils.getProductImageDirectoryName(product);
+      String staticDestinationName = targetFlag ? ProjectPaths.getTargetStaticPath() : ProjectPaths.getStaticPath();
+      Path ricettaImmagineDirectoryPath = Paths.get(staticDestinationName + ricettaImmagineDirectoryName);
+      try (DirectoryStream<Path> stream = Files.newDirectoryStream(ricettaImmagineDirectoryPath)) {
+         for (Path filePath : stream) {
+            if (Files.exists(filePath)) {
+               FileUtils.forceDelete(filePath.toFile());
+            }
+         }
+      } catch (IOException iOException) {
+         iOException.printStackTrace();
+      }
    }
 }
 ```
