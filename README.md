@@ -77,7 +77,112 @@ There are 3 type of Users (User roles):
 
 ## UML System Operations Contracts (UC3) ‍🎓
 
-...
+### Contract CO1: userLogin, transformation.
+---
+`Operation:` userLogin(username: string, password: string): void.
+
+`References:` UC3.
+
+`Pre-conditions:` None.
+
+`Post-conditions:`
+
+- A connection has been formed between a User u and the System based on username and password.
+
+### CO2 Contract: startAddingSalesToCart, interrogation.
+
+---
+
+`Operation:` startAddingSalesToCart(): void.
+
+`References:` UC3.
+
+`Pre-conditions:` A User u is using the System.
+
+`Post-conditions:`
+
+- A connection has been formed between Cart c and the System based on User u.
+
+### CO3 Contract: selectSaleForAddingToCart, transformation.
+
+---
+
+`Operation:` selectSaleForAddingToCart(saleId: Integer): void.
+
+`References:` UC3.
+
+`Pre-conditions:` A User u is using the System to add Sales to his Cart.
+
+`Post-conditions:`
+
+- A CartLineItem cli has been created.
+- A link has been formed between the CartLineItem cli and the Cart c.
+- A link has been formed between the CartLineItem cli and a Sale s based on Sale id.
+- The cli attributes have been initialized.
+
+### CO4 Contract: setCartLineItemQuantity, transformation.
+
+---
+
+`Operation:` setCartLineItemQuantity(quantity: Integer).
+
+`References:` UC3.
+
+`Pre-conditions:` A User u is using the System to add Sales to his Cart and has just added the CartLineItem cli to it.
+
+`Post-conditions:`
+
+- cli.quantity has taken on the value of quantity.
+
+### CO5 Contract: makeOrder, transformation.
+
+---
+
+`Operation:` makeOrder(): void.
+
+`References:` UC3.
+
+`Pre-conditions:` A User u is using the System to add Sales to his Cart.
+
+`Post-conditions:`
+
+- A new Order has been created.
+- A link has been formed between the Order and the Cart.
+- A connection has been formed between the Order o and the User u.
+- The Order attributes have been initialized.
+- A new Cart c2 has been created.
+- A connection has been formed between Cart c2 o and User u.
+- Cart c attributes have been initialized.
+
+### Contract CO6: deleteCartLineItem, transformation.
+
+---
+
+`Operation:` deleteCartLineItem(cartLineItemId: Integer): void.
+
+`References:` UC3.
+
+`Pre-conditions:` A User u is using the System to add Sales to his Cart and has just added the CartLineItem cli to it.
+
+`Post-conditions:`
+
+- The connection between the CartLineItem cli and the Sale s has been broken.
+- The connection between the CartLineItem cli and the Cart c has been broken.
+- The CartLineItem cli has been destroyed.
+
+### Contract CO7: cancelOrder, interrogation.
+
+---
+
+`Operation:` cancelOrder(): void.
+
+`References:` UC3.
+
+`Pre-conditions:` A User u is using the System to add Sales to his Cart.
+
+`Post-conditions:`
+
+- None
 
 ## UML Interaction Diagram (UC3) ‍🎓
 
@@ -2019,7 +2124,7 @@ and orders calendars, and tabular data.
 - Responses may include JSON objects for asynchronous operations.
 - Error handling is implemented for operations that require specific conditions (e.g., user authorization, valid data).
 
-## Technologies and languages used 🧑‍💻
+## Technologies, Languages and Standards used 🧑‍💻
 
 |     *Name*     |   *Version*    |
 |:--------------:|:--------------:|
@@ -2051,6 +2156,7 @@ and orders calendars, and tabular data.
 |     Chrome     | 124.0.6367.201 |
 | Microsoft EDGE | 123.0.2420.65  |
 |     Opera      | 111.0.5168.15  |
+|      UML       |     2.5.1      |
 |    Draw.io     |     24.4.6     |
 
 ## Project structure 🏠
