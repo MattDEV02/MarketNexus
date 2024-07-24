@@ -10,7 +10,7 @@
    </div>
    <div class="col-7 col-sm-7 col-md-7 col-lg-7 col-xl-7 col-xxl-7">
       <h6 class="mt-2" th:id="${property} + '-text'" th:if="${(isReadOnly || !isLoggedUser) && !isSelect}"
-          th:text="${value} + ${property == 'balance' ? ' $' : ''}"
+          th:text="${property != 'nation' ? value : value.name} + ${property == 'balance' ? ' $' : ''}"
           th:title="'User ' + ${property}"></h6>
       <h6 class="mt-2" th:if="${isSelect && !isLoggedUser}"
           th:text="${property == 'nation' ? value.name : #strings.capitalize(value.toLowerCase().replace('_', ' '))}"></h6>

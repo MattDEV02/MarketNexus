@@ -8,30 +8,6 @@
 !important;
 }
 
-@media (max-width: 767px) {
-   img.card-img-top {
-      height: 27.5rem;
-   }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-   img.card-img-top {
-      height: 19.5rem;
-   }
-}
-
-@media (min-width: 992px) and (max-width: 1199px) {
-   img.card-img-top {
-      height: 26rem;
-   }
-}
-
-@media (min-width: 1200px) {
-   img.card-img-top {
-      height: 18rem;
-   }
-}
-
 .tooltip {
    color: #FFFFFF;
 !important /* Cambia il colore del testo */
@@ -41,10 +17,6 @@ box-shadow: 0 0 10 px rgba(0, 0, 0, 0.5);
 !important /* Aggiungi ombreggiatura */
 font-size: 16 px;
 !important /* Cambia la dimensione del testo */
-}
-
-.tooltip .tooltip-arrow {
-
 }
 
 .tooltip-inner {
@@ -87,3 +59,46 @@ font-size: 16 px;
    height: 18px;
 }
 
+#loader {
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   border: 12px solid #F3F3F3;
+   border-top: 12px solid #444444;
+   width: 70px;
+   height: 70px;
+   animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+   100% {
+      transform: rotate(360deg);
+   }
+}
+
+
+@media (max-width: 767px) {
+   img.card-img-top {
+      height: 27.5rem;
+   }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+   img.card-img-top {
+      height: 19.5rem;
+   }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+   img.card-img-top {
+      height: 26rem;
+   }
+}
+
+@media (min-width: 1200px) {
+   img.card-img-top {
+      height: 18rem;
+   }
+}

@@ -116,8 +116,8 @@ There are 3 type of Users (User roles):
 `Post-conditions:`
 
 - A CartLineItem cli has been created.
-- A link has been formed between the CartLineItem cli and the Cart c.
-- A link has been formed between the CartLineItem cli and a Sale s based on Sale id.
+- A connection has been formed between the CartLineItem cli and the Cart c.
+- A connection has been formed between the CartLineItem cli and a Sale s based on Sale id.
 - The cli attributes have been initialized.
 
 ### CO4 Contract: setCartLineItemQuantity, transformation.
@@ -147,9 +147,10 @@ There are 3 type of Users (User roles):
 `Post-conditions:`
 
 - A new Order has been created.
-- A link has been formed between the Order and the Cart.
+- A connection has been formed between the Order and the Cart.
 - A connection has been formed between the Order o and the User u.
 - The Order attributes have been initialized.
+- The connection between the Cart c and the User u has been broken.
 - A new Cart c2 has been created.
 - A connection has been formed between Cart c2 o and User u.
 - Cart c attributes have been initialized.
@@ -1389,6 +1390,7 @@ spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleap
 <link rel="stylesheet" th:href="@{'/css/' + ${API_PATHS_MAP.get('MARKETPLACE')} + '/shared/style.css'}"/>
 <link rel="stylesheet" th:href="@{'/css/' + ${API_PATHS_MAP.get('CART')} + '/style.css'}"/>
 <body>
+<div th:replace="~{fragments/shared/loader.html :: loader()}"></div>
 <div th:replace="~{fragments/shared/pagination/header/marketplaceHeader.html :: marketplaceHeader()}">
 </div>
 <main id="cart-container">
@@ -1396,14 +1398,15 @@ spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleap
       <div class="row justify-content-center">
          <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
          <div class="col-12 mt-5">
-            <div class="row text-center">
-               <h1 th:text="${cartLineItems != null && !#lists.isEmpty(cartLineItems) ? 'Your' : 'No'} + ' Cart Products 👀'">
+            <div class="row text-center"
+                 th:with="cartLineItemsStringNumber = ${#lists.isEmpty(cartLineItems) ? '' : ('(' + #lists.size(cartLineItems) + ')')}">
+               <h1 th:text="${(cartLineItems != null && !#lists.isEmpty(cartLineItems) ? 'Your' : 'No') + ' Cart Products ' + cartLineItemsStringNumber + ' 👀'}">
                   Cart
                </h1>
             </div>
          </div>
          <div class="col-12 my-5"
-              th:with="cartLineItemNotDeletedError = ${param.cartLineItemNotDeletedError != null}, cartLineItemDeletedSuccess = ${param.cartLineItemDeletedSuccess != null}, userBalanceLowerThanCartPriceError = ${param.userBalanceLowerThanCartPriceError != null}, userNotBuyerAddSaleToCartError = ${param.userNotBuyerAddSaleToCartError != null}, userAddOwnSaleToCartError = ${param.userAddOwnSaleToCartError != null}, emptyCartError = ${param.emptyCartError != null}, userCartNotExistsError = ${param.userCartNotExistsError != null}">
+              th:with="cartLineItemNotDeletedError = ${param.cartLineItemNotDeletedError != null}, userBalanceLowerThanCartPriceError = ${param.userBalanceLowerThanCartPriceError != null}, userNotBuyerAddSaleToCartError = ${param.userNotBuyerAddSaleToCartError != null}, userAddOwnSaleToCartError = ${param.userAddOwnSaleToCartError != null}, emptyCartError = ${param.emptyCartError != null}, userCartNotExistsError = ${param.userCartNotExistsError != null}">
             <div
                   th:replace="~{fragments/shared/message/error/errorMessage.html :: errorMessage(text = 'Cart line not deleted.', condition = ${cartLineItemNotDeletedError})}"></div>
             <div
@@ -1421,17 +1424,15 @@ spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleap
             <div th:replace="~{fragments/marketplace/cart/cartTotalLineInformation.html :: cartTotalLineInformation(cart = ${cart})}"></div>
          </div>
       </div>
-      <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
-              th:src="@{/js/libraries/axios/axios.min.js}" type="text/javascript"></script>
-      <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/validators.js}"
-              type="text/javascript"></script>
-      <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
-              th:src="@{'/js/' + ${API_PATHS_MAP.get('CART')} + '/index.js'}"
-              type="text/javascript"></script>
    </div>
 </main>
 <div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
 </div>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/loader.js}"
+        type="text/javascript"></script>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}"
+        th:src="@{'/js/' + ${API_PATHS_MAP.get('CART')} + '/index.js'}"
+        type="text/javascript"></script>
 </body>
 
 </html>
@@ -1450,30 +1451,6 @@ spring.security.oauth2.client.provider.google.user-info-uri=https://www.googleap
 !important;
 }
 
-@media (max-width: 767px) {
-   img.card-img-top {
-      height: 27.5rem;
-   }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-   img.card-img-top {
-      height: 19.5rem;
-   }
-}
-
-@media (min-width: 992px) and (max-width: 1199px) {
-   img.card-img-top {
-      height: 26rem;
-   }
-}
-
-@media (min-width: 1200px) {
-   img.card-img-top {
-      height: 18rem;
-   }
-}
-
 .tooltip {
    color: #FFFFFF;
 !important /* Cambia il colore del testo */
@@ -1483,10 +1460,6 @@ box-shadow: 0 0 10 px rgba(0, 0, 0, 0.5);
 !important /* Aggiungi ombreggiatura */
 font-size: 16 px;
 !important /* Cambia la dimensione del testo */
-}
-
-.tooltip .tooltip-arrow {
-
 }
 
 .tooltip-inner {
@@ -1527,6 +1500,50 @@ font-size: 16 px;
 .btn-google .google-icon-wrapper img {
    width: 18px;
    height: 18px;
+}
+
+#loader {
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   border: 12px solid #F3F3F3;
+   border-top: 12px solid #444444;
+   width: 70px;
+   height: 70px;
+   animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+   100% {
+      transform: rotate(360deg);
+   }
+}
+
+
+@media (max-width: 767px) {
+   img.card-img-top {
+      height: 27.5rem;
+   }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+   img.card-img-top {
+      height: 19.5rem;
+   }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+   img.card-img-top {
+      height: 26rem;
+   }
+}
+
+@media (min-width: 1200px) {
+   img.card-img-top {
+      height: 18rem;
+   }
 }
 ```
 

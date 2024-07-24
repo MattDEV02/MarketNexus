@@ -5,6 +5,7 @@
 </head>
 <link rel="stylesheet" th:href="@{/css/registration/style.css}"/>
 <body>
+<div th:replace="~{fragments/shared/loader.html :: loader()}"></div>
 <div class="container">
    <div class="row justify-content-center">
       <noscript th:replace="~{fragments/shared/noScript.html :: noScript()}"></noscript>
@@ -130,7 +131,7 @@
                      <div class="input-icon m-3">
                         <i class="fas fa-search"></i>
                      </div>
-                     <div class="list-group autocomplete-suggestions" id="autocomplete-list"></div>
+                     <div th:replace="~{fragments/marketplace/shared/autoCompleteSuggestionsNationsList.html :: autoCompleteSuggestionsNationsList()}"></div>
                   </div>
                   <div
                         th:replace="~{fragments/shared/message/error/fieldErrorMessage.html :: fieldErrorMessage(field = 'user.nation')}"></div>
@@ -190,6 +191,8 @@
       </div>
    </div>
 </div>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/loader.js}"
+        type="text/javascript"></script>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/maxDateInputValue.js}"
         type="text/javascript"></script>
 <script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/showPassword.js}"

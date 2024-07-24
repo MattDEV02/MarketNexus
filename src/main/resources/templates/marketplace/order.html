@@ -7,6 +7,7 @@
 <link rel="stylesheet" th:href="@{'/css/' + ${API_PATHS_MAP.get('MARKETPLACE')} + '/shared/style.css'}"/>
 <link rel="stylesheet" th:href="@{'/css/' + ${API_PATHS_MAP.get('CART')} + '/style.css'}"/>
 <body>
+<div th:replace="~{fragments/shared/loader.html :: loader()}"></div>
 <div th:replace="~{fragments/shared/pagination/header/marketplaceHeader.html :: marketplaceHeader()}">
 </div>
 <main>
@@ -35,6 +36,8 @@
 </main>
 <div th:replace="~{fragments/shared/pagination/footer/footer.html :: footer()}">
 </div>
+<script th:charset="${GLOBAL_CONSTANTS_MAP.get('CHARSET')}" th:src="@{/js/shared/loader.js}"
+        type="text/javascript"></script>
 </body>
 
 </html>
