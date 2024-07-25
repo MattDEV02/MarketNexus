@@ -207,7 +207,9 @@ VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 
        ('JohnDoe', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BUYER'),
        ('Giuseppe', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER_AND_BUYER'),
        ('KatyPerry', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER'),
-       ('SanJay', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'BUYER');
+       ('SanJay', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'BUYER'),
+       ('Queen', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'BUYER'),
+       ('King', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 'SELLER');
 
 
 -- N.B. = La password è criptata da spring boot con l'algoritmo bscrypt e va da 60 caratteri a 72.
@@ -252,7 +254,9 @@ VALUES ('Matteo', 'Lambertucci', 'matteolambertucci3@gmail.com', '2002-04-02', 2
        ('John', 'Doe', 'johndoe@test.it', '2020-03-17', 2000, 2, 6),
        ('Giuseppe', 'Rossi', 'giusepperossi@test.it', '2020-11-02', 2000.05, 3, 1),
        ('Katy', 'Perry', 'katyperry@test.it', '2000-01-12', 100.16, 4, 4),
-       ('San', 'Jay', 'sanjay@test.it', '2000-01-12', 0, 5, 9);
+       ('San', 'Jay', 'sanjay@test.it', '2000-01-12', 0, 5, 9),
+       ('Queen', 'Elizabeth', 'queen@test.it', '1950-02-10', 0, 6, 6),
+       ('King', 'Carlo', 'king@test.it', '1970-12-10', 0, 7, 6);
 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Sales
@@ -305,7 +309,7 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-/*
+
 CREATE
     OR REPLACE TRIGGER SALE_SALEPRICE_VALUE_TRIGGER
     AFTER
@@ -314,7 +318,7 @@ CREATE
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.CHECK_SALE_SALEPRICE_VALUE_FUNCTION();
-*/
+
 CREATE
     OR REPLACE FUNCTION CHECK_SALE_USER_CREDENTIALS_ROLE_FUNCTION()
     RETURNS TRIGGER AS
@@ -381,7 +385,11 @@ ALTER TABLE MarketNexus.Carts
 INSERT INTO MarketNexus.Carts(cart_price, _user)
 VALUES (0, 1),
        (0, 2),
-       (0, 3);
+       (0, 3),
+       (0, 4),
+       (0, 5),
+       (0, 6),
+       (0, 7);
 
 CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
 (
@@ -530,8 +538,8 @@ CREATE
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF (SELECT (ROUND(c.cart_price::NUMERIC, 2) =
-                ROUND(GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(NEW.cart)::NUMERIC, 2))
+    IF (SELECT (c.cart_price = 0 OR (TRUNC(c.cart_price) =
+                                     TRUNC(GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(NEW.cart))))
                    AS are_equals
         FROM MarketNexus.Carts c
         WHERE c.id = NEW.cart) THEN

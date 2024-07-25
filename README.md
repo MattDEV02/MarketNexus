@@ -276,8 +276,9 @@ There are 3 type of Users (User roles):
 
 <p align="center">
 	<img  title="MarketNexus Sales screenshoot 1"  alt="MarketNexus Sales screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/sales/1.png"  width="100%" />
-    <img  title="MarketNexus Sales screenshoot 2"  alt="MarketNexus Sales screenshoot 2"  src="/src/main/resources//static/images/README/screenshots/sales/2.png"  width="100%" />
-    <img  title="MarketNexus Sales screenshoot 3"  alt="MarketNexus Sales screenshoot 3"  src="/src/main/resources//static/images/README/screenshots/sales/3.png"  width="100%" />
+    <img  title="MarketNexus Sales screenshoot 2"  alt="MarketNexus Sales screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/sales/2.png"  width="100%" />
+    <img  title="MarketNexus Sales screenshoot 3"  alt="MarketNexus Sales screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/sales/3.png"  width="100%" />
+    <img  title="MarketNexus Sales screenshoot 4"  alt="MarketNexus Sales screenshoot 4"  src="/src/main/resources/static/images/README/screenshots/sales/4.png"  width="100%" />
 </p>
 
 ## `Account page`
@@ -2149,6 +2150,8 @@ and orders calendars, and tabular data.
 
 ## Technologies, Languages and Standards used 🧑‍💻
 
+<div style="display: flex; justify-content: center;">
+
 |     *Name*     |   *Version*    |
 |:--------------:|:--------------:|
 |      Java      |       17       |
@@ -2182,6 +2185,8 @@ and orders calendars, and tabular data.
 |      UML       |     2.5.1      |
 |    Draw.io     |     24.4.6     |
 |      AIML      |      2.1       |
+
+</div>
 
 ## Project structure 🏠
 
