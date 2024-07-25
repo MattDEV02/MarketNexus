@@ -3,3 +3,38 @@ a {
 !important
 }
 
+#chatbot-button {
+   position: fixed;
+   bottom: 105px;
+   right: 25px;
+   width: 60px;
+   height: 60px;
+   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+   z-index: 1000;
+}
+
+/* Finestra Chatbot */
+#chatbot-container {
+   position: fixed;
+   bottom: 80px;
+   right: 20px;
+   width: 350px;
+   height: 478px;
+   display: none;
+   z-index: 1000;
+!important;
+}
+
+.message {
+   position: relative;
+   margin-left: 4rem;
+   max-width: 82%;
+}
+
+.time {
+   position: absolute;
+   bottom: 5px;
+   right: 10px;
+   font-size: 0.8rem;
+   color: #888;
+}

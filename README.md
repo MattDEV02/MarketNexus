@@ -225,12 +225,18 @@ There are 3 type of Users (User roles):
   with your google account. Furthermore, sensitive data present in the configuration files has been hidden via
   environment variables.
 
+- **Emails and Web notifications:** The User can receive an email if he/she forgot his/her username, sell a Product and
+  more. The User can also
+  receive web notifications when another User publish a new Sale on the site.
+
 - **Tested:** The project is tested with Junit tests.
 
 - **Modularity:** The project is divided in many logic modules, packages, fragments, directories and global variables...
 
 - **Tooltips guide Display:** There are many tooltips and popups that guide the User in the site. There is also a FAQs
   page.
+
+- **Real-time AI chatbot:** There is a real-time AI chatbot that can help the User in the site.
 
 - **Language:** There is the English language at the moment and a bit of internationalization.
 
@@ -269,8 +275,9 @@ There are 3 type of Users (User roles):
 ## `Sales page`
 
 <p align="center">
-	<img  title="MarketNexus Sales screenshoot 1"  alt="MarketNexus Sales screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/marketplace/1.png"  width="100%" />
-    <img  title="MarketNexus Sales screenshoot 2"  alt="MarketNexus Sales screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/marketplace/2.png"  width="100%" />
+	<img  title="MarketNexus Sales screenshoot 1"  alt="MarketNexus Sales screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/sales/1.png"  width="100%" />
+    <img  title="MarketNexus Sales screenshoot 2"  alt="MarketNexus Sales screenshoot 2"  src="/src/main/resources//static/images/README/screenshots/sales/2.png"  width="100%" />
+    <img  title="MarketNexus Sales screenshoot 3"  alt="MarketNexus Sales screenshoot 3"  src="/src/main/resources//static/images/README/screenshots/sales/3.png"  width="100%" />
 </p>
 
 ## `Account page`
@@ -279,7 +286,6 @@ There are 3 type of Users (User roles):
 	<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus MarketplaceScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="100%" />
     <img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus MarketplaceScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="100%" />
     <img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus MarketplaceScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="100%" />
-
 </p>
 
 ## `New Sale page`
@@ -2175,6 +2181,7 @@ and orders calendars, and tabular data.
 |     Opera      | 111.0.5168.15  |
 |      UML       |     2.5.1      |
 |    Draw.io     |     24.4.6     |
+|      AIML      |      2.1       |
 
 ## Project structure 🏠
 
