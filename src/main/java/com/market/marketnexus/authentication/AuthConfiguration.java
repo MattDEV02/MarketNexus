@@ -72,7 +72,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(
                       authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**", "/" + APIPaths.NATIONS + "/**").permitAll()
+                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**", "/audio/**", "/" + APIPaths.NATIONS + "/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail", "/storeFirebaseToken").permitAll()
                               .requestMatchers("/json/**", "/txt/**").denyAll()
                               .requestMatchers("/firebase-cloud-messaging-push-scope", "/firebase-messaging-sw.js").permitAll()

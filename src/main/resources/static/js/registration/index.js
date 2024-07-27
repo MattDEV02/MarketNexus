@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
-   const nationInput = document.getElementById("nation"),
-      nationIdInput = document.getElementById("nation-id"),
+   const
       autocompleteList = document.getElementById("autocomplete-list");
+
+   const nationInput = document.getElementById("nation").type === "text" ? document.getElementById("nation") : document.getElementById("nation-input"),
+      nationIdInput = document.getElementById("nation").type === "text" ? document.getElementById("nation-id") : document.getElementById("nation");
+
+   console.log(nationInput);
 
    nationInput.addEventListener("input", () => {
       const query = nationInput.value;

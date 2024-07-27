@@ -298,7 +298,7 @@ CREATE
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF ((SELECT CASE WHEN (s.sale_price = (p.price * s.quantity)) THEN TRUE ELSE FALSE END AS are_equals
+    IF ((SELECT CASE WHEN (TRUNC(s.sale_price) = TRUNC(p.price * s.quantity)) THEN TRUE ELSE FALSE END AS are_equals
          FROM MarketNexus.Products p
                   JOIN MarketNexus.Sales s ON p.id = s.product
          WHERE s.id = NEW.ID) = TRUE) THEN
@@ -309,7 +309,7 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-
+/*
 CREATE
     OR REPLACE TRIGGER SALE_SALEPRICE_VALUE_TRIGGER
     AFTER
@@ -318,7 +318,7 @@ CREATE
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.CHECK_SALE_SALEPRICE_VALUE_FUNCTION();
-
+*/
 CREATE
     OR REPLACE FUNCTION CHECK_SALE_USER_CREDENTIALS_ROLE_FUNCTION()
     RETURNS TRIGGER AS

@@ -26,20 +26,20 @@
                  th:value="${roleEntry.value}"></option>
       </select>
       <div th:class="'input-' + ${isLoggedUser && property == 'nation' ? 'container' : 'group'}">
-         <input id="nation-id" name="nation-id" required th:field="${user.nation}" th:if="${property == 'nation'}"
+         <input id="nation" name="nation" required th:if="${property == 'nation'}"
                 th:object="${user}" th:value="${user.nation.id}" type="hidden"/>
          <input
                autocomplete="off"
                th:class="'form-control ' + ${isReadOnly || !isLoggedUser ? 'visually-hidden disabled' : ''} + ${isLoggedUser && property == 'nation' ? 'position-relative input-container' : ''}"
                th:fieldFormat="${property == 'birth date' ? FIELD_SIZES_MAP.get('DATE_FORMAT') : ''}"
                th:format="${property == 'birth date' ? FIELD_SIZES_MAP.get('DATE_FORMAT') : ''}"
-               th:id="${property == 'birth date' ? 'birthDate' : property}"
+               th:id="${property == 'birth date' ? 'birthDate' : (property == 'nation' ? 'nation-input' : property)}"
                th:if="${!isSelect && property != 'registered' && property != 'updated' && property != 'role'}"
                th:max="${property == 'balance' ? FIELD_SIZES_MAP.get('BALANCE_MAX_VALUE') : (property == 'birth date' ? TEMPORALS_MAP.get('BIRTHDATE_MAX_VALUE') : '')}"
                th:maxlength="${FIELD_SIZES_MAP.get(#strings.toUpperCase(property) + '_MAX_LENGTH')}"
                th:min="${property == 'balance' ? FIELD_SIZES_MAP.get('BALANCE_MIN_VALUE') : (property == 'birth date' ? TEMPORALS_MAP.get('BIRTHDATE_MIN_VALUE') : '')}"
                th:minlength="${FIELD_SIZES_MAP.get(#strings.toUpperCase(property) + '_MIN_LENGTH')}"
-               th:name="${property == 'birth date' ? 'birthDate' : property}"
+               th:name="${property == 'birth date' ? 'birthDate' : (property == 'nation' ? 'nation-input' : property)}"
                th:object="${object}"
                th:placeholder="${property == 'confirm-password' ? 'Confirm' : 'Update'} + ' your ' + ${#strings.replace(property, 'confirm-', '')}"
                th:required="${(property == 'birth date' || #strings.contains(property, 'password')) ? null : true}"

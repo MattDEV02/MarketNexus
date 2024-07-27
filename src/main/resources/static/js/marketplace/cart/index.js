@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
    const cartContainer = document.getElementById("cart-container"),
+      confirmMakeOrderButton = document.getElementById("confirm-order-button"),
       baseUrl = "/marketplace/cart/updateCartLineItemQuantity/";
 
    cartContainer.addEventListener("change", event => {
@@ -54,6 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
                .catch(error => console.error("Error:", error));
          }
       }
+   });
+
+   confirmMakeOrderButton.addEventListener("click", () => {
+      const orderProcessedAudio = new Audio("/audio/order-processed.mp3");
+      orderProcessedAudio.play()
+         .then(() => console.log("orderProcessedAudio playback started successfully."))
+         .catch(error => console.error("Error during orderProcessedAudio playback:", error));
    });
 });
 

@@ -19,11 +19,15 @@ There are 3 type of Users (User roles):
 
 ### Use Case UC1:
 
+#### User registration - Primary Actor: A User
+
 ### Use Case UC2:
+
+#### Publish a new Sale - Primary Actor: A seller User
 
 ### Use Case UC3:
 
-#### Make an Order - Primary Actor: A Buyer User.
+#### Make an Order - Primary Actor: A buyer User.
 
 `Primary Success Scenario:`
 
@@ -53,15 +57,27 @@ There are 3 type of Users (User roles):
 
 ### Use Case UC4:
 
+#### View own stats - Primary Actor: A User
+
 ### Use Case UC5:
+
+#### View another User account data - Primary Actor: A User
 
 ### Use Case UC6:
 
+#### Search Sales Products - Primary Actor: A User
+
 ### Use Case UC7:
+
+#### Modify a published Sales - Primary Actor: A seller User
 
 ### Use Case UC8:
 
+#### Delete a published Sales - Primary Actor: A seller User
+
 ### Use Case UC9:
+
+#### Modify own account data - Primary Actor: A User
 
 ## UML Domain Model ‍🎓
 
@@ -495,7 +511,7 @@ public class AuthConfiguration implements WebMvcConfigurer {
               .csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(
                       authorizeHttpRequestsCustomizer -> authorizeHttpRequestsCustomizer
-                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**", "/" + APIPaths.NATIONS + "/**").permitAll()
+                              .requestMatchers(HttpMethod.GET, "/", "/registration", "/login", "/forgotUsername", "/logout", "/FAQs", "/css/**", "/js/**", "/images/**", "/audio/**", "/" + APIPaths.NATIONS + "/**").permitAll()
                               .requestMatchers(HttpMethod.POST, "/registerNewUser", "/sendForgotUsernameEmail", "/storeFirebaseToken").permitAll()
                               .requestMatchers("/json/**", "/txt/**").denyAll()
                               .requestMatchers("/firebase-cloud-messaging-push-scope", "/firebase-messaging-sw.js").permitAll()
