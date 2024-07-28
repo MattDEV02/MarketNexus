@@ -2281,6 +2281,9 @@ and orders calendars, and tabular data.
 	- **`src/main/java/com/market/marketnexus/config`**: A directory (package) where there are Configuration Classes.
 	- **`src/main/java/com/market/marketnexus/controller`**: A directory (package) where there are Site Controllers
 	  classes.
+		- **`src/main/java/com/market/marketnexus/controller/validators`**: A directory (package) where there are Site
+		  input Validators
+		  classes.
 	- **`src/main/java/com/market/marketnexus/exception`**: A directory (package) where there are project custom
 	  Exceptions classes.
 	- **`src/main/java/com/market/marketnexus/handler`**: A directory (package) where there are Event-Handler classes.
@@ -2339,4 +2342,4 @@ I am the only author of this beautiful site 😉
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for more details.
 
-#### P.S. = Go to Releases section and download the JAR (latest release).
+#### P.S. = You can go to the releases section and download the JAR (latest release). You can also open the Google-drive link in the about section to view a screen registration of MarketNexus.
