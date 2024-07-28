@@ -10,20 +10,20 @@ more.
 There are 3 type of Users (User roles):
 
 1. Seller Users: They can publish and sell their Products. They can't add other Users Products in their Cart and buy
-   them.
+	them.
 2. Buyer Users: They can add other Users Products in their Cart and buy them. They can't publish and sell their
-   Products.
+	Products.
 3. Seller and Buyer Users: They can do all things written in 1. and 2.
 
 ## Use Cases 👔
 
 ### Use Case UC1:
 
-#### User registration - Primary Actor: A User
+#### User registration - Primary Actor: A User.
 
 ### Use Case UC2:
 
-#### Publish a new Sale - Primary Actor: A seller User
+#### Publish a new Sale - Primary Actor: A seller User.
 
 ### Use Case UC3:
 
@@ -33,20 +33,20 @@ There are 3 type of Users (User roles):
 
 1. The Buyer User wants to place an Order.
 2. The Buyer User enters his username and password. The System verifies that the data entered is correct, and
-   authenticates the Buyer User. The System displays the Buyer User's data (such username).
+	authenticates the Buyer User. The System displays the Buyer User's data (such username).
 3. The Buyer User chooses the “Enter Sales in the Shopping Cart” activity. The System displays the list of all the Sales
-   on the system for each Sale the relative Product data and the sold quantity.
+	on the system for each Sale the relative Product data and the sold quantity.
 4. The Student enters (selecting it from the list of Sales) the identification code of a Sale in which they are
-   interested in purchasing. The System displays information about the selected Sale (data related Product, quantity and
-   price of the Sale).
+	interested in purchasing. The System displays information about the selected Sale (data related Product, quantity and
+	price of the Sale).
 5. The Buyer User enters the quantity of that Product he/she intends to purchase. The System records the Buyer User's
-   choice of quantity.
-   The Buyer User repeats steps 4-5 until it indicates that it is finished.
+	choice of quantity.
+	The Buyer User repeats steps 4-5 until it indicates that it is finished.
 6. The System displays a summary of the Shopping Cart entered by the Buyer User (listing the Cart rows with Sales
-   chosen, each with the
-   details of the relevant Product, quantity and price of the Sale, and the total cost of the Shopping Cart).
+	chosen, each with the
+	details of the relevant Product, quantity and price of the Sale, and the total cost of the Shopping Cart).
 7. The Buyer User confirms the purchase of the Shopping Cart entered. The System records the purchase by the Buyer User,
-   also recording the date and time of purchase with an Order summary for the buyer User.
+	also recording the date and time of purchase with an Order summary for the buyer User.
 
 `Extensions:`
 
@@ -57,27 +57,27 @@ There are 3 type of Users (User roles):
 
 ### Use Case UC4:
 
-#### View own stats - Primary Actor: A User
+#### View own stats - Primary Actor: A User.
 
 ### Use Case UC5:
 
-#### View another User account data - Primary Actor: A User
+#### View another User account data - Primary Actor: A User.
 
 ### Use Case UC6:
 
-#### Search Sales Products - Primary Actor: A User
+#### Search Sales Products - Primary Actor: A User.
 
 ### Use Case UC7:
 
-#### Modify a published Sales - Primary Actor: A seller User
+#### Modify a published Sales - Primary Actor: A seller User.
 
 ### Use Case UC8:
 
-#### Delete a published Sales - Primary Actor: A seller User
+#### Delete a published Sales - Primary Actor: A seller User.
 
 ### Use Case UC9:
 
-#### Modify own account data - Primary Actor: A User
+#### Modify own account data - Primary Actor: A User.
 
 ## UML Domain Model ‍🎓
 
@@ -309,6 +309,7 @@ There are 3 type of Users (User roles):
 
 <p align="center">
 	<img  title="MarketNexus NewSale screenshoot 1"  alt="MarketNexus NewSale screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/newSale/1.png"  width="100%" />
+	<img  title="MarketNexus NewSale screenshoot 2"  alt="MarketNexus NewSale screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/newSale/2.png"  width="100%" />
 </p>
 
 ## `Cart page`
@@ -803,6 +804,49 @@ public class AuthenticationController {
 }
 ```
 
+### `SaleValidator.java` -> `com.market.marketnexus.controller.validator.SaleValidator`
+
+```java
+package com.market.marketnexus.controller.validator;
+
+import com.market.marketnexus.helpers.constants.FieldSizes;
+import com.market.marketnexus.model.Product;
+import com.market.marketnexus.model.Sale;
+import com.market.marketnexus.repository.ProductRepository;
+import com.market.marketnexus.repository.SaleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+@Component
+public class SaleValidator implements Validator {
+
+   @Autowired
+   private SaleRepository saleRepository;
+   @Autowired
+   private ProductRepository productRepository;
+
+   @Override
+   public void validate(@NonNull Object object, @NonNull Errors errors) {
+      Sale sale = (Sale) object;
+      Product product = sale.getProduct();
+      if (this.saleRepository.existsByUser(sale.getUser()) && this.productRepository.existsByNameAndDescriptionAndPriceAndCategoryOrderById(product.getName(), product.getDescription(), product.getPrice(), product.getCategory())) {
+         errors.reject("saleAlreadyPublishedError", "You have already published this sale.");
+      }
+      if (sale.getQuantity() != null && sale.getQuantity() < (FieldSizes.SALE_QUANTITY_MIN_VALUE + 1)) {
+         errors.rejectValue("quantity", "Min.sale.quantity");
+      }
+   }
+
+   @Override
+   public boolean supports(@NonNull Class<?> aClass) {
+      return Sale.class.equals(aClass);
+   }
+}
+```
+
 ### `UserService.java` -> `com.market.marketnexus.service.UserService`
 
 ```java
@@ -1210,119 +1254,127 @@ public class ProductImageFileUtils {
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-    <groupId>com.market</groupId>
-    <artifactId>MarketNexus</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>MarketNexus</name>
-    <description>MarketNexus is a marketplace made in Spring boot 🤖</description>
-    <properties>
-        <java.version>17</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>24.1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-            <version>3.1.5</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
-        </dependency>
-    </dependencies>
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>3.2.2</version>
+      <relativePath/> <!-- lookup parent from repository -->
+   </parent>
+   <groupId>com.market</groupId>
+   <artifactId>MarketNexus</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+   <name>MarketNexus</name>
+   <description>MarketNexus is a marketplace created with Spring boot where Users can sell, manage, view and purchase
+      Products (by placing them in their carts) of different categories, view their statistics dynamically, other Users'
+      data and much more. 🤖
+   </description>
+   <properties>
+      <java.version>17</java.version>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
+   <dependencies>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-data-jpa</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-security</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-thymeleaf</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.thymeleaf.extras</groupId>
+         <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-validation</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-web</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.postgresql</groupId>
+         <artifactId>postgresql</artifactId>
+         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.jetbrains</groupId>
+         <artifactId>annotations</artifactId>
+         <version>24.1.0</version>
+         <scope>compile</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-mail</artifactId>
+         <version>3.1.5</version>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-devtools</artifactId>
+         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-oauth2-client</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.google.firebase</groupId>
+         <artifactId>firebase-admin</artifactId>
+         <version>9.2.0</version>
+      </dependency>
+   </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+               <source>17</source>
+               <target>17</target>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 
-    <contributors>
-        <contributor>
-            <name>Matteo Lambertucci</name>
-            <email>mat.lambertucci@stud.uniroma3.it</email>
-            <url>https://github.com/MattDEV02</url>
-            <organization>Università degli Studi di Roma Tre</organization>
-            <organizationUrl>https://www.uniroma3.it/</organizationUrl>
-            <roles>
-                <role>ALL</role>
-            </roles>
-            <timezone>+2</timezone>
-        </contributor>
-    </contributors>
+   <contributors>
+      <contributor>
+         <name>Matteo Lambertucci</name>
+         <email>mat.lambertucci@stud.uniroma3.it</email>
+         <url>https://github.com/MattDEV02</url>
+         <organization>Università degli Studi di Roma Tre</organization>
+         <organizationUrl>https://www.uniroma3.it/</organizationUrl>
+         <roles>
+            <role>ALL</role>
+         </roles>
+         <timezone>+2</timezone>
+      </contributor>
+   </contributors>
 
 </project>
 ```
@@ -1866,9 +1918,9 @@ application.
 
 - **Description**: Shows a list of frequently asked questions and their answers.
 - **Response**: A view (`FAQs.html`) displaying FAQs.
-    - The FAQs are dynamically populated from a static map, covering topics like registration, account management,
-      offline navigation, device compatibility, product categories, password requirements, account information,
-      repository location, and site authorship.
+	- The FAQs are dynamically populated from a static map, covering topics like registration, account management,
+	  offline navigation, device compatibility, product categories, password requirements, account information,
+	  repository location, and site authorship.
 
 ## Notes
 
@@ -1892,9 +1944,9 @@ recovery. It also handles the storage of Firebase tokens for push notifications.
 
 - **Description**: Registers a new user with the provided credentials.
 - **Parameters**:
-    - `user`: User details.
-    - `credentials`: Login credentials.
-    - `confirm-password`: Confirmation of the user's password.
+	- `user`: User details.
+	- `credentials`: Login credentials.
+	- `confirm-password`: Confirmation of the user's password.
 - **Response**: Redirects to the login page with a success message if registration is successful; otherwise, displays
   registration errors.
 
@@ -1912,7 +1964,7 @@ recovery. It also handles the storage of Firebase tokens for push notifications.
 
 - **Description**: Sends an email to the user with their username if the provided email is associated with an account.
 - **Parameters**:
-    - `user`: User details, specifically the email address.
+	- `user`: User details, specifically the email address.
 - **Response**: A view indicating whether the email was sent successfully or not.
 
 ### GET /marketplace
@@ -1924,7 +1976,7 @@ recovery. It also handles the storage of Firebase tokens for push notifications.
 
 - **Description**: Stores a Firebase token for push notifications.
 - **Parameters**:
-    - `data`: A map containing the `token` key with the Firebase token as its value.
+	- `data`: A map containing the `token` key with the Firebase token as its value.
 - **Response**: HTTP status indicating success or failure of token storage.
 
 ## Notes
@@ -1950,9 +2002,9 @@ publishing new sales, updating existing sales, and deleting sales.
 
 - **Description**: Searches for sales based on product name and/or product category.
 - **Parameters**:
-    - `product-name`: Name of the product to search for.
-    - `category`: ID of the product category to search for.
-    - `isAsyncSearch`: Boolean indicating if the search is asynchronous.
+	- `product-name`: Name of the product to search for.
+	- `category`: ID of the product category to search for.
+	- `isAsyncSearch`: Boolean indicating if the search is asynchronous.
 - **Response**: A view with the search results.
 
 ### GET /marketplace/sales/newSale
@@ -1964,40 +2016,40 @@ publishing new sales, updating existing sales, and deleting sales.
 
 - **Description**: Publishes a new sale.
 - **Parameters**:
-    - `product`: The product details.
-    - `sale`: The sale details.
-    - `product-images`: Array of product images.
+	- `product`: The product details.
+	- `sale`: The sale details.
+	- `product-images`: Array of product images.
 - **Response**: Redirects to the successful view if the sale is published; otherwise, shows errors.
 
 ### GET /marketplace/sales/updateSale/{saleId}
 
 - **Description**: Shows the form to update an existing sale.
 - **Parameters**:
-    - `saleId`: The ID of the sale to update.
+	- `saleId`: The ID of the sale to update.
 - **Response**: A form view for updating the sale if the user is authorized; otherwise, redirects.
 
 ### POST /marketplace/sales/publishUpdatedSale/{saleId}
 
 - **Description**: Updates an existing sale.
 - **Parameters**:
-    - `saleId`: The ID of the sale to update.
-    - `product`: Updated product details.
-    - `sale`: Updated sale details.
-    - `product-images`: Array of new product images (optional).
+	- `saleId`: The ID of the sale to update.
+	- `product`: Updated product details.
+	- `sale`: Updated sale details.
+	- `product-images`: Array of new product images (optional).
 - **Response**: Redirects to the successful view if the sale is updated; otherwise, shows errors.
 
 ### DELETE /marketplace/sales/deleteSale/{saleId}
 
 - **Description**: Deletes a sale.
 - **Parameters**:
-    - `saleId`: The ID of the sale to delete.
+	- `saleId`: The ID of the sale to delete.
 - **Response**: A JSON response indicating success or failure, with a redirect URL.
 
 ### GET /marketplace/sales/sale/{saleId}
 
 - **Description**: Displays details of a specific sale.
 - **Parameters**:
-    - `saleId`: The ID of the sale to display.
+	- `saleId`: The ID of the sale to display.
 - **Response**: A view with the sale details.
 
 ## Notes
@@ -2022,7 +2074,7 @@ products to the cart, updating cart line item quantities, and deleting cart line
 
 - **Description**: Adds a product associated with a sale to the user's cart by sale ID.
 - **Parameters**:
-    - `saleId`: The ID of the sale whose product is to be added to the cart.
+	- `saleId`: The ID of the sale whose product is to be added to the cart.
 - **Response**: A view of the sale with an indication if it was added to the cart. Errors are displayed if the user
   tries to add their own sale or a sale already in the cart.
 
@@ -2030,15 +2082,15 @@ products to the cart, updating cart line item quantities, and deleting cart line
 
 - **Description**: Updates the quantity of a specific cart line item.
 - **Parameters**:
-    - `cartLineItemId`: The ID of the cart line item to update.
-    - `quantity`: The new quantity for the cart line item.
+	- `cartLineItemId`: The ID of the cart line item to update.
+	- `quantity`: The new quantity for the cart line item.
 - **Response**: A dynamic section of the cart view with updated quantities.
 
 ### DELETE /marketplace/cart/delete/{cartLineItemId}
 
 - **Description**: Deletes a specific cart line item by ID.
 - **Parameters**:
-    - `cartLineItemId`: The ID of the cart line item to delete.
+	- `cartLineItemId`: The ID of the cart line item to delete.
 - **Response**: A dynamic section of the cart view indicating success or failure of the deletion.
 
 ## Notes
@@ -2059,15 +2111,15 @@ cart page.
 
 - **Description**: Creates an order from the cart line items of the logged-in user.
 - **Preconditions**:
-    - The request must originate from the cart page.
-    - The user's cart must not be empty.
-    - The user must have a balance greater than or equal to the total price of the cart.
+	- The request must originate from the cart page.
+	- The user's cart must not be empty.
+	- The user must have a balance greater than or equal to the total price of the cart.
 - **Postconditions**:
-    - An order is created with the current cart line items.
-    - An email is sent to the user with the order details.
+	- An order is created with the current cart line items.
+	- An email is sent to the user with the order details.
 - **Response**:
-    - If the preconditions are not met, redirects to the cart page with an appropriate error message.
-    - If the order is successfully created, redirects to an order confirmation page with details of the order.
+	- If the preconditions are not met, redirects to the cart page with an appropriate error message.
+	- If the order is successfully created, redirects to an order confirmation page with details of the order.
 
 ## Notes
 
@@ -2093,16 +2145,16 @@ information, and deleting user accounts.
 
 - **Description**: Displays the account details of a user by username.
 - **Parameters**:
-    - `username`: The username of the user whose account details are to be displayed.
+	- `username`: The username of the user whose account details are to be displayed.
 - **Response**: A view with the specified user's account details if found; otherwise, an error message.
 
 ### POST /marketplace/account/updateAccount
 
 - **Description**: Updates the account details of the logged-in user.
 - **Parameters**:
-    - `user`: The updated user details.
-    - `credentials`: The updated credentials.
-    - `confirm-password`: The confirmation of the new password.
+	- `user`: The updated user details.
+	- `credentials`: The updated credentials.
+	- `confirm-password`: The confirmation of the new password.
 - **Response**: Redirects to the account page with a success message if the update is successful; otherwise, displays
   errors.
 
@@ -2136,10 +2188,10 @@ and orders calendars, and tabular data.
 - **Description**: Provides data for a map visualization, counting users by nation based on filters such as online
   status, role, and registration date range.
 - **Parameters**:
-    - `isOnline`: User's online status (optional).
-    - `role`: User's role (optional).
-    - `registeredFrom`: Start date for the registration filter (optional).
-    - `registeredTo`: End date for the registration filter (optional).
+	- `isOnline`: User's online status (optional).
+	- `role`: User's role (optional).
+	- `registeredFrom`: Start date for the registration filter (optional).
+	- `registeredTo`: End date for the registration filter (optional).
 - **Response**: A list of object arrays containing the data for the map.
 
 ### GET /marketplace/account/api/stats/calendarData/sales
@@ -2208,38 +2260,38 @@ and orders calendars, and tabular data.
 
 - **`src/`**: This directory contains two subdirectories: main/ and test/.
 
-    - **`src/main/`**: Contains all reusable components of the application.
+	- **`src/main/`**: Contains all reusable components of the application.
 
-    - **`src/main/java/`**: This directory contains the main source code and resources for your application, which are
-      used in production.
-      packages corresponding to your application's domain or feature areas.
+	- **`src/main/java/`**: This directory contains the main source code and resources for your application, which are
+	  used in production.
+	  packages corresponding to your application's domain or feature areas.
 
-    - **`src/main/resources/`**: This directory contains non-Java resources used by your application, such as properties
-      files, XML configuration files, static assets, etc.
+	- **`src/main/resources/`**: This directory contains non-Java resources used by your application, such as properties
+	  files, XML configuration files, static assets, etc.
 
-    - **`src/test/java`**:: Similar to src/main/java, this directory contains Java source code files specifically for
-      testing purposes. It follows the same package structure as the main source code.
-    - **`src/main/resources/application.properties`**:: Configuration files for your Spring Boot application. They
-      contain properties to configure various aspects of your application, such as database connection settings, server
-      port, logging configuration, etc.
-    - **`src/main/java/com/market/marketnexus/MarketNexusApplication.java`**:: The main entry point of your Spring
-      Boot application. This Java file typically contains the main method to start the Spring application context.
-    - **`src/main/java/com/market/marketnexus/authentication`**: A directory (package) where there is the site auth
-      configuration.
-    - **`src/main/java/com/market/marketnexus/config`**: A directory (package) where there are Configuration Classes.
-    - **`src/main/java/com/market/marketnexus/controller`**: A directory (package) where there are Site Controllers
-      classes.
-    - **`src/main/java/com/market/marketnexus/exception`**: A directory (package) where there are project custom
-      Exceptions classes.
-    - **`src/main/java/com/market/marketnexus/handler`**: A directory (package) where there are Event-Handler classes.
-    - **`src/main/java/com/market/marketnexus/helpers`**: A directory (package) where there are project useful helpers
-      with many static methods.
-    - **`src/main/java/com/market/marketnexus/model`**: A directory (package) where there are project Entity Models
-      classes.
-    - **`src/main/java/com/market/marketnexus/repository`**: A directory (package) where there are project
-      Repositories interface.
-    - **`src/main/java/com/market/marketnexus/service`**:  A directory (package) where there are project Services
-      classes.
+	- **`src/test/java`**:: Similar to src/main/java, this directory contains Java source code files specifically for
+	  testing purposes. It follows the same package structure as the main source code.
+	- **`src/main/resources/application.properties`**:: Configuration files for your Spring Boot application. They
+	  contain properties to configure various aspects of your application, such as database connection settings, server
+	  port, logging configuration, etc.
+	- **`src/main/java/com/market/marketnexus/MarketNexusApplication.java`**:: The main entry point of your Spring
+	  Boot application. This Java file typically contains the main method to start the Spring application context.
+	- **`src/main/java/com/market/marketnexus/authentication`**: A directory (package) where there is the site auth
+	  configuration.
+	- **`src/main/java/com/market/marketnexus/config`**: A directory (package) where there are Configuration Classes.
+	- **`src/main/java/com/market/marketnexus/controller`**: A directory (package) where there are Site Controllers
+	  classes.
+	- **`src/main/java/com/market/marketnexus/exception`**: A directory (package) where there are project custom
+	  Exceptions classes.
+	- **`src/main/java/com/market/marketnexus/handler`**: A directory (package) where there are Event-Handler classes.
+	- **`src/main/java/com/market/marketnexus/helpers`**: A directory (package) where there are project useful helpers
+	  with many static methods.
+	- **`src/main/java/com/market/marketnexus/model`**: A directory (package) where there are project Entity Models
+	  classes.
+	- **`src/main/java/com/market/marketnexus/repository`**: A directory (package) where there are project
+	  Repositories interface.
+	- **`src/main/java/com/market/marketnexus/service`**:  A directory (package) where there are project Services
+	  classes.
 
 - **`target/`**: This directory is a standard directory created by build tools like Maven or Gradle during the build
   process. It's not typically part of your source code repository and is generated dynamically. It contains the project
@@ -2261,19 +2313,19 @@ Made with ❤️ and a lot of hard work 🏋️‍♂️ by:
 
 - **Matteo Lambertucci (matricola 578219, Roma TRE)**
 
-    - [GitHub Profile (MattDEV02)](https://github.com/MattDEV02)
+	- [GitHub Profile (MattDEV02)](https://github.com/MattDEV02)
 
-    - [Linkedin Profile](https://www.linkedin.com/in/matteo-lambertucci-134073211)
+	- [Linkedin Profile](https://www.linkedin.com/in/matteo-lambertucci-134073211)
 
-    - [Instagram Profile (_matte.02_)](https://www.instagram.com/_matte.02_/)
+	- [Instagram Profile (_matte.02_)](https://www.instagram.com/_matte.02_/)
 
-    - [Moodle Profile](https://ingegneriacivileinformaticatecnologieaeronautiche.el.uniroma3.it/user/profile.php?id=5522)
+	- [Moodle Profile](https://ingegneriacivileinformaticatecnologieaeronautiche.el.uniroma3.it/user/profile.php?id=5522)
 
-    - [mat.lambertucci@stud.uniroma3.it](mat.lambertucci@stud.uniroma3.it)
+	- [mat.lambertucci@stud.uniroma3.it](mat.lambertucci@stud.uniroma3.it)
 
-    - [matteolambertucci3@gmail.com](matteolambertucci3@gmail.com)
+	- [matteolambertucci3@gmail.com](matteolambertucci3@gmail.com)
 
-    - [matteo.lambertucci@it.ey.com](matteo.lambertucci@it.ey.com)
+	- [matteo.lambertucci@it.ey.com](matteo.lambertucci@it.ey.com)
 
 I am the only author of this beautiful site 😉
 

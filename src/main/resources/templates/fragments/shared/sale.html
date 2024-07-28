@@ -38,7 +38,7 @@
       <a class="btn btn-primary ms-3 mb-2" data-bs-toggle="tooltip"
          role="button"
          th:href="@{'/' + ${API_PATHS_MAP.get('CART')} + '/' + ${sale.id}}"
-         th:if="${loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER') && !isLoggedUser && sale.quantity > 0 && !isAddedToCart}"
+         th:if="${loggedUser != null && #strings.contains(loggedUser.credentials.role, 'BUYER') && !isLoggedUser && sale.quantity > 0 && !isAddedToCart && !(sale.user == loggedUser)}"
          th:title="'Add this ' + ${sale.user.credentials.username} + ' ' + ${sale.product.name} + ' to your ' + ${GLOBAL_CONSTANTS_MAP.get('APP_NAME')} + ' cart'"
       >
          <i class="fas fa-cart-plus"></i>

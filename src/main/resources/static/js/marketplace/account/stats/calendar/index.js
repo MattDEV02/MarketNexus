@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-   const saleBaseURI = baseURI + "sale/";
+   const saleBaseURI = baseURI + "sales/sale/";
 
    const sales = [], orders = [];
 

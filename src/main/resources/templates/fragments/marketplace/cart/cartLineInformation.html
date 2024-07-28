@@ -6,7 +6,7 @@
          <div class="row">
             <div th:class="'col-' + ${isOrder ? '4' : '4'}">
                <div th:class="'ms-' + ${isOrder ? '4' : '4'}">
-                  <a th:href="@{${'/' + API_PATHS_MAP.get('MARKETPLACE') + '/sale/' + cartLineItem.sale.id}}">
+                  <a th:href="@{${'/' + API_PATHS_MAP.get('SALES') + '/sale/' + cartLineItem.sale.id}}">
                      <img class="img-thumbnail img-fluid product-image"
                           th:alt="${cartLineItem.sale.product.name}"
                           th:src="@{${cartLineItem.sale.product.imageRelativePaths[0]}}"

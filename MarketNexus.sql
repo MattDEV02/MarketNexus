@@ -105,12 +105,12 @@ VALUES ('Electronics', 'Electronics products.'),
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Products
 (
-    id                   SERIAL      NOT NULL PRIMARY KEY,
-    name                 VARCHAR(30) NOT NULL,
-    description          VARCHAR(60) NOT NULL,
-    price                FLOAT       NOT NULL,
-    image_relative_paths TEXT[]      NOT NULL,
-    category             INTEGER     NOT NULL,
+    id                   SERIAL         NOT NULL PRIMARY KEY,
+    name                 VARCHAR(30)    NOT NULL,
+    description          VARCHAR(60)    NOT NULL,
+    price                NUMERIC(10, 2) NOT NULL,
+    image_relative_paths TEXT[]         NOT NULL,
+    category             INTEGER        NOT NULL,
     CONSTRAINT products_productcategories_fk FOREIGN KEY (category) REFERENCES MarketNexus.product_categories (id) ON DELETE CASCADE,
     CONSTRAINT products_id_min_value_check CHECK (MarketNexus.Products.id >= 1),
     CONSTRAINT products_name_min_length_check CHECK (LENGTH(MarketNexus.Products.name) >= 3),
@@ -216,15 +216,15 @@ VALUES ('Lamb', '$2a$10$1xyrTM4fzIZINm3GBh7H6.IyMc0RFFzplC/emdv3aXctk3k7U55oG', 
 
 CREATE TABLE IF NOT EXISTS MarketNexus.Users
 (
-    id             SERIAL      NOT NULL PRIMARY KEY,
-    name           VARCHAR(30) NOT NULL,
-    surname        VARCHAR(30) NOT NULL,
-    email          VARCHAR(50) NOT NULL,
+    id             SERIAL         NOT NULL PRIMARY KEY,
+    name           VARCHAR(30)    NOT NULL,
+    surname        VARCHAR(30)    NOT NULL,
+    email          VARCHAR(50)    NOT NULL,
     birthdate      DATE,
-    balance        FLOAT       NOT NULL,
+    balance        NUMERIC(10, 2) NOT NULL,
     show_is_online BOOLEAN DEFAULT TRUE,
-    credentials    INTEGER     NOT NULL,
-    nation         INTEGER     NOT NULL,
+    credentials    INTEGER        NOT NULL,
+    nation         INTEGER        NOT NULL,
     CONSTRAINT users_email_unique UNIQUE (email),
     CONSTRAINT users_credentials_unique UNIQUE (credentials),
     CONSTRAINT users_credentials_fk FOREIGN KEY (credentials) REFERENCES MarketNexus.Credentials (id) ON DELETE CASCADE,
@@ -266,7 +266,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.Sales
     product     INTEGER                                                                              NOT NULL,
     quantity    INTEGER                                                                              NOT NULL,
     is_sold     BOOLEAN                                                                              NOT NULL DEFAULT FALSE,
-    sale_price  FLOAT                                                                                NOT NULL,
+    sale_price  NUMERIC(10, 2)                                                                       NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT sales_user_product_unique UNIQUE (_user, product),
@@ -298,10 +298,10 @@ CREATE
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF ((SELECT CASE WHEN (TRUNC(s.sale_price) = TRUNC(p.price * s.quantity)) THEN TRUE ELSE FALSE END AS are_equals
-         FROM MarketNexus.Products p
-                  JOIN MarketNexus.Sales s ON p.id = s.product
-         WHERE s.id = NEW.ID) = TRUE) THEN
+    IF (SELECT (TRUNC(s.sale_price) = TRUNC(p.price * s.quantity)) AS are_equals
+        FROM MarketNexus.Products p
+                 JOIN MarketNexus.Sales s ON p.id = s.product
+        WHERE s.id = NEW.ID) THEN
         RETURN NEW;
     ELSE
         RAISE EXCEPTION 'Sale sale_price error with this Sale ID: % and this sale_price: %.' , NEW.ID, NEW.sale_price;
@@ -309,7 +309,7 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-/*
+
 CREATE
     OR REPLACE TRIGGER SALE_SALEPRICE_VALUE_TRIGGER
     AFTER
@@ -318,7 +318,7 @@ CREATE
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.CHECK_SALE_SALEPRICE_VALUE_FUNCTION();
-*/
+
 CREATE
     OR REPLACE FUNCTION CHECK_SALE_USER_CREDENTIALS_ROLE_FUNCTION()
     RETURNS TRIGGER AS
@@ -366,7 +366,7 @@ VALUES (1, 1, 1, 599.99, CURRENT_TIMESTAMP - INTERVAL '1 days');
 CREATE TABLE IF NOT EXISTS MarketNexus.Carts
 (
     id          SERIAL                                                                               NOT NULL PRIMARY KEY,
-    cart_price  FLOAT                                                                                NOT NULL,
+    cart_price  NUMERIC(10, 2)                                                                       NOT NULL,
     _user       INTEGER                                                                              NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
     CONSTRAINT carts_user_insertedat_unique UNIQUE (_user, inserted_at),
@@ -395,7 +395,7 @@ CREATE TABLE IF NOT EXISTS MarketNexus.cart_line_items
 (
     id                 SERIAL                                                                               NOT NULL PRIMARY KEY,
     quantity           INTEGER                                                                              NOT NULL,
-    cartlineitem_price FLOAT                                                                                NOT NULL,
+    cartlineitem_price NUMERIC(10, 2)                                                                       NOT NULL,
     cart               INTEGER                                                                              NOT NULL,
     sale               INTEGER                                                                              NOT NULL,
     inserted_at        TIMESTAMP WITH TIME ZONE DEFAULT pg_catalog.TIMEZONE('UTC'::TEXT, CURRENT_TIMESTAMP) NOT NULL,
@@ -515,10 +515,10 @@ EXECUTE
 
 
 CREATE OR REPLACE FUNCTION GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(cart_id BIGINT)
-    RETURNS FLOAT AS
+    RETURNS NUMERIC(10, 2) AS
 $$
 DECLARE
-    cartLineItemsPriceSumFromCartId FLOAT;
+    cartLineItemsPriceSumFromCartId NUMERIC(10, 2) ;
 BEGIN
     SELECT COALESCE(SUM(cli.cartlineitem_price),
                     0) AS cart_line_items_price_sum_from_cart_id
@@ -538,27 +538,26 @@ CREATE
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF (SELECT (c.cart_price = 0 OR (TRUNC(c.cart_price) =
-                                     TRUNC(GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(NEW.cart))))
+    IF (SELECT (c.cart_price) = GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(NEW.cart)
                    AS are_equals
         FROM MarketNexus.Carts c
         WHERE c.id = NEW.cart) THEN
         RETURN NEW;
     ELSE
-        RAISE EXCEPTION 'Cart cart_price error with this Cart ID: % and this cart_line_item ID: %' , NEW.cart, NEW.id;
+        RAISE EXCEPTION 'Cart cart_price error with this Cart ID: % and this cart_line_item ID: %, %' , NEW.cart, NEW.id, GET_CARTLINEITEMS_PRICE_SUM_FROM_CARTID(NEW.cart);
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
-/*
+
 CREATE
     OR REPLACE TRIGGER CART_CARTPRICE_VALUE_TRIGGER
     BEFORE
-        INSERT OR UPDATE
+        INSERT
     ON MarketNexus.cart_line_items
     FOR EACH ROW
 EXECUTE
     FUNCTION MarketNexus.CHECK_CART_CARTPRICE_VALUE_FUNCTION();
-*/
+
 COMMENT ON TABLE MarketNexus.cart_line_items IS 'MarketNexus User who puts a Sale Product in his Cart.';
 
 ALTER TABLE MarketNexus.cart_line_items

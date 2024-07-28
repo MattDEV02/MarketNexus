@@ -14,7 +14,7 @@
             <h1 class="display-1 fw-bold" th:text="${statusCode}"></h1>
             <h1 class="display-1 fw-bold" th:text="${statusMessage}"></h1>
             <h5 class="text-muted mt-5" th:text="${subTitle}"></h5>
-            <a class="btn btn-outline-dark mt-5" role="button" th:href="@{'/' + API_PATHS_MAP.get('MARKETPLACE')}">
+            <a class="btn btn-outline-dark mt-5" role="button" th:href="@{${'/' + API_PATHS_MAP.get('MARKETPLACE')}}">
                Back to Marketplace
                <i class="fas fa-home mx-1"></i>
             </a>

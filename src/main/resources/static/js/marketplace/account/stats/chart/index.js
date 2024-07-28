@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
    let weekDaysX = null, numberOfSoldSalesY = null;
 
-   const canvas = document.getElementById("chart");
+   let canvas = document.getElementById("chart");
 
    const ctx = canvas.getContext("2d");
 
@@ -128,6 +128,7 @@ const downloadPDFChartButton = document.getElementById("pdf-download-chart-butto
 printChartButton = document.getElementById("print-chart-button");
 
 downloadPDFChartButton.addEventListener("click", event => {
+   let canvas = document.getElementById("chart");
    const {jsPDF} = window.jspdf;
    const pdf = new jsPDF();
    const imgData = canvas.toDataURL("image/png");
@@ -154,6 +155,7 @@ downloadPDFChartButton.addEventListener("click", event => {
 });
 
 downloadPNGChartButton.addEventListener("click", () => {
+   let canvas = document.getElementById("chart");
    const link = document.createElement("a");
    link.download = "your_sold_sales_chart.png";
    link.href = canvas.toDataURL("image/png");
@@ -161,6 +163,7 @@ downloadPNGChartButton.addEventListener("click", () => {
 });
 
 printChartButton.addEventListener("click", event => {
+   let canvas = document.getElementById("chart");
    const imgData = canvas.toDataURL("image/png");
    const printWindow = window.open("", "_blank");
    printWindow.document.write("<html><head><title>Your sold sales Chart</title><style>body{margin:0;display:flex;align-items:center;justify-content:center;} img{max-width:100%;max-height:100%;}</style></head><body>");
