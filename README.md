@@ -233,7 +233,7 @@ There are 3 type of Users (User roles):
 
 - **Responsive:** The site is responsive and user-friendly.
 
-- **Dynamic**: The site is content-dynamic and interactive. There are also special effects.
+- **Dynamic**: The site is content-dynamic and interactive. There are also special effects and sounds.
 
 - **Security and user errors control:** The user's sensitive data, such as their password, are encrypted and stored in a
   very robust database. There are also errors control in in client-side and server-side (also CHECKS and TRIGGERS in the
@@ -262,6 +262,7 @@ There are 3 type of Users (User roles):
 
 <p align="center">
 	<img  title="MarketNexus HomeScreen screenshoot 1"  alt="MarketNexus HomeScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/home/1.png"  width="100%" />
+	<img  title="MarketNexus HomeScreen screenshoot 2"  alt="MarketNexus HomeScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/home/2.png"  width="100%" />
 </p>
 
 ## `Registration page`
@@ -286,6 +287,7 @@ There are 3 type of Users (User roles):
 
 <p align="center">
 	<img  title="MarketNexus ForgotusernameScreen screenshoot 1"  alt="MarketNexus ForgotusernameScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/forgotUsername/1.png"  width="100%" />
+	<img  title="MarketNexus ForgotusernameScreen screenshoot 2"  alt="MarketNexus ForgotusernameScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/forgotUsername/2.png"  width="100%" />
 </p>
 
 ## `Sales page`
@@ -303,6 +305,7 @@ There are 3 type of Users (User roles):
 	<img  title="MarketNexus AccountScreen screenshoot 1"  alt="MarketNexus MarketplaceScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/account/1.png"  width="100%" />
     <img  title="MarketNexus AccountScreen screenshoot 2"  alt="MarketNexus MarketplaceScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/account/2.png"  width="100%" />
     <img  title="MarketNexus AccountScreen screenshoot 3"  alt="MarketNexus MarketplaceScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/account/3.png"  width="100%" />
+	 <img  title="MarketNexus AccountScreen screenshoot 4"  alt="MarketNexus MarketplaceScreen screenshoot 4"  src="/src/main/resources/static/images/README/screenshots/account/4.png"  width="100%" />
 </p>
 
 ## `New Sale page`
@@ -315,10 +318,12 @@ There are 3 type of Users (User roles):
 ## `Cart page`
 
 <p align="center"> 
-	<img  title="MarketNexus CartScreen screenshoot 1"  alt="MarketNexus StatsScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/cart/1.png"  width="100%" />
-	<img  title="MarketNexus CartScreen screenshoot 2"  alt="MarketNexus StatsScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/cart/2.png"  width="100%" />
-	<img  title="MarketNexus CartScreen screenshoot 3"  alt="MarketNexus StatsScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/cart/3.png"  width="100%" />
-	<img  title="MarketNexus CartScreen screenshoot 4"  alt="MarketNexus StatsScreen screenshoot 4"  src="/src/main/resources/static/images/README/screenshots/cart/4.png"  width="100%" />
+	<img  title="MarketNexus CartScreen screenshoot 1"  alt="MarketNexus CartScreen screenshoot 1"  src="/src/main/resources/static/images/README/screenshots/cart/1.png"  width="100%" />
+	<img  title="MarketNexus CartScreen screenshoot 2"  alt="MarketNexus CartScreen screenshoot 2"  src="/src/main/resources/static/images/README/screenshots/cart/2.png"  width="100%" />
+	<img  title="MarketNexus CartScreen screenshoot 3"  alt="MarketNexus CartScreen screenshoot 3"  src="/src/main/resources/static/images/README/screenshots/cart/3.png"  width="100%" />
+	<img  title="MarketNexus CartScreen screenshoot 4"  alt="MarketNexus CartScreen screenshoot 4"  src="/src/main/resources/static/images/README/screenshots/cart/4.png"  width="100%" />
+	<img  title="MarketNexus CartScreen screenshoot 5"  alt="MarketNexus CartScreen screenshoot 5"  src="/src/main/resources/static/images/README/screenshots/cart/5.png"  width="100%" />
+	<img  title="MarketNexus CartScreen screenshoot 6"  alt="MarketNexus CartScreen screenshoot 6"  src="/src/main/resources/static/images/README/screenshots/cart/6.png"  width="100%" />
 </p>
 
 ## Installation 🚀 and usage⚡
@@ -2281,7 +2286,7 @@ and orders calendars, and tabular data.
 	- **`src/main/java/com/market/marketnexus/config`**: A directory (package) where there are Configuration Classes.
 	- **`src/main/java/com/market/marketnexus/controller`**: A directory (package) where there are Site Controllers
 	  classes.
-		- **`src/main/java/com/market/marketnexus/controller/validators`**: A directory (package) where there are Site
+		- **`src/main/java/com/market/marketnexus/controller/validator`**: A directory (package) where there are Site
 		  input Validators
 		  classes.
 	- **`src/main/java/com/market/marketnexus/exception`**: A directory (package) where there are project custom
