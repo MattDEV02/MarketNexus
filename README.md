@@ -79,6 +79,12 @@ There are 3 type of Users (User roles):
 
 #### Modify own account data - Primary Actor: A User.
 
+### Use Case UC10:
+
+#### Delete own account data - Primary Actor: A User.
+
+...
+
 ## UML Domain Model ‍🎓
 
 <img title="MarketNexus UML Domain Model" alt="MarketNexus UML Domain model" src="/src/main/resources/static/images/README/schemas/OO/OOA/Domain_Model.png" width="100%" />
@@ -224,6 +230,10 @@ There are 3 type of Users (User roles):
 ## Network 🛜
 
 <img title="MarketNexus Network" alt="MarketNexus Network" src="/src/main/resources/static/images/README/schemas/network/marketnexus_network.png" width="100%" />
+
+## Flow-chart 🕵️‍♂️
+
+<img title="MarketNexus Flow-chart" alt="MarketNexus Flow-chart" src="/src/main/resources/static/images/README/schemas/flowchart/marketnexus_order_flow_chart.png" width="100%" />
 
 ## Key Features and characteristics✨
 
