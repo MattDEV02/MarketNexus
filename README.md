@@ -2244,6 +2244,7 @@ and orders calendars, and tabular data.
 |     Junit      |       4        |
 |   PostgreSQL   |      16.0      |
 |   thymeleaf    |     3.0.14     |
+| Apache Tomcat  |      3.3       |
 | OAuth (Google) |      2.0       |
 |    Firebase    |    v13.8.0     |
 |      XML       |      1.1       |
